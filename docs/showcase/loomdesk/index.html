@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loomdesk: salon booking and reminders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Warm neutrals, dark theme (kept from the original). */
+      --sidebar: #12110f;
+      --bg: #161513;
+      --card: #1c1a18;
+      --raised: #262421;
+      --text: #efe9de;
+      --text-2: #aaa398;
+      --text-3: #8a847a;
+      --line: rgba(239, 233, 222, 0.08);
+      --accent: #e08a5f;
+      --btn: #efe9de;
+      --btn-ink: #1f1b16;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --serif: 'Instrument Serif', Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:focus-visible, summary:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+    .wrap { max-width: 1184px; margin: 0 auto; padding: 0 24px; }
+
+    /* Navigation */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 18px; letter-spacing: -0.01em; }
+    .brand svg { display: block; }
+    .nav-links { display: flex; gap: 32px; font-size: 15px; color: var(--text-2); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-actions { display: flex; align-items: center; gap: 20px; font-size: 15px; }
+    .nav-actions .login { color: var(--text-2); }
+    .nav-actions .login:hover { color: var(--text); }
+    .menu { display: none; position: relative; margin-left: 8px; }
+    .menu summary {
+      list-style: none;
+      cursor: pointer;
+      font-size: 15px;
+      color: var(--text-2);
+      padding: 8px 4px;
+    }
+    .menu summary::-webkit-details-marker { display: none; }
+    .menu-panel {
+      position: absolute;
+      right: 0;
+      top: 40px;
+      min-width: 180px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 8px;
+      display: grid;
+      gap: 2px;
+      font-size: 15px;
+    }
+    .menu-panel a { padding: 8px 10px; border-radius: 8px; color: var(--text-2); }
+    .menu-panel a:hover { background: var(--raised); color: var(--text); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      transition: background-color 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease);
+      white-space: nowrap;
+    }
+    .btn-primary { background: var(--btn); color: var(--btn-ink); }
+    .btn-primary:hover { opacity: 0.92; }
+    .btn-secondary { background: transparent; color: var(--text); border-color: var(--line); }
+    .btn-secondary:hover { background: var(--raised); }
+    .btn-small { height: 32px; padding: 0 12px; font-size: 13px; border-radius: 8px; }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: 56px;
+      align-items: center;
+      min-height: calc(100vh - 80px);
+      padding: 32px 0 72px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+    .eyebrow strong { color: var(--accent); font-weight: 500; }
+    .eyebrow a { border-bottom: 1px solid var(--line); }
+    .eyebrow a:hover { color: var(--text); }
+    h1 {
+      margin: 20px 0 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 72px;
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+    }
+    .lede {
+      margin: 24px 0 0;
+      max-width: 36rem;
+      font-size: 19px;
+      line-height: 1.5;
+      color: var(--text-2);
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+
+    /* Product panel: the one drawn thing */
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .panel-title { font-size: 17px; font-weight: 500; line-height: 1.3; margin: 0; }
+    .panel-sub { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+    .figures {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .tile {
+      background: var(--raised);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .tile-value {
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+    .tile-value.accent { color: var(--accent); }
+    .tile-label { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+    .tile-note { font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+    .rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+    .row {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 56px;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .row:last-child { border-bottom: 0; }
+    .time { color: var(--text-3); font-variant-numeric: tabular-nums; }
+    .who { font-weight: 500; line-height: 1.3; }
+    .what { color: var(--text-2); font-size: 13px; line-height: 1.3; }
+    .status { display: inline-flex; align-items: center; gap: 8px; color: var(--text-2); font-size: 13px; white-space: nowrap; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); flex: none; }
+    .dot.ok { background: #4cc38a; }
+    .dot.wait { background: var(--accent); }
+    .row.next { background: var(--raised); margin: 0 -10px; padding: 0 10px; border-radius: 10px; }
+    .row.next .time { color: var(--accent); }
+    .panel-foot { margin-top: 12px; font-size: 13px; color: var(--text-3); }
+
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: minmax(0, 1fr); gap: 48px; min-height: 0; padding: 24px 0 64px; }
+      h1 { font-size: 56px; }
+    }
+    @media (max-width: 767px) {
+      .wrap { padding: 0 16px; }
+      .nav { height: 64px; }
+      .nav-links, .nav-actions .login, .nav-actions .btn { display: none; }
+      .menu { display: block; }
+      .nav-actions { gap: 0; }
+      .nav-actions .btn-cta { display: inline-flex; margin-left: 12px; }
+      h1 { font-size: 40px; line-height: 1.05; }
+      .lede { font-size: 17px; }
+      .actions .btn { flex: 1 1 auto; min-width: 0; }
+      .panel { padding: 16px; }
+      .panel-title { font-size: 16px; }
+      .figures { gap: 6px; }
+      .tile { padding: 10px; }
+      .tile-value { font-size: 22px; }
+      .tile-label { font-size: 12px; }
+      .tile-note { display: none; }
+    }
+    @media (min-width: 768px) {
+      .menu { display: none !important; }
+      .nav-actions .btn-cta { display: inline-flex; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <a class="brand" href="#" aria-label="Loomdesk home">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+          <rect x="3" y="2" width="2.5" height="18" rx="1.25" fill="var(--accent)" />
+          <rect x="9.75" y="2" width="2.5" height="18" rx="1.25" fill="var(--accent)" opacity="0.6" />
+          <rect x="16.5" y="2" width="2.5" height="18" rx="1.25" fill="var(--accent)" opacity="0.3" />
+        </svg>
+        Loomdesk
+      </a>
+      <nav class="nav-links" aria-label="Main">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Stories</a>
+        <a href="#">Blog</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="login" href="#">Log in</a>
+        <a class="btn btn-primary btn-cta" href="#">Start free trial</a>
+        <details class="menu">
+          <summary>Menu</summary>
+          <div class="menu-panel">
+            <a href="#">Features</a>
+            <a href="#">Pricing</a>
+            <a href="#">Stories</a>
+            <a href="#">Blog</a>
+            <a href="#">Log in</a>
+          </div>
+        </details>
+      </div>
+    </header>
+
+    <main class="hero">
+      <section>
+        <p class="eyebrow">
+          <strong>New</strong>
+          <a href="#">Rebooking</a>
+        </p>
+        <h1>Fuller chairs,<br />fewer no-shows</h1>
+        <p class="lede">Booking, staff rota and text reminders for salons, in one calendar.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#">Get started free</a>
+          <a class="btn btn-secondary" href="#">Watch demo</a>
+        </div>
+      </section>
+
+      <aside class="panel" aria-label="Example day in the calendar">
+        <div class="panel-head">
+          <div>
+            <p class="panel-title">Tuesday 10 November</p>
+            <p class="panel-sub">4 chairs, 09:00 to 18:00</p>
+          </div>
+          <a class="btn btn-secondary btn-small" href="#">New booking</a>
+        </div>
+
+        <div class="figures">
+          <div class="tile">
+            <div class="tile-value">24</div>
+            <div class="tile-label">Booked today</div>
+            <div class="tile-note">of 28 slots</div>
+          </div>
+          <div class="tile">
+            <div class="tile-value accent">4</div>
+            <div class="tile-label">Open slots</div>
+            <div class="tile-note">2 after 15:00</div>
+          </div>
+          <div class="tile">
+            <div class="tile-value">92%</div>
+            <div class="tile-label">Attended</div>
+            <div class="tile-note">+3% vs last week</div>
+          </div>
+        </div>
+
+        <ul class="rows">
+          <li class="row next">
+            <span class="time">09:30</span>
+            <span>
+              <span class="who">Maya Okafor</span>
+              <span class="what" style="display:block">Cut and blow-dry, Priya</span>
+            </span>
+            <span class="status"><span class="dot ok"></span><span>Confirmed</span></span>
+          </li>
+          <li class="row">
+            <span class="time">10:15</span>
+            <span>
+              <span class="who">Tom Reyes</span>
+              <span class="what" style="display:block">Beard trim, Jonah</span>
+            </span>
+            <span class="status"><span class="dot"></span><span>Reminder sent</span></span>
+          </li>
+          <li class="row">
+            <span class="time">11:00</span>
+            <span>
+              <span class="who">Lena Brandt</span>
+              <span class="what" style="display:block">Colour, half head, Priya</span>
+            </span>
+            <span class="status"><span class="dot wait"></span><span>Awaiting reply</span></span>
+          </li>
+          <li class="row">
+            <span class="time">13:30</span>
+            <span>
+              <span class="who">Sam Whitfield</span>
+              <span class="what" style="display:block">Gel manicure, Ruth</span>
+            </span>
+            <span class="status"><span class="dot ok"></span><span>Confirmed</span></span>
+          </li>
+        </ul>
+        <p class="panel-foot">Sample data</p>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>

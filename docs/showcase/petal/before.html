@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Petal & Stem - Orders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #0f172a; }
+    .glow-pink { position: absolute; width: 420px; height: 420px; border-radius: 9999px; background: #ec4899; filter: blur(120px); opacity: .35; top: -120px; left: 180px; }
+    .glow-purple { position: absolute; width: 380px; height: 380px; border-radius: 9999px; background: #a855f7; filter: blur(110px); opacity: .3; bottom: -100px; right: 120px; }
+    .grad-text { background: linear-gradient(90deg, #f472b6, #c084fc, #818cf8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .float { animation: floaty 3s ease-in-out infinite; }
+    .pulse-dot { animation: pulse 1.5s cubic-bezier(.4,0,.6,1) infinite; }
+    @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen overflow-hidden relative">
+  <div class="glow-pink"></div>
+  <div class="glow-purple"></div>
+
+  <div class="relative flex h-[900px] w-[1280px]">
+    <!-- Sidebar -->
+    <aside class="w-[232px] bg-slate-900/70 backdrop-blur border-r border-white/10 p-5 flex flex-col">
+      <div class="flex items-center gap-2 mb-10">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center float">🌸</div>
+        <span class="font-black text-lg grad-text">Petal &amp; Stem</span>
+      </div>
+      <p class="text-[11px] uppercase tracking-[0.2em] font-black text-slate-400 mb-3">Menu ✨</p>
+      <nav class="space-y-2 text-sm font-extrabold">
+        <a href="#" class="block px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 shadow-lg shadow-pink-500/40">📦 Orders</a>
+        <a href="#" class="block px-4 py-2.5 rounded-xl text-slate-300 hover:bg-white/5">🌷 Arrangements</a>
+        <a href="#" class="block px-4 py-2.5 rounded-xl text-slate-300 hover:bg-white/5">🚚 Deliveries <span class="ml-1 text-[10px] bg-pink-500 text-white px-2 py-0.5 rounded-full">NEW!!</span></a>
+        <a href="#" class="block px-4 py-2.5 rounded-xl text-slate-300 hover:bg-white/5">👥 Customers</a>
+        <a href="#" class="block px-4 py-2.5 rounded-xl text-slate-300 hover:bg-white/5">📊 Reports 🔥</a>
+        <a href="#" class="block px-4 py-2.5 rounded-xl text-slate-300 hover:bg-white/5">⚙️ Settings <span class="text-[10px] bg-purple-500 px-2 py-0.5 rounded-full">PRO</span></a>
+      </nav>
+      <div class="mt-auto p-4 rounded-2xl bg-gradient-to-br from-purple-600/40 to-pink-600/40 border border-white/10">
+        <p class="font-black text-sm">🏆 #1 Florist in town!!</p>
+        <p class="text-xs text-slate-300 mt-1">Trusted by 10,000+ happy customers worldwide</p>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-7 overflow-hidden">
+      <header class="flex items-start justify-between">
+        <div>
+          <p class="text-xs uppercase tracking-[0.25em] font-black text-pink-400">Tuesday, 10/11/2026 🌷</p>
+          <h1 class="text-4xl font-black mt-2">Good morning, <span class="grad-text">Alex</span>! 👋🎉</h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <input type="text" placeholder="Search anything..." class="w-64 rounded-full bg-white/5 border border-white/15 px-5 py-2.5 text-sm placeholder:text-slate-400 focus:outline-none">
+          <button class="px-6 py-2.5 rounded-full font-black bg-gradient-to-r from-pink-500 via-fuchsia-500 to-purple-600 shadow-xl shadow-fuchsia-500/50 hover:scale-110 transition-transform">✨ NEW ORDER!</button>
+        </div>
+      </header>
+
+      <!-- Stats -->
+      <section class="grid grid-cols-4 gap-5 mt-7" style="margin-top: 27px;">
+        <div class="rounded-3xl bg-white/5 border border-white/10 p-5 shadow-2xl">
+          <div class="flex items-center justify-between">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-400 flex items-center justify-center text-xl">📦</div>
+            <span class="text-xs font-black px-3 py-1 rounded-full bg-emerald-400/20 text-emerald-300 shadow-[0_0_18px_rgba(52,211,153,.6)]">+12%!!</span>
+          </div>
+          <p class="text-[11px] uppercase tracking-[0.2em] font-black text-slate-400 mt-4">Orders Today</p>
+          <p class="text-4xl font-black grad-text">48</p>
+        </div>
+        <div class="rounded-3xl bg-white/5 border border-white/10 p-5 shadow-2xl">
+          <div class="flex items-center justify-between">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center text-xl">🚚</div>
+            <span class="text-xs font-black px-3 py-1 rounded-full bg-emerald-400/20 text-emerald-300 shadow-[0_0_18px_rgba(52,211,153,.6)]">+8%!</span>
+          </div>
+          <p class="text-[11px] uppercase tracking-[0.2em] font-black text-slate-400 mt-4">To Deliver</p>
+          <p class="text-4xl font-black grad-text">17</p>
+        </div>
+        <div class="rounded-3xl bg-white/5 border border-white/10 p-5 shadow-2xl">
+          <div class="flex items-center justify-between">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-xl">🌷</div>
+            <span class="text-xs font-black px-3 py-1 rounded-full bg-pink-400/20 text-pink-300 shadow-[0_0_18px_rgba(244,114,182,.6)]">+21%!!!</span>
+          </div>
+          <p class="text-[11px] uppercase tracking-[0.2em] font-black text-slate-400 mt-4">To Prepare</p>
+          <p class="text-4xl font-black grad-text">9</p>
+        </div>
+        <div class="rounded-3xl bg-white/5 border border-white/10 p-5 shadow-2xl">
+          <div class="flex items-center justify-between">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-xl">💰</div>
+            <span class="text-xs font-black px-3 py-1 rounded-full bg-emerald-400/20 text-emerald-300 shadow-[0_0_18px_rgba(52,211,153,.6)]">+12.5%</span>
+          </div>
+          <p class="text-[11px] uppercase tracking-[0.2em] font-black text-slate-400 mt-4">Revenue Today</p>
+          <p class="text-4xl font-black grad-text">$2,1k</p>
+        </div>
+      </section>
+
+      <div class="flex gap-5 mt-6">
+        <!-- Table -->
+        <section class="flex-1 rounded-3xl bg-white/5 border border-white/10 p-5 shadow-2xl overflow-hidden">
+          <h2 class="text-lg font-black mb-4">📋 Today's Orders 💐</h2>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-[10px] uppercase tracking-[0.2em] text-slate-400">
+                <th class="py-2 pr-3">Order #</th>
+                <th class="py-2 pr-3">Customer</th>
+                <th class="py-2 pr-3">Arrangement</th>
+                <th class="py-2 pr-3">Window</th>
+                <th class="py-2 pr-3">Driver</th>
+                <th class="py-2 pr-3">Status</th>
+                <th class="py-2 text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody class="font-semibold">
+              <tr class="border-t border-white/10"><td class="py-2.5 pr-3 text-pink-300">#A-1041</td><td class="pr-3">Sarah Lin</td><td class="pr-3">🌹 Red Roses Bouquet</td><td class="pr-3">9AM - 11AM</td><td class="pr-3">Tom 🚗</td><td class="pr-3"><span class="px-3 py-1 rounded-full bg-emerald-400 text-slate-900 font-black shadow-[0_0_14px_rgba(52,211,153,.7)]">DELIVERED ✅</span></td><td class="text-right">$85.00</td></tr>
+              <tr class="border-t border-white/10"><td class="py-2.5 pr-3 text-pink-300">#A-1042</td><td class="pr-3">Mike Ortega</td><td class="pr-3">🌻 Sunny Mix</td><td class="pr-3">10:30 - 12:00</td><td class="pr-3">Ana 🚗</td><td class="pr-3"><span class="px-3 py-1 rounded-full bg-sky-400 text-slate-900 font-black shadow-[0_0_14px_rgba(56,189,248,.7)]">ON ROUTE 🚀</span></td><td class="text-right">$64.5</td></tr>
+              <tr class="border-t border-white/10"><td class="py-2.5 pr-3 text-pink-300">#A-1043</td><td class="pr-3">Priya Shah</td><td class="pr-3">💜 Lavender Dream</td><td class="pr-3">13:00-15:00</td><td class="pr-3">Unassigned</td><td class="pr-3"><span class="px-3 py-1 rounded-full bg-amber-400 text-slate-900 font-black shadow-[0_0_14px_rgba(251,191,36,.7)]">PREPARING 🔥</span></td><td class="text-right">$120</td></tr>
+              <tr class="border-t border-white/10"><td class="py-2.5 pr-3 text-pink-300">#A-1044</td><td class="pr-3">J. Okafor</td><td class="pr-3">🤍 White Lilies</td><td class="pr-3">14:00 - 16:00</td><td class="pr-3">Tom 🚗</td><td class="pr-3"><span class="px-3 py-1 rounded-full bg-pink-400 text-slate-900 font-black shadow-[0_0_14px_rgba(244,114,182,.7)]">TO DELIVER</span></td><td class="text-right">$49.99</td></tr>
+              <tr class="border-t border-white/10"><td class="py-2.5 pr-3 text-pink-300">#A-1045</td><td class="pr-3">Lena Berg</td><td class="pr-3">🌸 Spring Basket</td><td class="pr-3">Aug 3, 4PM</td><td class="pr-3">Ana 🚗</td><td class="pr-3"><span class="px-3 py-1 rounded-full bg-violet-400 text-slate-900 font-black shadow-[0_0_14px_rgba(167,139,250,.7)]">PACKED ⭐</span></td><td class="text-right">$72.00</td></tr>
+              <tr class="border-t border-white/10"><td class="py-2.5 pr-3 text-pink-300">#A-1046</td><td class="pr-3">D. Kim</td><td class="pr-3">🌿 Eucalyptus Wrap</td><td class="pr-3">2026-11-10 17:30</td><td class="pr-3">Unassigned</td><td class="pr-3"><span class="px-3 py-1 rounded-full bg-amber-400 text-slate-900 font-black shadow-[0_0_14px_rgba(251,191,36,.7)]">PREPARING 🔥</span></td><td class="text-right">$38.5</td></tr>
+              <tr class="border-t border-white/10"><td class="py-2.5 pr-3 text-pink-300">#A-1047</td><td class="pr-3">Ravi Patel</td><td class="pr-3">🌹 Dozen Roses</td><td class="pr-3">8:00 - 10:00</td><td class="pr-3">Ana 🚗</td><td class="pr-3"><span class="px-3 py-1 rounded-full bg-emerald-400 text-slate-900 font-black shadow-[0_0_14px_rgba(52,211,153,.7)]">DELIVERED ✅</span></td><td class="text-right">$96.00</td></tr>
+              <tr class="border-t border-white/10"><td class="py-2.5 pr-3 text-pink-300">#A-1048</td><td class="pr-3">Chloe Dubois</td><td class="pr-3">🌼 Daisy Delight</td><td class="pr-3">16:30 - 18:00</td><td class="pr-3">Tom 🚗</td><td class="pr-3"><span class="px-3 py-1 rounded-full bg-pink-400 text-slate-900 font-black shadow-[0_0_14px_rgba(244,114,182,.7)]">TO DELIVER</span></td><td class="text-right">$55,00</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Route panel -->
+        <aside class="w-[300px] rounded-3xl bg-white/5 border border-white/10 p-5 shadow-2xl" style="margin-left: 3px;">
+          <h2 class="text-lg font-black">🗺️ Today's Route</h2>
+          <p class="text-xs text-slate-400 mb-4">5 stops • Driver: Tom 🚗</p>
+          <ol class="space-y-4">
+            <li class="flex gap-3"><span class="w-7 h-7 shrink-0 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 text-xs font-black flex items-center justify-center">1</span><div><p class="font-black text-sm">Sarah Lin 💐</p><p class="text-xs text-slate-400">9:00 AM • 2.1 mi ✅</p></div></li>
+            <li class="flex gap-3"><span class="w-7 h-7 shrink-0 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 text-xs font-black flex items-center justify-center">2</span><div><p class="font-black text-sm">J. Okafor 🤍</p><p class="text-xs text-slate-400">10:45 AM • 3.4 mi</p></div></li>
+            <li class="flex gap-3"><span class="w-7 h-7 shrink-0 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 text-xs font-black flex items-center justify-center">3</span><div><p class="font-black text-sm">Ravi Patel 🌹</p><p class="text-xs text-slate-400">11:20 AM • 1.8 mi</p></div></li>
+            <li class="flex gap-3"><span class="w-7 h-7 shrink-0 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 text-xs font-black flex items-center justify-center">4</span><div><p class="font-black text-sm">Mike Ortega 🌻</p><p class="text-xs text-slate-400">1:10 PM • 4.0 mi</p></div></li>
+            <li class="flex gap-3"><span class="w-7 h-7 shrink-0 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 text-xs font-black flex items-center justify-center">5</span><div><p class="font-black text-sm">Chloe Dubois 🌼</p><p class="text-xs text-slate-400">4:30 PM • 2.6 mi</p></div></li>
+          </ol>
+          <button class="mt-6 w-full py-3 rounded-full font-black bg-gradient-to-r from-cyan-400 to-blue-600 shadow-lg shadow-blue-500/40 hover:scale-110 transition-transform">🚀 START ROUTE!!</button>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

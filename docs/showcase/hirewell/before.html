@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hirewell Pipeline</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; font-weight: 800; }
+    .card-hover { transition: transform .3s ease, box-shadow .3s ease; }
+    .card-hover:hover { transform: scale(1.05) rotate(-2deg); box-shadow: 0 0 30px rgba(236, 72, 153, .6); }
+    .float { animation: float 3s ease-in-out infinite; }
+    .pulse-glow { animation: pulse 2s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 12px rgba(168, 85, 247, .7); } 50% { box-shadow: 0 0 28px rgba(168, 85, 247, 1); } }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-pink-200 via-fuchsia-100 to-violet-200 text-slate-800">
+<div class="flex h-[900px] w-[1280px]">
+
+  <!-- Sidebar -->
+  <aside class="w-[212px] bg-gradient-to-b from-violet-500 to-pink-500 text-white p-5 shadow-2xl shadow-pink-400/50">
+    <div class="flex items-center gap-2 mb-8">
+      <span class="text-3xl float">🚀</span>
+      <span class="text-xl font-black tracking-tight">Hirewell!</span>
+    </div>
+    <p class="text-[10px] uppercase tracking-[0.25em] font-black opacity-80 mb-3">✨ Main Menu</p>
+    <nav class="space-y-2 text-sm font-extrabold">
+      <a class="block rounded-2xl bg-white/25 px-4 py-2.5 shadow-lg shadow-fuchsia-300/60">🏠 Dashboard</a>
+      <a class="block rounded-2xl px-4 py-2.5 hover:bg-white/20">🧑‍💼 Candidates</a>
+      <a class="block rounded-2xl px-4 py-2.5 hover:bg-white/20">📋 Pipeline</a>
+      <a class="block rounded-2xl px-4 py-2.5 hover:bg-white/20">📅 Interviews</a>
+      <a class="block rounded-2xl px-4 py-2.5 hover:bg-white/20">💰 Offers <span class="ml-1 rounded-full bg-yellow-300 px-2 py-0.5 text-[10px] text-slate-900">NEW</span></a>
+    </nav>
+    <div class="mt-10 rounded-3xl bg-white/20 p-4 text-xs font-bold">
+      <p class="text-base font-black">🔥 PRO Plan</p>
+      <p class="mt-1 opacity-90">Unlock 10x faster hiring!!</p>
+      <button class="pulse-glow mt-3 w-full rounded-full bg-gradient-to-r from-yellow-300 to-orange-400 py-2 font-black text-slate-900 transition hover:scale-110">Upgrade Now 🚀</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 overflow-hidden px-7 pt-6 pb-4">
+    <header class="flex items-start justify-between">
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.3em] font-black text-fuchsia-600">🎯 Open Role</p>
+        <h1 class="mt-1 text-[32px] font-black text-violet-700">Senior backend engineer 💻</h1>
+        <p class="text-sm font-bold text-slate-600">Posted 14 days ago 🕒 · Remote 🌍 · Req #4471</p>
+      </div>
+      <div class="flex gap-2 text-sm font-extrabold">
+        <select class="rounded-full border-2 border-pink-300 bg-white px-4 py-2 shadow-lg shadow-pink-200"><option>🗂 All sources</option><option>LinkedIn</option><option>Referral</option></select>
+        <select class="rounded-full border-2 border-violet-300 bg-white px-4 py-2 shadow-lg shadow-violet-200"><option>⭐ Any rating</option><option>4+ stars</option></select>
+        <button class="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-600 px-5 py-2 text-white shadow-xl shadow-purple-400 transition hover:scale-110">➕ Add Candidate!</button>
+      </div>
+    </header>
+
+    <!-- Summary strip -->
+    <section class="mt-5 grid grid-cols-4 gap-4">
+      <div class="rounded-3xl bg-gradient-to-br from-sky-400 to-blue-600 p-4 text-white shadow-2xl shadow-sky-400/70">
+        <p class="text-[10px] uppercase tracking-[0.2em] font-black">👥 Applicants</p>
+        <p class="mt-1 text-3xl font-black">1,284</p>
+        <p class="text-xs font-bold">🚀 +12% this week!</p>
+      </div>
+      <div class="rounded-3xl bg-gradient-to-br from-emerald-400 to-teal-600 p-4 text-white shadow-2xl shadow-emerald-400/70">
+        <p class="text-[10px] uppercase tracking-[0.2em] font-black">🤝 In Interview</p>
+        <p class="mt-1 text-3xl font-black">17</p>
+        <p class="text-xs font-bold">Amazing momentum!!</p>
+      </div>
+      <div class="rounded-3xl bg-gradient-to-br from-amber-300 to-orange-500 p-4 text-white shadow-2xl shadow-orange-400/70">
+        <p class="text-[10px] uppercase tracking-[0.2em] font-black">🏆 Offers</p>
+        <p class="mt-1 text-3xl font-black">3</p>
+        <p class="text-xs font-bold">Top 1% talent 🔥</p>
+      </div>
+      <div class="rounded-3xl bg-gradient-to-br from-rose-400 to-pink-600 p-4 text-white shadow-2xl shadow-rose-400/70">
+        <p class="text-[10px] uppercase tracking-[0.2em] font-black">⏳ Days Open</p>
+        <p class="mt-1 text-3xl font-black">14 days</p>
+        <p class="text-xs font-bold">Fill it FAST!!</p>
+      </div>
+    </section>
+
+    <!-- Board -->
+    <section class="mt-5 grid grid-cols-4 gap-4">
+
+      <!-- Applied -->
+      <div class="rounded-3xl bg-white/60 p-3 shadow-xl shadow-indigo-200">
+        <div class="mb-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-2.5 text-white shadow-lg shadow-cyan-300">
+          <p class="text-xs uppercase tracking-[0.2em] font-black">📥 Applied (4)</p>
+        </div>
+        <div class="space-y-3">
+          <div class="card-hover rounded-2xl bg-white p-3.5 shadow-xl shadow-cyan-300/60">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-full bg-gradient-to-br from-pink-500 to-yellow-400"></div>
+              <div><p class="font-black">Priya Raman 🌟</p><p class="text-xs font-bold text-slate-500">Stripe Inc.</p></div>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="rounded-full bg-pink-500 px-2 py-0.5 text-white">🔗 Referral</span>
+              <span class="rounded-full bg-violet-500 px-2 py-0.5 text-white">⏱ 3d</span>
+              <span class="rounded-full bg-amber-400 px-2 py-0.5 text-slate-900">⭐ 4.5</span>
+            </div>
+          </div>
+          <div class="card-hover rounded-2xl bg-white p-3.5 shadow-xl shadow-cyan-300/60">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-full bg-gradient-to-br from-green-400 to-cyan-500"></div>
+              <div><p class="font-black">Marco Little 🙌</p><p class="text-xs font-bold text-slate-500">Shopify</p></div>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="rounded-full bg-sky-500 px-2 py-0.5 text-white">💼 LinkedIn</span>
+              <span class="rounded-full bg-rose-500 px-2 py-0.5 text-white">⏱ 1 day!</span>
+              <span class="rounded-full bg-amber-400 px-2 py-0.5 text-slate-900">⭐ 3.9</span>
+            </div>
+          </div>
+          <div class="card-hover rounded-2xl bg-white p-3.5 shadow-xl shadow-cyan-300/60">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500"></div>
+              <div><p class="font-black">Aiko Tanaka 🚀</p><p class="text-xs font-bold text-slate-500">Mercari</p></div>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="rounded-full bg-emerald-500 px-2 py-0.5 text-white">🌐 Careers</span>
+              <span class="rounded-full bg-orange-500 px-2 py-0.5 text-white">⏱ 5d</span>
+              <span class="rounded-full bg-amber-400 px-2 py-0.5 text-slate-900">⭐ 4.8</span>
+            </div>
+          </div>
+          <div class="card-hover rounded-2xl bg-white p-3.5 shadow-xl shadow-cyan-300/60">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-full bg-gradient-to-br from-orange-400 to-red-500"></div>
+              <div><p class="font-black">Dev Okafor 💪</p><p class="text-xs font-bold text-slate-500">Datadog</p></div>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="rounded-full bg-fuchsia-500 px-2 py-0.5 text-white">🤖 Indeed</span>
+              <span class="rounded-full bg-teal-500 px-2 py-0.5 text-white">⏱ 2 days</span>
+              <span class="rounded-full bg-amber-400 px-2 py-0.5 text-slate-900">⭐ 4</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phone screen -->
+      <div class="rounded-3xl bg-white/60 p-3 shadow-xl shadow-indigo-200">
+        <div class="mb-3 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-pink-500 px-4 py-2.5 text-white shadow-lg shadow-pink-300">
+          <p class="text-xs uppercase tracking-[0.2em] font-black">📞 Phone Screen (3)</p>
+        </div>
+        <div class="space-y-3">
+          <div class="card-hover rounded-2xl bg-white p-3.5 shadow-xl shadow-pink-300/60">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-violet-500"></div>
+              <div><p class="font-black">Sofia Lindqvist ✨</p><p class="text-xs font-bold text-slate-500">Spotify</p></div>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="rounded-full bg-indigo-500 px-2 py-0.5 text-white">🔗 Referral</span>
+              <span class="rounded-full bg-lime-500 px-2 py-0.5 text-slate-900">⏱ 4d</span>
+              <span class="rounded-full bg-amber-400 px-2 py-0.5 text-slate-900">⭐ 4.7</span>
+            </div>
+          </div>
+          <div class="card-hover rounded-2xl bg-white p-3.5 shadow-xl shadow-pink-300/60">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-full bg-gradient-to-br from-yellow-400 to-pink-500"></div>
+              <div><p class="font-black">Jonas Weber 🎉</p><p class="text-xs font-bold text-slate-500">N26</p></div>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="rounded-full bg-sky-500 px-2 py-0.5 text-white">💼 LinkedIn</span>
+              <span class="rounded-full bg-rose-500 px-2 py-0.5 text-white">⏱ 2d</span>
+              <span class="rounded-full bg-amber-400 px-2 py-0.5 text-slate-900">⭐ 4.2</span>
+            </div>
+          </div>
+          <div class="card-hover rounded-2xl bg-white p-3.5 shadow-xl shadow-pink-300/60">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-full bg-gradient-to-br from-teal-400 to-green-500"></div>
+              <div><p class="font-black">Lena Hoffmann 🔥</p><p class="text-xs font-bold text-slate-500">Zalando</p></div>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="rounded-full bg-purple-500 px-2 py-0.5 text-white">🌐 Careers</span>
+              <span class="rounded-full bg-orange-500 px-2 py-0.5 text-white">⏱ 6 days</span>
+              <span class="rounded-full bg-amber-400 px-2 py-0.5 text-slate-900">⭐ 4.4</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Onsite -->
+      <div class="rounded-3xl bg-white/60 p-3 shadow-xl shadow-indigo-200">
+        <div class="mb-3 rounded-2xl bg-gradient-to-r from-lime-400 to-emerald-500 px-4 py-2.5 text-slate-900 shadow-lg shadow-lime-300">
+          <p class="text-xs uppercase tracking-[0.2em] font-black">🏢 Onsite (2)</p>
+        </div>
+        <div class="space-y-3">
+          <div class="card-hover rounded-2xl bg-white p-3.5 shadow-xl shadow-lime-300/60">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500"></div>
+              <div><p class="font-black">Tomás Ruiz 👑</p><p class="text-xs font-bold text-slate-500">Atlassian</p></div>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="rounded-full bg-pink-500 px-2 py-0.5 text-white">🔗 Referral</span>
+              <span class="rounded-full bg-violet-500 px-2 py-0.5 text-white">⏱ 7d</span>
+              <span class="rounded-full bg-amber-400 px-2 py-0.5 text-slate-900">⭐ 4.9</span>
+            </div>
+          </div>
+          <div class="card-hover rounded-2xl bg-white p-3.5 shadow-xl shadow-lime-300/60">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-full bg-gradient-to-br from-rose-400 to-amber-400"></div>
+              <div><p class="font-black">Hannah Brooks ⚡</p><p class="text-xs font-bold text-slate-500">Figma</p></div>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="rounded-full bg-sky-500 px-2 py-0.5 text-white">💼 LinkedIn</span>
+              <span class="rounded-full bg-rose-500 px-2 py-0.5 text-white">⏱ 3 days</span>
+              <span class="rounded-full bg-amber-400 px-2 py-0.5 text-slate-900">⭐ 4.6</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offer -->
+      <div class="rounded-3xl bg-white/60 p-3 shadow-xl shadow-indigo-200">
+        <div class="mb-3 rounded-2xl bg-gradient-to-r from-amber-300 to-orange-500 px-4 py-2.5 text-slate-900 shadow-lg shadow-orange-300">
+          <p class="text-xs uppercase tracking-[0.2em] font-black">🎁 Offer (3) 🎊</p>
+        </div>
+        <div class="space-y-3">
+          <div class="card-hover rounded-2xl bg-white p-3.5 shadow-xl shadow-orange-300/60">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-400 to-sky-500"></div>
+              <div><p class="font-black">Ravi Mehta 🥇</p><p class="text-xs font-bold text-slate-500">Twilio</p></div>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="rounded-full bg-indigo-500 px-2 py-0.5 text-white">🔗 Referral</span>
+              <span class="rounded-full bg-fuchsia-500 px-2 py-0.5 text-white">⏱ 2 wks</span>
+              <span class="rounded-full bg-amber-400 px-2 py-0.5 text-slate-900">⭐ 5.0</span>
+            </div>
+          </div>
+          <div class="card-hover rounded-2xl bg-white p-3.5 shadow-xl shadow-orange-300/60">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-full bg-gradient-to-br from-pink-400 to-violet-500"></div>
+              <div><p class="font-black">Elena Petrova 💎</p><p class="text-xs font-bold text-slate-500">Revolut</p></div>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="rounded-full bg-teal-500 px-2 py-0.5 text-white">🌐 Careers</span>
+              <span class="rounded-full bg-orange-500 px-2 py-0.5 text-white">⏱ 1wk</span>
+              <span class="rounded-full bg-amber-400 px-2 py-0.5 text-slate-900">⭐ 4.8</span>
+            </div>
+          </div>
+          <div class="card-hover rounded-2xl bg-white p-3.5 shadow-xl shadow-orange-300/60">
+            <div class="flex items-center gap-3">
+              <div class="h-10 w-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600"></div>
+              <div><p class="font-black">Kenji Mori 🏆</p><p class="text-xs font-bold text-slate-500">GitHub</p></div>
+            </div>
+            <div class="mt-3 flex flex-wrap gap-1.5 text-[10px] font-black">
+              <span class="rounded-full bg-rose-500 px-2 py-0.5 text-white">💼 LinkedIn</span>
+              <span class="rounded-full bg-lime-500 px-2 py-0.5 text-slate-900">⏱ 3d</span>
+              <span class="rounded-full bg-amber-400 px-2 py-0.5 text-slate-900">⭐ 4.9</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <p class="mt-4 text-center text-xs font-black text-fuchsia-700 float">🌟 Best-in-class hiring, guaranteed!! Results in 48hrs 🚀</p>
+  </main>
+</div>
+</body>
+</html>

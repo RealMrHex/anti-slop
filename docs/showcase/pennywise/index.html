@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pennywise - Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #161513;
+    --side: #12110f;
+    --card: #1c1a18;
+    --raised: #262421;
+    --hair: rgba(239, 233, 222, 0.08);
+    --text: #efe9de;
+    --text2: #aaa398;
+    --muted: #948d82;
+    --accent: #e8b04a;
+    --on-accent: #1a1409;
+    --pos: #4cc38a;
+    --bar: #3b3833;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  .app { display: grid; grid-template-columns: 256px minmax(0, 1fr); min-height: 100vh; }
+
+  /* Sidebar */
+  .side {
+    background: var(--side);
+    border-right: 1px solid var(--hair);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 12px; }
+  .brand .wordmark { font-size: 16px; font-weight: 500; line-height: 1; }
+  .brand .mark { width: 20px; height: 20px; flex: none; }
+  .plan { margin: 6px 0 0; padding: 0 12px; font-size: 12px; color: var(--muted); }
+
+  nav { display: flex; flex-direction: column; gap: 2px; }
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    color: var(--text2);
+    text-decoration: none;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  nav a:hover { background: rgba(239, 233, 222, 0.05); color: var(--text); }
+  nav a[aria-current="page"] {
+    background: var(--raised);
+    color: var(--text);
+    font-weight: 500;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+  .ico { width: 18px; height: 18px; flex: none; }
+
+  .upsell {
+    margin-top: auto;
+    padding: 16px;
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    background: var(--card);
+  }
+  .upsell h2 { margin: 0; font-size: 14px; font-weight: 500; }
+  .upsell p { margin: 4px 0 12px; font-size: 13px; color: var(--muted); }
+  .upsell a { color: var(--text); font-size: 13px; font-weight: 500; text-decoration: none; }
+  .upsell a:hover { color: var(--text2); }
+
+  /* Main */
+  .main { padding: 32px; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  .page-head h1 {
+    margin: 0;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 1.15;
+  }
+  .page-head p { margin: 4px 0 0; color: var(--text2); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 14px;
+    padding: 20px;
+    min-width: 0;
+  }
+  .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .card-head h2 { margin: 0; font-size: 15px; font-weight: 500; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .muted-link { color: var(--text2); font-size: 13px; text-decoration: none; }
+  .muted-link:hover { color: var(--text); }
+
+  /* Summary figures */
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .stat .label { margin: 0; color: var(--text2); font-size: 13px; }
+  .fig {
+    margin: 8px 0 0;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .chg { margin: 12px 0 0; font-size: 13px; color: var(--pos); font-variant-numeric: tabular-nums; }
+  .chg.flat { color: var(--text2); }
+  .sub { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+  /* Chart row */
+  .row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 16px; }
+
+  .chart-card { display: flex; flex-direction: column; }
+  .plot { display: flex; gap: 16px; flex: 1; min-height: 240px; }
+  .col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .bar-wrap { flex: 1; display: flex; align-items: flex-end; border-bottom: 1px solid var(--hair); }
+  .bar { width: 100%; max-width: 56px; margin: 0 auto; border-radius: 6px 6px 0 0; background: var(--bar); }
+  .col.now .bar { background: var(--accent); }
+  .col span { padding-top: 8px; text-align: center; font-size: 12px; color: var(--muted); line-height: 16px; }
+  .col.now span { color: var(--text); }
+
+  .total { margin: -4px 0 16px; font-size: 24px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .total .muted { margin-left: 6px; }
+  .cat-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .cat-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+  .cat-row .amt { color: var(--text2); font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .track { height: 4px; border-radius: 2px; background: rgba(239, 233, 222, 0.08); }
+  .track div { height: 100%; border-radius: 2px; background: var(--text2); }
+
+  /* Transactions */
+  .tx table { width: 100%; border-collapse: collapse; }
+  .tx th {
+    padding: 0 12px 8px 0;
+    border-bottom: 1px solid var(--hair);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--muted);
+    text-align: left;
+  }
+  .tx td {
+    padding: 10px 12px 10px 0;
+    border-bottom: 1px solid var(--hair);
+    font-size: 14px;
+    color: var(--text);
+  }
+  .tx tbody tr:last-child td { border-bottom: 0; }
+  .tx .sec { color: var(--text2); }
+  .tx .num { text-align: right; padding-right: 0; font-variant-numeric: tabular-nums; }
+  .tx .pos { color: var(--pos); }
+
+  @media (max-width: 1024px) {
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .row { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (max-width: 760px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .side { flex-direction: row; flex-wrap: wrap; align-items: center; padding: 16px; gap: 12px; min-width: 0; width: 100%; }
+    .side > div { min-width: 0; }
+    .tx { overflow-x: auto; }
+    .plan { display: none; }
+    nav { flex-direction: row; overflow-x: auto; flex: 1 1 100%; min-width: 0; max-width: 100%; }
+    nav a { white-space: nowrap; }
+    .upsell { margin-top: 0; width: 100%; }
+    .main { padding: 16px; gap: 16px; }
+    .page-head h1 { font-size: 30px; }
+    .stats { gap: 12px; }
+    .card { padding: 16px; }
+    .fig { font-size: 24px; }
+    .tx .hide-sm { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div>
+      <div class="brand">
+        <svg class="mark" viewBox="0 0 20 20" aria-hidden="true">
+          <circle cx="10" cy="10" r="10" fill="var(--accent)"/>
+          <path d="M12.6 7.2H9.1a1.6 1.6 0 0 0 0 3.2h1.8a1.6 1.6 0 0 1 0 3.2H7.4" fill="none" stroke="#1a1409" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M10 5.4v1.2M10 13.4v1.2" stroke="#1a1409" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span class="wordmark">Pennywise</span>
+      </div>
+      <p class="plan">Premium</p>
+    </div>
+
+    <nav aria-label="Main">
+      <a href="#" aria-current="page">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+        Overview
+      </a>
+      <a href="#">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19"/></svg>
+        Transactions
+      </a>
+      <a href="#">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.2 15.9A10 10 0 1 1 8.1 2.8"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+        Budgets
+      </a>
+      <a href="#">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+        Goals
+      </a>
+      <a href="#">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+        Subscriptions
+      </a>
+      <a href="#">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2v20l2.5-1.6L10 22l2-1.6L14 22l2-1.6L18.5 22V2l-2.5 1.6L13.5 2 11.5 3.6 9.5 2 7.5 3.6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+        Bills
+      </a>
+      <a href="#">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <div class="upsell">
+      <h2>AI tips</h2>
+      <p>Upgrade for more tips on your money.</p>
+      <a href="#">View plans</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <h1>November 2026</h1>
+      <p>Your balance, spending and savings</p>
+    </header>
+
+    <section class="stats" aria-label="Summary">
+      <article class="card stat">
+        <p class="label">Total balance</p>
+        <p class="fig">$12,480.50</p>
+        <p class="chg">+8.2% vs last month</p>
+      </article>
+      <article class="card stat">
+        <p class="label">Income this month</p>
+        <p class="fig">$4,210.00</p>
+        <p class="chg">+12% vs last month</p>
+      </article>
+      <article class="card stat">
+        <p class="label">Spending this month</p>
+        <p class="fig">$1,204.50</p>
+        <p class="chg">3 less vs last month</p>
+      </article>
+      <article class="card stat">
+        <p class="label">Savings rate</p>
+        <p class="fig">38.6%</p>
+        <p class="chg">+5.1% vs last month</p>
+        <p class="sub">Next bill 7 Nov</p>
+      </article>
+    </section>
+
+    <section class="row">
+      <article class="card chart-card">
+        <div class="card-head">
+          <h2>Monthly spending</h2>
+          <span class="muted">Last 6 months</span>
+        </div>
+        <div class="plot">
+          <div class="col"><div class="bar-wrap"><div class="bar" style="height:133px"></div></div><span>Jun</span></div>
+          <div class="col"><div class="bar-wrap"><div class="bar" style="height:160px"></div></div><span>Jul</span></div>
+          <div class="col"><div class="bar-wrap"><div class="bar" style="height:110px"></div></div><span>Aug</span></div>
+          <div class="col"><div class="bar-wrap"><div class="bar" style="height:147px"></div></div><span>Sep</span></div>
+          <div class="col"><div class="bar-wrap"><div class="bar" style="height:174px"></div></div><span>Oct</span></div>
+          <div class="col now"><div class="bar-wrap"><div class="bar" style="height:135px"></div></div><span>Nov</span></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-head">
+          <h2>Spending by category</h2>
+        </div>
+        <p class="total">$1,404.49 <span class="muted">spent</span></p>
+        <ul class="cat-list">
+          <li>
+            <div class="cat-row"><span>Food &amp; Dining</span><span class="amt">$412.00 of $500.00</span></div>
+            <div class="track"><div style="width:82.4%"></div></div>
+          </li>
+          <li>
+            <div class="cat-row"><span>Shopping</span><span class="amt">$189.99 of $400.00</span></div>
+            <div class="track"><div style="width:47.5%"></div></div>
+          </li>
+          <li>
+            <div class="cat-row"><span>Transport</span><span class="amt">$114.00 of $250.00</span></div>
+            <div class="track"><div style="width:45.6%"></div></div>
+          </li>
+          <li>
+            <div class="cat-row"><span>Housing</span><span class="amt">$450.00 of $450.00</span></div>
+            <div class="track"><div style="width:100%"></div></div>
+          </li>
+          <li>
+            <div class="cat-row"><span>Entertainment</span><span class="amt">$97.50 of $150.00</span></div>
+            <div class="track"><div style="width:65%"></div></div>
+          </li>
+          <li>
+            <div class="cat-row"><span>Utilities</span><span class="amt">$141.00 of $200.00</span></div>
+            <div class="track"><div style="width:70.5%"></div></div>
+          </li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="card tx">
+      <div class="card-head">
+        <h2>Recent transactions</h2>
+        <a href="#" class="muted-link">See all</a>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Merchant</th>
+            <th scope="col">Category</th>
+            <th scope="col" class="hide-sm">Date</th>
+            <th scope="col" class="num">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Blue Bottle Coffee</td><td class="sec">Food &amp; Dining</td><td class="sec hide-sm">7 Nov</td><td class="num">−$6.75</td></tr>
+          <tr><td>Whole Foods</td><td class="sec">Food &amp; Dining</td><td class="sec hide-sm">6 Nov</td><td class="num">−$118.40</td></tr>
+          <tr><td>Acme Corp Payroll</td><td class="sec">Income</td><td class="sec hide-sm">5 Nov</td><td class="num pos">+$4,210.00</td></tr>
+          <tr><td>Spotify</td><td class="sec">Subscriptions</td><td class="sec hide-sm">4 Nov</td><td class="num">−$11.99</td></tr>
+          <tr><td>Uber</td><td class="sec">Transport</td><td class="sec hide-sm">3 Nov</td><td class="num">−$23.50</td></tr>
+          <tr><td>Nike</td><td class="sec">Shopping</td><td class="sec hide-sm">2 Nov</td><td class="num">−$139.99</td></tr>
+          <tr><td>City Power</td><td class="sec">Utilities</td><td class="sec hide-sm">1 Nov</td><td class="num">−$89.00</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+</div>
+</body>
+</html>

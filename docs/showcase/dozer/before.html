@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dozer | Sleep Overview</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background: #0b1024; color: #e9ecff; }
+  .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(12px); border: 1px solid; }
+  .grad-text { background: linear-gradient(90deg, #f472b6, #a78bfa, #60a5fa); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .glow { box-shadow: 0 0 30px rgba(167, 139, 250, 0.6), 0 0 60px rgba(244, 114, 182, 0.4); }
+  .float { animation: floaty 3s ease-in-out infinite; }
+  @keyframes floaty { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-9px); } }
+  .pulse-dot { animation: pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .3; transform: scale(1.6); } }
+</style>
+</head>
+<body class="min-h-screen">
+<div class="flex min-h-screen" style="width:1280px; height:900px; overflow:hidden">
+
+  <aside class="w-[236px] p-[22px] bg-gradient-to-b from-indigo-900/60 to-violet-950/80 border-r border-violet-500/30">
+    <div class="flex items-center gap-2 mb-[34px]">
+      <span class="text-2xl float">🌙</span>
+      <span class="text-xl font-black grad-text">Dozer ✨</span>
+    </div>
+    <nav class="space-y-[9px] text-sm font-bold">
+      <a class="flex items-center gap-3 px-4 py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-violet-500 glow">📊 Overview</a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🛏️ Sleep Log</a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">🧠 Insights <span class="ml-auto text-[10px] font-black bg-pink-500 px-2 py-[2px] rounded-full">NEW</span></a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">⚡ Coach <span class="ml-auto text-[10px] font-black bg-amber-400 text-black px-2 py-[2px] rounded-full">PRO</span></a>
+      <a class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/10">⚙️ Settings</a>
+    </nav>
+    <div class="mt-[150px] p-4 rounded-2xl bg-gradient-to-br from-fuchsia-600 to-indigo-600 text-sm">
+      <p class="font-black">Unlock your BEST sleep!!</p>
+      <p class="text-xs opacity-80 mt-[5px]">93% of users sleep better in 7 days 🚀</p>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-[30px] overflow-hidden">
+    <header class="flex items-end justify-between mb-[26px]">
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.3em] font-black text-pink-300">Monday, 9 Nov 2026</p>
+        <h1 class="text-[40px] font-black leading-tight mt-[4px]">Good morning, Alex! 👋🌟</h1>
+      </div>
+      <button class="px-6 py-3 rounded-full font-black bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 glow hover:scale-110 transition-transform">✨ Start Sleep Mode!</button>
+    </header>
+
+    <div class="grid grid-cols-12 gap-[18px]">
+
+      <section class="col-span-5 rounded-3xl p-[24px] bg-gradient-to-br from-violet-600 to-fuchsia-600 glass border-pink-400/60">
+        <p class="text-[11px] uppercase tracking-[0.25em] font-black">Last Night 🌙</p>
+        <div class="flex items-center gap-[22px] mt-[16px]">
+          <div class="relative w-[150px] h-[150px] rounded-full p-[10px] float glow" style="background: conic-gradient(#f472b6, #fb923c, #facc15, #4ade80, #38bdf8, #a78bfa, #f472b6);">
+            <div class="w-full h-full rounded-full bg-[#1a1040] flex flex-col items-center justify-center">
+              <span class="text-[46px] font-black grad-text">87</span>
+              <span class="text-[10px] uppercase tracking-[0.2em] font-black">Score ⭐</span>
+            </div>
+          </div>
+          <div class="space-y-[12px] text-sm">
+            <p><span class="block text-[10px] uppercase tracking-widest opacity-80">Time asleep</span><span class="text-2xl font-black">7h 42m</span></p>
+            <p><span class="block text-[10px] uppercase tracking-widest opacity-80">Fell asleep in</span><span class="text-2xl font-black">12 min!</span></p>
+            <p><span class="block text-[10px] uppercase tracking-widest opacity-80">Wake-ups</span><span class="text-2xl font-black">3 😴</span></p>
+          </div>
+        </div>
+        <p class="mt-[14px] text-xs opacity-90">Amazing work!!! Your recovery is 🔥 on fire 🔥</p>
+      </section>
+
+      <section class="col-span-7 rounded-3xl p-[24px] glass border-cyan-400/60 bg-gradient-to-tr from-sky-600/50 to-emerald-500/40">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] uppercase tracking-[0.25em] font-black">Sleep Stages 💫</p>
+          <span class="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest"><span class="pulse-dot w-2 h-2 rounded-full bg-emerald-300 inline-block"></span>Live</span>
+        </div>
+        <div class="mt-[18px] h-[92px] flex rounded-2xl overflow-hidden border border-white/20">
+          <div class="h-full bg-indigo-500" style="width:9%"></div>
+          <div class="h-full bg-sky-400" style="width:18%"></div>
+          <div class="h-full bg-fuchsia-500" style="width:12%"></div>
+          <div class="h-full bg-violet-400" style="width:21%"></div>
+          <div class="h-full bg-pink-400" style="width:8%"></div>
+          <div class="h-full bg-sky-300" style="width:15%"></div>
+          <div class="h-full bg-amber-300" style="width:17%"></div>
+        </div>
+        <div class="flex justify-between text-[11px] font-bold mt-[10px] opacity-80">
+          <span>11:14 PM</span><span>12:30 AM</span><span>2am</span><span>3:45 AM</span><span>06:56</span>
+        </div>
+        <div class="flex gap-4 mt-[12px] text-[11px] font-black uppercase tracking-wider">
+          <span>🟣 Deep</span><span>🔵 Light</span><span>🩷 REM</span><span>🟡 Awake</span>
+        </div>
+      </section>
+
+      <section class="col-span-7 rounded-3xl p-[24px] bg-gradient-to-br from-indigo-700/70 to-blue-700/60 border border-indigo-300/50">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] uppercase tracking-[0.25em] font-black">Last 7 Nights 📈</p>
+          <p class="text-xs font-bold">avg 7.1h 🎯</p>
+        </div>
+        <div class="mt-[20px] h-[160px] flex items-end justify-between gap-[14px] px-[6px]">
+          <div class="flex-1 rounded-t-2xl bg-gradient-to-t from-pink-500 to-rose-300" style="height:62%"></div>
+          <div class="flex-1 rounded-t-2xl bg-gradient-to-t from-orange-500 to-amber-300" style="height:74%"></div>
+          <div class="flex-1 rounded-t-2xl bg-gradient-to-t from-yellow-500 to-lime-300" style="height:55%"></div>
+          <div class="flex-1 rounded-t-2xl bg-gradient-to-t from-green-500 to-emerald-300" style="height:88%"></div>
+          <div class="flex-1 rounded-t-2xl bg-gradient-to-t from-cyan-500 to-sky-300" style="height:70%"></div>
+          <div class="flex-1 rounded-t-2xl bg-gradient-to-t from-violet-500 to-fuchsia-300" style="height:93%"></div>
+          <div class="flex-1 rounded-t-2xl bg-gradient-to-t from-pink-600 to-purple-300 glow" style="height:81%"></div>
+        </div>
+        <div class="flex justify-between text-[10px] font-black uppercase mt-[10px] px-[6px]">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+      </section>
+
+      <section class="col-span-5 rounded-3xl p-[24px] bg-gradient-to-br from-fuchsia-700 to-pink-600 border-2 border-pink-300/70">
+        <p class="text-[11px] uppercase tracking-[0.25em] font-black">Bedtime Consistency 🛌</p>
+        <p class="text-[44px] font-black mt-[10px] grad-text">±38 min!</p>
+        <p class="text-sm mt-[4px]">Target: 11:00 PM 🌙 · Avg: 11:38 pm</p>
+        <div class="mt-[18px] relative h-[12px] rounded-full bg-white/20">
+          <div class="absolute left-[12%] w-[68%] h-full rounded-full bg-gradient-to-r from-lime-300 via-cyan-300 to-pink-300"></div>
+        </div>
+        <p class="text-[12px] mt-[12px] opacity-90">Keep it up, superstar!! 💖 Consistency = super power ⚡</p>
+      </section>
+
+      <section class="col-span-12 rounded-3xl p-[24px] glass border-violet-400/60">
+        <p class="text-[11px] uppercase tracking-[0.25em] font-black">Tips For You 💡</p>
+        <ul class="grid grid-cols-2 gap-[14px] mt-[16px] text-sm font-bold">
+          <li class="flex gap-3 p-[15px] rounded-2xl bg-gradient-to-r from-pink-600/40 to-rose-500/20 border border-pink-400/40">🌅 Get morning sunlight within 30 min of waking!</li>
+          <li class="flex gap-3 p-[15px] rounded-2xl bg-gradient-to-r from-sky-600/40 to-cyan-500/20 border border-sky-400/40">📵 Put screens away 1 hr before bed!!</li>
+          <li class="flex gap-3 p-[13px] rounded-2xl bg-gradient-to-r from-violet-600/40 to-purple-500/20 border border-violet-400/40">☕ Cut caffeine after 2 PM (Dozer says so 🚀)</li>
+          <li class="flex gap-3 p-[15px] rounded-2xl bg-gradient-to-r from-emerald-600/40 to-lime-500/20 border border-emerald-400/40">🧘 Try 4-7-8 breathing for FASTER sleep!</li>
+        </ul>
+        <div class="mt-[18px] flex justify-end gap-3">
+          <button class="px-5 py-2 rounded-full font-black bg-gradient-to-r from-indigo-500 to-purple-500 hover:scale-110 transition-transform">View All Tips 🔥</button>
+          <button class="px-5 py-2 rounded-full font-black bg-gradient-to-r from-pink-500 to-orange-400 glow hover:scale-110 transition-transform">Share! 🎉</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

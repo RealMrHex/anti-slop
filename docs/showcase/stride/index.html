@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stride | AI running coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Instrument+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #161513;
+    --card: #1c1a18;
+    --raised: #262421;
+    --hover: #2e2c28;
+    --hair: rgba(239, 233, 222, 0.08);
+    --text: #efe9de;
+    --text2: #aaa398;
+    --muted: #8a847a;
+    --accent: #e9894f;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --sans: "Instrument Sans", system-ui, sans-serif;
+    --serif: "Instrument Serif", Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  /* Navigation */
+  .nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .links {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 28px;
+    font-size: 14px;
+  }
+  .links a {
+    color: var(--text2);
+    text-decoration: none;
+    transition: color 0.16s var(--ease);
+  }
+  .links a:hover { color: var(--text); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .menu-toggle {
+    min-height: 40px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--raised);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px var(--hair);
+  }
+  .nav.is-open .links {
+    display: grid;
+    position: absolute;
+    top: 72px;
+    left: 16px;
+    right: 16px;
+    padding: 12px;
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px var(--hair);
+    gap: 0;
+    z-index: 2;
+  }
+  .nav.is-open .links li a {
+    display: block;
+    padding: 10px 12px;
+  }
+  .nav { position: relative; }
+
+  @media (min-width: 760px) {
+    .links { display: flex; }
+    .menu-toggle { display: none; }
+    .nav.is-open .links {
+      position: static;
+      padding: 0;
+      background: none;
+      box-shadow: none;
+      display: flex;
+    }
+    .nav.is-open .links li a { padding: 0; }
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 20px;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.16s var(--ease), color 0.16s var(--ease);
+  }
+  .btn-primary { background: var(--text); color: #161513; }
+  .btn-primary:hover { background: #d9d2c4; }
+  .btn-secondary { background: var(--raised); color: var(--text); box-shadow: inset 0 0 0 1px var(--hair); }
+  .btn-secondary:hover { background: var(--hover); }
+  .btn-small { min-height: 36px; padding: 0 14px; font-size: 14px; }
+
+  /* Hero */
+  .hero {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 16px 80px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 56px;
+    align-items: center;
+  }
+  @media (min-width: 760px) {
+    .hero { padding-left: 32px; padding-right: 32px; }
+  }
+  @media (min-width: 960px) {
+    .hero {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      min-height: calc(100vh - 76px);
+      padding-top: 24px;
+      padding-bottom: 48px;
+    }
+  }
+
+  .eyebrow {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: var(--text2);
+  }
+  h1 {
+    margin: 0 0 20px;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(42px, 5.6vw, 68px);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    max-width: 16ch;
+  }
+  .lede {
+    margin: 0 0 32px;
+    max-width: 34rem;
+    font-size: 18px;
+    line-height: 28px;
+    color: var(--text2);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .note {
+    margin: 16px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* Product preview */
+  .panel {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: inset 0 0 0 1px var(--hair);
+    padding: 24px;
+  }
+  .panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .panel-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+    font-variant-numeric: tabular-nums;
+  }
+  .figures {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+    padding: 20px 0;
+  }
+  .fig-value {
+    margin: 0 0 8px;
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .fig-label {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .fig-delta {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .chart-title {
+    margin: 0 0 8px;
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .chart svg { display: block; width: 100%; height: auto; }
+  .chart text {
+    font-family: var(--mono);
+    font-size: 11px;
+    fill: var(--muted);
+  }
+  .chart .line {
+    fill: none;
+    stroke: var(--text2);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .chart .grid { stroke: var(--hair); stroke-width: 1; }
+  .chart .now { fill: var(--accent); }
+  .chart .now-label { fill: var(--accent); }
+
+  .week {
+    list-style: none;
+    margin: 20px 0 0;
+    padding: 0;
+  }
+  .week li {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    align-items: center;
+    min-height: 40px;
+    border-top: 1px solid var(--hair);
+    font-size: 14px;
+  }
+  .week .day {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .week .pace {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Entrance */
+  .rise { animation: rise 0.45s var(--ease) both; }
+  .rise-2 { animation-delay: 0.08s; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#" aria-label="Stride home">
+    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M4 17 L9 3 M12 17 L17 3" stroke="#e9894f" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    </svg>
+    Stride
+  </a>
+
+  <ul class="links">
+    <li><a href="#">Features</a></li>
+    <li><a href="#">Pricing</a></li>
+    <li><a href="#">Community</a></li>
+    <li><a href="#">Blog</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <a class="btn btn-primary btn-small" href="#">Get started</a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav-links" id="menu-toggle">Menu</button>
+  </div>
+</header>
+
+<main class="hero">
+  <section class="rise">
+    <p class="eyebrow">AI running coach</p>
+    <h1>A race plan that adjusts after every run</h1>
+    <p class="lede">
+      Stride builds a training plan around your race date, adapts it after each run,
+      and tracks your weekly mileage and pace.
+    </p>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="#">Download on the App Store</a>
+      <a class="btn btn-secondary" href="#">Get it on Google Play</a>
+    </div>
+    <p class="note">Results may vary.</p>
+  </section>
+
+  <section class="panel rise rise-2" aria-label="Sample training week">
+    <div class="panel-head">
+      <p class="panel-title">Half marathon</p>
+      <span class="meta">34 days to race day</span>
+    </div>
+
+    <div class="figures">
+      <div>
+        <p class="fig-value">42.0 km</p>
+        <p class="fig-label">Weekly mileage</p>
+        <p class="fig-delta">+6.0 km vs last week</p>
+      </div>
+      <div>
+        <p class="fig-value">5:12 /km</p>
+        <p class="fig-label">Average pace</p>
+        <p class="fig-delta">28 s faster over 8 weeks</p>
+      </div>
+    </div>
+
+    <div class="chart">
+      <p class="chart-title">Pace, last 8 weeks</p>
+      <svg viewBox="0 0 480 200" role="img" aria-label="Average pace fell from 5:40 per km in week 1 to 5:12 per km in week 8">
+        <line class="grid" x1="40" y1="20" x2="480" y2="20"/>
+        <line class="grid" x1="40" y1="100" x2="480" y2="100"/>
+        <line class="grid" x1="40" y1="180" x2="480" y2="180"/>
+        <text x="0" y="24">5:05</text>
+        <text x="0" y="104">5:25</text>
+        <text x="0" y="184">5:45</text>
+
+        <polyline class="line" points="40,160 100,144 160,124 220,136 280,96 340,88 400,68 460,48"/>
+        <circle class="now" cx="460" cy="48" r="5"/>
+        <text class="now-label" x="460" y="34" text-anchor="end">5:12</text>
+
+        <text x="40" y="198" text-anchor="middle">W1</text>
+        <text x="100" y="198" text-anchor="middle">W2</text>
+        <text x="160" y="198" text-anchor="middle">W3</text>
+        <text x="220" y="198" text-anchor="middle">W4</text>
+        <text x="280" y="198" text-anchor="middle">W5</text>
+        <text x="340" y="198" text-anchor="middle">W6</text>
+        <text x="400" y="198" text-anchor="middle">W7</text>
+        <text x="460" y="198" text-anchor="middle">W8</text>
+      </svg>
+    </div>
+
+    <ul class="week">
+      <li><span class="day">Mon</span><span>Easy run, 6 km</span><span class="pace">5:40 /km</span></li>
+      <li><span class="day">Tue</span><span>Intervals, 8 km</span><span class="pace">4:20 /km</span></li>
+      <li><span class="day">Thu</span><span>Tempo, 10 km</span><span class="pace">4:55 /km</span></li>
+      <li><span class="day">Sat</span><span>Long run, 18 km</span><span class="pace">5:45 /km</span></li>
+    </ul>
+  </section>
+</main>
+
+<script>
+  (function () {
+    var nav = document.getElementById('nav');
+    var toggle = document.getElementById('menu-toggle');
+    var links = nav.querySelector('.links');
+    links.id = 'nav-links';
+    toggle.addEventListener('click', function () {
+      var open = nav.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.textContent = open ? 'Close' : 'Menu';
+    });
+  })();
+</script>
+
+</body>
+</html>

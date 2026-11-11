@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tidewater | Surf forecasts for your saved beaches</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0d14;
+      --card: #11141c;
+      --raised: #1a1e28;
+      --hair: rgba(238, 240, 245, 0.08);
+      --text: #eef0f5;
+      --text-2: #a3a9b8;
+      --text-3: #7a8296;
+      --accent: #8fd9c8;
+      --accent-hover: #a6e3d5;
+      --accent-ink: #06141a;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    a:hover { color: var(--text); }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+
+    /* Navigation */
+    .nav {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--hair);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px; letter-spacing: -0.01em; }
+    .brand svg { display: block; }
+    .nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; list-style: none; font-size: 14px; color: var(--text-2); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-end { display: flex; align-items: center; gap: 20px; }
+    .nav-login { font-size: 14px; color: var(--text-2); }
+    .nav-menu { display: none; position: relative; }
+    .nav-menu summary { list-style: none; cursor: pointer; font-size: 14px; color: var(--text-2); padding: 8px 4px; }
+    .nav-menu summary::-webkit-details-marker { display: none; }
+    .nav-menu ul {
+      position: absolute; right: 0; top: 40px; margin: 0; padding: 8px; list-style: none;
+      background: var(--card); border: 1px solid var(--hair); border-radius: 12px; min-width: 180px;
+    }
+    .nav-menu li a { display: block; padding: 8px 12px; border-radius: 8px; font-size: 14px; color: var(--text-2); }
+    .nav-menu li a:hover { background: var(--raised); color: var(--text); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 44px; padding: 0 18px; border-radius: 10px;
+      font: inherit; font-size: 15px; font-weight: 500; line-height: 1; white-space: nowrap;
+      border: 1px solid transparent; cursor: pointer;
+      transition: background-color 150ms var(--ease), border-color 150ms var(--ease), color 150ms var(--ease);
+    }
+    .btn-sm { height: 36px; padding: 0 14px; font-size: 14px; }
+    .btn-primary { background: var(--accent); color: var(--accent-ink); }
+    .btn-primary:hover { background: var(--accent-hover); color: var(--accent-ink); }
+    .btn-secondary { background: var(--raised); color: var(--text); border-color: var(--hair); }
+    .btn-secondary:hover { background: #232836; color: var(--text); }
+
+    /* Hero */
+    .hero { padding-top: 112px; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 6fr) minmax(0, 7fr);
+      gap: 56px;
+      align-items: center;
+    }
+    .eyebrow { display: inline-block; font-size: 14px; color: var(--text-2); border-bottom: 1px solid var(--hair); padding-bottom: 2px; }
+    .eyebrow:hover { color: var(--text); border-color: var(--text-3); }
+    h1 {
+      margin: 20px 0 0;
+      font-size: 56px;
+      line-height: 1.05;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      text-wrap: balance;
+    }
+    .lede {
+      margin: 20px 0 0;
+      max-width: 30rem;
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--text-2);
+    }
+    .actions { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+
+    /* Product panel */
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+    .panel-name { font-size: 16px; font-weight: 500; margin: 0; }
+    .panel-meta { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; color: var(--text-3); }
+    .figures {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin: 16px 0 0;
+      padding-top: 16px;
+      border-top: 1px solid var(--hair);
+    }
+    .fig-label { margin: 0; font-size: 13px; color: var(--text-2); }
+    .fig-value {
+      margin: 6px 0 0;
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+    .chart { position: relative; margin-top: 16px; }
+    .chart svg { display: block; width: 100%; height: auto; }
+    .band {
+      position: absolute; top: 0; bottom: 0;
+      left: 27.083%; width: 10.417%;
+      background: rgba(143, 217, 200, 0.12);
+      border-left: 1px solid rgba(143, 217, 200, 0.4);
+      border-right: 1px solid rgba(143, 217, 200, 0.4);
+    }
+    .band-label {
+      position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+      font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px;
+      color: var(--accent); white-space: nowrap;
+    }
+    .axis { position: relative; height: 20px; margin-top: 8px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; color: var(--text-3); }
+    .axis span { position: absolute; top: 0; transform: translateX(-50%); }
+    .axis span:first-child { transform: none; }
+    .axis span:last-child { transform: translateX(-100%); }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; }
+    th {
+      height: 32px; padding: 0 8px; text-align: right;
+      font-weight: 400; font-size: 12px; color: var(--text-3);
+      border-bottom: 1px solid var(--hair);
+    }
+    td {
+      height: 40px; padding: 0 8px; text-align: right;
+      font-variant-numeric: tabular-nums; color: var(--text-2);
+      border-bottom: 1px solid var(--hair);
+    }
+    th:first-child, td:first-child { text-align: left; }
+    td:first-child { color: var(--text); }
+    tr:last-child td { border-bottom: 0; }
+    tr.is-current td { background: var(--raised); color: var(--text); }
+    tr.is-current td:first-child { border-radius: 8px 0 0 8px; }
+    tr.is-current td:last-child { border-radius: 0 8px 8px 0; }
+
+    /* Supporting row */
+    .features {
+      margin-top: 56px;
+      padding-top: 24px;
+      padding-bottom: 80px;
+      border-top: 1px solid var(--hair);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 32px;
+    }
+    .feature h2 { margin: 0; font-size: 15px; font-weight: 500; }
+    .feature p { margin: 6px 0 0; font-size: 15px; line-height: 1.5; color: var(--text-2); }
+
+    /* One short entrance, no looping motion */
+    .rise { animation: rise 420ms var(--ease) both; }
+    .rise-2 { animation-delay: 60ms; }
+    .rise-3 { animation-delay: 120ms; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rise, .rise-2, .rise-3 { animation: none; }
+      .btn { transition: none; }
+    }
+
+    /* Small screens */
+    @media (max-width: 880px) {
+      .nav-links, .nav-login { display: none; }
+      .nav-menu { display: block; }
+      .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+      h1 { font-size: 44px; }
+      .features { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    }
+    @media (max-width: 560px) {
+      .wrap { padding: 0 16px; }
+      .hero { padding-top: 48px; }
+      h1 { font-size: 36px; }
+      .lede { font-size: 17px; }
+      .actions .btn { flex: 1 1 auto; }
+      .fig-value { font-size: 22px; }
+      .hide-sm { display: none; }
+      th, td { padding: 0 6px; font-size: 13px; }
+      .features { padding-bottom: 56px; margin-top: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <a class="brand" href="#" aria-label="Tidewater home">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
+          <path d="M2 13 C5 9, 8 9, 11 13 S17 17, 20 13" fill="none" stroke="#8fd9c8" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M2 7.5 C5 3.5, 8 3.5, 11 7.5 S17 11.5, 20 7.5" fill="none" stroke="#8fd9c8" stroke-width="2.2" stroke-linecap="round" opacity="0.45"/>
+        </svg>
+        Tidewater
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#beaches">Beaches</a></li>
+      </ul>
+
+      <div class="nav-end">
+        <a class="nav-login" href="#login">Log in</a>
+        <button class="btn btn-primary btn-sm" type="button">Start free</button>
+        <details class="nav-menu">
+          <summary>Menu</summary>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#beaches">Beaches</a></li>
+            <li><a href="#login">Log in</a></li>
+          </ul>
+        </details>
+      </div>
+    </header>
+
+    <main class="hero">
+      <div class="hero-grid">
+        <div class="rise">
+          <a class="eyebrow" href="#whats-new">Wave forecast v2.0 is out</a>
+          <h1>Find your best surf window before you paddle out</h1>
+          <p class="lede">Wave height, wind and tide times for all your saved beaches, in one place</p>
+          <div class="actions">
+            <button class="btn btn-primary" type="button">Get started</button>
+            <button class="btn btn-secondary" type="button">Watch demo</button>
+          </div>
+        </div>
+
+        <section class="panel rise rise-2" aria-labelledby="panel-title">
+          <div class="panel-head">
+            <h2 class="panel-name" id="panel-title">Sunset Point</h2>
+            <span class="panel-meta">Tue 10 Nov, 06:00</span>
+          </div>
+
+          <div class="figures">
+            <div>
+              <p class="fig-label">Wave height</p>
+              <p class="fig-value">4.5 ft</p>
+            </div>
+            <div>
+              <p class="fig-label">Best window</p>
+              <p class="fig-value">6:30–9:00 am</p>
+            </div>
+          </div>
+
+          <div class="chart">
+            <svg viewBox="0 0 600 160" role="img" aria-label="Wave height at Sunset Point across 24 hours, peaking at 4.5 ft around 7 am">
+              <g stroke="rgba(238,240,245,0.08)" stroke-width="1">
+                <line x1="0" y1="40" x2="600" y2="40"/>
+                <line x1="0" y1="80" x2="600" y2="80"/>
+                <line x1="0" y1="120" x2="600" y2="120"/>
+              </g>
+              <path fill="rgba(238,240,245,0.06)" d="M0,70.4 C25,70.4 25,65.2 50,65.2 C75,65.2 75,53.6 100,53.6 C125,53.6 125,42.4 150,42.4 C162.5,42.4 162.5,34 175,34 C187.5,34 187.5,36.8 200,36.8 C212.5,36.8 212.5,44.8 225,44.8 C237.5,44.8 237.5,53.6 250,53.6 C275,53.6 275,65.2 300,65.2 C325,65.2 325,76 350,76 C375,76 375,81.6 400,81.6 C425,81.6 425,87.2 450,87.2 C475,87.2 475,90 500,90 C525,90 525,84.4 550,84.4 C575,84.4 575,78.8 600,78.8 L600,160 L0,160 Z"/>
+              <path fill="none" stroke="#c9d1de" stroke-width="2" stroke-linecap="round" d="M0,70.4 C25,70.4 25,65.2 50,65.2 C75,65.2 75,53.6 100,53.6 C125,53.6 125,42.4 150,42.4 C162.5,42.4 162.5,34 175,34 C187.5,34 187.5,36.8 200,36.8 C212.5,36.8 212.5,44.8 225,44.8 C237.5,44.8 237.5,53.6 250,53.6 C275,53.6 275,65.2 300,65.2 C325,65.2 325,76 350,76 C375,76 375,81.6 400,81.6 C425,81.6 425,87.2 450,87.2 C475,87.2 475,90 500,90 C525,90 525,84.4 550,84.4 C575,84.4 575,78.8 600,78.8"/>
+              <circle cx="175" cy="34" r="4" fill="#8fd9c8" stroke="#11141c" stroke-width="2"/>
+            </svg>
+            <div class="band" aria-hidden="true"><span class="band-label">6:30–9:00</span></div>
+          </div>
+          <div class="axis" aria-hidden="true">
+            <span style="left:0">00</span>
+            <span style="left:25%">06</span>
+            <span style="left:50%">12</span>
+            <span style="left:75%">18</span>
+            <span style="left:100%">24</span>
+          </div>
+
+          <table>
+            <caption class="sr-only">Conditions at saved beaches this morning</caption>
+            <thead>
+              <tr>
+                <th scope="col">Beach</th>
+                <th scope="col">Waves</th>
+                <th scope="col" class="hide-sm">Wind</th>
+                <th scope="col">Best window</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="is-current">
+                <td>Sunset Point</td>
+                <td>4.5 ft</td>
+                <td class="hide-sm">12 kn SW</td>
+                <td>6:30–9:00 am</td>
+              </tr>
+              <tr>
+                <td>Crescent Cove</td>
+                <td>3.1 ft</td>
+                <td class="hide-sm">9 kn NW</td>
+                <td>7:00–9:30 am</td>
+              </tr>
+              <tr>
+                <td>Harbor Reef</td>
+                <td>1.8 ft</td>
+                <td class="hide-sm">15 kn SE</td>
+                <td>5:45–7:15 am</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <div class="features rise rise-3" id="features">
+        <div class="feature">
+          <h2>Wave height</h2>
+          <p>Surf height for every saved beach, in feet, on one screen</p>
+        </div>
+        <div class="feature">
+          <h2>Wind</h2>
+          <p>Speed and direction in knots, so you can see which faces are clean</p>
+        </div>
+        <div class="feature">
+          <h2>Tide times</h2>
+          <p>Tide times for each beach, so you can pick the window before you go</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

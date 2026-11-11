@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parcelry: shipping for small online shops</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #161513;
+      --card: #1c1a18;
+      --raised: #262421;
+      --hair: rgba(239, 233, 222, 0.08);
+      --line: rgba(239, 233, 222, 0.14);
+      --text: #efe9de;
+      --text-2: #aaa398;
+      --muted: #8a847a;
+      --accent: #e9a04a;
+      --kraft: #e6d3ae;
+      --ink: #2a2116;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --serif: 'Instrument Serif', Georgia, serif;
+      --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; margin: 0; padding: 0; }
+    p { margin: 0; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    .wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Navigation */
+    .nav { border-bottom: 1px solid var(--hair); }
+    .nav-inner {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .brand svg { width: 20px; height: 20px; }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      font-size: 15px;
+      color: var(--text-2);
+    }
+    .nav-links a { transition: color 160ms var(--ease); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-actions { display: flex; align-items: center; gap: 20px; }
+    .link {
+      font-size: 15px;
+      color: var(--text-2);
+      transition: color 160ms var(--ease);
+    }
+    .link:hover { color: var(--text); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-light { background: var(--text); color: var(--bg); }
+    .btn-light:hover { background: #ffffff; }
+    .btn-ghost {
+      background: var(--raised);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+    .btn-ghost:hover { background: #2e2c28; }
+    .btn-sm { height: 36px; padding: 0 14px; font-size: 14px; }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: 64px;
+      align-items: center;
+      padding-top: 88px;
+      padding-bottom: 72px;
+    }
+    .hero-copy { animation: rise 400ms var(--ease) both; }
+    h1 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 64px;
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+    }
+    .lede {
+      margin-top: 24px;
+      max-width: 30rem;
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--text-2);
+    }
+    .actions { margin-top: 32px; display: flex; gap: 12px; }
+
+    /* Product moment: a printed shipping label and its rates */
+    .preview {
+      margin: 0;
+      min-width: 0;
+      animation: rise 400ms var(--ease) 60ms both;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: inset 0 0 0 1px var(--hair);
+    }
+    .pv-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .pv-meta {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .label {
+      margin-top: 16px;
+      background: var(--kraft);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 18px 20px 20px;
+    }
+    .lb-row {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 12px;
+      font-size: 14px;
+      line-height: 1.45;
+      padding: 4px 0;
+    }
+    .lb-k { font-size: 12px; color: #6e5d43; padding-top: 2px; }
+    .lb-perf {
+      border-top: 1px dashed rgba(42, 33, 22, 0.35);
+      margin: 14px 0;
+    }
+    .barcode {
+      display: block;
+      width: 100%;
+      height: 52px;
+    }
+    .barcode path { fill: var(--ink); }
+    .lb-trk {
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      font-variant-numeric: tabular-nums;
+    }
+    .rates-h {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-2);
+    }
+    .rate-list { margin-top: 8px; }
+    .rate {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      min-height: 44px;
+      border-top: 1px solid var(--hair);
+      font-size: 15px;
+    }
+    .rate:last-child { border-bottom: 1px solid var(--hair); }
+    .rate-name { display: flex; align-items: center; gap: 10px; }
+    .rate-meta { font-size: 13px; color: var(--muted); }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex: none;
+    }
+    .rate-price {
+      font-family: var(--mono);
+      font-size: 15px;
+      color: var(--text-2);
+      font-variant-numeric: tabular-nums;
+    }
+    .rate.is-best .rate-price { color: var(--text); }
+    .pv-foot {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-2);
+    }
+    .pv-foot svg { width: 16px; height: 16px; color: var(--muted); flex: none; }
+
+    /* Feature strip */
+    .strip {
+      width: min(1096px, calc(100% - 64px));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      padding-top: 28px;
+      padding-bottom: 40px;
+      border-top: 1px solid var(--hair);
+    }
+    .strip li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      color: var(--text-2);
+    }
+    .strip svg {
+      width: 18px;
+      height: 18px;
+      color: var(--muted);
+      flex: none;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 960px) {
+      .nav-links { display: none; }
+      .wrap { padding: 0 16px; }
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 48px;
+        padding: 56px 16px 48px;
+      }
+      h1 { font-size: 52px; }
+      .strip {
+        width: calc(100% - 32px);
+        grid-template-columns: 1fr 1fr;
+        padding-top: 24px;
+        padding-bottom: 32px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      h1 { font-size: 40px; }
+      .lede { font-size: 17px; }
+      .actions { gap: 10px; }
+      .btn { padding: 0 16px; }
+      .strip { grid-template-columns: 1fr; gap: 16px; }
+      .nav-actions { gap: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#" aria-label="Parcelry home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+          <path d="m3.3 7 8.7 5 8.7-5"/>
+          <path d="M12 22V12"/>
+        </svg>
+        Parcelry
+      </a>
+      <nav aria-label="Main">
+        <ul class="nav-links">
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Integrations</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a class="link" href="#">Log in</a>
+        <a class="btn btn-light btn-sm" href="#">Start free</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrap hero">
+      <div class="hero-copy">
+        <h1>Print labels in seconds, with tracking built in</h1>
+        <p class="lede">Compare courier rates, print the label, and let your customers get tracking emails automatically. Built for small online shops.</p>
+        <div class="actions">
+          <a class="btn btn-light" href="#">Get started free</a>
+          <a class="btn btn-ghost" href="#">Watch demo</a>
+        </div>
+      </div>
+
+      <figure class="preview" aria-label="Example shipment with a printed label and courier rates">
+        <div class="card">
+          <div class="pv-head">
+            <span>Order #1048</span>
+            <span class="pv-meta">1.2 kg · 24 × 16 × 10 cm</span>
+          </div>
+
+          <div class="label">
+            <div class="lb-row"><span class="lb-k">From</span><span>Maple &amp; Thread, Leeds</span></div>
+            <div class="lb-row"><span class="lb-k">To</span><span>Maja Lindqvist<br>Storgatan 12, Malmö</span></div>
+            <div class="lb-perf"></div>
+            <svg class="barcode" viewBox="0 0 128 44" preserveAspectRatio="none" role="img" aria-label="Barcode">
+              <path d="M4 0h2v44h-2z M8 0h1v44h-1z M10 0h3v44h-3z M14 0h1v44h-1z M17 0h2v44h-2z M20 0h1v44h-1z M22 0h1v44h-1z M25 0h3v44h-3z M29 0h2v44h-2z M33 0h1v44h-1z M35 0h2v44h-2z M39 0h1v44h-1z M41 0h3v44h-3z M45 0h1v44h-1z M48 0h2v44h-2z M51 0h1v44h-1z M53 0h3v44h-3z M58 0h1v44h-1z M60 0h2v44h-2z M64 0h1v44h-1z M66 0h3v44h-3z M70 0h1v44h-1z M73 0h2v44h-2z M76 0h1v44h-1z M79 0h3v44h-3z M83 0h1v44h-1z M85 0h2v44h-2z M89 0h1v44h-1z M91 0h2v44h-2z M94 0h1v44h-1z M97 0h3v44h-3z M101 0h1v44h-1z M103 0h2v44h-2z M107 0h1v44h-1z M109 0h3v44h-3z M114 0h1v44h-1z M116 0h2v44h-2z M120 0h1v44h-1z M122 0h3v44h-3z"/>
+            </svg>
+            <div class="lb-trk">TRK 1048 2750 0391</div>
+          </div>
+
+          <p class="rates-h">Courier rates</p>
+          <ul class="rate-list">
+            <li class="rate is-best">
+              <span class="rate-name"><span class="dot" aria-hidden="true"></span>Economy <span class="rate-meta">Cheapest, 5 to 7 days</span></span>
+              <span class="rate-price">$4.80</span>
+            </li>
+            <li class="rate">
+              <span class="rate-name">Standard <span class="rate-meta">2 to 3 days</span></span>
+              <span class="rate-price">$6.10</span>
+            </li>
+            <li class="rate">
+              <span class="rate-name">Express <span class="rate-meta">Next day</span></span>
+              <span class="rate-price">$11.40</span>
+            </li>
+          </ul>
+
+          <div class="pv-foot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            Tracking email sent to Maja
+          </div>
+        </div>
+      </figure>
+    </section>
+
+    <ul class="strip">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+        Labels
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+        Rate comparison
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        Tracking emails
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        Global shipping
+      </li>
+    </ul>
+  </main>
+</body>
+</html>

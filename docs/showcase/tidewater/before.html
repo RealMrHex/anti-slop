@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tidewater | Surf Forecasts That Actually Work!</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #0b0320; }
+    .grid-bg {
+      background-image: linear-gradient(rgba(168,85,247,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(168,85,247,0.12) 1px, transparent 1px);
+      background-size: 37px 37px;
+    }
+    .gradient-text { background: linear-gradient(90deg, #c084fc, #818cf8, #38bdf8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.14); }
+    .glow-btn { background: linear-gradient(90deg, #a855f7, #3b82f6); box-shadow: 0 0 28px rgba(168,85,247,0.7); transition: transform 0.2s ease; }
+    .glow-btn:hover { transform: scale(1.08); }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-22px); } }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .float-orb { animation: float 6s ease-in-out infinite; }
+    .pulse-dot { animation: pulse-dot 1.4s ease-in-out infinite; }
+  </style>
+</head>
+<body class="text-white min-h-screen overflow-hidden">
+  <div class="relative min-h-screen grid-bg bg-gradient-to-br from-purple-900 via-indigo-800 to-blue-900">
+    <div class="absolute -top-32 -left-24 w-[520px] h-[520px] rounded-full bg-purple-600 opacity-40 blur-[120px]"></div>
+    <div class="absolute bottom-0 right-0 w-[460px] h-[460px] rounded-full bg-blue-500 opacity-30 blur-[110px]"></div>
+
+    <nav class="relative z-10 mx-auto mt-[22px] max-w-[1180px] glass rounded-full px-[26px] py-[11px] flex items-center justify-between">
+      <div class="flex items-center gap-2 font-black text-xl">
+        <span>🌊</span><span class="gradient-text">Tidewater</span>
+      </div>
+      <ul class="hidden md:flex items-center gap-[30px] text-sm font-extrabold uppercase tracking-[0.18em] text-purple-100">
+        <li class="hover:text-white cursor-pointer">Features 🏄</li>
+        <li class="hover:text-white cursor-pointer">Pricing 💎</li>
+        <li class="hover:text-white cursor-pointer">Beaches 📍</li>
+        <li class="hover:text-white cursor-pointer">Login 🔑</li>
+      </ul>
+      <button class="glow-btn rounded-full px-[19px] py-[9px] text-sm font-black">Start Free! 🚀</button>
+    </nav>
+
+    <section class="relative z-10 text-center px-[16px] pt-[118px] pb-[80px]">
+      <div class="inline-flex items-center gap-2 glass rounded-full px-[16px] py-[6px] text-xs font-black uppercase tracking-[0.2em] text-fuchsia-200 animate-pulse">
+        <span class="pulse-dot inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+        NEW 🔥 Wave Forecast v2.0 is LIVE!
+      </div>
+
+      <h1 class="mt-[30px] text-[76px] leading-[1.02] font-black tracking-tight">
+        <span class="gradient-text">Ride Bigger Waves</span><br>
+        <span class="text-white">With Total Confidence!!</span>
+      </h1>
+
+      <p class="mx-auto mt-[22px] max-w-[640px] text-[19px] font-semibold text-purple-100 leading-relaxed">
+        🌊 Wave height, wind, and tide times for all your saved beaches in one place. Find your PERFECT window and catch every swell!! 🤙
+      </p>
+
+      <div class="mt-[34px] flex items-center justify-center gap-4">
+        <button class="glow-btn rounded-full px-[34px] py-[16px] text-lg font-black">Get Started Now ⚡</button>
+        <button class="glass rounded-full px-[30px] py-[16px] text-lg font-black hover:scale-105 transition-transform">Watch Demo ▶️</button>
+      </div>
+
+      <div class="mt-[38px] flex items-center justify-center gap-3 text-amber-300 text-lg">
+        <span>⭐⭐⭐⭐⭐</span>
+        <span class="text-white font-extrabold text-base">Loved by 50K+ surfers!</span>
+      </div>
+      <p class="mt-[6px] text-sm font-bold text-purple-200">Rated #1 Surf App 🏆 — as of 2026-11-1</p>
+
+      <div class="relative mx-auto mt-[40px] h-[180px] w-[180px]">
+        <div class="float-orb absolute inset-0 rounded-full bg-gradient-to-br from-fuchsia-400 via-purple-500 to-cyan-400 blur-[2px] shadow-[0_0_90px_rgba(192,132,252,0.8)]"></div>
+        <div class="absolute inset-[18px] rounded-full bg-white/10 backdrop-blur-md"></div>
+      </div>
+
+      <div class="mx-auto mt-[44px] grid max-w-[980px] grid-cols-3 gap-[21px] text-left">
+        <div class="glass rounded-[18px] p-[22px]">
+          <p class="text-xs font-black uppercase tracking-[0.22em] text-fuchsia-200">Wave Height ✨</p>
+          <p class="mt-2 text-4xl font-black gradient-text">4.5 ft!</p>
+        </div>
+        <div class="glass rounded-[18px] p-[22px]">
+          <p class="text-xs font-black uppercase tracking-[0.22em] text-cyan-200">Wind 💨</p>
+          <p class="mt-2 text-4xl font-black gradient-text">12 KTS</p>
+        </div>
+        <div class="glass rounded-[18px] p-[22px]">
+          <p class="text-xs font-black uppercase tracking-[0.22em] text-amber-200">Best Window 🔥</p>
+          <p class="mt-2 text-4xl font-black gradient-text">6:30am–9:00 AM!</p>
+        </div>
+      </div>
+
+      <p class="mt-[26px] text-[11px] font-extrabold uppercase tracking-[0.3em] text-purple-300">Trusted by 1,200,000 surfers worldwide 🌍 • Updated 11/10/2026 • 3 PRO beaches free!</p>
+    </section>
+  </div>
+</body>
+</html>

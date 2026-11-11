@@ -4,6 +4,8 @@
 
 **Give your AI better taste.**
 
+The [project site](https://realmrhex.github.io/anti-slop/) has a playground: pick a product, theme, accent, and typeface, and it writes the prompt, CSS tokens, or a project note for you.
+
 Anti-Slop is an Agent Skill that gives coding agents design judgment for user
 interfaces. It helps an agent decide what a product's UI needs, recognise the
 generic patterns that appear when nothing was decided, tell real problems from

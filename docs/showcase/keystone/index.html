@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keystone - Pipeline for property agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #161513;
+    --deep: #12110f;
+    --card: #1c1a18;
+    --raised: #262421;
+    --hair: rgba(239, 233, 222, .08);
+    --hair-strong: rgba(239, 233, 222, .16);
+    --text: #efe9de;
+    --text2: #aaa398;
+    --muted: #8a847a;
+    --accent: #e0a94e;
+    --accent-hover: #ebb762;
+    --accent-ink: #1a1408;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --sans: 'Instrument Sans', system-ui, sans-serif;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  /* Header */
+  .top {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 72px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .brand svg { color: var(--accent); flex: none; }
+  .nav { display: flex; gap: 32px; font-size: 15px; color: var(--text2); }
+  .nav a { transition: color .15s var(--ease); }
+  .nav a:hover { color: var(--text); }
+  .top-actions { display: flex; align-items: center; gap: 20px; }
+  .login { font-size: 15px; color: var(--text2); transition: color .15s var(--ease); }
+  .login:hover { color: var(--text); }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 22px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font: 500 16px/1 var(--sans);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease), transform .12s var(--ease);
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-sm { height: 36px; padding: 0 16px; font-size: 15px; }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-secondary { background: var(--raised); border-color: var(--hair); color: var(--text); }
+  .btn-secondary:hover { border-color: var(--hair-strong); }
+
+  /* Hero */
+  .hero {
+    min-height: calc(100vh - 64px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 64px;
+    padding: 48px 72px;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 14px;
+    color: var(--text2);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  h1 {
+    margin: 20px 0 0;
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(44px, 5.4vw, 72px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    max-width: 11ch;
+  }
+  .lede {
+    margin: 24px 0 0;
+    max-width: 36rem;
+    font-size: 19px;
+    line-height: 28px;
+    color: var(--text2);
+  }
+  .actions { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+  /* Preview */
+  .preview {
+    justify-self: end;
+    width: 100%;
+    max-width: 600px;
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, .35);
+  }
+  .pv-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .pv-title { font-size: 15px; font-weight: 500; }
+  .pv-count { font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .board {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .col {
+    background: var(--deep);
+    border-radius: 14px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .col-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 6px 4px;
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .col-head .n { font-family: var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .deal {
+    background: var(--raised);
+    border: 1px solid var(--hair);
+    border-radius: 6px;
+    padding: 12px;
+  }
+  .addr { font-size: 14px; font-weight: 500; }
+  .who { margin-top: 2px; font-size: 13px; color: var(--text2); }
+  .fig {
+    display: block;
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  .flag { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 13px; color: var(--text2); }
+  .flag i { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none; }
+
+  .pv-foot {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hair);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .total { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--accent); font-variant-numeric: tabular-nums; }
+
+  /* One entrance on load */
+  .rise { animation: rise .45s var(--ease) both; }
+  .rise-2 { animation-delay: .08s; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Phone and narrow */
+  @media (max-width: 880px) {
+    .top { padding: 0 16px; }
+    .nav { display: none; }
+    .login { display: none; }
+    .hero { grid-template-columns: 1fr; gap: 40px; padding: 40px 16px 56px; min-height: 0; }
+    .preview { justify-self: start; max-width: none; }
+  }
+  @media (max-width: 560px) {
+    .board { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 62%; overflow-x: auto; }
+    .actions .btn { flex: 1 1 auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rise { animation: none; }
+    .btn:active { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="brand" href="#" aria-label="Keystone home">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <circle cx="7.5" cy="12" r="4"/>
+      <path d="M11.5 12H21M18 12v4M15 12v3"/>
+    </svg>
+    Keystone
+  </a>
+  <nav class="nav" aria-label="Primary">
+    <a href="#">Features</a>
+    <a href="#">Pricing</a>
+    <a href="#">Pipeline</a>
+    <a href="#">Resources</a>
+  </nav>
+  <div class="top-actions">
+    <a class="login" href="#">Log in</a>
+    <a class="btn btn-primary btn-sm" href="#">Start free</a>
+  </div>
+</header>
+
+<main class="hero">
+  <div class="rise">
+    <p class="eyebrow">For property agents and brokerages</p>
+    <h1>Follow every lead from first call to closing</h1>
+    <p class="lede">Keystone tracks your leads, books viewings, reminds you of follow-ups and shows every deal in one pipeline.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="#">Start free</a>
+      <a class="btn btn-secondary" href="#">Watch demo</a>
+    </div>
+  </div>
+
+  <aside class="preview rise rise-2" aria-label="Example pipeline">
+    <div class="pv-head">
+      <span class="pv-title">Pipeline</span>
+      <span class="pv-count">7 open deals</span>
+    </div>
+
+    <div class="board">
+      <section class="col" aria-label="New lead">
+        <div class="col-head"><span>New lead</span><span class="n">3</span></div>
+        <article class="deal">
+          <div class="addr">9 Orchard Rise</div>
+          <div class="who">Lee Walsh</div>
+          <span class="fig">£275,000</span>
+        </article>
+        <article class="deal">
+          <div class="addr">Riverside flat</div>
+          <div class="who">Priya Nair</div>
+          <span class="fig">£310,000</span>
+        </article>
+        <article class="deal">
+          <div class="addr">7 Mill Court</div>
+          <div class="who">Tom Reyes</div>
+          <span class="fig">£265,000</span>
+        </article>
+      </section>
+
+      <section class="col" aria-label="Viewing">
+        <div class="col-head"><span>Viewing</span><span class="n">3</span></div>
+        <article class="deal">
+          <div class="addr">14 Alder Lane</div>
+          <div class="who">Sam Okafor</div>
+          <span class="fig">£425,000</span>
+          <div class="flag"><i></i>Follow up today</div>
+        </article>
+        <article class="deal">
+          <div class="addr">22 Kestrel Way</div>
+          <div class="who">Ana Lima</div>
+          <span class="fig">£389,000</span>
+        </article>
+        <article class="deal">
+          <div class="addr">5 Tanner Street</div>
+          <div class="who">Mae Owusu</div>
+          <span class="fig">£340,000</span>
+        </article>
+      </section>
+
+      <section class="col" aria-label="Offer">
+        <div class="col-head"><span>Offer</span><span class="n">1</span></div>
+        <article class="deal">
+          <div class="addr">3 Harbour View</div>
+          <div class="who">Ben Clarke</div>
+          <span class="fig">£498,000</span>
+        </article>
+      </section>
+    </div>
+
+    <div class="pv-foot">
+      <span>Open value</span>
+      <span class="total">£2.50m</span>
+    </div>
+  </aside>
+</main>
+
+</body>
+</html>

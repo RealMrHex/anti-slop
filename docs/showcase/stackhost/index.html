@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stackhost Billing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ee;
+    --sidebar: #f1ece3;
+    --card: #fdfbf7;
+    --raised: #efe9df;
+    --hair: rgba(31, 27, 22, 0.09);
+    --edge: rgba(31, 27, 22, 0.2);
+    --text: #1f1b16;
+    --text-2: #5e554a;
+    --text-3: #6f6659;
+    --accent: #9a3d12;
+    --ink: #1f1b16;
+    --ink-text: #efe9de;
+    --ink-text-2: #c9bfae;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 400 15px/22px var(--sans);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  h1, h2, h3, p { margin: 0; }
+  h1 { font-size: 32px; line-height: 1.15; font-weight: 500; }
+  h2 { font-size: 18px; line-height: 24px; font-weight: 500; }
+  h3 { font-size: 15px; line-height: 22px; font-weight: 500; }
+  a { color: inherit; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .ink :focus-visible { outline-color: var(--ink-text); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* Shell */
+  .app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
+
+  .sidebar {
+    background: var(--sidebar);
+    border-right: 1px solid var(--hair);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .brand { display: flex; align-items: center; gap: 8px; padding: 0 10px; font-size: 16px; font-weight: 500; }
+  .brand-mark { width: 16px; height: 16px; border-radius: 4px; background: var(--text); }
+  .nav-label { font-size: 12px; color: var(--text-3); padding: 0 10px; margin-bottom: 8px; }
+  .nav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  .nav a {
+    display: block;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .nav a:hover { background: var(--hair); color: var(--text); }
+  .nav a[aria-current="page"] {
+    background: var(--card);
+    color: var(--text);
+    font-weight: 500;
+    box-shadow: inset 0 0 0 1px var(--hair);
+  }
+
+  .help { margin-top: auto; padding: 16px 10px 0; border-top: 1px solid var(--hair); font-size: 13px; color: var(--text-2); }
+  .help strong { display: block; font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .help .btn { margin-top: 12px; width: 100%; }
+
+  main {
+    padding: 24px 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+  }
+
+  .page-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .sub { margin-top: 4px; font-size: 14px; color: var(--text-2); }
+  .tools { display: flex; align-items: center; gap: 12px; }
+  .search {
+    font: inherit;
+    font-size: 14px;
+    width: 240px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid var(--edge);
+    background: var(--card);
+    color: var(--text);
+  }
+  .search::placeholder { color: var(--text-3); }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--raised);
+    box-shadow: inset 0 0 0 1px var(--hair);
+    font-size: 13px; font-weight: 500; color: var(--text-2);
+  }
+
+  /* Panels */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 20px; }
+  .meta-text { font-size: 13px; color: var(--text-3); }
+
+  .grid-top { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 24px; }
+  .grid-bottom { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 24px; align-items: stretch; }
+
+  /* Plan: the one rich moment on the screen */
+  .plan {
+    background: var(--ink);
+    color: var(--ink-text);
+    border-color: transparent;
+    display: flex;
+    flex-direction: column;
+  }
+  .plan .eyebrow { font-size: 13px; color: var(--ink-text-2); }
+  .plan-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .tag {
+    font-size: 12px;
+    color: var(--ink-text-2);
+    border: 1px solid rgba(239, 233, 222, 0.24);
+    border-radius: 6px;
+    padding: 2px 8px;
+  }
+  .plan h2 { font-size: 28px; line-height: 1.15; margin-top: 12px; font-weight: 500; }
+  .price { margin-top: 28px; display: flex; align-items: baseline; gap: 8px; }
+  .price .figure { font-size: 56px; line-height: 1; font-weight: 500; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .price .per { font-size: 15px; color: var(--ink-text-2); }
+  .plan .renews { margin-top: 12px; font-size: 14px; color: var(--ink-text-2); }
+  .plan .actions { margin-top: auto; padding-top: 32px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* Buttons */
+  .btn {
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 150ms var(--ease), border-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn.primary-light { background: var(--ink-text); color: var(--ink); }
+  .btn.primary-light:hover { background: var(--raised); color: var(--text); }
+  .btn.on-ink { border-color: rgba(239, 233, 222, 0.3); color: var(--ink-text); }
+  .btn.on-ink:hover { background: rgba(239, 233, 222, 0.08); }
+  .btn.secondary { background: var(--card); border-color: var(--edge); color: var(--text); }
+  .btn.secondary:hover { background: var(--raised); }
+  .btn.link { height: auto; padding: 0; font-size: 13px; color: var(--text-2); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--text-3); }
+  .btn.link:hover { color: var(--text); }
+  .plan .btn { height: 40px; }
+
+  /* Usage meters */
+  .meters { display: grid; gap: 20px; }
+  .meter .line { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; margin-bottom: 8px; }
+  .meter .name { color: var(--text); font-weight: 500; }
+  .meter .value { color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .track { height: 8px; border-radius: 4px; background: var(--raised); overflow: hidden; }
+  .fill { height: 100%; border-radius: 4px; background: var(--text-3); }
+  .fill.hot { background: var(--accent); }
+
+  /* Payment */
+  .pay { display: flex; flex-direction: column; }
+  .card-object {
+    margin-top: 20px;
+    border-radius: 14px;
+    padding: 20px;
+    min-height: 176px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(160deg, #343026 0%, #1f1b16 100%);
+    color: var(--ink-text);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  .card-top { display: flex; justify-content: space-between; align-items: center; }
+  .chip { width: 34px; height: 25px; border-radius: 5px; background: linear-gradient(135deg, #e3cfa4, #b08f5b); }
+  .card-brand { font-size: 14px; font-weight: 500; color: var(--ink-text-2); }
+  .card-number { font-family: var(--mono); font-size: 17px; letter-spacing: 0.08em; }
+  .card-exp { font-size: 13px; color: var(--ink-text-2); margin-top: 8px; }
+  .pay .btn { width: 100%; margin-top: 16px; }
+  .pay .billing { margin-top: auto; padding-top: 20px; font-size: 13px; color: var(--text-3); }
+
+  /* Invoices */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 560px; }
+  th, td { padding-right: 24px; }
+  th:last-child, td:last-child { padding-right: 0; }
+  th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-3);
+    padding: 0 24px 10px 0;
+    border-bottom: 1px solid var(--hair);
+  }
+  td { padding: 12px 24px 12px 0; border-bottom: 1px solid var(--hair); color: var(--text); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: 0; }
+  th.r, td.r { text-align: right; }
+  td.mono { font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+  td.num { font-variant-numeric: tabular-nums; }
+  .status { display: inline-flex; align-items: center; gap: 8px; color: var(--text); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .dot.ok { background: #16a34a; }
+  .dot.wait { background: #b45309; }
+  .dot.bad { background: #dc2626; }
+  .file { font-size: 14px; }
+
+  /* Entrance: one short rise, staggered */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+  .page-head, .panel { animation: rise 400ms var(--ease) both; }
+  .panel:nth-of-type(1) { animation-delay: 40ms; }
+  .panel:nth-of-type(2) { animation-delay: 80ms; }
+  .panel:nth-of-type(3) { animation-delay: 120ms; }
+
+  /* Narrow screens */
+  @media (max-width: 1000px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { border-right: 0; border-bottom: 1px solid var(--hair); gap: 16px; padding: 16px; }
+    .nav ul { display: flex; flex-wrap: wrap; gap: 4px; }
+    .nav a { padding: 8px 12px; }
+    .help { margin-top: 0; border-top: 0; padding-top: 0; }
+    .help .btn { width: auto; }
+    .grid-top, .grid-bottom { grid-template-columns: minmax(0, 1fr); }
+    main { padding: 24px 16px 32px; }
+  }
+  @media (max-width: 600px) {
+    h1 { font-size: 28px; }
+    .price .figure { font-size: 48px; }
+    .search { width: 100%; }
+    .tools { width: 100%; }
+    .panel { padding: 20px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>Stackhost</span></div>
+    <div class="nav">
+      <p class="nav-label">Settings</p>
+      <ul>
+        <li><a href="#">Profile</a></li>
+        <li><a href="#">Team</a></li>
+        <li><a href="#" aria-current="page">Billing</a></li>
+        <li><a href="#">API keys</a></li>
+        <li><a href="#">Notifications</a></li>
+        <li><a href="#">Security</a></li>
+        <li><a href="#">Usage logs</a></li>
+      </ul>
+    </div>
+    <div class="help">
+      <strong>Need help?</strong>
+      <span>Our support team can answer billing questions.</span>
+      <button class="btn secondary" type="button">Chat with support</button>
+    </div>
+  </aside>
+
+  <main>
+    <header class="page-head">
+      <div>
+        <h1>Billing and plans</h1>
+        <p class="sub">Manage your subscription</p>
+      </div>
+      <div class="tools">
+        <label class="sr-only" for="search">Search</label>
+        <input class="search" id="search" type="search" placeholder="Search">
+        <span class="avatar" aria-label="Account AR">AR</span>
+      </div>
+    </header>
+
+    <section class="grid-top">
+      <div class="panel plan">
+        <div class="plan-top">
+          <p class="eyebrow">Current plan</p>
+          <span class="tag">Most popular</span>
+        </div>
+        <h2>Team plan</h2>
+        <p class="price"><span class="figure">$49</span><span class="per">/ month</span></p>
+        <p class="renews">Renews 3 December 2026</p>
+        <div class="actions">
+          <button class="btn primary-light" type="button">Upgrade</button>
+          <button class="btn on-ink" type="button">Change plan</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Usage this cycle</h2>
+          <span class="meta-text">Resets in 23 days</span>
+        </div>
+        <div class="meters">
+          <div class="meter">
+            <div class="line"><span class="name">Bandwidth</span><span class="value">73%</span></div>
+            <div class="track" role="progressbar" aria-label="Bandwidth" aria-valuemin="0" aria-valuemax="100" aria-valuenow="73"><div class="fill" style="width: 73%"></div></div>
+          </div>
+          <div class="meter">
+            <div class="line"><span class="name">Storage</span><span class="value">41%</span></div>
+            <div class="track" role="progressbar" aria-label="Storage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="41"><div class="fill" style="width: 41%"></div></div>
+          </div>
+          <div class="meter">
+            <div class="line"><span class="name">Build minutes</span><span class="value">88%</span></div>
+            <div class="track" role="progressbar" aria-label="Build minutes" aria-valuemin="0" aria-valuemax="100" aria-valuenow="88"><div class="fill hot" style="width: 88%"></div></div>
+          </div>
+          <div class="meter">
+            <div class="line"><span class="name">Seats</span><span class="value">6 of 8 · 75%</span></div>
+            <div class="track" role="progressbar" aria-label="Seats" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75"><div class="fill" style="width: 75%"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid-bottom">
+      <div class="panel pay">
+        <h2>Payment method</h2>
+        <div class="card-object" aria-label="Visa ending in 4242">
+          <div class="card-top">
+            <span class="card-brand">Visa</span>
+            <span class="chip" aria-hidden="true"></span>
+          </div>
+          <div>
+            <p class="card-number">•••• •••• •••• 4242</p>
+            <p class="card-exp">Expires 08/28</p>
+          </div>
+        </div>
+        <button class="btn secondary" type="button">Update card</button>
+        <p class="billing">Billing email: billing@acme-team.io</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Invoice history</h2>
+          <button class="btn link" type="button">View all</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Invoice</th>
+                <th scope="col" class="r">Amount</th>
+                <th scope="col">Status</th>
+                <th scope="col">File</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Nov 3, 2026</td>
+                <td class="mono">INV-2026-0311</td>
+                <td class="r num">$49.00</td>
+                <td><span class="status"><span class="dot ok" aria-hidden="true"></span>Paid</span></td>
+                <td class="file"><a href="#" aria-label="Download invoice INV-2026-0311">Download</a></td>
+              </tr>
+              <tr>
+                <td>Oct 3, 2026</td>
+                <td class="mono">INV-2026-1003</td>
+                <td class="r num">$49.00</td>
+                <td><span class="status"><span class="dot ok" aria-hidden="true"></span>Paid</span></td>
+                <td class="file"><a href="#" aria-label="Download invoice INV-2026-1003">Download</a></td>
+              </tr>
+              <tr>
+                <td>Sep 3, 2026</td>
+                <td class="mono">INV-2026-0903</td>
+                <td class="r num">$49.00</td>
+                <td><span class="status"><span class="dot wait" aria-hidden="true"></span>Pending</span></td>
+                <td class="file"><a href="#" aria-label="Download invoice INV-2026-0903">Download</a></td>
+              </tr>
+              <tr>
+                <td>Aug 3, 2026</td>
+                <td class="mono">INV-2026-0803</td>
+                <td class="r num">$49.00</td>
+                <td><span class="status"><span class="dot ok" aria-hidden="true"></span>Paid</span></td>
+                <td class="file"><a href="#" aria-label="Download invoice INV-2026-0803">Download</a></td>
+              </tr>
+              <tr>
+                <td>Jul 3, 2026</td>
+                <td class="mono">INV-2026-0703</td>
+                <td class="r num">$49.00</td>
+                <td><span class="status"><span class="dot bad" aria-hidden="true"></span>Failed</span></td>
+                <td class="file"><a href="#" aria-label="Download invoice INV-2026-0703">Download</a></td>
+              </tr>
+              <tr>
+                <td>Jun 3, 2026</td>
+                <td class="mono">INV-2026-0603</td>
+                <td class="r num">$49.00</td>
+                <td><span class="status"><span class="dot ok" aria-hidden="true"></span>Paid</span></td>
+                <td class="file"><a href="#" aria-label="Download invoice INV-2026-0603">Download</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</div>
+</body>
+</html>

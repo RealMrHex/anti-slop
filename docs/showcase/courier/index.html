@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Courier | Transactional email for developers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #161513;
+    --card: #1c1a18;
+    --raised: #262421;
+    --hairline: rgba(239, 233, 222, 0.08);
+    --text: #efe9de;
+    --text-2: #aaa398;
+    --text-3: #8a847a;
+    --accent: #e0a24a;
+    --ok: #4cc38a;
+    --bad: #e5484d;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --hairline: rgba(31, 27, 22, 0.1);
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --text-3: #7b7266;
+      --accent: #9a5f12;
+      --ok: #16794a;
+      --bad: #b42323;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 22px;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: var(--text); }
+  a:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  /* Navigation */
+  .nav { border-bottom: 1px solid var(--hairline); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
+  .nav-links { display: flex; gap: 28px; font-size: 14px; color: var(--text-2); }
+  .nav-actions { display: flex; align-items: center; gap: 20px; font-size: 14px; }
+  .quiet { color: var(--text-2); }
+  .menu { display: none; position: relative; }
+  .menu summary {
+    list-style: none; cursor: pointer; font-size: 14px; color: var(--text-2);
+    padding: 8px 0; min-height: 40px; display: flex; align-items: center;
+  }
+  .menu summary::-webkit-details-marker { display: none; }
+  .menu-panel {
+    position: absolute; right: 0; top: 100%; margin-top: 8px; min-width: 200px;
+    background: var(--card); border: 1px solid var(--hairline); border-radius: 12px;
+    padding: 8px; display: flex; flex-direction: column;
+  }
+  .menu-panel a { padding: 10px 12px; font-size: 14px; color: var(--text-2); border-radius: 8px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 44px; padding: 0 20px; border-radius: 10px; font-size: 15px; font-weight: 500;
+    transition: background-color 150ms, color 150ms, border-color 150ms;
+    white-space: nowrap;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--text); color: var(--bg); }
+  .btn-primary:hover { background: var(--text-2); color: var(--bg); }
+  .btn-secondary { background: var(--raised); color: var(--text); box-shadow: inset 0 0 0 1px var(--hairline); }
+  .btn-secondary:hover { background: var(--card); }
+  .btn-small { height: 36px; padding: 0 14px; font-size: 14px; }
+
+  /* Hero */
+  .hero { padding-top: 96px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px; align-items: center; }
+  .version { font-family: var(--mono); font-size: 13px; color: var(--text-3); }
+  .version a { color: var(--text-2); text-decoration: underline; text-decoration-color: var(--hairline); text-underline-offset: 3px; }
+  .version a:hover { color: var(--text); }
+  h1 {
+    margin: 16px 0 0;
+    font-size: 44px; line-height: 1.05; font-weight: 500; letter-spacing: -0.03em;
+    max-width: 14ch;
+  }
+  .lede { margin: 20px 0 0; font-size: 18px; line-height: 28px; color: var(--text-2); max-width: 36rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+
+  /* Delivery log, the one rich moment */
+  .log {
+    background: var(--card); border: 1px solid var(--hairline); border-radius: 14px; overflow: hidden;
+  }
+  .log-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; border-bottom: 1px solid var(--hairline);
+  }
+  .log-head h2 { margin: 0; font-size: 15px; font-weight: 500; }
+  .log-head span { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th {
+    text-align: left; font-weight: 400; font-size: 12px; color: var(--text-3);
+    padding: 10px 12px; border-bottom: 1px solid var(--hairline);
+  }
+  th:first-child, td:first-child { padding-left: 20px; }
+  th:last-child, td:last-child { padding-right: 20px; }
+  td {
+    padding: 0 12px; height: 44px; border-bottom: 1px solid var(--hairline);
+    color: var(--text-2); white-space: nowrap;
+  }
+  td.to { overflow-wrap: anywhere; white-space: normal; }
+  td .status { white-space: normal; }
+  tr:last-child td { border-bottom: 0; }
+  td.time, td.tpl { font-family: var(--mono); font-size: 13px; }
+  td.time { color: var(--text-3); font-variant-numeric: tabular-nums; }
+  td.to { color: var(--text); }
+  .status { display: inline-flex; align-items: center; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .dot.ok { background: var(--ok); }
+  .dot.bad { background: var(--bad); }
+  .dot.wait { background: var(--accent); }
+
+  /* Code sample */
+  .code {
+    margin-top: 96px; max-width: 720px;
+    background: var(--card); border: 1px solid var(--hairline); border-radius: 14px; overflow: hidden;
+  }
+  .code-head { padding: 12px 20px; border-bottom: 1px solid var(--hairline); font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+  .code pre { margin: 0; padding: 20px; font-family: var(--mono); font-size: 14px; line-height: 24px; color: var(--text); overflow-x: auto; }
+
+  /* Features */
+  .features { margin-top: 96px; display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .feature { background: var(--card); border: 1px solid var(--hairline); border-radius: 14px; padding: 24px; }
+  .feature h3 { margin: 0; font-size: 16px; font-weight: 500; }
+  .feature p { margin: 8px 0 0; font-size: 15px; color: var(--text-2); }
+
+  /* Footer */
+  footer {
+    margin-top: 96px; padding: 24px 0 32px; border-top: 1px solid var(--hairline);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    font-size: 13px; color: var(--text-3);
+  }
+  footer a:hover { color: var(--text); }
+
+  /* Wider screens */
+  @media (min-width: 720px) {
+    .nav-links { display: flex; }
+    .menu { display: none; }
+    h1 { font-size: 56px; }
+    .features { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (min-width: 960px) {
+    .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 56px; }
+    h1 { font-size: 60px; }
+  }
+  /* Phone */
+  @media (max-width: 719px) {
+    .nav-links { display: none; }
+    .menu { display: block; }
+    .nav-actions .quiet { display: none; }
+    .hero { padding-top: 56px; }
+    h1 { font-size: 40px; }
+    .code, .features { margin-top: 64px; }
+    footer { margin-top: 64px; }
+  }
+  @media (max-width: 559px) {
+    .log-col-tpl { display: none; }
+    .log-extra { display: none; }
+    td, th { padding-left: 10px; padding-right: 10px; }
+    th:first-child, td:first-child { padding-left: 16px; }
+    th:last-child, td:last-child { padding-right: 16px; }
+    td { white-space: normal; }
+    td.to { font-size: 13px; }
+    .wrap { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="logo">Courier</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#">Features</a>
+      <a href="#">Docs</a>
+      <a href="#">Pricing</a>
+      <a href="#">Changelog</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="#" class="quiet">Sign in</a>
+      <a href="#" class="btn btn-primary btn-small">Get started</a>
+      <details class="menu">
+        <summary>Menu</summary>
+        <div class="menu-panel">
+          <a href="#">Features</a>
+          <a href="#">Docs</a>
+          <a href="#">Pricing</a>
+          <a href="#">Changelog</a>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <p class="version">Version 2.4 &middot; <a href="#">Read the changelog</a></p>
+      <h1>Transactional email for developers</h1>
+      <p class="lede">Send email over REST or SMTP. Every delivery is logged, hard and soft bounces are sorted automatically, and templates are versioned.</p>
+      <div class="actions">
+        <a href="#" class="btn btn-primary">Get an API key</a>
+        <a href="#" class="btn btn-secondary">Watch demo</a>
+      </div>
+    </div>
+
+    <div class="log" role="region" aria-labelledby="log-title">
+      <div class="log-head">
+        <h2 id="log-title">Delivery log</h2>
+        <span>Today</span>
+      </div>
+      <table>
+        <caption class="sr-only">Recent deliveries with time, recipient, template and status</caption>
+        <thead>
+          <tr>
+            <th scope="col">Time</th>
+            <th scope="col">Recipient</th>
+            <th scope="col" class="log-col-tpl">Template</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="time">14:02:11</td>
+            <td class="to">dev@acme.io</td>
+            <td class="tpl log-col-tpl">welcome-v3</td>
+            <td><span class="status"><span class="dot ok"></span>Delivered</span></td>
+          </tr>
+          <tr>
+            <td class="time">14:01:58</td>
+            <td class="to">ops@northwind.co</td>
+            <td class="tpl log-col-tpl">receipt-v1</td>
+            <td><span class="status"><span class="dot ok"></span>Delivered</span></td>
+          </tr>
+          <tr>
+            <td class="time">14:01:40</td>
+            <td class="to">sam@fieldnote.app</td>
+            <td class="tpl log-col-tpl">password-reset</td>
+            <td><span class="status"><span class="dot wait"></span>Deferred, retrying</span></td>
+          </tr>
+          <tr class="log-extra">
+            <td class="time">13:59:27</td>
+            <td class="to">old@invalid.example</td>
+            <td class="tpl log-col-tpl">welcome-v3</td>
+            <td><span class="status"><span class="dot bad"></span>Hard bounce</span></td>
+          </tr>
+          <tr class="log-extra">
+            <td class="time">13:58:03</td>
+            <td class="to">maya@lumen.studio</td>
+            <td class="tpl log-col-tpl">invoice-v5</td>
+            <td><span class="status"><span class="dot ok"></span>Delivered</span></td>
+          </tr>
+          <tr class="log-extra">
+            <td class="time">13:57:44</td>
+            <td class="to">team@blockyard.io</td>
+            <td class="tpl log-col-tpl">digest-v2</td>
+            <td><span class="status"><span class="dot ok"></span>Delivered</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="code" aria-label="Example request">
+    <div class="code-head">send.js</div>
+    <pre><code>const res = await courier.send({
+  to: "dev@acme.io",
+  template: "welcome-v3",
+  vars: { name: "Ada", ts: "2026/11/10 14:02" }
+});
+console.log("sent", res.id);</code></pre>
+  </section>
+
+  <section class="features" aria-label="Features">
+    <article class="feature">
+      <h3>Delivery logs</h3>
+      <p>Every event for every message, searchable.</p>
+    </article>
+    <article class="feature">
+      <h3>Bounce handling</h3>
+      <p>Hard and soft bounces are sorted automatically.</p>
+    </article>
+    <article class="feature">
+      <h3>Templates</h3>
+      <p>Versioned templates with a live preview.</p>
+    </article>
+  </section>
+
+  <footer>
+    <span>&copy; 2026 Courier</span>
+    <a href="#">Status</a>
+  </footer>
+</main>
+
+</body>
+</html>
