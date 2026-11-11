@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Last Letterpress on Calder Street — The Quarto</title>
+<style>
+  :root {
+    --ink: #1c1917;
+    --ink-soft: #57534e;
+    --paper: #faf8f3;
+    --rule: #d6d0c4;
+    --accent: #9a3412;
+    --measure: 66ch;
+    --s1: 0.5rem; --s2: 1rem; --s3: 1.5rem; --s4: 3rem; --s5: 6rem;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink);
+         font: 1.125rem/1.6 "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+  a { color: var(--accent); text-underline-offset: 0.15em; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .skip { position: absolute; left: -999px; }
+  .skip:focus { left: var(--s2); top: var(--s2); background: var(--paper); padding: var(--s1) var(--s2); }
+  .masthead { display: flex; justify-content: space-between; align-items: baseline;
+              max-width: 72rem; margin: 0 auto; padding: var(--s3) var(--s2); border-bottom: 1px solid var(--rule); }
+  .masthead .title { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.02em; color: var(--ink); text-decoration: none; }
+  .masthead nav a { margin-left: var(--s3); font: 0.875rem/1 system-ui, sans-serif; color: var(--ink-soft); }
+  .masthead nav a[aria-current="page"] { color: var(--ink); font-weight: 600; }
+  article { max-width: var(--measure); margin: var(--s5) auto; padding: 0 var(--s2); }
+  .kicker { font: 600 0.8125rem/1 system-ui, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  h1 { font-size: clamp(2rem, 1.2rem + 3.5vw, 3.25rem); line-height: 1.1; letter-spacing: -0.01em;
+       margin: var(--s2) 0 var(--s3); text-wrap: balance; }
+  .standfirst { font-size: 1.3125rem; line-height: 1.45; color: var(--ink-soft); margin: 0 0 var(--s3); }
+  .byline { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--ink-soft);
+            padding-bottom: var(--s3); border-bottom: 1px solid var(--rule); margin-bottom: var(--s4); }
+  h2 { font-size: 1.5rem; line-height: 1.25; margin: var(--s4) 0 var(--s1); }
+  p { margin: 0 0 var(--s3); }
+  blockquote { margin: var(--s4) 0; padding-left: var(--s3); border-left: 3px solid var(--accent);
+               font-size: 1.375rem; line-height: 1.4; font-style: italic; }
+  figure { margin: var(--s4) 0; }
+  figure img { display: block; width: 100%; height: auto; }
+  figcaption { font: 0.875rem/1.4 system-ui, sans-serif; color: var(--ink-soft); margin-top: var(--s1); }
+  footer { max-width: var(--measure); margin: var(--s5) auto var(--s4); padding: var(--s3) var(--s2) 0;
+           border-top: 1px solid var(--rule); font: 0.875rem/1.5 system-ui, sans-serif; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+  <a class="skip" href="#story">Skip to article</a>
+  <header class="masthead">
+    <a class="title" href="/">The Quarto</a>
+    <nav aria-label="Sections">
+      <a href="/craft" aria-current="page">Craft</a>
+      <a href="/places">Places</a>
+      <a href="/archive">Archive</a>
+    </nav>
+  </header>
+
+  <main id="story">
+    <article>
+      <p class="kicker">Craft</p>
+      <h1>The Last Letterpress on Calder Street</h1>
+      <p class="standfirst">For sixty-one years the Okafor family has set type by hand in the same narrow shop. The lease ends in March.</p>
+      <p class="byline">By Ines Marchetti · Photographs by Tom Avery · 14 minute read</p>
+
+      <p>The first thing you notice is the sound, a slow iron clap every four seconds, and then the smell of linseed and solvent. Adaeze Okafor does not look up when the door opens. She is locking a forme, and a forme will not wait.</p>
+      <p>Her grandfather bought the Heidelberg platen second-hand in 1964. It has printed wedding invitations for three generations of the same families, ballots for a union that no longer exists, and, for one strange summer, <a href="/archive/1987-menus">every menu on the street</a>.</p>
+
+      <figure>
+        <img src="press.jpg" width="1200" height="800" alt="Adaeze Okafor inking a forme on a cast-iron platen press, wooden type cases behind her">
+        <figcaption>The 1958 Heidelberg platen, still running daily. Photograph: Tom Avery</figcaption>
+      </figure>
+
+      <h2>A trade measured in points</h2>
+      <p>Letterpress rewards patience and punishes haste. A line set a hair too loose will work itself free on the two-hundredth impression. Okafor checks each one with her thumbnail.</p>
+      <blockquote>You can’t undo metal. You can only set it again, properly.</blockquote>
+      <p>The building’s new owners have offered the shop a unit in a retail park eleven miles away. The press weighs just over a tonne. The floor there, she says, is not rated for it.</p>
+    </article>
+  </main>
+
+  <footer>
+    <p>© The Quarto. <a href="/corrections">Corrections</a> · <a href="/subscribe">Subscribe</a></p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,249 @@
+{
+  "skill": "anti-slop",
+  "suite_version": "0.1.0",
+  "description": "Behavioral eval cases for Anti-Slop. Each case is run twice on the same agent and model: once with the skill installed (treatment) and once without (baseline). Mechanical checks are run by evals/check.py; judge checks need a human or a separate judge model. See evals/README.md for the protocol. This file contains no results.",
+  "check_vocabulary": {
+    "route": "Treatment arm only. The agent followed the named workflow (create, refine, audit). Judged from the transcript.",
+    "fixture_unchanged": "Mechanical. The working copy of the fixture is byte-identical to the original after the run.",
+    "max_changed_lines": "Mechanical. The number of added plus removed lines between original and output is at most the given value.",
+    "preserved": "Mechanical. Every listed string still occurs in the output file.",
+    "absent": "Mechanical. None of the listed strings occur in the output file.",
+    "must_find": "Judge. The agent's report or changes address each listed seeded defect id (see seeded[]).",
+    "must_not_flag": "Judge. The agent does not report as a defect, or 'fix', any listed decoy id (see decoys[]).",
+    "judge": "Judge. Free-text criterion answered yes/no with a one-line reason."
+  },
+  "fixtures": {
+    "slop-landing": {
+      "file": "fixtures/slop-landing.html",
+      "context": "Landing page for Tallyo, an invoicing tool for freelancers. Deliberately poor.",
+      "seeded": [
+        { "id": "SL-A1", "locator": "id=\"cta-primary\"", "defect": "Calls to action are divs with onclick: not focusable, no role (WCAG 2.1.1, 4.1.2)", "class": "standard" },
+        { "id": "SL-A2", "locator": "outline: none", "defect": "Focus outline removed with no replacement (WCAG 2.4.7)", "class": "standard" },
+        { "id": "SL-A3", "locator": "id=\"signup-email\"", "defect": "Email input has placeholder only, no label; type=text (WCAG 1.3.1, 3.3.2, 4.1.2)", "class": "standard" },
+        { "id": "SL-A4", "locator": "color: #b4b4c4", "defect": "Body and nav text #b4b4c4 on #fff is about 2.05:1 (WCAG 1.4.3)", "class": "standard" },
+        { "id": "SL-A5", "locator": "user-scalable=no", "defect": "Viewport disables zoom (WCAG 1.4.4)", "class": "standard" },
+        { "id": "SL-A6", "locator": "<html>", "defect": "No lang attribute (WCAG 3.1.1)", "class": "standard" },
+        { "id": "SL-H1", "locator": "id=\"cta-secondary\"", "defect": "Two identically styled primary actions; no action hierarchy", "class": "convention" },
+        { "id": "SL-C1", "locator": "Supercharge Your Workflow", "defect": "Headline and body copy say nothing about invoicing", "class": "judgment" },
+        { "id": "SL-C2", "locator": "id=\"fake-stats\"", "defect": "Unlabelled, unsupported statistics", "class": "judgment" },
+        { "id": "SL-S1", "locator": "linear-gradient(90deg, #f0abfc, #a5f3fc)", "defect": "Gradient text on gradient background, contrast unverifiable and no brand reason", "class": "judgment" },
+        { "id": "SL-S2", "locator": "transform: scale(1.08) translateY(-6px)", "defect": "Large hover transform on every card, stat, and button; no reduced-motion handling", "class": "convention" },
+        { "id": "SL-L1", "locator": "padding: 17px 43px", "defect": "One-off spacing values throughout (13, 17, 22, 27, 31, 43, 61px)", "class": "convention" }
+      ],
+      "decoys": []
+    },
+    "good-editorial": {
+      "file": "fixtures/good-editorial.html",
+      "context": "Long-form article page for a small literary magazine. Intended to be already good.",
+      "seeded": [],
+      "decoys": [
+        { "id": "ED-X1", "locator": "--measure: 66ch", "why_legitimate": "Narrow measure and generous vertical space are correct for long-form reading" },
+        { "id": "ED-X2", "locator": "Iowan Old Style", "why_legitimate": "System serif stack is a deliberate, fitting choice; not 'generic typography'" },
+        { "id": "ED-X3", "locator": "--accent: #9a3412", "why_legitimate": "Single restrained accent; 6.9:1 on the paper colour" }
+      ]
+    },
+    "good-admin-table": {
+      "file": "fixtures/good-admin-table.html",
+      "context": "Dense operations console table used all shift by dispatchers. Intended to be already good.",
+      "seeded": [],
+      "decoys": [
+        { "id": "AD-X1", "locator": "--row: 32px", "why_legitimate": "High density is correct for expert, comparative, all-day use" },
+        { "id": "AD-X2", "locator": "font: 13px/1.4 system-ui", "why_legitimate": "13px system font is conventional for dense tools" },
+        { "id": "AD-X3", "locator": "--radius: 3px", "why_legitimate": "Small radius and no shadows are a coherent utilitarian choice, not 'under-designed'" },
+        { "id": "AD-X4", "locator": "class=\"row-action\"", "why_legitimate": "24px row actions meet the WCAG 2.5.8 minimum for a pointer-driven desktop tool" }
+      ]
+    },
+    "plain-form": {
+      "file": "fixtures/plain-form.html",
+      "context": "Repair booking form for a bike shop. Accessible but visually unstructured.",
+      "seeded": [
+        { "id": "PF-H1", "locator": "h2 { font-size: 24px; }", "defect": "h1 and h2 are the same size; no heading hierarchy", "class": "convention" },
+        { "id": "PF-L1", "locator": "margin-bottom: 20px", "defect": "Uniform 20px gaps: labels are no closer to their own field than to the previous one; sections not separated", "class": "empirical" },
+        { "id": "PF-H2", "locator": "data-testid=\"submit-booking\"", "defect": "Submit, Cancel, and Clear form are identical; destructive reset sits beside submit", "class": "convention" },
+        { "id": "PF-L2", "locator": "width: 100%", "defect": "All fields span the full viewport width regardless of expected input", "class": "convention" }
+      ],
+      "decoys": [
+        { "id": "PF-X1", "locator": "aria-describedby=\"email-error\"", "why_legitimate": "Error association, labels, fieldset/legend, autocomplete, and focus style are correct and must survive" }
+      ]
+    },
+    "mixed-dashboard": {
+      "file": "fixtures/mixed-dashboard.html",
+      "context": "CI dashboard for developers (Ferrous CI). Real defects mixed with legitimate choices.",
+      "seeded": [
+        { "id": "MD-A1", "locator": "class=\"dot fail\"", "defect": "Run status conveyed only by dot colour (WCAG 1.4.1)", "class": "standard" },
+        { "id": "MD-A2", "locator": "--text-muted: #5a6070", "defect": "Muted text is about 2.7:1 on surface and 3.0:1 on background (WCAG 1.4.3)", "class": "standard" },
+        { "id": "MD-A3", "locator": "id=\"refresh-btn\"", "defect": "Icon-only button with no accessible name (WCAG 4.1.2)", "class": "standard" },
+        { "id": "MD-A4", "locator": "tabindex=\"3\"", "defect": "Positive tabindex distorts focus order", "class": "convention" },
+        { "id": "MD-A5", "locator": "class=\"row head\"", "defect": "Tabular data built from divs with no table semantics (WCAG 1.3.1)", "class": "standard" },
+        { "id": "MD-H1", "locator": "id=\"deploy-btn\"", "defect": "Two competing primary actions in different shapes and colours, one off-palette", "class": "convention" },
+        { "id": "MD-H2", "locator": "id=\"kpi-row\"", "defect": "Five equal KPI tiles: the critical one (failing on main) has the same weight as trivia; sparklines encode no data", "class": "judgment" },
+        { "id": "MD-L1", "locator": "gap: 13px; padding: 17px", "defect": "KPI row ignores the declared spacing tokens (13, 17, 22px)", "class": "convention" }
+      ],
+      "decoys": [
+        { "id": "MD-X1", "locator": "--bg: #0f1218", "why_legitimate": "Dark theme is the documented brand default and conventional for developer tools" },
+        { "id": "MD-X2", "locator": "id=\"brand-logo\"", "why_legitimate": "Gradient is confined to the logo and documented as brand" },
+        { "id": "MD-X3", "locator": "id=\"job-cards\"", "why_legitimate": "Cards hold discrete, actionable, heterogeneous objects" },
+        { "id": "MD-X4", "locator": "font: 14px/1.45 system-ui", "why_legitimate": "System font and compact size suit a developer tool" }
+      ]
+    },
+    "playful-brand": {
+      "file": "fixtures/playful-brand.html",
+      "context": "Reading app for ages 5 to 8 (Pip). Loud, round, colourful by documented brand.",
+      "seeded": [
+        { "id": "PB-L1", "locator": "padding: 19px 16px 27px 21px", "defect": "Streak section ignores the gap tokens: asymmetric padding, 5/23px margins, 11px gap plus 3px extra margin", "class": "convention" }
+      ],
+      "decoys": [
+        { "id": "PB-X1", "locator": "--radius-chunk: 28px", "why_legitimate": "Heavy rounding is the brand" },
+        { "id": "PB-X2", "locator": "linear-gradient(180deg, var(--sun), #ffb703)", "why_legitimate": "Gradient uses brand colours; text on it is at least 5.6:1" },
+        { "id": "PB-X3", "locator": "--bounce", "why_legitimate": "Bouncy motion is brand character, limited to one control, with reduced-motion handling" },
+        { "id": "PB-X4", "locator": "font: 700 20px/1.4", "why_legitimate": "Large bold rounded type suits early readers" }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "ROUTE-01", "category": "routing", "fixture": "mixed-dashboard",
+      "prompt": "/anti-slop audit {file}",
+      "checks": [ { "type": "route", "expect": "audit" }, { "type": "fixture_unchanged" } ]
+    },
+    {
+      "id": "ROUTE-02", "category": "routing", "fixture": "plain-form",
+      "prompt": "/anti-slop refine {file}",
+      "checks": [ { "type": "route", "expect": "refine" } ]
+    },
+    {
+      "id": "ROUTE-03", "category": "routing", "fixture": null,
+      "prompt": "/anti-slop create a status page for a small web-hosting company, as a single HTML file at {outfile}",
+      "checks": [ { "type": "route", "expect": "create" } ]
+    },
+    {
+      "id": "ROUTE-04", "category": "routing", "fixture": "slop-landing",
+      "prompt": "This page looks so AI-generated. What needs fixing? Don't touch the code yet, I just want a list. {file}",
+      "checks": [
+        { "type": "route", "expect": "audit" },
+        { "type": "fixture_unchanged" },
+        { "type": "judge", "criterion": "No files were created or modified anywhere, including report files." }
+      ]
+    },
+    {
+      "id": "ROUTE-05", "category": "routing", "fixture": "good-editorial",
+      "prompt": "/anti-slop {file}",
+      "checks": [ { "type": "route", "expect": "audit" }, { "type": "fixture_unchanged" } ]
+    },
+    {
+      "id": "AUDIT-01", "category": "detection", "fixture": "mixed-dashboard",
+      "prompt": "Use anti-slop to audit {file}. It's our CI dashboard.",
+      "checks": [
+        { "type": "fixture_unchanged" },
+        { "type": "must_find", "ids": ["MD-A1", "MD-A2", "MD-A3", "MD-A5", "MD-H1"] },
+        { "type": "must_not_flag", "ids": ["MD-X1", "MD-X2", "MD-X3", "MD-X4"] },
+        { "type": "judge", "criterion": "Every finding states location, category, severity, classification, confidence, principle with evidence class, explanation, and a concrete suggestion." },
+        { "type": "judge", "criterion": "The report states that it is based on source only (no rendering was available) and makes no claim about how the page looks when rendered." },
+        { "type": "judge", "criterion": "The report contains no numeric aesthetic score or grade and no claim of WCAG conformance." }
+      ]
+    },
+    {
+      "id": "AUDIT-02", "category": "false-positive", "fixture": "good-admin-table",
+      "prompt": "Use anti-slop to audit {file}. It's the shipments screen our dispatchers use all day.",
+      "checks": [
+        { "type": "fixture_unchanged" },
+        { "type": "must_not_flag", "ids": ["AD-X1", "AD-X2", "AD-X3", "AD-X4"] },
+        { "type": "judge", "criterion": "The report has no blocker or major findings and does not recommend more whitespace, cards, larger type, or decorative styling." },
+        { "type": "judge", "criterion": "The report says what is working and should be preserved." }
+      ]
+    },
+    {
+      "id": "AUDIT-03", "category": "style-diversity", "fixture": "playful-brand",
+      "prompt": "Use anti-slop to audit {file}. It's the home screen of our kids' reading app.",
+      "checks": [
+        { "type": "fixture_unchanged" },
+        { "type": "must_not_flag", "ids": ["PB-X1", "PB-X2", "PB-X3", "PB-X4"] },
+        { "type": "must_find", "ids": ["PB-L1"] },
+        { "type": "judge", "criterion": "The report treats the loud, rounded, colourful style as appropriate to the product and does not suggest making it more neutral, minimal, or professional." }
+      ]
+    },
+    {
+      "id": "NOOP-01", "category": "no-op", "fixture": "good-editorial",
+      "prompt": "Use anti-slop to refine {file}.",
+      "checks": [
+        { "type": "max_changed_lines", "value": 0 },
+        { "type": "judge", "criterion": "The agent states that no changes were needed and explains what it checked." }
+      ]
+    },
+    {
+      "id": "NOOP-02", "category": "no-op", "fixture": "good-admin-table",
+      "prompt": "Make this look more modern with anti-slop: {file}",
+      "checks": [
+        { "type": "max_changed_lines", "value": 6 },
+        { "type": "preserved", "strings": ["--row: 32px", "data-testid=\"shipments-table\"", "data-testid=\"shipment-filters\"", "scope=\"col\"", "onclick=\"exportCsv()\"", ":focus-visible"] },
+        { "type": "absent", "strings": ["backdrop-filter", "linear-gradient", "box-shadow"] },
+        { "type": "judge", "criterion": "The agent explains that the screen's density and restraint suit its users, and either changes nothing or makes at most a small, reasoned change. It does not convert rows to cards or add decorative styling." }
+      ]
+    },
+    {
+      "id": "PRES-01", "category": "preservation", "fixture": "plain-form",
+      "prompt": "Use anti-slop to refine {file}. It works fine but looks thrown together.",
+      "checks": [
+        { "type": "preserved", "strings": [
+            "id=\"booking-form\"", "action=\"/bookings\"", "method=\"post\"", "onsubmit=\"return validateBooking(this)\"",
+            "for=\"name\"", "for=\"email\"", "for=\"phone\"", "for=\"bike-type\"", "for=\"notes\"",
+            "name=\"bike_type\"", "name=\"service\"", "autocomplete=\"email\"", "aria-describedby=\"email-error\"", "aria-describedby=\"phone-hint\"",
+            "role=\"alert\"", "<legend", "data-testid=\"submit-booking\"", "onclick=\"history.back()\"", ":focus-visible",
+            "Basic tune-up (£45)", "Full service (£95)", "Error: enter an email address in the format name@example.com."
+          ] },
+        { "type": "absent", "strings": ["<link rel=\"stylesheet\"", "<script src=", "@import", "outline: none", "outline:none"] },
+        { "type": "must_find", "ids": ["PF-H1", "PF-L1", "PF-H2"] },
+        { "type": "judge", "criterion": "No copy, field, option, or price was added, removed, or reworded. No external dependency or web font was added." },
+        { "type": "judge", "criterion": "Every changed colour pair still meets WCAG AA contrast, and the report lists what was deliberately left alone." }
+      ]
+    },
+    {
+      "id": "PRES-02", "category": "preservation", "fixture": "playful-brand",
+      "prompt": "Use anti-slop to tidy up the spacing in the streak section of {file}.",
+      "checks": [
+        { "type": "preserved", "strings": [
+            "--radius-chunk: 28px", "--sun: #ffd23f", "--berry: #c2185b", "--bounce", "linear-gradient(180deg, var(--sun), #ffb703)",
+            "prefers-reduced-motion", "onclick=\"startStory('fox-and-kite')\"", "aria-labelledby=\"streak-title\"", "4 days in a row. Two more for a new sticker!"
+          ] },
+        { "type": "must_find", "ids": ["PB-L1"] },
+        { "type": "judge", "criterion": "Changes are confined to spacing rules for the streak section and use the existing --gap-* tokens. The hello card, button, colours, radii, fonts, and motion are untouched." }
+      ]
+    },
+    {
+      "id": "REFINE-01", "category": "detection", "fixture": "slop-landing",
+      "prompt": "Use anti-slop to refine {file}. Tallyo is an invoicing tool for freelancers: it sends invoices and chases late payments automatically.",
+      "checks": [
+        { "type": "must_find", "ids": ["SL-A1", "SL-A2", "SL-A3", "SL-A4", "SL-A5", "SL-A6", "SL-H1"] },
+        { "type": "preserved", "strings": ["action=\"/signup\"", "name=\"email\"", "href=\"/pricing\"", "href=\"/login\"", "/signup", "/demo"] },
+        { "type": "absent", "strings": ["user-scalable=no", "Supercharge Your Workflow", "10k+"] },
+        { "type": "judge", "criterion": "Generic placeholder copy is replaced using only the product facts given in the prompt (invoicing for freelancers, sends invoices, chases late payments), and the report marks the new copy as a draft and lists what was replaced. No statistics, testimonials, customers, prices, or features are invented; the unsupported stats are removed or clearly labelled as placeholders." },
+        { "type": "judge", "criterion": "The unmotivated gradient text, glass effects, uniform pill radius, and hover transforms are addressed, not preserved as brand. The result is not simply a different stock template: visual decisions are tied to an invoicing product for freelancers." }
+      ]
+    },
+    {
+      "id": "CTX-01", "category": "context-sensitivity", "fixture": null,
+      "prompt": "Use anti-slop to create a usage dashboard for a developer API product (requests, error rate, latency by endpoint, quota). Single self-contained HTML file at {outfile}, no external dependencies.",
+      "checks": [
+        { "type": "judge", "criterion": "The layout is driven by the stated data (endpoints, error rate, latency, quota) with appropriate density; it is not a marketing-style hero with feature cards." },
+        { "type": "judge", "criterion": "Tabular data uses table markup; status is not conveyed by colour alone; interactive elements have focus styles and accessible names." },
+        { "type": "judge", "criterion": "The agent gives a short rationale for the direction and lists assumptions and placeholders." }
+      ]
+    },
+    {
+      "id": "CTX-02", "category": "context-sensitivity", "fixture": null,
+      "prompt": "Use anti-slop to create an article page for a quarterly magazine about architecture. Single self-contained HTML file at {outfile}, no external dependencies.",
+      "checks": [
+        { "type": "judge", "criterion": "The design is built around sustained reading (measure, type size, line height, hierarchy by type) and does not componentise the article into cards or dashboard-like tiles." },
+        { "type": "judge", "criterion": "The agent gives a short rationale for the direction and lists assumptions and placeholders." }
+      ]
+    },
+    {
+      "id": "CTX-03", "category": "style-diversity", "fixture": null,
+      "prompt": "Use anti-slop to create the home screen for a habit-tracking app for teenagers. Single self-contained HTML file at {outfile}, no external dependencies.",
+      "checks": [
+        { "type": "judge", "criterion": "The visual character is plausibly aimed at teenagers and is clearly different in type, colour, shape, and density from the CTX-01 and CTX-02 treatment outputs. If all three share one restrained 'tasteful' look, this check fails: the skill has produced its own house style." },
+        { "type": "judge", "criterion": "Expressive choices do not break accessibility basics (contrast, focus, labels, reduced motion)." }
+      ]
+    }
+  ]
+}

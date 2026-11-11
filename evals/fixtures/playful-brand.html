@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pip — today’s reading</title>
+<style>
+  /* Pip: reading practice for ages 5–8. Brand: chunky, round, sunny. Tokens from brand kit 2.1. */
+  :root {
+    --sun: #ffd23f; --sky: #bfe8ff; --grape: #5b2a86; --berry: #c2185b; --cloud: #ffffff; --ink: #2b1a3d;
+    --radius-chunk: 28px; --radius-pill: 999px;
+    --gap-s: 8px; --gap-m: 16px; --gap-l: 32px;
+    --bounce: cubic-bezier(.34, 1.56, .64, 1);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--sky); color: var(--ink); font: 700 20px/1.4 "Baloo 2", "Comic Neue", ui-rounded, system-ui, sans-serif; }
+  :focus-visible { outline: 4px solid var(--grape); outline-offset: 4px; }
+  main { max-width: 640px; margin: 0 auto; padding: var(--gap-l) var(--gap-m); }
+  h1 { font-size: 40px; line-height: 1.1; margin: 0 0 var(--gap-m); color: var(--grape); }
+  .hello { background: linear-gradient(180deg, var(--sun), #ffb703); border-radius: var(--radius-chunk); padding: var(--gap-l);
+           box-shadow: 0 8px 0 var(--grape); }
+  .big-btn { display: inline-block; min-height: 64px; padding: 0 var(--gap-l); font: inherit; font-size: 24px; color: var(--cloud);
+             background: var(--berry); border: 0; border-radius: var(--radius-pill); box-shadow: 0 6px 0 var(--grape); cursor: pointer;
+             transition: transform .2s var(--bounce); }
+  .big-btn:hover { transform: translateY(-3px); }
+  .big-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--grape); }
+  @media (prefers-reduced-motion: reduce) { .big-btn { transition: none; } .big-btn:hover, .big-btn:active { transform: none; } }
+
+  .streak { margin-top: var(--gap-l); background: var(--cloud); border-radius: var(--radius-chunk); padding: 19px 16px 27px 21px; }
+  .streak h2 { font-size: 26px; margin: 0 0 5px; color: var(--grape); }
+  .streak p { margin: 0 0 23px; }
+  .days { display: flex; flex-wrap: wrap; gap: 11px; list-style: none; margin: 0; padding: 0; }
+  .day { width: 56px; height: 56px; display: grid; place-items: center; border-radius: 50%; background: var(--sky); font-size: 16px; }
+  .day + .day { margin-left: 3px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .day.done { background: var(--sun); box-shadow: inset 0 0 0 4px var(--grape); }
+</style>
+</head>
+<body>
+  <main>
+    <section class="hello" id="hello-card">
+      <h1>Hi Maya! Ready to read?</h1>
+      <button class="big-btn" id="start-btn" type="button" onclick="startStory('fox-and-kite')">Start today’s story</button>
+    </section>
+
+    <section class="streak" id="streak-section" aria-labelledby="streak-title">
+      <h2 id="streak-title">Your streak</h2>
+      <p>4 days in a row. Two more for a new sticker!</p>
+      <ol class="days">
+        <li class="day done"><span>Mon<span class="sr"> – done</span></span></li>
+        <li class="day done"><span>Tue<span class="sr"> – done</span></span></li>
+        <li class="day done"><span>Wed<span class="sr"> – done</span></span></li>
+        <li class="day done"><span>Thu<span class="sr"> – done</span></span></li>
+        <li class="day"><span>Fri</span></li>
+        <li class="day"><span>Sat</span></li>
+        <li class="day"><span>Sun</span></li>
+      </ol>
+    </section>
+  </main>
+</body>
+</html>

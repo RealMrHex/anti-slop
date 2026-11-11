@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Tallyo</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Inter, sans-serif; color: #b4b4c4; background: #fff; }
+  .nav { position: sticky; top: 0; display: flex; justify-content: space-between; padding: 17px 43px;
+         background: rgba(255,255,255,.4); backdrop-filter: blur(18px); border-radius: 28px; margin: 13px; }
+  .nav a { color: #b4b4c4; margin-left: 22px; text-decoration: none; }
+  .hero { text-align: center; padding: 160px 20px;
+          background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); }
+  .hero h1 { font-size: 64px; font-weight: 800; line-height: 1.6; margin: 0;
+             background: linear-gradient(90deg, #f0abfc, #a5f3fc); -webkit-background-clip: text; color: transparent; }
+  .hero p { color: #c4b5fd; font-size: 15px; }
+  .btn { display: inline-block; padding: 14px 30px; border: 0; border-radius: 28px; font-weight: 700; color: #fff;
+         background: linear-gradient(90deg, #a855f7, #6366f1); transition: transform .5s; cursor: pointer; outline: none; }
+  .btn:hover, .card:hover, .stat:hover { transform: scale(1.08) translateY(-6px); }
+  .signup { margin-top: 31px; }
+  .signup input { padding: 14px; border: 1px solid #ede9fe; border-radius: 28px; outline: none; }
+  .stats { display: flex; justify-content: center; gap: 61px; padding: 90px 0; }
+  .stat { font-size: 44px; font-weight: 800; color: #7c3aed; transition: transform .5s; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 27px; padding: 150px 40px; }
+  .card { padding: 34px; border-radius: 28px; background: rgba(255,255,255,.5); backdrop-filter: blur(12px);
+          box-shadow: 0 30px 80px rgba(124,58,237,.35); transition: transform .5s; }
+  .card h4 { font-size: 22px; font-weight: 800; color: #7c3aed; margin: 9px 0; }
+  .card p { font-size: 13px; }
+</style>
+</head>
+<body>
+  <div class="nav" id="glass-nav">
+    <b>Tallyo</b>
+    <div><a href="/features">Features</a><a href="/pricing">Pricing</a><a href="/login">Log in</a></div>
+  </div>
+
+  <div class="hero" id="hero">
+    <h1 id="hero-title">Supercharge Your Workflow</h1>
+    <p>The next-generation, all-in-one platform that seamlessly unlocks your potential.</p>
+    <div class="btn" id="cta-primary" onclick="location.href='/signup'">Get Started</div>
+    <div class="btn" id="cta-secondary" onclick="location.href='/demo'">Learn More</div>
+    <form class="signup" id="signup-form" action="/signup" method="post">
+      <input id="signup-email" type="text" name="email" placeholder="Enter your email">
+      <button class="btn" type="submit">Submit</button>
+    </form>
+  </div>
+
+  <div class="stats" id="fake-stats">
+    <div class="stat">10k+</div>
+    <div class="stat">99.9%</div>
+    <div class="stat">24/7</div>
+  </div>
+
+  <div class="grid" id="feature-grid">
+    <div class="card"><span>⚡</span><h4>Fast</h4><p>Blazing fast performance for modern teams.</p></div>
+    <div class="card"><span>🔒</span><h4>Secure</h4><p>Enterprise-grade security you can trust.</p></div>
+    <div class="card"><span>🚀</span><h4>Scalable</h4><p>Scales effortlessly as you grow.</p></div>
+  </div>
+</body>
+</html>

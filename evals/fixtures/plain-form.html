@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book a repair — Spoke &amp; Sprocket</title>
+<style>
+  body { font-family: Arial, sans-serif; font-size: 16px; color: #000; background: #fff; margin: 20px; }
+  h1 { font-size: 24px; }
+  h2 { font-size: 24px; }
+  label, legend { font-weight: bold; }
+  input, select, textarea { font-size: 16px; width: 100%; border: 1px solid #000; padding: 4px; margin-bottom: 20px; }
+  input[type="radio"] { width: auto; margin-bottom: 0; }
+  fieldset { margin-bottom: 20px; }
+  .hint, .error { display: block; margin-bottom: 20px; }
+  .error { color: #a40000; }
+  button { font-size: 16px; padding: 8px 16px; border: 1px solid #000; background: #eee; margin-bottom: 20px; }
+  :focus-visible { outline: 3px solid #0b57d0; outline-offset: 2px; }
+</style>
+</head>
+<body>
+  <main>
+    <h1>Book a repair</h1>
+    <p>We’ll confirm your slot by email within one working day.</p>
+
+    <form id="booking-form" action="/bookings" method="post" novalidate onsubmit="return validateBooking(this)">
+      <h2>Your details</h2>
+      <label for="name">Full name</label>
+      <input id="name" name="name" type="text" autocomplete="name" required>
+
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-error" aria-invalid="true">
+      <span id="email-error" class="error" role="alert">Error: enter an email address in the format name@example.com.</span>
+
+      <label for="phone">Phone (optional)</label>
+      <input id="phone" name="phone" type="tel" autocomplete="tel" aria-describedby="phone-hint">
+      <span id="phone-hint" class="hint">Only used if we have a question about your bike.</span>
+
+      <h2>Your bike</h2>
+      <label for="bike-type">Bike type</label>
+      <select id="bike-type" name="bike_type" required>
+        <option value="">Choose one</option><option>Road</option><option>Mountain</option><option>Hybrid</option><option>E-bike</option>
+      </select>
+
+      <fieldset>
+        <legend>Service level</legend>
+        <input type="radio" id="svc-basic" name="service" value="basic" checked> <label for="svc-basic">Basic tune-up (£45)</label><br>
+        <input type="radio" id="svc-full" name="service" value="full"> <label for="svc-full">Full service (£95)</label><br>
+        <input type="radio" id="svc-diag" name="service" value="diagnose"> <label for="svc-diag">Not sure, please diagnose (£15)</label>
+      </fieldset>
+
+      <label for="notes">What’s wrong? (optional)</label>
+      <textarea id="notes" name="notes" rows="4"></textarea>
+
+      <button type="submit" data-testid="submit-booking">Request booking</button>
+      <button type="button" onclick="history.back()">Cancel</button>
+      <button type="reset">Clear form</button>
+    </form>
+  </main>
+</body>
+</html>

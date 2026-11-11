@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipelines — Ferrous CI</title>
+<style>
+  /* Ferrous CI. Dark-first: brand guideline v3. Logo mark uses the brand "forge" gradient (logo only). */
+  :root {
+    --bg: #0f1218; --surface: #171b24; --surface-2: #1f2430; --border: #4a5568;
+    --text: #e6e9ef; --text-muted: #5a6070; --accent: #f97316;
+    --pass: #22c55e; --fail: #ef4444;
+    --forge: linear-gradient(135deg, #f97316, #dc2626);
+    --s2: 8px; --s3: 12px; --s4: 16px; --s6: 24px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 system-ui, sans-serif; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  header { display: flex; align-items: center; gap: var(--s4); padding: var(--s3) var(--s6); border-bottom: 1px solid var(--border); }
+  .logo { width: 24px; height: 24px; border-radius: 6px; background: var(--forge); }
+  h1 { font-size: 16px; margin: 0; font-weight: 600; }
+  .icon-btn { width: 32px; height: 32px; background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; }
+  .run-btn { margin-left: auto; height: 32px; padding: 0 var(--s4); border: 0; border-radius: 6px; background: var(--accent); color: #1a1205; font-weight: 600; cursor: pointer; }
+  .deploy-btn { height: 38px; padding: 0 22px; border: 0; border-radius: 999px; background: #2563eb; color: #fff; font-weight: 700; cursor: pointer; }
+
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 13px; padding: 17px var(--s6) 22px; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: var(--s4); }
+  .kpi .v { font-size: 28px; font-weight: 700; }
+  .kpi .l { color: var(--text-muted); font-size: 12px; }
+  .spark { height: 24px; margin-top: var(--s2); background: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 7px); opacity: .5; }
+
+  .jobs { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s4); padding: 0 var(--s6) var(--s6); }
+  .job { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: var(--s4); }
+  .job h2 { margin: 0 0 var(--s2); font-size: 14px; }
+  .job pre { margin: var(--s2) 0; padding: var(--s2); background: var(--surface-2); border-radius: 4px; font-size: 12px; overflow-x: auto; }
+  .job .actions { display: flex; gap: var(--s2); }
+  .job button { height: 28px; padding: 0 var(--s3); background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
+
+  .runs { padding: 0 var(--s6) var(--s6); }
+  .runs h2 { font-size: 14px; margin: 0 0 var(--s2); }
+  .row { display: grid; grid-template-columns: 24px 1fr 140px 90px 90px; align-items: center; height: 36px; border-bottom: 1px solid var(--border); }
+  .head { color: var(--text-muted); font-size: 12px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.pass { background: var(--pass); } .dot.fail { background: var(--fail); }
+  .dur { text-align: right; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+  <header>
+    <span class="logo" id="brand-logo" role="img" aria-label="Ferrous"></span>
+    <h1>Pipelines</h1>
+    <button class="icon-btn" id="refresh-btn" type="button" onclick="refresh()"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M13 8a5 5 0 1 1-1.5-3.5M13 3v3h-3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
+    <button class="run-btn" id="run-btn" type="button" tabindex="3" onclick="runPipeline()">Run pipeline</button>
+    <button class="deploy-btn" id="deploy-btn" type="button" onclick="deploy()">Deploy</button>
+  </header>
+
+  <section class="kpis" id="kpi-row" aria-label="Summary">
+    <div class="kpi"><div class="v">7</div><div class="l">Failing on main</div><div class="spark"></div></div>
+    <div class="kpi"><div class="v">412</div><div class="l">Runs this week</div><div class="spark"></div></div>
+    <div class="kpi"><div class="v">6m 12s</div><div class="l">Median duration</div><div class="spark"></div></div>
+    <div class="kpi"><div class="v">38</div><div class="l">Contributors</div><div class="spark"></div></div>
+    <div class="kpi"><div class="v">1,204</div><div class="l">Total pipelines ever</div><div class="spark"></div></div>
+  </section>
+
+  <section class="jobs" id="job-cards" aria-label="Running jobs">
+    <article class="job">
+      <h2>build · linux-arm64</h2>
+      <pre>cargo build --release
+   Compiling ferrous-core v2.8.1</pre>
+      <div class="actions"><button type="button" onclick="logs(1)">View logs</button><button type="button" onclick="cancel(1)">Cancel</button></div>
+    </article>
+    <article class="job">
+      <h2>test · integration</h2>
+      <pre>running 218 tests
+test queue::retries ... ok</pre>
+      <div class="actions"><button type="button" onclick="logs(2)">View logs</button><button type="button" onclick="cancel(2)">Cancel</button></div>
+    </article>
+    <article class="job">
+      <h2>lint · clippy</h2>
+      <pre>Checking ferrous-cli v2.8.1
+warning: unused import</pre>
+      <div class="actions"><button type="button" onclick="logs(3)">View logs</button><button type="button" onclick="cancel(3)">Cancel</button></div>
+    </article>
+  </section>
+
+  <section class="runs" id="recent-runs">
+    <h2>Recent runs</h2>
+    <div class="row head"><div></div><div>Commit</div><div>Branch</div><div>Author</div><div class="dur">Duration</div></div>
+    <div class="row"><div class="dot fail"></div><div>fix: retry backoff overflow</div><div>main</div><div>okonkwo</div><div class="dur">6m 48s</div></div>
+    <div class="row"><div class="dot pass"></div><div>chore: bump tokio to 1.41</div><div>deps/tokio</div><div>lindqvist</div><div class="dur">5m 02s</div></div>
+    <div class="row"><div class="dot pass"></div><div>feat: artifact cache keys</div><div>feat/cache</div><div>amari</div><div class="dur">7m 19s</div></div>
+  </section>
+</body>
+</html>

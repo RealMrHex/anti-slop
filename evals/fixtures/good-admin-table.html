@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shipments — Dockhand Ops</title>
+<style>
+  :root {
+    --bg: #ffffff; --bg-subtle: #f4f5f7; --border: #c9ced6; --border-strong: #6b7280;
+    --text: #111827; --text-muted: #4b5563; --action: #1d4ed8;
+    --ok: #166534; --warn: #92400e; --bad: #b91c1c;
+    --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+    --row: 32px; --radius: 3px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 13px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  :focus-visible { outline: 2px solid var(--action); outline-offset: 1px; }
+  header { display: flex; align-items: center; gap: var(--sp-4); padding: var(--sp-2) var(--sp-4); border-bottom: 1px solid var(--border); }
+  h1 { font-size: 15px; font-weight: 600; margin: 0; }
+  .count { color: var(--text-muted); }
+  .toolbar { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2) var(--sp-4); background: var(--bg-subtle); border-bottom: 1px solid var(--border); }
+  .toolbar label { color: var(--text-muted); }
+  input[type="search"], select { height: 28px; padding: 0 var(--sp-2); font: inherit; color: var(--text);
+    background: var(--bg); border: 1px solid var(--border-strong); border-radius: var(--radius); }
+  button { height: 28px; padding: 0 var(--sp-3); font: inherit; font-weight: 500; color: var(--text);
+    background: var(--bg); border: 1px solid var(--border-strong); border-radius: var(--radius); cursor: pointer; }
+  button:hover { background: var(--bg-subtle); }
+  button.primary { background: var(--action); border-color: var(--action); color: #fff; }
+  button.primary:hover { background: #1e40af; }
+  .spacer { flex: 1; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  caption { position: absolute; left: -9999px; }
+  th, td { height: var(--row); padding: 0 var(--sp-3); text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); }
+  thead th { position: sticky; top: 0; background: var(--bg-subtle); font-weight: 600; color: var(--text-muted); }
+  td.num, th.num { text-align: right; }
+  tbody tr:hover { background: var(--bg-subtle); }
+  .id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .status { font-weight: 600; }
+  .status::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 6px; }
+  .status.ok { color: var(--ok); }      .status.ok::before { background: var(--ok); border-radius: 50%; }
+  .status.warn { color: var(--warn); }  .status.warn::before { background: var(--warn); }
+  .status.bad { color: var(--bad); }    .status.bad::before { background: var(--bad); transform: rotate(45deg); }
+  .row-action { height: 24px; min-width: 24px; padding: 0 var(--sp-2); }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Shipments</h1>
+    <span class="count">1,284 open · 37 delayed</span>
+  </header>
+
+  <form class="toolbar" role="search" aria-label="Filter shipments" action="/shipments" method="get" data-testid="shipment-filters">
+    <label for="q">Search</label>
+    <input id="q" name="q" type="search" placeholder="ID, carrier, or consignee">
+    <label for="status">Status</label>
+    <select id="status" name="status">
+      <option value="">All</option><option>In transit</option><option>Delayed</option><option>Held at customs</option>
+    </select>
+    <button type="submit">Apply</button>
+    <span class="spacer"></span>
+    <button type="button" onclick="exportCsv()">Export CSV</button>
+    <button type="button" class="primary" onclick="openCreate()">New shipment</button>
+  </form>
+
+  <main class="table-wrap">
+    <table data-testid="shipments-table">
+      <caption>Open shipments, sorted by ETA</caption>
+      <thead>
+        <tr>
+          <th scope="col">ID</th><th scope="col">Consignee</th><th scope="col">Carrier</th>
+          <th scope="col">Origin</th><th scope="col">Destination</th>
+          <th scope="col" class="num">Pallets</th><th scope="col" class="num">Weight (kg)</th>
+          <th scope="col">ETA</th><th scope="col">Status</th><th scope="col"><span style="position:absolute;left:-9999px">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="id">SH-48213</td><td>Brennan Hardware</td><td>Northline</td><td>Rotterdam</td><td>Leeds</td><td class="num">12</td><td class="num">4,860.0</td><td>12 Nov 08:30</td><td><span class="status ok">In transit</span></td><td><button class="row-action" type="button" onclick="openRow('SH-48213')">Open</button></td></tr>
+        <tr><td class="id">SH-48214</td><td>Oduya Textiles</td><td>Kestrel Freight</td><td>Izmir</td><td>Manchester</td><td class="num">30</td><td class="num">11,250.5</td><td>12 Nov 14:00</td><td><span class="status warn">Delayed</span></td><td><button class="row-action" type="button" onclick="openRow('SH-48214')">Open</button></td></tr>
+        <tr><td class="id">SH-48219</td><td>Halvorsen Marine</td><td>Northline</td><td>Bergen</td><td>Aberdeen</td><td class="num">4</td><td class="num">1,920.0</td><td>13 Nov 06:15</td><td><span class="status bad">Held at customs</span></td><td><button class="row-action" type="button" onclick="openRow('SH-48219')">Open</button></td></tr>
+        <tr><td class="id">SH-48222</td><td>Castellan Foods</td><td>Verdant Cold Chain</td><td>Valencia</td><td>Bristol</td><td class="num">18</td><td class="num">7,405.2</td><td>13 Nov 11:45</td><td><span class="status ok">In transit</span></td><td><button class="row-action" type="button" onclick="openRow('SH-48222')">Open</button></td></tr>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>
