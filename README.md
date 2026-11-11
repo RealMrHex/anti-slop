@@ -1,5 +1,7 @@
 # Anti-Slop
 
+![Anti-Slop: design judgment, not defaults. An agent skill for creating, refining, and auditing interfaces.](assets/banner.png)
+
 **Give your AI better taste.**
 
 Anti-Slop is an Agent Skill that gives coding agents design judgment for user
