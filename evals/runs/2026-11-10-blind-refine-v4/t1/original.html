@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fernhaus — Houseplant Care Subscription</title>
+<meta name="description" content="Healthy, happy houseplants delivered and looked after. Fernhaus pairs hand-picked plants with a care plan that fits your light, your home, and your habits.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: { moss:'#2f4a35', fern:'#5b7f4a', sage:'#c9d6bd', cream:'#f6f0e4', clay:'#c8643b', bark:'#2a2118' },
+    fontFamily: { serif:['Fraunces','serif'], sans:['Figtree','sans-serif'] }
+  }}
+}
+</script>
+<style>
+  body{background:#f6f0e4;color:#2a2118;font-family:'Figtree',sans-serif}
+  .grain{background-image:radial-gradient(rgba(42,33,24,.06) 1px,transparent 1px);background-size:5px 5px}
+  .arch{border-radius:999px 999px 24px 24px}
+  .seg-active{background:#2f4a35;color:#f6f0e4}
+  .card{transition:transform .25s ease, box-shadow .25s ease}
+  .card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -20px rgba(42,33,24,.35)}
+  details summary{list-style:none;cursor:pointer}
+  details summary::-webkit-details-marker{display:none}
+  details[open] .plus{transform:rotate(45deg)}
+  .plus{transition:transform .2s}
+  @keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+  .sway{animation:sway 6s ease-in-out infinite;transform-origin:50% 100%}
+  @media (prefers-reduced-motion:reduce){.sway{animation:none}.card{transition:none}}
+</style>
+</head>
+<body class="antialiased">
+
+<!-- Nav -->
+<header class="sticky top-0 z-30 bg-cream/90 backdrop-blur border-b border-bark/10">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2 font-serif text-2xl text-moss font-semibold">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#5b7f4a" stroke-width="1.8" stroke-linecap="round"><path d="M12 22V9M12 14c-4 0-7-2-8-6 4 0 7 2 8 6zM12 12c0-4 3-7 8-7 0 4-3 7-8 7z"/></svg>
+      Fernhaus
+    </a>
+    <nav class="hidden md:flex gap-8 text-sm font-medium">
+      <a href="#how" class="hover:text-fern">How it works</a>
+      <a href="#plants" class="hover:text-fern">The plants</a>
+      <a href="#plans" class="hover:text-fern">Plans</a>
+      <a href="#faq" class="hover:text-fern">FAQ</a>
+    </nav>
+    <a href="#plans" class="bg-moss text-cream text-sm font-medium px-5 py-2.5 rounded-full hover:bg-fern transition">Start growing</a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="grain">
+  <div class="max-w-6xl mx-auto px-5 pt-14 pb-20 md:pt-20 grid md:grid-cols-12 gap-10 items-center">
+    <div class="md:col-span-7">
+      <p class="inline-flex items-center gap-2 text-xs uppercase tracking-[.18em] text-fern font-semibold bg-sage/50 px-3 py-1.5 rounded-full">
+        <span class="w-1.5 h-1.5 rounded-full bg-clay"></span> Plant care, handled
+      </p>
+      <h1 class="font-serif text-5xl md:text-7xl leading-[1.02] text-moss mt-6">
+        A greener home,<br><em class="text-clay font-normal">without</em> the guesswork.
+      </h1>
+      <p class="mt-6 text-lg text-bark/75 max-w-xl leading-relaxed">
+        Every month Fernhaus brings a healthy, hand-picked houseplant to your door, with a care card written for your light, your space, and your schedule. Plants that thrive, not just survive.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="#plans" class="bg-clay text-cream font-medium px-7 py-3.5 rounded-full hover:brightness-110 transition">See plans</a>
+        <a href="#how" class="border border-moss/30 text-moss font-medium px-7 py-3.5 rounded-full hover:bg-sage/40 transition">How it works</a>
+      </div>
+      <div class="mt-10 flex items-center gap-4 text-sm text-bark/70">
+        <div class="flex -space-x-2">
+          <img class="w-9 h-9 rounded-full border-2 border-cream object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="">
+          <img class="w-9 h-9 rounded-full border-2 border-cream object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" alt="">
+          <img class="w-9 h-9 rounded-full border-2 border-cream object-cover" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop" alt="">
+        </div>
+        <span><strong class="text-bark">12,000+</strong> plant parents, 96% still-alive rate</span>
+      </div>
+    </div>
+    <div class="md:col-span-5 relative">
+      <div class="arch overflow-hidden aspect-[4/5] bg-sage">
+        <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=900&q=80&fit=crop" alt="A lush monstera leaf in warm light">
+      </div>
+      <div class="absolute -left-4 bottom-10 bg-cream rounded-2xl shadow-xl p-4 w-52 border border-bark/10">
+        <p class="text-[11px] uppercase tracking-widest text-fern font-semibold">This month</p>
+        <p class="font-serif text-lg text-moss leading-tight mt-1">Monstera deliciosa</p>
+        <p class="text-xs text-bark/60 mt-1">Bright, indirect light. Water every 9 days.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee strip -->
+<div class="bg-moss text-sage py-4 overflow-hidden">
+  <div class="max-w-6xl mx-auto px-5 flex flex-wrap justify-between gap-x-8 gap-y-2 text-sm tracking-wide">
+    <span>Free shipping on every box</span><span>Pet-safe options</span><span>Pause or skip anytime</span><span>Plant doctor on call</span>
+  </div>
+</div>
+
+<!-- How it works -->
+<section id="how" class="max-w-6xl mx-auto px-5 py-24">
+  <div class="max-w-2xl">
+    <h2 class="font-serif text-4xl md:text-5xl text-moss">Three steps to a home that grows.</h2>
+    <p class="mt-4 text-bark/70 text-lg">We do the hard parts: choosing, packing, and teaching. You do the fun part.</p>
+  </div>
+  <div class="mt-14 grid md:grid-cols-3 gap-6">
+    <div class="card bg-white/60 border border-bark/10 rounded-3xl p-8">
+      <span class="font-serif text-6xl text-sage">01</span>
+      <h3 class="font-serif text-2xl text-moss mt-4">Tell us about your space</h3>
+      <p class="mt-3 text-bark/70 leading-relaxed">A two-minute quiz on light, pets, and how forgetful you are. No judgement.</p>
+    </div>
+    <div class="card bg-white/60 border border-bark/10 rounded-3xl p-8">
+      <span class="font-serif text-6xl text-sage">02</span>
+      <h3 class="font-serif text-2xl text-moss mt-4">Receive a plant that fits</h3>
+      <p class="mt-3 text-bark/70 leading-relaxed">Hand-picked, acclimated, and potted in a ceramic planter, arriving in compostable packaging.</p>
+    </div>
+    <div class="card bg-white/60 border border-bark/10 rounded-3xl p-8">
+      <span class="font-serif text-6xl text-sage">03</span>
+      <h3 class="font-serif text-2xl text-moss mt-4">Grow with guidance</h3>
+      <p class="mt-3 text-bark/70 leading-relaxed">Seasonal reminders, a care card, and a real plant doctor when leaves look sad.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Plants -->
+<section id="plants" class="bg-sage/40 py-24">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <h2 class="font-serif text-4xl md:text-5xl text-moss max-w-xl">Meet some of the <em class="text-fern">residents</em>.</h2>
+      <p class="text-bark/70 max-w-sm">Over 60 varieties, matched to your home. A few favourites from our greenhouse.</p>
+    </div>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <article class="card bg-cream rounded-3xl overflow-hidden">
+        <img class="h-56 w-full object-cover" src="https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=600&q=80&fit=crop" alt="Snake plant">
+        <div class="p-5"><h3 class="font-serif text-xl text-moss">Snake plant</h3><p class="text-sm text-bark/65 mt-1">Low light, forgiving. Perfect first plant.</p><p class="mt-3 text-xs font-semibold text-clay uppercase tracking-wider">Easy</p></div>
+      </article>
+      <article class="card bg-cream rounded-3xl overflow-hidden">
+        <img class="h-56 w-full object-cover" src="https://images.unsplash.com/photo-1463320726281-696a485928c7?w=600&q=80&fit=crop" alt="Fiddle leaf fig">
+        <div class="p-5"><h3 class="font-serif text-xl text-moss">Fiddle leaf fig</h3><p class="text-sm text-bark/65 mt-1">A statement tree that loves bright corners.</p><p class="mt-3 text-xs font-semibold text-clay uppercase tracking-wider">Moderate</p></div>
+      </article>
+      <article class="card bg-cream rounded-3xl overflow-hidden">
+        <img class="h-56 w-full object-cover" src="https://images.unsplash.com/photo-1614594975525-e45190c55d0b?w=600&q=80&fit=crop" alt="Pothos trailing from a shelf">
+        <div class="p-5"><h3 class="font-serif text-xl text-moss">Golden pothos</h3><p class="text-sm text-bark/65 mt-1">Trailing vines, pet-aware care notes included.</p><p class="mt-3 text-xs font-semibold text-clay uppercase tracking-wider">Easy</p></div>
+      </article>
+      <article class="card bg-cream rounded-3xl overflow-hidden">
+        <img class="h-56 w-full object-cover" src="https://images.unsplash.com/photo-1545241047-6083a3684587?w=600&q=80&fit=crop" alt="Maidenhair fern">
+        <div class="p-5"><h3 class="font-serif text-xl text-moss">Boston fern</h3><p class="text-sm text-bark/65 mt-1">Feathery, humidity-loving, bathroom-approved.</p><p class="mt-3 text-xs font-semibold text-clay uppercase tracking-wider">Moderate</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Plans -->
+<section id="plans" class="max-w-6xl mx-auto px-5 py-24">
+  <div class="text-center max-w-2xl mx-auto">
+    <h2 class="font-serif text-4xl md:text-5xl text-moss">Pick your pace.</h2>
+    <p class="mt-4 text-bark/70 text-lg">Switch, pause, or cancel whenever. Save 20% when you commit to a year.</p>
+    <div class="inline-flex mt-8 p-1 rounded-full bg-sage/60" role="group" aria-label="Billing period">
+      <button id="btn-month" class="seg-active px-6 py-2 rounded-full text-sm font-medium transition" aria-pressed="true">Monthly</button>
+      <button id="btn-year" class="px-6 py-2 rounded-full text-sm font-medium transition" aria-pressed="false">Yearly <span class="ml-1 text-[11px] bg-clay text-cream px-2 py-0.5 rounded-full">-20%</span></button>
+    </div>
+  </div>
+
+  <div class="mt-12 grid md:grid-cols-3 gap-6 items-stretch">
+    <div class="card bg-white/60 border border-bark/10 rounded-3xl p-8 flex flex-col">
+      <h3 class="font-serif text-2xl text-moss">Sprout</h3>
+      <p class="text-sm text-bark/65 mt-1">One small plant, every month.</p>
+      <p class="mt-6"><span class="font-serif text-5xl text-moss price" data-m="24" data-y="19">$24</span><span class="text-bark/60"> /mo</span></p>
+      <p class="text-xs text-bark/50 h-4 note"></p>
+      <ul class="mt-6 space-y-3 text-sm flex-1">
+        <li>1 starter plant in a ceramic pot</li><li>Personalised care card</li><li>Email plant support</li>
+      </ul>
+      <a href="#" class="mt-8 text-center border border-moss text-moss font-medium py-3 rounded-full hover:bg-moss hover:text-cream transition">Choose Sprout</a>
+    </div>
+
+    <div class="card relative bg-moss text-cream rounded-3xl p-8 flex flex-col md:-mt-4 md:mb-[-1rem]">
+      <span class="absolute -top-3 left-8 bg-clay text-cream text-xs font-semibold px-3 py-1 rounded-full">Most loved</span>
+      <h3 class="font-serif text-2xl">Canopy</h3>
+      <p class="text-sm text-sage mt-1">A medium plant plus seasonal extras.</p>
+      <p class="mt-6"><span class="font-serif text-5xl price" data-m="48" data-y="38">$48</span><span class="text-sage"> /mo</span></p>
+      <p class="text-xs text-sage/70 h-4 note"></p>
+      <ul class="mt-6 space-y-3 text-sm flex-1 text-cream/90">
+        <li>1 medium plant, any variety</li><li>Fertiliser and mist kit each season</li><li>Chat with a plant doctor</li><li>Free replacement guarantee</li>
+      </ul>
+      <a href="#" class="mt-8 text-center bg-clay text-cream font-medium py-3 rounded-full hover:brightness-110 transition">Choose Canopy</a>
+    </div>
+
+    <div class="card bg-white/60 border border-bark/10 rounded-3xl p-8 flex flex-col">
+      <h3 class="font-serif text-2xl text-moss">Jungle</h3>
+      <p class="text-sm text-bark/65 mt-1">For the full indoor forest.</p>
+      <p class="mt-6"><span class="font-serif text-5xl text-moss price" data-m="89" data-y="71">$89</span><span class="text-bark/60"> /mo</span></p>
+      <p class="text-xs text-bark/50 h-4 note"></p>
+      <ul class="mt-6 space-y-3 text-sm flex-1">
+        <li>2 plants plus a statement piece quarterly</li><li>Annual in-home care visit</li><li>Priority plant doctor line</li>
+      </ul>
+      <a href="#" class="mt-8 text-center border border-moss text-moss font-medium py-3 rounded-full hover:bg-moss hover:text-cream transition">Choose Jungle</a>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonial -->
+<section class="bg-bark text-cream py-24 grain">
+  <div class="max-w-4xl mx-auto px-5 text-center">
+    <svg class="mx-auto sway" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c9d6bd" stroke-width="1.5" stroke-linecap="round"><path d="M12 22V9M12 14c-4 0-7-2-8-6 4 0 7 2 8 6zM12 12c0-4 3-7 8-7 0 4-3 7-8 7z"/></svg>
+    <blockquote class="font-serif text-3xl md:text-4xl leading-snug mt-6">
+      "I have killed every plant I ever owned. Fourteen months in with Fernhaus, my flat looks like a greenhouse and nothing has died."
+    </blockquote>
+    <p class="mt-6 text-sage text-sm tracking-wide">Maya R., Canopy member since 2025</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="max-w-3xl mx-auto px-5 py-24">
+  <h2 class="font-serif text-4xl md:text-5xl text-moss text-center">Good questions.</h2>
+  <div class="mt-12 divide-y divide-bark/15 border-y border-bark/15">
+    <details class="py-5"><summary class="flex justify-between items-center font-medium text-lg">Can I choose my plants?<span class="plus text-2xl text-clay">+</span></summary><p class="mt-3 text-bark/70 leading-relaxed">Yes. We suggest matches from your quiz, and you can swap or skip any month before it ships.</p></details>
+    <details class="py-5"><summary class="flex justify-between items-center font-medium text-lg">What if a plant dies?<span class="plus text-2xl text-clay">+</span></summary><p class="mt-3 text-bark/70 leading-relaxed">Send us a photo within 60 days and we will replace it, no charge, and help figure out what went wrong.</p></details>
+    <details class="py-5"><summary class="flex justify-between items-center font-medium text-lg">Are the plants safe for pets?<span class="plus text-2xl text-clay">+</span></summary><p class="mt-3 text-bark/70 leading-relaxed">Tell us about your pets in the quiz and we will only send pet-friendly varieties.</p></details>
+    <details class="py-5"><summary class="flex justify-between items-center font-medium text-lg">Can I cancel anytime?<span class="plus text-2xl text-clay">+</span></summary><p class="mt-3 text-bark/70 leading-relaxed">Always. Pause, skip, or cancel from your account in two clicks. Yearly plans are refunded pro rata.</p></details>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="px-5 pb-24">
+  <div class="max-w-6xl mx-auto bg-fern rounded-[2.5rem] px-8 py-16 text-center text-cream relative overflow-hidden">
+    <h2 class="font-serif text-4xl md:text-5xl">Your first plant is waiting.</h2>
+    <p class="mt-4 text-cream/85 max-w-lg mx-auto">Join the Fernhaus community and get a free care guide with your first box.</p>
+    <form id="signup" class="mt-8 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+      <input id="email" type="email" required placeholder="you@email.com" aria-label="Email address" class="flex-1 rounded-full px-5 py-3.5 text-bark placeholder-bark/40 outline-none focus:ring-2 focus:ring-clay">
+      <button class="bg-bark text-cream font-medium px-7 py-3.5 rounded-full hover:bg-clay transition">Get started</button>
+    </form>
+    <p id="msg" class="mt-4 text-sm h-5" aria-live="polite"></p>
+  </div>
+</section>
+
+<footer class="border-t border-bark/10">
+  <div class="max-w-6xl mx-auto px-5 py-10 flex flex-wrap items-center justify-between gap-4 text-sm text-bark/60">
+    <span class="font-serif text-xl text-moss font-semibold">Fernhaus</span>
+    <span>Grown with care. &copy; 2026 Fernhaus Plant Co.</span>
+    <div class="flex gap-5"><a href="#" class="hover:text-moss">Instagram</a><a href="#" class="hover:text-moss">Journal</a><a href="#" class="hover:text-moss">Contact</a></div>
+  </div>
+</footer>
+
+<script>
+  const bm = document.getElementById('btn-month'), by = document.getElementById('btn-year');
+  function setPlan(yearly){
+    bm.classList.toggle('seg-active', !yearly); by.classList.toggle('seg-active', yearly);
+    bm.setAttribute('aria-pressed', !yearly); by.setAttribute('aria-pressed', yearly);
+    document.querySelectorAll('.price').forEach(p => p.textContent = '$' + (yearly ? p.dataset.y : p.dataset.m));
+    document.querySelectorAll('.note').forEach(n => {
+      const p = n.parentElement.querySelector('.price');
+      n.textContent = yearly ? 'Billed $' + (p.dataset.y * 12) + ' yearly' : '';
+    });
+  }
+  bm.onclick = () => setPlan(false); by.onclick = () => setPlan(true);
+  document.getElementById('signup').addEventListener('submit', e => {
+    e.preventDefault();
+    const m = document.getElementById('msg');
+    m.textContent = 'Welcome to the greenhouse! Check your inbox for your care guide.';
+    e.target.reset();
+  });
+</script>
+</body>
+</html>

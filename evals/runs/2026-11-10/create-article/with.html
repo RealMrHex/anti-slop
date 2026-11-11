@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sixty Centimetres of Wall — Plinth Quarterly</title>
+<meta name="description" content="A feature from Plinth, a quarterly of architecture: a municipal archive in Orsolt, built with walls thick enough to do the work of machines.">
+<!--
+  PLACEHOLDER CONTENT: the magazine ("Plinth"), the town, the building, the studio,
+  the people and every figure in this article are invented stand-ins. Replace with
+  the real feature, credits and facts before publishing.
+-->
+<style>
+  :root {
+    --paper: #efe9dd;
+    --paper-deep: #e4dccb;
+    --ink: #16130f;
+    --muted: #5a5247;
+    --mark: #b8321a;        /* vermilion: used only for the drawn annotations and links */
+    --mark-on-ink: #e8573a;
+    --rule: #16130f;
+
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    /* spacing ladder */
+    --s1: .25rem; --s2: .5rem; --s3: 1rem; --s4: 1.5rem; --s5: 2.5rem; --s6: 4rem; --s7: 7rem;
+
+    --gutter: clamp(1rem, 4vw, 3rem);
+    --notes: 13rem;
+    --measure: 38rem;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-padding-top: 1rem; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 1.1875rem;
+    line-height: 1.6;
+    font-kerning: normal;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { color: inherit; text-decoration-color: var(--mark); text-decoration-thickness: 2px; text-underline-offset: .2em; }
+  a:hover { color: var(--mark); }
+  :focus-visible { outline: 3px solid var(--mark); outline-offset: 3px; }
+
+  .skip {
+    position: absolute; left: var(--gutter); top: 0;
+    transform: translateY(-120%);
+    background: var(--ink); color: var(--paper);
+    padding: var(--s2) var(--s3);
+    font-family: var(--mono); font-size: .875rem;
+    z-index: 10;
+  }
+  .skip:focus { transform: none; }
+
+  .wrap { max-width: 78rem; margin-inline: auto; padding-inline: var(--gutter); }
+
+  .mono {
+    font-family: var(--mono);
+    font-size: .8125rem;
+    line-height: 1.5;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead { border-bottom: 3px solid var(--ink); }
+  .masthead .wrap {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    justify-content: space-between; gap: var(--s2) var(--s4);
+    padding-block: var(--s3);
+  }
+  .brand {
+    font-size: 1.75rem; font-weight: 700; letter-spacing: -.02em; line-height: 1;
+    text-decoration: none;
+  }
+  .brand:hover { color: var(--ink); }
+  .issue { color: var(--muted); margin: 0; }
+
+  /* ---------- opening ---------- */
+  .opening { padding-top: var(--s5); }
+  .kicker { margin: 0 0 var(--s3); color: var(--mark); font-weight: 700; }
+  h1 {
+    margin: 0;
+    font-size: clamp(2.75rem, 1.2rem + 10.5vw, 10.5rem);
+    font-weight: 700;
+    line-height: .9;
+    letter-spacing: -.045em;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    max-width: 14ch;
+  }
+  .dek-row {
+    display: grid;
+    grid-template-columns: var(--notes) minmax(0, var(--measure));
+    gap: var(--s5);
+    margin-top: var(--s5);
+    align-items: start;
+  }
+  .byline { margin: 0; color: var(--muted); border-top: 3px solid var(--ink); padding-top: var(--s2); }
+  .byline strong { color: var(--ink); font-weight: 700; }
+  .dek {
+    margin: 0;
+    font-size: clamp(1.375rem, 1.1rem + 1vw, 1.875rem);
+    line-height: 1.3;
+    font-style: italic;
+    text-wrap: pretty;
+  }
+
+  /* ---------- the drawing (signature) ---------- */
+  .plate { margin: var(--s6) 0 0; }
+  .plate-frame {
+    border-top: 3px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    background: var(--paper-deep);
+    padding: var(--s4) var(--gutter) var(--s3);
+  }
+  .plate svg { display: block; width: 100%; height: auto; max-height: 38rem; color: var(--ink); }
+  .plate .air {
+    stroke: var(--mark); stroke-width: 4; fill: none;
+    stroke-dasharray: 3 12; stroke-linecap: round;
+  }
+  .plate .dim { stroke: var(--mark); stroke-width: 3; fill: none; }
+  .plate .dimtext { fill: var(--mark); font-family: var(--mono); font-size: 28px; font-weight: 700; }
+  .plate .tag circle { fill: var(--mark); }
+  .plate .tag text { fill: var(--paper); font-family: var(--mono); font-size: 24px; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
+  .plate .lead { stroke: var(--mark); stroke-width: 2; }
+
+  .plate-key {
+    display: grid;
+    grid-template-columns: var(--notes) minmax(0, 1fr);
+    gap: var(--s5);
+    padding-top: var(--s3);
+  }
+  .plate-key .label { margin: 0; color: var(--muted); }
+  .plate-key ol {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: var(--s3) var(--s4);
+    font-size: 1rem; line-height: 1.45;
+  }
+  .plate-key li { display: grid; grid-template-columns: 2rem 1fr; }
+  .plate-key li b { font-family: var(--mono); color: var(--mark); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .plate .dim { stroke-dasharray: 200; animation: draw 1.6s .3s cubic-bezier(.6,.1,.2,1) backwards; }
+    @keyframes draw { from { stroke-dashoffset: 200; } to { stroke-dashoffset: 0; } }
+  }
+
+  /* ---------- body ---------- */
+  .body { padding-top: var(--s6); }
+  .row {
+    display: grid;
+    grid-template-columns: var(--notes) minmax(0, var(--measure)) 1fr;
+    column-gap: var(--s5);
+  }
+  .row > p, .row > h2, .row > .fig { grid-column: 2; grid-row: 1; margin: 0 0 var(--s4); }
+  .row > aside { grid-column: 1; grid-row: 1; margin: .35rem 0 var(--s4); }
+  .row > p { text-wrap: pretty; hyphens: auto; }
+
+  .lede::first-letter {
+    float: left;
+    font-size: 5.6em;
+    line-height: .78;
+    font-weight: 700;
+    padding: .06em .1em 0 0;
+    color: var(--mark);
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    font-weight: 700;
+    margin-top: var(--s6) !important;
+    text-wrap: balance;
+  }
+  .row.head > aside { margin-top: calc(var(--s6) + .6rem); }
+  .row.head > aside .mono { color: var(--mark); font-weight: 700; margin: 0; }
+
+  aside.note {
+    border-top: 3px solid var(--ink);
+    padding-top: var(--s2);
+    font-size: .9375rem;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+  aside.note .mono { display: block; color: var(--ink); font-weight: 700; margin-bottom: var(--s1); }
+
+  /* ---------- pull quote ---------- */
+  .pull {
+    background: var(--ink); color: var(--paper);
+    margin: var(--s6) 0;
+    padding: var(--s6) 0;
+  }
+  .pull blockquote { margin: 0; max-width: 24ch; }
+  .pull p {
+    margin: 0;
+    font-size: clamp(2rem, 1rem + 5vw, 5.5rem);
+    line-height: 1;
+    letter-spacing: -.035em;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+  .pull p::before { content: "\201C"; color: var(--mark-on-ink); }
+  .pull p::after { content: "\201D"; color: var(--mark-on-ink); }
+  .pull footer { margin-top: var(--s4); color: #cfc7b6; }
+
+  /* ---------- fact sheet ---------- */
+  .sheet { margin-top: var(--s6); }
+  .sheet h2 { margin: 0 0 var(--s3) !important; font-size: 1.375rem; letter-spacing: 0; }
+  .sheet dl {
+    margin: 0;
+    display: grid; grid-template-columns: max-content 1fr;
+    border-top: 3px solid var(--ink);
+  }
+  .sheet dt, .sheet dd { margin: 0; padding: var(--s2) 0; border-bottom: 1px solid var(--ink); }
+  .sheet dt { padding-right: var(--s4); color: var(--muted); }
+  .sheet dd { font-size: 1rem; font-variant-numeric: tabular-nums; }
+
+  /* ---------- footer ---------- */
+  footer.colophon { margin-top: var(--s7); border-top: 3px solid var(--ink); }
+  footer.colophon .wrap { padding-block: var(--s4) var(--s5); display: flex; flex-wrap: wrap; gap: var(--s2) var(--s5); justify-content: space-between; }
+  footer.colophon p { margin: 0; color: var(--muted); max-width: 46ch; }
+
+  /* ---------- narrow ---------- */
+  @media (max-width: 62rem) {
+    .dek-row, .plate-key { grid-template-columns: 1fr; gap: var(--s3); }
+    .row { grid-template-columns: minmax(0, 1fr); }
+    .row > p, .row > h2, .row > .fig, .row > aside { grid-column: 1; grid-row: auto; }
+    .row > aside { margin: 0 0 var(--s4); }
+    .row.head > aside { margin-top: var(--s6); margin-bottom: var(--s2); border: 0; padding: 0; }
+    .row.head > h2 { margin-top: 0 !important; }
+    .row > p { margin-bottom: var(--s3); }
+    .row > p + aside { margin-top: var(--s2); }
+    .body p { max-width: var(--measure); }
+    .sheet { max-width: var(--measure); }
+  }
+  @media (max-width: 30rem) {
+    body { font-size: 1.0625rem; }
+    .sheet dl { grid-template-columns: 1fr; }
+    .sheet dt { border-bottom: 0; padding-bottom: 0; }
+    .lede::first-letter { font-size: 4.6em; }
+  }
+  @media print {
+    .skip { display: none; }
+    .pull { background: none; color: var(--ink); border-block: 3px solid var(--ink); }
+    .pull footer { color: var(--ink); }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#article">Skip to the article</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="brand" href="#top" id="top">Plinth</a>
+    <p class="issue mono">A quarterly of architecture &middot; No. 14 &middot; Autumn 2026</p>
+  </div>
+</header>
+
+<main id="article">
+  <article>
+    <div class="opening wrap">
+      <p class="kicker mono">Buildings &middot; Orsolt, 11 pages</p>
+      <h1>Sixty Centimetres of Wall</h1>
+
+      <div class="dek-row">
+        <p class="byline mono">Words <strong>Ines Valmar</strong><br>Drawings <strong>Marrow &amp; Quay</strong></p>
+        <p class="dek">In a small northern town, a municipal archive has been built with walls thick enough to keep the records safe and the building free of machines. It asks what a wall is for.</p>
+      </div>
+    </div>
+
+    <figure class="plate wrap" style="padding-inline:0;max-width:none;margin-inline:0">
+      <div class="plate-frame">
+        <div class="wrap" style="padding-inline:0">
+          <svg viewBox="0 0 900 540" role="img" aria-labelledby="plate-title plate-desc">
+            <title id="plate-title">Section through the archive's outer wall</title>
+            <desc id="plate-desc">A vertical cut through a six-hundred-millimetre wall. From outside to inside: a brick skin, a narrow air channel with a rising stream of air, and an inner layer of hollow clay block. A roof slab sits on top and a floor slab meets the wall at the base.</desc>
+            <defs>
+              <pattern id="hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                <line x1="0" y1="0" x2="0" y2="12" stroke="currentColor" stroke-width="2.5"/>
+              </pattern>
+            </defs>
+            <!-- ground outside -->
+            <rect x="30" y="430" width="300" height="40" fill="url(#hatch)"/>
+            <line x1="30" y1="430" x2="330" y2="430" stroke="currentColor" stroke-width="4"/>
+            <!-- floor slab inside -->
+            <rect x="470" y="430" width="400" height="40" fill="currentColor"/>
+            <!-- roof slab -->
+            <rect x="290" y="56" width="580" height="34" fill="currentColor"/>
+            <!-- wall: brick skin (solid) -->
+            <rect x="330" y="90" width="55" height="380" fill="currentColor"/>
+            <!-- wall: inner clay block (hatched) -->
+            <rect x="405" y="90" width="65" height="380" fill="url(#hatch)" stroke="currentColor" stroke-width="4"/>
+            <!-- air channel -->
+            <path class="air" d="M395 462 V110"/>
+            <path d="M385 128 L395 104 L405 128" fill="none" stroke="var(--mark)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+            <!-- dimension -->
+            <g class="dim-group">
+              <path class="dim" d="M330 36 H470 M330 24 V48 M470 24 V48"/>
+              <text class="dimtext" x="400" y="16" text-anchor="middle">600</text>
+            </g>
+            <!-- tags -->
+            <g class="tag">
+              <line class="lead" x1="226" y1="250" x2="344" y2="250"/>
+              <circle cx="206" cy="250" r="22"/><text x="206" y="250">1</text>
+              <line class="lead" x1="395" y1="470" x2="395" y2="496"/>
+              <circle cx="395" cy="512" r="22"/><text x="395" y="512">2</text>
+              <line class="lead" x1="578" y1="250" x2="446" y2="250"/>
+              <circle cx="598" cy="250" r="22"/><text x="598" y="250">3</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <div class="plate-key wrap" style="padding-inline:var(--gutter)">
+        <p class="label mono">Fig. 1 &mdash; Section, outer wall, to 600 mm</p>
+        <ol>
+          <li><b>1</b><span>Fired brick skin, 110 mm. Takes the weather and the first temperature swing.</span></li>
+          <li><b>2</b><span>Open air channel, 20 mm. Air rises through it and leaves under the eaves.</span></li>
+          <li><b>3</b><span>Hollow clay block with lime plaster, the thermal mass that sets the room's pace.</span></li>
+        </ol>
+      </div>
+    </figure>
+
+    <div class="body wrap">
+      <div class="row">
+        <p class="lede">The first thing the visitor does at the Halden Archive is put a hand on the building. Nobody is told to. The reveals at the entrance are deep enough to lean into, the brick is cool even in the afternoon, and the door seems to be cut out of the wall, not hung in front of it.</p>
+        <aside class="note"><span class="mono">At a glance</span>Halden Municipal Archive, Orsolt. Marrow &amp; Quay. Opened spring 2026.</aside>
+      </div>
+
+      <div class="row">
+        <p>That is the argument of the building, and it is made with a single dimension. The outer walls are sixty centimetres thick. Everything else, from the plan to the way the reading room is lit, follows from the decision to let a wall do the work that most archives hand to a plant room.</p>
+      </div>
+
+      <div class="row">
+        <p>Paper keeps best when its surroundings change slowly. A conventional archive achieves this with sensors, ducts and a standing maintenance contract. Here the town's brief asked for something that would still work if the contract lapsed. The architects answered with mass: a heavy, breathing envelope that takes a day to feel a cold night and another to forget it.</p>
+        <aside class="note"><span class="mono">Brief, 2021</span>Keep the collection stable without relying on continuous mechanical control. The studio treated the sentence as a structural requirement.</aside>
+      </div>
+
+      <div class="row head">
+        <aside><p class="mono">&sect;1</p></aside>
+        <h2>The wall as a slow instrument</h2>
+      </div>
+
+      <div class="row">
+        <p>Read the section from the outside in. A skin of fired brick takes the weather. Behind it a channel only two centimetres wide is left open, so that air can rise through the wall and leave beneath the eaves. Behind that sits hollow clay block, plastered in lime, which absorbs moisture when the room is damp and returns it when the room is dry.</p>
+      </div>
+
+      <div class="row">
+        <p>None of this is new. Every layer would be recognised by a mason of the last century. What is unusual is that the layers have been left to be the whole system, with no membrane or mechanical backup standing by to forgive a miscalculation. The drawing is unforgiving, and the architects say they liked that about it.</p>
+        <aside class="note"><span class="mono">Reading the drawing</span>Fig. 1 is cut at the reading-room window. The vermilion line is the air path; the dimension at the top is the whole wall.</aside>
+      </div>
+
+    </div>
+
+    <div class="pull">
+      <div class="wrap">
+        <blockquote>
+          <p>A wall should be allowed to take its time.</p>
+          <footer class="mono">&mdash; Placeholder attribution, studio partner</footer>
+        </blockquote>
+      </div>
+    </div>
+
+    <div class="body wrap" style="padding-top:0">
+
+      <div class="row head">
+        <aside><p class="mono">&sect;2</p></aside>
+        <h2>A room that changes its mind slowly</h2>
+      </div>
+
+      <div class="row">
+        <p>Inside, the effect is difficult to photograph and easy to feel. Stand in the reading room on a bright morning and the light on the plaster is soft and even, because the window reveals are deep enough to be rooms of their own. Sit by the window and you notice the sill is wide enough for a book, a cup, an elbow. The thickness has been put to use.</p>
+      </div>
+
+      <div class="row">
+        <p>There are costs, and the architects list them without being asked. The footprint is larger for the same floor area. The window openings are fewer and each one is a piece of joinery. The building cannot be adjusted by turning a dial, so it has to be run by people who understand it, and the archivists have written a short manual that begins with how to open a window.</p>
+        <aside class="note"><span class="mono">Trade-off</span>Thick walls consume plan area. The studio estimates the loss and accepts it; the figure here is left for the real feature.</aside>
+      </div>
+
+      <div class="row">
+        <p>Whether the approach travels is the question the profession will argue over. It suits a cool climate, a modest collection and a client willing to be patient. It would be foolish to apply it to a glass-fronted tower. But as a rebuke to the idea that every building must be an appliance, it is the clearest argument made in brick in some years.</p>
+      </div>
+
+      <div class="row">
+        <div class="fig sheet">
+          <h2>Fact sheet</h2>
+          <dl>
+            <dt class="mono">Building</dt><dd>Halden Municipal Archive</dd>
+            <dt class="mono">Place</dt><dd>Orsolt</dd>
+            <dt class="mono">Architects</dt><dd>Marrow &amp; Quay</dd>
+            <dt class="mono">Outer wall</dt><dd>600 mm: brick, air channel, hollow clay block</dd>
+            <dt class="mono">Completed</dt><dd>2026</dd>
+            <dt class="mono">Status</dt><dd>Placeholder data, replace before publishing</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="colophon">
+  <div class="wrap">
+    <p class="mono">Plinth &middot; No. 14 &middot; Autumn 2026</p>
+    <p>Plinth is a fictional quarterly used here as a stand-in. Names, places, figures and quotations in this feature are placeholders.</p>
+  </div>
+</footer>
+</body>
+</html>

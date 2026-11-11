@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atmos — Weather</title>
+<meta name="description" content="Atmos: current conditions, hourly and 7-day forecasts for San Francisco, Tokyo, London and New York.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Geist', 'system-ui', 'sans-serif'], mono: ['"Geist Mono"', 'ui-monospace', 'monospace'] },
+        colors: {
+          ink: { DEFAULT: '#14202b', soft: '#4a5866', mute: '#6b7885' },
+          paper: '#f4f2ee',
+          line: '#e2ded6'
+        }
+      }
+    }
+  };
+</script>
+<style>
+  :root { --sky-a: #cfe0ee; --sky-b: #eef1f2; }
+  body { background: #f4f2ee; }
+  .num { font-variant-numeric: tabular-nums; }
+  .hero { background: linear-gradient(165deg, var(--sky-a) 0%, var(--sky-b) 78%); transition: background .6s ease; }
+  .scroll-x { scrollbar-width: thin; scrollbar-color: #cdc8be transparent; }
+  .scroll-x::-webkit-scrollbar { height: 6px; }
+  .scroll-x::-webkit-scrollbar-thumb { background: #cdc8be; border-radius: 3px; }
+  .range-track { background: #e9e5de; }
+  .range-fill { background: linear-gradient(90deg, #6aa6d6, #e9b949 60%, #e0874a); }
+  :focus-visible { outline: 2px solid #1d6fb8; outline-offset: 2px; border-radius: 6px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body class="font-sans text-ink antialiased min-h-screen">
+<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 bg-white px-3 py-2 rounded-md shadow">Skip to forecast</a>
+
+<header class="max-w-6xl mx-auto px-4 sm:px-6 pt-5 pb-4">
+  <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+    <a href="#" class="flex items-center gap-2 mr-auto" aria-label="Atmos home">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#14202b"/><path d="M6 19c3-3 6-3 10 0s7 3 10 0" stroke="#f4f2ee" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="20" cy="11" r="3.2" fill="#e9b949"/></svg>
+      <span class="text-lg font-semibold tracking-tight">Atmos</span>
+    </a>
+
+    <form id="searchForm" class="order-3 sm:order-none w-full sm:w-auto relative" role="search" autocomplete="off">
+      <label for="cityInput" class="sr-only">Search for a city</label>
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-mute" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="cityInput" type="text" list="cityList" placeholder="Search city" class="w-full sm:w-60 h-10 pl-9 pr-3 rounded-lg bg-white border border-line text-sm placeholder:text-ink-mute focus:outline-none focus:border-ink-soft" aria-describedby="searchMsg">
+      <datalist id="cityList"></datalist>
+      <p id="searchMsg" class="sr-only sm:not-sr-only absolute left-0 top-full mt-1 text-xs text-[#a34a1f] whitespace-nowrap" aria-live="polite"></p>
+    </form>
+
+    <div class="flex items-center rounded-lg bg-white border border-line p-0.5" role="group" aria-label="Temperature unit">
+      <button type="button" data-unit="C" class="unit-btn h-8 px-3 rounded-md text-sm font-medium" aria-pressed="true">°C</button>
+      <button type="button" data-unit="F" class="unit-btn h-8 px-3 rounded-md text-sm font-medium" aria-pressed="false">°F</button>
+    </div>
+  </div>
+
+  <nav aria-label="Saved cities" class="mt-4 -mx-1 overflow-x-auto scroll-x">
+    <ul id="cityTabs" class="flex gap-1 px-1 pb-1 min-w-max"></ul>
+  </nav>
+</header>
+
+<main id="main" class="max-w-6xl mx-auto px-4 sm:px-6 pb-16 space-y-5">
+
+  <!-- Current conditions -->
+  <section aria-labelledby="cityName" class="grid lg:grid-cols-12 gap-5">
+    <div id="hero" class="hero lg:col-span-7 rounded-2xl p-6 sm:p-8 relative overflow-hidden flex flex-col">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 id="cityName" class="text-2xl sm:text-3xl font-semibold tracking-tight">San Francisco</h1>
+          <p class="text-sm text-ink-soft mt-1"><span id="country">California, USA</span> · <time id="localTime" class="num">--:--</time></p>
+        </div>
+        <div id="heroIcon" class="w-20 h-20 sm:w-28 sm:h-28 shrink-0 -mt-1 -mr-1" aria-hidden="true"></div>
+      </div>
+
+      <div class="mt-6 sm:mt-10 lg:mb-8 flex items-end gap-5 flex-wrap">
+        <p class="leading-none">
+          <span class="sr-only">Current temperature </span>
+          <span id="curTemp" class="text-[96px] sm:text-[136px] font-light tracking-tighter num">19°</span>
+        </p>
+        <div class="pb-3 sm:pb-5">
+          <p id="curCond" class="text-xl sm:text-2xl font-medium">Partly Cloudy</p>
+          <p class="text-ink-soft mt-1 num"><span>H</span> <span id="curHi">22°</span> <span class="mx-1 text-ink-mute">/</span> <span>L</span> <span id="curLo">14°</span></p>
+        </div>
+      </div>
+
+      <p id="summary" class="mt-6 lg:mt-auto max-w-md text-[15px] text-ink-soft border-t border-ink/10 pt-4"></p>
+    </div>
+
+    <!-- Details -->
+    <div class="lg:col-span-5 rounded-2xl bg-white border border-line p-5 sm:p-6">
+      <h2 class="text-sm font-medium text-ink-mute">Details</h2>
+      <dl id="details" class="mt-3 grid grid-cols-2 gap-x-6"></dl>
+
+      <div class="mt-5 pt-5 border-t border-line">
+        <h3 class="sr-only">Sun</h3>
+        <svg id="sunArc" viewBox="0 0 300 92" class="w-full h-auto" role="img" aria-label="Sun position"></svg>
+        <div class="flex justify-between text-sm mt-1">
+          <p><span class="text-ink-mute block text-xs">Sunrise</span><span id="sunrise" class="font-medium num">6:42 AM</span></p>
+          <p class="text-right"><span class="text-ink-mute block text-xs">Sunset</span><span id="sunset" class="font-medium num">7:28 PM</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hourly -->
+  <section aria-labelledby="hourlyTitle" class="rounded-2xl bg-white border border-line p-5 sm:p-6">
+    <div class="flex items-baseline justify-between">
+      <h2 id="hourlyTitle" class="text-sm font-medium text-ink-mute">Next 24 hours</h2>
+      <p class="text-xs text-ink-mute">Scroll for more</p>
+    </div>
+    <div class="mt-4 overflow-x-auto scroll-x -mx-5 sm:-mx-6 px-5 sm:px-6" tabindex="0" aria-label="Hourly forecast, scrollable">
+      <div class="relative min-w-max">
+        <svg id="hourlyLine" class="absolute left-0 top-[78px] pointer-events-none" height="56" aria-hidden="true"></svg>
+        <ol id="hourly" class="flex"></ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 day -->
+  <section aria-labelledby="dailyTitle" class="rounded-2xl bg-white border border-line p-5 sm:p-6">
+    <h2 id="dailyTitle" class="text-sm font-medium text-ink-mute">7-day forecast</h2>
+    <ol id="daily" class="mt-2 divide-y divide-line"></ol>
+  </section>
+
+  <p class="text-xs text-ink-mute">Forecast data shown is sample data for demonstration. Times are local to each city.</p>
+</main>
+
+<script>
+/* ---------- Data (°C, km/h, km) ---------- */
+const CITIES = {
+  sf: {
+    name: 'San Francisco', region: 'California, USA', tz: 'America/Los_Angeles',
+    temp: 19, code: 'pcloudy', hi: 22, lo: 14, feels: 18, humidity: 64, wind: 12, windDir: 'W', uv: 5, vis: 10,
+    sunrise: '06:42', sunset: '19:28',
+    hourly: [15,15,14,14,14,14,14,15,16,17,18,19,20,21,22,22,21,20,19,18,17,16,16,15],
+    hcode:  ['clear','clear','pcloudy','fog','fog','fog','fog','fog','fog','pcloudy','pcloudy','pcloudy','pcloudy','clear','clear','clear','pcloudy','pcloudy','pcloudy','fog','fog','pcloudy','clear','clear'],
+    hrain:  [0,0,0,5,5,5,5,5,5,0,0,0,0,0,0,0,0,0,0,5,5,0,0,0],
+    daily: [[22,14,'pcloudy',0],[21,13,'fog',5],[20,13,'cloudy',10],[18,12,'rain',60],[19,12,'pcloudy',20],[21,13,'clear',0],[23,14,'clear',0]]
+  },
+  tokyo: {
+    name: 'Tokyo', region: 'Japan', tz: 'Asia/Tokyo',
+    temp: 23, code: 'clear', hi: 26, lo: 18, feels: 24, humidity: 58, wind: 9, windDir: 'SE', uv: 6, vis: 16,
+    sunrise: '05:21', sunset: '18:41',
+    hourly: [19,19,18,18,18,18,19,20,21,23,24,25,26,26,26,25,24,23,22,21,21,20,20,19],
+    hcode:  ['clear','clear','clear','clear','clear','clear','clear','clear','clear','clear','clear','clear','pcloudy','pcloudy','pcloudy','pcloudy','pcloudy','clear','clear','clear','clear','clear','clear','clear'],
+    hrain:  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5,5,0,0,0,0,0,0,0],
+    daily: [[26,18,'clear',0],[25,19,'pcloudy',10],[23,18,'rain',70],[22,17,'rain',80],[24,17,'cloudy',30],[26,18,'pcloudy',10],[27,19,'clear',0]]
+  },
+  london: {
+    name: 'London', region: 'United Kingdom', tz: 'Europe/London',
+    temp: 13, code: 'rain', hi: 15, lo: 9, feels: 11, humidity: 82, wind: 19, windDir: 'SW', uv: 2, vis: 7,
+    sunrise: '06:58', sunset: '19:12',
+    hourly: [10,10,9,9,9,9,10,10,11,12,13,14,14,15,15,15,14,13,13,12,12,11,11,10],
+    hcode:  ['cloudy','cloudy','cloudy','rain','rain','rain','cloudy','cloudy','rain','rain','rain','rain','cloudy','cloudy','pcloudy','pcloudy','rain','rain','cloudy','cloudy','cloudy','cloudy','pcloudy','pcloudy'],
+    hrain:  [20,20,30,60,70,60,40,40,55,70,75,60,40,35,20,20,50,55,40,30,30,25,15,10],
+    daily: [[15,9,'rain',75],[14,8,'rain',65],[16,10,'cloudy',30],[17,10,'pcloudy',15],[16,11,'rain',60],[15,9,'cloudy',35],[17,10,'pcloudy',10]]
+  },
+  nyc: {
+    name: 'New York', region: 'New York, USA', tz: 'America/New_York',
+    temp: 17, code: 'clear', hi: 20, lo: 11, feels: 16, humidity: 48, wind: 15, windDir: 'NW', uv: 4, vis: 16,
+    sunrise: '06:31', sunset: '19:14',
+    hourly: [13,12,12,11,11,11,12,13,14,15,17,18,19,20,20,20,19,18,17,16,15,14,14,13],
+    hcode:  ['clear','clear','clear','clear','clear','clear','clear','clear','clear','clear','clear','clear','pcloudy','pcloudy','pcloudy','clear','clear','clear','clear','clear','pcloudy','pcloudy','clear','clear'],
+    hrain:  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    daily: [[20,11,'clear',0],[22,13,'pcloudy',10],[24,15,'pcloudy',20],[21,14,'rain',65],[17,10,'cloudy',30],[18,9,'clear',0],[19,10,'clear',0]]
+  }
+};
+const LABEL = { clear: 'Clear', pcloudy: 'Partly Cloudy', cloudy: 'Cloudy', rain: 'Light Rain', fog: 'Fog' };
+const SKY = {
+  clear:   ['#bcdcf3', '#f1f0ea'],
+  pcloudy: ['#c9dbe8', '#eff0ee'],
+  cloudy:  ['#d3d8dd', '#efeeeb'],
+  rain:    ['#b9c6d1', '#e9ebec'],
+  fog:     ['#dcdedd', '#f1f0ec'],
+  night:   ['#2a3a52', '#4a5a70']
+};
+
+/* ---------- Icons ---------- */
+const C_SUN = '#e9b949', C_CLOUD = '#ffffff', C_CLOUD_EDGE = '#8a98a6', C_MOON = '#c9d3e0', C_RAIN = '#3d82c4';
+function icon(code, night) {
+  const sun = `<circle cx="22" cy="22" r="9" fill="${C_SUN}"/><g stroke="${C_SUN}" stroke-width="2.5" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>{const r=a*Math.PI/180;return `<line x1="${22+Math.cos(r)*13}" y1="${22+Math.sin(r)*13}" x2="${22+Math.cos(r)*16.5}" y2="${22+Math.sin(r)*16.5}"/>`}).join('')}</g>`;
+  const moon = `<path d="M28 9a12 12 0 1 0 9 17A10 10 0 0 1 28 9z" fill="${C_MOON}" stroke="#7d8da0" stroke-width="1.2"/>`;
+  const cloud = (x=0,y=0,f=C_CLOUD) => `<path transform="translate(${x} ${y})" d="M18 46h26a9 9 0 0 0 0-18 13 13 0 0 0-25-3 10 10 0 0 0-1 21z" fill="${f}" stroke="${C_CLOUD_EDGE}" stroke-width="1.6" stroke-linejoin="round"/>`;
+  let body;
+  switch (code) {
+    case 'clear':   body = night ? `<g transform="translate(6 6)">${moon}</g>` : `<g transform="translate(10 10)">${sun}</g>`; break;
+    case 'pcloudy': body = (night ? moon : sun) + cloud(4, 6); break;
+    case 'cloudy':  body = cloud(-6,-4,'#eef1f4') + cloud(4,6); break;
+    case 'rain':    body = cloud(2,-2) + `<g stroke="${C_RAIN}" stroke-width="2.6" stroke-linecap="round"><line x1="24" y1="50" x2="21" y2="57"/><line x1="34" y1="50" x2="31" y2="57"/><line x1="44" y1="50" x2="41" y2="57"/></g>`; break;
+    case 'fog':     body = cloud(2,-6) + `<g stroke="#9aa6b1" stroke-width="2.6" stroke-linecap="round"><line x1="14" y1="48" x2="50" y2="48"/><line x1="20" y1="55" x2="56" y2="55"/></g>`; break;
+  }
+  return `<svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true">${body}</svg>`;
+}
+
+/* ---------- State ---------- */
+const store = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} } };
+let state = { city: CITIES[store.get('atmos.city')] ? store.get('atmos.city') : 'sf', unit: store.get('atmos.unit') === 'F' ? 'F' : 'C' };
+
+const t = c => state.unit === 'C' ? Math.round(c) : Math.round(c * 9/5 + 32);
+const deg = c => `${t(c)}°`;
+const toMin = s => { const [h,m] = s.split(':').map(Number); return h*60+m; };
+const fmt12 = mins => { let h = Math.floor(mins/60)%24, m = mins%60; const ap = h >= 12 ? 'PM' : 'AM'; h = h%12 || 12; return `${h}:${String(m).padStart(2,'0')} ${ap}`; };
+const hourLabel = h => { const ap = h >= 12 ? 'PM' : 'AM'; return `${h%12 || 12} ${ap}`; };
+
+function localNow(tz) {
+  const parts = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour12: false, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', weekday:'short' }).formatToParts(new Date());
+  const g = type => parts.find(p => p.type === type).value;
+  const hour = Number(g('hour')) % 24;
+  return { hour, minute: Number(g('minute')), weekday: g('weekday'), y: +g('year'), mo: +g('month'), d: +g('day') };
+}
+const isNight = (h, c) => { const m = h*60; return m < toMin(c.sunrise) || m >= toMin(c.sunset); };
+
+/* ---------- Render ---------- */
+function renderTabs() {
+  const ul = document.getElementById('cityTabs');
+  ul.innerHTML = Object.entries(CITIES).map(([id, c]) => {
+    const now = localNow(c.tz), active = id === state.city;
+    return `<li><button type="button" data-city="${id}" aria-current="${active ? 'true' : 'false'}"
+      class="flex items-center gap-2 h-9 pl-2.5 pr-3 rounded-lg text-sm border transition-colors ${active ? 'bg-ink text-white border-ink' : 'bg-white/60 border-line hover:bg-white text-ink'}">
+      <span class="w-5 h-5" aria-hidden="true">${icon(c.code, isNight(now.hour, c))}</span>
+      <span class="font-medium">${c.name}</span>
+      <span class="num ${active ? 'text-white/70' : 'text-ink-mute'}">${deg(c.temp)}</span></button></li>`;
+  }).join('');
+  document.getElementById('cityList').innerHTML = Object.values(CITIES).map(c => `<option value="${c.name}">`).join('');
+}
+
+function renderClock() {
+  const c = CITIES[state.city];
+  const time = new Intl.DateTimeFormat('en-US', { timeZone: c.tz, weekday: 'long', hour: 'numeric', minute: '2-digit' }).format(new Date());
+  const el = document.getElementById('localTime');
+  el.textContent = time;
+  el.setAttribute('datetime', new Date().toISOString());
+  renderSun();
+}
+
+function renderSun() {
+  const c = CITIES[state.city], now = localNow(c.tz), cur = now.hour*60 + now.minute;
+  const rise = toMin(c.sunrise), set = toMin(c.sunset);
+  const p = Math.max(0, Math.min(1, (cur - rise) / (set - rise)));
+  const up = cur >= rise && cur <= set;
+  const x0 = 20, x1 = 280, base = 80, H = 66;
+  const pt = q => { const a = Math.PI * (1 - q); return [150 + Math.cos(a)*130, base - Math.sin(a)*H]; };
+  const [sx, sy] = pt(p);
+  let doneArc = '';
+  if (p > 0) { const steps = 40; doneArc = 'M' + Array.from({length: steps+1}, (_, i) => pt(p*i/steps).map(n=>n.toFixed(1)).join(' ')).join(' L'); }
+  const svg = document.getElementById('sunArc');
+  svg.innerHTML = `
+    <line x1="0" y1="${base}" x2="300" y2="${base}" stroke="#e2ded6" stroke-width="1.5"/>
+    <path d="M${x0} ${base} A130 ${H} 0 0 1 ${x1} ${base}" fill="none" stroke="#d6d1c7" stroke-width="1.5" stroke-dasharray="3 5"/>
+    ${doneArc ? `<path d="${doneArc}" fill="none" stroke="${C_SUN}" stroke-width="2.5" stroke-linecap="round"/>` : ''}
+    ${up ? `<circle cx="${sx}" cy="${sy}" r="8" fill="${C_SUN}"/><circle cx="${sx}" cy="${sy}" r="13" fill="${C_SUN}" opacity=".22"/>` : `<circle cx="${cur < rise ? x0 : x1}" cy="${base}" r="5" fill="#8a98a6"/>`}`;
+  const daylight = set - rise;
+  svg.setAttribute('aria-label', up
+    ? `Sun is up. ${Math.round(p*100)}% of today's ${Math.floor(daylight/60)} h ${daylight%60} min of daylight has passed.`
+    : `Sun is down. Daylight lasts ${Math.floor(daylight/60)} h ${daylight%60} min.`);
+}
+
+function uvLabel(u) { return u <= 2 ? 'Low' : u <= 5 ? 'Moderate' : u <= 7 ? 'High' : u <= 10 ? 'Very high' : 'Extreme'; }
+
+function buildHours() {
+  const c = CITIES[state.city], now = localNow(c.tz);
+  return Array.from({ length: 24 }, (_, i) => {
+    const h = (now.hour + i) % 24;
+    const delta = c.temp - c.hourly[now.hour];
+    return { h, now: i === 0, temp: Math.round(c.hourly[h] + delta * Math.max(0, 1 - i / 6)), code: i === 0 ? c.code : c.hcode[h], rain: c.hrain[h], night: isNight(h, c) };
+  });
+}
+
+function summarize(c, hours) {
+  const rest = hours.slice(1);
+  const max = rest.reduce((a, b) => b.temp > a.temp ? b : a);
+  const wet = hours.filter(x => x.rain >= 40);
+  const parts = [];
+  if (max.temp > c.temp) parts.push(`Warming to ${deg(max.temp)} around ${hourLabel(max.h)}.`);
+  else parts.push(`Cooling through the evening, down to ${deg(Math.min(...rest.map(x => x.temp)))} overnight.`);
+  if (wet.length) parts.push(`Rain likely around ${hourLabel(wet[0].h)} — take an umbrella.`);
+  else parts.push('No rain expected in the next 24 hours.');
+  const fog = hours.find(x => x.code === 'fog' && !x.now);
+  if (fog && !wet.length) parts.push(`Fog may roll in near ${hourLabel(fog.h)}.`);
+  if (c.uv >= 6) parts.push('UV is high at midday — wear sunscreen.');
+  return parts.join(' ');
+}
+
+function render() {
+  const c = CITIES[state.city], now = localNow(c.tz), night = isNight(now.hour, c);
+  document.title = `${c.name} ${deg(c.temp)} · Atmos`;
+
+  // hero
+  document.getElementById('cityName').textContent = c.name;
+  document.getElementById('country').textContent = c.region;
+  document.getElementById('curTemp').textContent = deg(c.temp);
+  document.getElementById('curCond').textContent = LABEL[c.code];
+  document.getElementById('curHi').textContent = deg(c.hi);
+  document.getElementById('curLo').textContent = deg(c.lo);
+  document.getElementById('heroIcon').innerHTML = icon(c.code, night);
+  const hero = document.getElementById('hero');
+  const sky = night ? SKY.night : SKY[c.code];
+  hero.style.setProperty('--sky-a', sky[0]); hero.style.setProperty('--sky-b', sky[1]);
+  hero.classList.toggle('text-white', night);
+  hero.querySelectorAll('.text-ink-soft').forEach(e => e.style.color = night ? 'rgba(255,255,255,.78)' : '');
+  hero.querySelector('#summary').style.borderColor = night ? 'rgba(255,255,255,.18)' : '';
+
+  // details
+  const d = [
+    ['Feels like', deg(c.feels), c.feels < c.temp ? 'Wind makes it feel cooler' : c.feels > c.temp ? 'Humidity makes it feel warmer' : 'Same as actual'],
+    ['Humidity', `${c.humidity}%`, `Dew point ${deg(c.temp - (100 - c.humidity)/5)}`],
+    ['Wind', state.unit === 'C' ? `${c.wind} km/h` : `${Math.round(c.wind*0.621)} mph`, `From the ${c.windDir}`],
+    ['UV index', `${c.uv}`, uvLabel(c.uv)],
+    ['Visibility', state.unit === 'C' ? `${c.vis} km` : `${Math.round(c.vis*0.621)} mi`, c.vis >= 10 ? 'Clear view' : 'Reduced by rain'],
+    ['Daylight', `${Math.floor((toMin(c.sunset)-toMin(c.sunrise))/60)} h ${(toMin(c.sunset)-toMin(c.sunrise))%60} m`, 'Sunrise to sunset']
+  ];
+  document.getElementById('details').innerHTML = d.map(([k, v, n]) => `
+    <div class="py-3 border-b border-line">
+      <dt class="text-xs text-ink-mute">${k}</dt>
+      <dd class="text-xl font-medium num mt-0.5">${v}</dd>
+      <dd class="text-xs text-ink-soft mt-0.5">${n}</dd>
+    </div>`).join('');
+  document.getElementById('sunrise').textContent = fmt12(toMin(c.sunrise));
+  document.getElementById('sunset').textContent = fmt12(toMin(c.sunset));
+
+  // hourly
+  const hours = buildHours();
+  const W = 68;
+  document.getElementById('hourly').innerHTML = hours.map(x => `
+    <li class="w-[68px] shrink-0 flex flex-col items-center text-center ${x.now ? '' : ''}">
+      <span class="text-xs ${x.now ? 'font-semibold text-ink' : 'text-ink-mute'} num">${x.now ? 'Now' : hourLabel(x.h)}</span>
+      <span class="w-9 h-9 mt-2" aria-hidden="true">${icon(x.code, x.night)}</span>
+      <span class="sr-only">${LABEL[x.code]},</span>
+      <span class="text-[11px] h-4 mt-0.5 num ${x.rain >= 20 ? 'text-[#2f6fae] font-medium' : 'text-transparent'}">${x.rain >= 20 ? x.rain + '%' : '0%'}${x.rain >= 20 ? '<span class="sr-only"> chance of rain,</span>' : ''}</span>
+      <span class="h-[52px]"></span>
+      <span class="text-sm font-medium num ${x.now ? '' : 'text-ink'}">${deg(x.temp)}</span>
+    </li>`).join('');
+  const temps = hours.map(x => x.temp), mn = Math.min(...temps), mx = Math.max(...temps);
+  const yOf = v => 46 - ((v - mn) / Math.max(1, mx - mn)) * 36;
+  const pts = temps.map((v, i) => [i*W + W/2, yOf(v)]);
+  const line = document.getElementById('hourlyLine');
+  line.setAttribute('width', hours.length * W);
+  line.innerHTML = `
+    <path d="M${pts.map(p => p.join(' ')).join(' L')}" fill="none" stroke="#e0874a" stroke-width="2" stroke-linejoin="round"/>
+    ${pts.map((p, i) => `<circle cx="${p[0]}" cy="${p[1]}" r="${i === 0 ? 4.5 : 2.5}" fill="${i === 0 ? '#e0874a' : '#fff'}" stroke="#e0874a" stroke-width="1.6"/>`).join('')}`;
+
+  document.getElementById('summary').textContent = summarize(c, hours);
+
+  // daily
+  const allLo = Math.min(...c.daily.map(x => x[1])), allHi = Math.max(...c.daily.map(x => x[0]));
+  const span = Math.max(1, allHi - allLo);
+  const base = new Date(Date.UTC(now.y, now.mo - 1, now.d));
+  document.getElementById('daily').innerHTML = c.daily.map(([hi, lo, code, rain], i) => {
+    const dt = new Date(base); dt.setUTCDate(base.getUTCDate() + i);
+    const name = i === 0 ? 'Today' : dt.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' });
+    const date = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+    const left = (lo - allLo) / span * 100, width = (hi - lo) / span * 100;
+    return `<li class="grid grid-cols-[4.5rem_2.25rem_2.75rem_1fr] sm:grid-cols-[7rem_2.5rem_8rem_1fr] items-center gap-3 py-3">
+      <p><span class="font-medium ${i === 0 ? '' : ''}">${name}</span><span class="block text-xs text-ink-mute num">${date}</span></p>
+      <span class="w-9 h-9" aria-hidden="true">${icon(code, false)}</span>
+      <p class="text-xs leading-tight"><span class="hidden sm:inline text-ink-soft">${LABEL[code]}</span><span class="sm:hidden sr-only">${LABEL[code]}</span>
+        <span class="block num ${rain >= 20 ? 'text-[#2f6fae] font-medium' : 'text-ink-mute'}">${rain >= 20 ? rain + '%' : '—'}<span class="sr-only"> chance of rain</span></span></p>
+      <div class="flex items-center gap-3 num">
+        <span class="w-9 text-right text-ink-mute"><span class="sr-only">Low </span>${deg(lo)}</span>
+        <span class="relative flex-1 h-1.5 rounded-full range-track" aria-hidden="true">
+          <span class="absolute inset-y-0 rounded-full range-fill" style="left:${left}%;width:${Math.max(width, 4)}%"></span>
+          ${i === 0 ? `<span class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-white border-2 border-ink" style="left:${(c.temp-allLo)/span*100}%"></span>` : ''}
+        </span>
+        <span class="w-9 font-medium"><span class="sr-only">High </span>${deg(hi)}</span>
+      </div>
+    </li>`;
+  }).join('');
+
+  // unit buttons
+  document.querySelectorAll('.unit-btn').forEach(b => {
+    const on = b.dataset.unit === state.unit;
+    b.setAttribute('aria-pressed', on);
+    b.className = `unit-btn h-8 px-3 rounded-md text-sm font-medium transition-colors ${on ? 'bg-ink text-white' : 'text-ink-soft hover:text-ink'}`;
+  });
+
+  renderTabs();
+  renderClock();
+}
+
+/* ---------- Events ---------- */
+function setCity(id) { state.city = id; store.set('atmos.city', id); render(); }
+document.getElementById('cityTabs').addEventListener('click', e => {
+  const b = e.target.closest('[data-city]'); if (b) setCity(b.dataset.city);
+});
+document.querySelectorAll('.unit-btn').forEach(b => b.addEventListener('click', () => { state.unit = b.dataset.unit; store.set('atmos.unit', state.unit); render(); }));
+
+const input = document.getElementById('cityInput'), msg = document.getElementById('searchMsg');
+function findCity(q) {
+  q = q.trim().toLowerCase(); if (!q) return null;
+  const alias = { sf: 'sf', 'san fran': 'sf', nyc: 'nyc', ny: 'nyc', 'new york city': 'nyc', manhattan: 'nyc' };
+  if (alias[q]) return alias[q];
+  return Object.keys(CITIES).find(id => CITIES[id].name.toLowerCase().startsWith(q)) || null;
+}
+document.getElementById('searchForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const id = findCity(input.value);
+  if (id) { msg.textContent = ''; input.value = ''; setCity(id); document.getElementById('cityName').focus?.(); }
+  else msg.textContent = input.value.trim() ? `No forecast for “${input.value.trim()}”. Try San Francisco, Tokyo, London or New York.` : '';
+});
+input.addEventListener('input', () => {
+  const exact = Object.keys(CITIES).find(id => CITIES[id].name.toLowerCase() === input.value.trim().toLowerCase());
+  if (exact) { input.value = ''; msg.textContent = ''; setCity(exact); }
+});
+
+render();
+setInterval(renderClock, 15000);
+</script>
+</body>
+</html>

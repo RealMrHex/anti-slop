@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relay API usage</title>
+<style>
+:root {
+  color-scheme: light dark;
+  /* surfaces and text */
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --ink: #14181f;
+  --muted: #566070;
+  --rule: #d9dee6;
+  --control-edge: #7d8899;   /* >= 3:1 on --surface and --bg */
+  /* roles */
+  --accent: #1a5fd0;
+  --on-accent: #ffffff;
+  --danger: #b3261e;
+  --warn: #8a5300;
+  --ok: #1b6e3c;
+  --bar: #7d8a9c;
+  --bar-track: #e6e9ee;
+  --hatch-a: #c3cad5;
+  --hatch-b: #e6e9ee;
+  --hatch-over-a: #e9a8a3;
+  --hatch-over-b: #f7dedc;
+  /* spacing scale */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1218;
+    --surface: #151a22;
+    --ink: #e7eaef;
+    --muted: #9ba5b4;
+    --rule: #2a323e;
+    --control-edge: #6d7889;
+    --accent: #86b4ff;
+    --on-accent: #0a1220;
+    --danger: #ff8f86;
+    --warn: #f0b560;
+    --ok: #72d392;
+    --bar: #6c7b90;
+    --bar-track: #232a35;
+    --hatch-a: #3b4554;
+    --hatch-b: #252d39;
+    --hatch-over-a: #7a3a36;
+    --hatch-over-b: #3a2423;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.5 var(--sans);
+}
+.vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code, .mono { font-family: var(--mono); }
+.num { font-variant-numeric: tabular-nums; }
+
+.skip {
+  position: absolute; left: var(--s3); top: -48px; z-index: 10;
+  background: var(--surface); color: var(--ink); padding: var(--s2) var(--s3);
+  border: 1px solid var(--control-edge); border-radius: 4px;
+}
+.skip:focus { top: var(--s3); }
+
+.wrap { max-width: 1280px; margin: 0 auto; padding: 0 var(--s4); }
+
+/* ---------- header ---------- */
+header.top { background: var(--surface); border-bottom: 1px solid var(--rule); }
+header.top .wrap {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--s3) var(--s5); padding-top: var(--s3); padding-bottom: var(--s3);
+}
+.ident { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s1) var(--s4); }
+h1 { margin: 0; font-size: 16px; line-height: 1.3; font-weight: 650; }
+.ctx { color: var(--muted); font-size: 13px; }
+.ctx b { color: var(--ink); font-weight: 600; font-family: var(--mono); font-size: 12px; }
+.sample { color: var(--muted); font-size: 12px; }
+
+fieldset.range { margin: 0; padding: 0; border: 0; min-width: 0; }
+fieldset.range legend { padding: 0; margin-bottom: var(--s1); color: var(--muted); font-size: 12px; }
+.seg { display: inline-flex; border: 1px solid var(--control-edge); border-radius: 4px; overflow: hidden; }
+.seg label { position: relative; display: block; }
+.seg label + label { border-left: 1px solid var(--control-edge); }
+.seg input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.seg span {
+  display: block; min-width: 72px; padding: var(--s2) var(--s3); text-align: center;
+  font-size: 13px; background: var(--surface); color: var(--ink); cursor: pointer;
+}
+.seg input:hover + span { background: var(--bar-track); }
+.seg input:checked + span { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+.seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: -4px; }
+.seg input:checked:focus-visible + span { outline-color: var(--on-accent); }
+
+/* ---------- main ---------- */
+main { padding-top: var(--s5); padding-bottom: var(--s7); }
+section + section { margin-top: var(--s6); }
+h2 { margin: 0; font-size: 13px; line-height: 1.3; font-weight: 650; letter-spacing: .02em; text-transform: uppercase; color: var(--muted); }
+h3 { margin: 0; font-size: 13px; font-weight: 600; }
+
+/* lead: what needs attention */
+.lead { margin: 0 0 var(--s4); max-width: 70ch; font-size: 20px; line-height: 1.35; font-weight: 600; text-wrap: balance; }
+.lead code { font-size: 18px; font-weight: 650; }
+.lead.ok { color: var(--ink); }
+.lead .flag { color: var(--danger); }
+
+.figures { display: flex; flex-wrap: wrap; gap: var(--s4) 0; margin: 0; padding: var(--s4) 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.fig { flex: 1 1 180px; padding: 0 var(--s5); }
+.fig:first-child { padding-left: 0; flex-grow: 1.4; }
+.fig + .fig { border-left: 1px solid var(--rule); }
+.fig dt { color: var(--muted); font-size: 13px; }
+.fig .v { margin: 0; font-size: 24px; line-height: 1.2; font-weight: 650; font-variant-numeric: tabular-nums; }
+.fig-lead .v { font-size: 36px; line-height: 1.1; }
+.fig .d { margin: var(--s1) 0 0; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.fig .d .adverse { color: var(--danger); font-weight: 600; }
+
+/* chart + quota */
+.split { display: grid; gap: var(--s6) var(--s6); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 980px) { .split { grid-template-columns: minmax(0, 1fr) 320px; } .split > section + section { margin-top: 0; } }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--s1) var(--s4); margin-bottom: var(--s3); }
+.sec-head .hint { color: var(--muted); font-size: 12px; }
+
+.charts { outline-offset: 4px; border-radius: 4px; touch-action: pan-y; }
+.charts figure { margin: 0; }
+.charts figure + figure { margin-top: var(--s4); }
+.charts figcaption { display: flex; justify-content: space-between; margin-bottom: var(--s1); }
+.charts svg { display: block; width: 100%; overflow: visible; }
+.t { fill: var(--muted); font: 12px var(--sans); }
+.t.end { text-anchor: end; }
+.t.mid { text-anchor: middle; }
+.gl { stroke: var(--rule); stroke-width: 1; }
+.slo { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 3; }
+.eline { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-linejoin: round; }
+.breach { fill: var(--danger); stroke: var(--bg); stroke-width: 1.5; }
+.bar { fill: var(--bar); }
+.bar.sel { fill: var(--ink); }
+.cursor { stroke: var(--accent); stroke-width: 1.5; }
+.readout { margin: var(--s3) 0 0; min-height: 21px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.readout .k { color: var(--muted); }
+details.tbl { margin-top: var(--s3); font-size: 13px; }
+details.tbl summary { cursor: pointer; color: var(--muted); width: max-content; padding: var(--s1) 0; }
+details.tbl .scroll { max-height: 260px; margin-top: var(--s2); }
+.mini { border-collapse: collapse; width: 100%; font-size: 12px; }
+.mini th, .mini td { padding: var(--s1) var(--s3); text-align: right; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.mini th:first-child, .mini td:first-child { text-align: left; }
+.mini thead th { position: sticky; top: 0; background: var(--bg); color: var(--muted); font-weight: 600; }
+
+/* quota */
+.quota { border-left: 1px solid var(--rule); padding-left: var(--s5); }
+@media (max-width: 979px) { .quota { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: var(--s5); } }
+.q-big { margin: var(--s3) 0 0; font-size: 24px; line-height: 1.2; font-weight: 650; font-variant-numeric: tabular-nums; }
+.q-big small { font-size: 13px; font-weight: 400; color: var(--muted); }
+.meter { position: relative; height: 12px; margin: var(--s4) 0 0; background: var(--bar-track); border-radius: 2px; }
+.meter i { position: absolute; top: 0; bottom: 0; display: block; }
+.m-used { left: 0; background: var(--ink); border-radius: 2px 0 0 2px; }
+.m-proj { background: repeating-linear-gradient(135deg, var(--hatch-a) 0 3px, var(--hatch-b) 3px 6px); }
+.m-over { background: repeating-linear-gradient(135deg, var(--hatch-over-a) 0 3px, var(--hatch-over-b) 3px 6px); border-radius: 0 2px 2px 0; }
+.m-limit { width: 2px; top: -4px !important; bottom: -4px !important; background: var(--ink); margin-left: -1px; }
+.meter-scale { position: relative; height: 18px; margin-top: var(--s2); font-size: 12px; color: var(--muted); }
+.meter-scale span { position: absolute; top: 0; white-space: nowrap; }
+.legend { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s4); margin: var(--s3) 0 0; padding: 0; list-style: none; font-size: 12px; color: var(--muted); }
+.legend li { display: flex; align-items: center; gap: var(--s2); }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.used { background: var(--ink); }
+.sw.proj { background: repeating-linear-gradient(135deg, var(--hatch-a) 0 3px, var(--hatch-b) 3px 6px); }
+.sw.over { background: repeating-linear-gradient(135deg, var(--hatch-over-a) 0 3px, var(--hatch-over-b) 3px 6px); }
+.q-note { margin: var(--s4) 0 0; }
+.q-note.warn { color: var(--ink); }
+.q-note .flag { color: var(--danger); font-weight: 600; }
+.q-facts { margin: var(--s4) 0 0; padding-top: var(--s3); border-top: 1px solid var(--rule); display: grid; grid-template-columns: 1fr auto; gap: var(--s2) var(--s4); font-size: 13px; }
+.q-facts dt { color: var(--muted); }
+.q-facts dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* endpoints table */
+.tablewrap { overflow-x: auto; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: var(--surface); }
+table.eps { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 880px; font-size: 13px; }
+.eps th, .eps td { padding: var(--s2) var(--s3); border-bottom: 1px solid var(--rule); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; vertical-align: middle; }
+.eps tbody tr:last-child td { border-bottom: 0; }
+.eps th:first-child, .eps td:first-child { text-align: left; position: sticky; left: 0; background: var(--surface); padding-left: var(--s4); z-index: 1; }
+.eps thead th { background: var(--surface); color: var(--muted); font-weight: 600; font-size: 12px; padding-top: var(--s2); padding-bottom: var(--s2); }
+.eps thead th.l, .eps td.l { text-align: left; }
+.eps thead button {
+  all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; gap: var(--s1);
+  padding: var(--s1) var(--s2); margin: calc(var(--s1) * -1) calc(var(--s2) * -1); border-radius: 4px; min-height: 24px;
+}
+.eps thead button:hover { color: var(--ink); background: var(--bar-track); }
+.eps thead button:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; }
+.eps thead th[aria-sort="ascending"] button, .eps thead th[aria-sort="descending"] button { color: var(--ink); }
+.eps tbody tr:hover td { background: color-mix(in srgb, var(--bar-track) 55%, var(--surface)); }
+.ep { font-family: var(--mono); font-size: 12px; }
+.meth { display: inline-block; min-width: 4.2ch; color: var(--muted); font-weight: 600; }
+.bad { color: var(--danger); font-weight: 600; }
+.slow { color: var(--warn); font-weight: 600; }
+.budget { display: flex; align-items: center; gap: var(--s3); min-width: 190px; }
+.track { position: relative; flex: 0 0 96px; height: 8px; background: var(--bar-track); border-radius: 1px; }
+.track .f { position: absolute; left: 0; top: 0; bottom: 0; background: var(--bar); border-radius: 1px; }
+.track .f.over { background: var(--warn); }
+.track .tick { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: var(--ink); }
+.budget .x { color: var(--muted); font-size: 12px; min-width: 7.5ch; text-align: left; }
+.budget .x.over { color: var(--warn); font-weight: 600; }
+.st { font-weight: 600; }
+.st.good { color: var(--ok); }
+.st.bad { color: var(--danger); }
+.st.slow { color: var(--warn); }
+.st.both { color: var(--danger); }
+.key { margin: var(--s3) 0 0; color: var(--muted); font-size: 12px; max-width: 90ch; }
+
+footer { margin-top: var(--s6); color: var(--muted); font-size: 12px; max-width: 90ch; }
+
+@media (max-width: 560px) {
+  .fig, .fig:first-child { flex: 1 1 100%; padding: 0; }
+  .fig + .fig { border-left: 0; border-top: 1px solid var(--rule); padding-top: var(--s3); }
+  .fig-lead .v { font-size: 32px; }
+  .lead { font-size: 18px; }
+}
+@media (forced-colors: active) {
+  .m-used, .sw.used, .track .f, .bar { forced-color-adjust: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to usage data</a>
+
+<header class="top">
+  <div class="wrap">
+    <div class="ident">
+      <h1>Relay API usage</h1>
+      <span class="ctx">Project <b>acme-checkout</b> &middot; Environment <b>production</b> &middot; Key <b>sk_live_&hellip;4f2a</b></span>
+    </div>
+    <fieldset class="range">
+      <legend>Time range</legend>
+      <div class="seg" id="range">
+        <label><input type="radio" name="range" value="24h" checked><span>24 hours</span></label>
+        <label><input type="radio" name="range" value="7d"><span>7 days</span></label>
+        <label><input type="radio" name="range" value="30d"><span>30 days</span></label>
+      </div>
+    </fieldset>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <p class="vh" id="announce" role="status"></p>
+
+  <section aria-labelledby="sum-h">
+    <h2 id="sum-h" class="vh">Summary for selected range</h2>
+    <p class="lead" id="lead"></p>
+    <dl class="figures" id="figures"></dl>
+  </section>
+
+  <div class="split" style="margin-top: var(--s6)">
+    <section aria-labelledby="ts-h">
+      <div class="sec-head">
+        <h2 id="ts-h">Traffic and errors over time</h2>
+        <span class="hint" id="bucket-hint"></span>
+      </div>
+      <div class="charts" id="charts" tabindex="0" role="group"
+           aria-label="Error rate and request volume over time. Use left and right arrow keys to read each interval."></div>
+      <p class="readout" id="readout"></p>
+      <details class="tbl">
+        <summary>View chart data as a table</summary>
+        <div class="scroll" style="overflow:auto" tabindex="0" role="region" aria-label="Chart data table">
+          <table class="mini" id="mini"></table>
+        </div>
+      </details>
+    </section>
+
+    <section class="quota" aria-labelledby="q-h">
+      <div class="sec-head" style="margin-bottom:0"><h2 id="q-h">Monthly quota</h2></div>
+      <p class="q-big" id="q-big"></p>
+      <div class="meter" id="meter" aria-hidden="true"></div>
+      <div class="meter-scale" id="meter-scale" aria-hidden="true"></div>
+      <ul class="legend">
+        <li><span class="sw used" aria-hidden="true"></span>Used</li>
+        <li><span class="sw proj" aria-hidden="true"></span>Projected</li>
+        <li><span class="sw over" aria-hidden="true"></span>Over quota</li>
+      </ul>
+      <p class="q-note" id="q-note"></p>
+      <dl class="q-facts" id="q-facts"></dl>
+    </section>
+  </div>
+
+  <section aria-labelledby="ep-h">
+    <div class="sec-head">
+      <h2 id="ep-h">Endpoints</h2>
+      <span class="hint">Sorted by <span id="sort-label"></span>. Use the column headers to re-sort.</span>
+    </div>
+    <div class="tablewrap" tabindex="0" role="region" aria-labelledby="ep-h">
+      <table class="eps" id="eps">
+        <caption class="vh">Requests, error rate and latency per endpoint for the selected range</caption>
+        <thead>
+          <tr>
+            <th scope="col" aria-sort="none" data-k="name"><button type="button">Endpoint <span aria-hidden="true" class="arr"></span></button></th>
+            <th scope="col" aria-sort="none" data-k="req"><button type="button">Requests <span aria-hidden="true" class="arr"></span></button></th>
+            <th scope="col" aria-sort="none" data-k="rate"><button type="button">Error rate <span aria-hidden="true" class="arr"></span></button></th>
+            <th scope="col" aria-sort="none" data-k="p50"><button type="button">p50 <span aria-hidden="true" class="arr"></span></button></th>
+            <th scope="col" aria-sort="none" data-k="p95"><button type="button">p95 <span aria-hidden="true" class="arr"></span></button></th>
+            <th scope="col" aria-sort="none" data-k="p99"><button type="button">p99 <span aria-hidden="true" class="arr"></span></button></th>
+            <th scope="col" class="l" aria-sort="none" data-k="ratio"><button type="button">p95 vs budget <span aria-hidden="true" class="arr"></span></button></th>
+            <th scope="col" class="l" aria-sort="none" data-k="sev"><button type="button">Status <span aria-hidden="true" class="arr"></span></button></th>
+          </tr>
+        </thead>
+        <tbody id="eps-body"></tbody>
+      </table>
+    </div>
+    <p class="key">Targets: error rate at or below <span class="num" id="slo-txt"></span>; p95 latency within each endpoint's budget (tick mark = budget, bar ends at twice the budget). Status is text, so it does not depend on colour.</p>
+  </section>
+
+  <footer>
+    Sample data for layout and review, not a live account. Product name, project, targets and budgets are placeholders. The overall p95 is a request-weighted mix of endpoint p95 values and is indicative only.
+  </footer>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- sample data (placeholder, deterministic) ---------- */
+  var SLO = 1.0; // error-rate target, percent
+  var QUOTA = { limit: 5000000, used: 3420000, day: 18, days: 30 };
+
+  var ENDPOINTS = [
+    { m: 'GET',  p: '/v1/customers',      share: .20, w: .3,  p50: 42,  p95: 120,  p99: 260,  bud: 250 },
+    { m: 'POST', p: '/v1/customers',      share: .06, w: .5,  p50: 85,  p95: 210,  p99: 420,  bud: 400 },
+    { m: 'GET',  p: '/v1/customers/{id}', share: .22, w: .2,  p50: 28,  p95: 78,   p99: 160,  bud: 200 },
+    { m: 'POST', p: '/v1/charges',        share: .14, w: 4.2, p50: 380, p95: 1420, p99: 2650, bud: 800, hot: true },
+    { m: 'GET',  p: '/v1/charges/{id}',   share: .13, w: .3,  p50: 34,  p95: 96,   p99: 210,  bud: 200 },
+    { m: 'POST', p: '/v1/refunds',        share: .03, w: 1.1, p50: 210, p95: 540,  p99: 980,  bud: 800 },
+    { m: 'GET',  p: '/v1/events',         share: .12, w: .2,  p50: 61,  p95: 190,  p99: 410,  bud: 400 },
+    { m: 'POST', p: '/v1/webhooks/test',  share: .02, w: 2.0, p50: 240, p95: 690,  p99: 1500, bud: 800 },
+    { m: 'GET',  p: '/v1/balance',        share: .08, w: .1,  p50: 19,  p95: 52,   p99: 110,  bud: 200 }
+  ];
+
+  var RANGES = {
+    '24h': { n: 24, seed: 11, per: 190000 / 24, label: 'last 24 hours', prev: 'previous 24 h', bucket: 'hourly', hotLat: 1.0,  hotPrev: .45,
+             incident: { 18: 1.2, 19: 2.8, 20: 3.4, 21: 3.1, 22: 2.6, 23: 2.2 } },
+    '7d':  { n: 28, seed: 23, per: 1330000 / 28, label: 'last 7 days', prev: 'previous 7 d', bucket: '6-hour', hotLat: .72, hotPrev: .6,
+             incident: { 26: 1.6, 27: 2.6 } },
+    '30d': { n: 30, seed: 37, per: 190000, label: 'last 30 days', prev: 'previous 30 d', bucket: 'daily', hotLat: .58, hotPrev: .9,
+             incident: { 21: 1.5, 29: 1.9 } }
+  };
+
+  function rng(seed) {
+    return function () {
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function ago(range, i, n) {
+    var k = n - 1 - i;
+    if (k === 0) return 'Now';
+    if (range === '24h') return k + ' h ago';
+    if (range === '7d') {
+      var h = k * 6, d = Math.floor(h / 24), r = h % 24;
+      return (d ? d + ' d ' : '') + (r ? r + ' h ' : '') + 'ago';
+    }
+    return k + ' d ago';
+  }
+
+  function build(key) {
+    var c = RANGES[key], r = rng(c.seed), n = c.n, pts = [], i;
+    for (i = 0; i < n * 2; i++) {
+      var cur = i >= n, j = i % n, f = 1;
+      if (key === '24h') f = 1 + .4 * Math.sin(2 * Math.PI * ((j - 9) / 24));
+      else if (key === '7d') { f = 1 + .35 * Math.sin(2 * Math.PI * (((j * 6) % 24 - 9) / 24)); if (Math.floor(j * 6 / 24) % 7 >= 5) f *= .62; }
+      else { if (j % 7 >= 5) f = .62; else f = 1.17; }
+      var req = Math.round(c.per * f * (.94 + r() * .12));
+      var rate = .38 + r() * .14;
+      if (cur && c.incident[j]) rate = c.incident[j] + r() * .3;
+      pts.push({ req: req, rate: rate, err: Math.round(req * rate / 100) });
+    }
+    var prev = pts.slice(0, n), now = pts.slice(n);
+    var sum = function (a, k) { return a.reduce(function (s, p) { return s + p[k]; }, 0); };
+    var totReq = sum(now, 'req'), totErr = sum(now, 'err');
+    var prevReq = sum(prev, 'req'), prevErr = sum(prev, 'err');
+    var wsum = ENDPOINTS.reduce(function (s, e) { return s + e.share * e.w; }, 0);
+
+    var rows = ENDPOINTS.map(function (e) {
+      var m = e.hot ? c.hotLat : 1, jit = .97 + r() * .06;
+      var errs = totErr * (e.share * e.w) / wsum;
+      var q = Math.round(totReq * e.share);
+      var p95 = Math.round(e.p95 * m * jit);
+      var o = {
+        name: e.m + ' ' + e.p, m: e.m, p: e.p, req: q, errs: errs,
+        rate: errs / q * 100,
+        p50: Math.round(e.p50 * m * jit), p95: p95, p99: Math.round(e.p99 * m * jit),
+        bud: e.bud, ratio: p95 / e.bud, share: e.share,
+        prevP95: e.p95 * (e.hot ? c.hotPrev : .97) * (e.hot ? 1 : 1)
+      };
+      o.badErr = o.rate > SLO; o.badLat = o.p95 > o.bud;
+      o.sev = (o.badErr ? 2 : 0) + (o.badLat ? 1 : 0);
+      return o;
+    });
+    var p95All = rows.reduce(function (s, x) { return s + x.share * x.p95; }, 0);
+    var p95Prev = rows.reduce(function (s, x) { return s + x.share * x.prevP95; }, 0);
+    return {
+      key: key, c: c, pts: now, prevPts: prev, rows: rows,
+      totReq: totReq, totErr: totErr, rate: totErr / totReq * 100,
+      prevReq: prevReq, prevRate: prevErr / prevReq * 100,
+      p95: p95All, prevP95: p95Prev,
+      n429: Math.round(totReq * .0011)
+    };
+  }
+
+  /* ---------- formatting ---------- */
+  var nf = new Intl.NumberFormat('en-US');
+  function ms(v) { return v >= 1000 ? (v / 1000).toFixed(2) + ' s' : Math.round(v) + ' ms'; }
+  function pct(v, d) { return v.toFixed(d == null ? 2 : d) + '%'; }
+  function compact(v) { return v >= 1e6 ? (v / 1e6).toFixed(1).replace(/\.0$/, '') + 'M' : v >= 1e3 ? Math.round(v / 1e3) + 'k' : String(v); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]; }); }
+  function signed(v, d, unit) { return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + unit; }
+
+  /* ---------- state ---------- */
+  var state = { range: '24h', model: null, sel: null, sortKey: 'sev', sortDir: -1 };
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ---------- summary ---------- */
+  function renderSummary(m) {
+    var worst = m.rows.filter(function (x) { return x.sev > 0; })
+      .sort(function (a, b) { return b.errs - a.errs; })[0];
+    var lead = $('lead');
+    if (worst && worst.badErr) {
+      var share = worst.errs / m.totErr * 100;
+      lead.className = 'lead';
+      lead.innerHTML = '<code>' + esc(worst.name) + '</code> causes ' + Math.round(share) + '% of failed requests: <span class="flag">' +
+        pct(worst.rate, 1) + ' error rate</span>' + (worst.badLat ? ', p95 ' + ms(worst.p95) + ' against an ' + ms(worst.bud) + ' budget' : '') + '.';
+    } else if (worst) {
+      lead.className = 'lead';
+      lead.innerHTML = '<code>' + esc(worst.name) + '</code> is over its latency budget: p95 ' + ms(worst.p95) + ' against ' + ms(worst.bud) + '.';
+    } else {
+      lead.className = 'lead ok';
+      lead.textContent = 'All endpoints are within error and latency targets for the ' + m.c.label + '.';
+    }
+
+    var dReq = (m.totReq - m.prevReq) / m.prevReq * 100;
+    var dRate = m.rate - m.prevRate;
+    var dP95 = m.p95 - m.prevP95;
+    $('figures').innerHTML =
+      '<div class="fig fig-lead"><dt>Error rate</dt><dd class="v">' + pct(m.rate) + '</dd>' +
+        '<dd class="d"><span class="' + (dRate > 0.05 ? 'adverse' : '') + '">' + signed(dRate, 2, ' pt') + '</span> vs ' + m.c.prev + ' &middot; target ' + pct(SLO, 1) + '</dd></div>' +
+      '<div class="fig"><dt>Requests</dt><dd class="v">' + nf.format(m.totReq) + '</dd>' +
+        '<dd class="d">' + signed(dReq, 1, '%') + ' vs ' + m.c.prev + '</dd></div>' +
+      '<div class="fig"><dt>p95 latency</dt><dd class="v">' + ms(m.p95) + '</dd>' +
+        '<dd class="d"><span class="' + (dP95 > 25 ? 'adverse' : '') + '">' + (dP95 >= 0 ? '+' : '−') + Math.abs(Math.round(dP95)) + ' ms</span> vs ' + m.c.prev + '</dd></div>';
+  }
+
+  /* ---------- charts ---------- */
+  var X0 = 44, PADR = 8;
+  function geom(W, n) { var x1 = W - PADR, step = (x1 - X0) / n; return { x1: x1, step: step, cx: function (i) { return X0 + step * (i + .5); } }; }
+
+  function renderCharts() {
+    var m = state.model, host = $('charts'), n = m.pts.length;
+    var W = Math.max(280, Math.floor(host.clientWidth)), g = geom(W, n), sel = state.sel;
+    var maxRate = Math.max.apply(null, m.pts.map(function (p) { return p.rate; }).concat([SLO * 1.3]));
+    var yMax = Math.ceil(maxRate / 1) * 1; if (yMax < 2) yMax = 2;
+    var HE = 150, TE = 8, bot = TE + HE;
+    var yE = function (v) { return bot - v / yMax * HE; };
+    var maxReq = Math.max.apply(null, m.pts.map(function (p) { return p.req; }));
+    var reqTop = Math.ceil(maxReq / 1000) * 1000;
+    var HR = 70, TR = 8, botR = TR + HR;
+    var yR = function (v) { return botR - v / reqTop * HR; };
+
+    var s1 = '<svg viewBox="0 0 ' + W + ' ' + (bot + 24) + '" height="' + (bot + 24) + '" aria-hidden="true" focusable="false">';
+    [0, yMax / 2, yMax].forEach(function (t) {
+      s1 += '<line class="gl" x1="' + X0 + '" x2="' + g.x1 + '" y1="' + yE(t) + '" y2="' + yE(t) + '"/>' +
+            '<text class="t end" x="' + (X0 - 8) + '" y="' + (yE(t) + 4) + '">' + t + '%</text>';
+    });
+    s1 += '<line class="slo" x1="' + X0 + '" x2="' + g.x1 + '" y1="' + yE(SLO) + '" y2="' + yE(SLO) + '"/>' +
+          '<text class="t" x="' + (X0 + 4) + '" y="' + (yE(SLO) - 5) + '">target ' + SLO + '%</text>';
+    var d = m.pts.map(function (p, i) { return (i ? 'L' : 'M') + g.cx(i).toFixed(1) + ' ' + yE(p.rate).toFixed(1); }).join('');
+    s1 += '<path class="eline" d="' + d + '"/>';
+    m.pts.forEach(function (p, i) { if (p.rate > SLO) s1 += '<circle class="breach" cx="' + g.cx(i).toFixed(1) + '" cy="' + yE(p.rate).toFixed(1) + '" r="3.5"/>'; });
+    if (sel != null) s1 += '<line class="cursor" x1="' + g.cx(sel) + '" x2="' + g.cx(sel) + '" y1="' + TE + '" y2="' + bot + '"/>';
+    s1 += xLabels(m, g, bot + 17, n) + '</svg>';
+
+    var s2 = '<svg viewBox="0 0 ' + W + ' ' + (botR + 4) + '" height="' + (botR + 4) + '" aria-hidden="true" focusable="false">';
+    [0, reqTop].forEach(function (t) {
+      s2 += '<line class="gl" x1="' + X0 + '" x2="' + g.x1 + '" y1="' + yR(t) + '" y2="' + yR(t) + '"/>' +
+            '<text class="t end" x="' + (X0 - 8) + '" y="' + (yR(t) + 4) + '">' + compact(t) + '</text>';
+    });
+    var bw = Math.max(2, g.step * .7);
+    m.pts.forEach(function (p, i) {
+      s2 += '<rect class="bar' + (i === sel ? ' sel' : '') + '" x="' + (g.cx(i) - bw / 2).toFixed(1) + '" y="' + yR(p.req).toFixed(1) +
+            '" width="' + bw.toFixed(1) + '" height="' + (botR - yR(p.req)).toFixed(1) + '"/>';
+    });
+    if (sel != null) s2 += '<line class="cursor" x1="' + g.cx(sel) + '" x2="' + g.cx(sel) + '" y1="' + TR + '" y2="' + botR + '"/>';
+    s2 += '</svg>';
+
+    host.innerHTML =
+      '<figure><figcaption><h3>Error rate</h3></figcaption>' + s1 + '</figure>' +
+      '<figure><figcaption><h3>Requests per interval</h3></figcaption>' + s2 + '</figure>';
+    renderReadout();
+  }
+
+  function xLabels(m, g, y, n) {
+    var idx = [0, Math.round((n - 1) / 2), n - 1], out = '';
+    idx.forEach(function (i, k) {
+      var cls = k === 0 ? 't' : k === 2 ? 't end' : 't mid';
+      var x = k === 0 ? X0 : k === 2 ? g.x1 : g.cx(i);
+      out += '<text class="' + cls + '" x="' + x + '" y="' + y + '">' + ago(m.key, i, n).replace(/^Now$/, 'Now') + '</text>';
+    });
+    return out;
+  }
+
+  function renderReadout() {
+    var m = state.model, n = m.pts.length, i = state.sel == null ? n - 1 : state.sel, p = m.pts[i];
+    $('readout').innerHTML = '<span class="k">' + esc(ago(m.key, i, n)) + ' (' + m.c.bucket + ' interval):</span> ' +
+      nf.format(p.req) + ' requests, ' + nf.format(p.err) + ' errors, <strong class="' + (p.rate > SLO ? 'bad' : '') + '">' + pct(p.rate) + '</strong>' +
+      (p.rate > SLO ? ' (above target)' : '');
+  }
+
+  function renderMini() {
+    var m = state.model, n = m.pts.length;
+    var h = '<thead><tr><th scope="col">Interval</th><th scope="col">Requests</th><th scope="col">Errors</th><th scope="col">Error rate</th></tr></thead><tbody>';
+    m.pts.forEach(function (p, i) {
+      h += '<tr><th scope="row" style="font-weight:400;text-align:left">' + esc(ago(m.key, i, n)) + '</th><td class="num">' + nf.format(p.req) +
+           '</td><td class="num">' + nf.format(p.err) + '</td><td class="num">' + pct(p.rate) + '</td></tr>';
+    });
+    $('mini').innerHTML = h + '</tbody>';
+  }
+
+  function indexFromX(clientX) {
+    var host = $('charts'), svg = host.querySelector('svg'); if (!svg) return null;
+    var rect = svg.getBoundingClientRect(), n = state.model.pts.length, g = geom(rect.width, n);
+    var i = Math.floor((clientX - rect.left - X0) / g.step);
+    return i < 0 || i >= n ? null : i;
+  }
+
+  /* ---------- quota ---------- */
+  function renderQuota(m) {
+    var q = QUOTA, daily = q.used / q.day, projected = daily * q.days;
+    var scaleMax = Math.max(q.limit, projected) * 1.02;
+    var pu = q.used / scaleMax * 100, pl = q.limit / scaleMax * 100, pp = Math.min(projected, scaleMax) / scaleMax * 100;
+    var willExceed = projected > q.limit;
+    var exhaustDay = Math.floor(q.limit / daily);
+    $('q-big').innerHTML = nf.format(q.used) + ' <small>of ' + nf.format(q.limit) + ' requests (' + pct(q.used / q.limit * 100, 1) + ')</small>';
+    $('meter').innerHTML =
+      '<i class="m-used" style="width:' + pu + '%"></i>' +
+      '<i class="m-proj" style="left:' + pu + '%;width:' + (Math.min(pl, pp) - pu) + '%"></i>' +
+      (willExceed ? '<i class="m-over" style="left:' + pl + '%;width:' + (pp - pl) + '%"></i>' : '') +
+      '<i class="m-limit" style="left:' + pl + '%"></i>';
+    $('meter-scale').innerHTML = '<span style="left:0">0</span><span style="left:' + pl + '%;transform:translateX(-100%);padding-right:6px">Quota ' + compact(q.limit) + '</span>' +
+      (willExceed ? '<span style="right:0">Projected ' + compact(Math.round(projected)) + '</span>' : '');
+    var note = $('q-note');
+    if (willExceed) {
+      note.className = 'q-note warn';
+      note.innerHTML = '<span class="flag">Projected to run out around day ' + exhaustDay + ' of ' + q.days + '</span>, ' + (q.days - exhaustDay) +
+        ' days before reset, at the current ' + nf.format(Math.round(daily)) + ' requests per day. Projection is a straight-line average of this period.';
+    } else {
+      note.className = 'q-note';
+      note.textContent = 'On track to stay within quota at the current ' + nf.format(Math.round(daily)) + ' requests per day.';
+    }
+    $('q-facts').innerHTML =
+      '<dt>Remaining</dt><dd>' + nf.format(q.limit - q.used) + '</dd>' +
+      '<dt>Period day</dt><dd>' + q.day + ' of ' + q.days + '</dd>' +
+      '<dt>Resets in</dt><dd>' + (q.days - q.day) + ' days</dd>' +
+      '<dt>Rate limited (429), ' + m.c.label + '</dt><dd>' + nf.format(m.n429) + '</dd>';
+  }
+
+  /* ---------- table ---------- */
+  var LABELS = { name: 'endpoint', req: 'requests', rate: 'error rate', p50: 'p50', p95: 'p95', p99: 'p99', ratio: 'p95 vs budget', sev: 'status (worst first)' };
+
+  function renderTable() {
+    var m = state.model, k = state.sortKey, dir = state.sortDir;
+    var rows = m.rows.slice().sort(function (a, b) {
+      var av = a[k], bv = b[k], r = typeof av === 'string' ? av.localeCompare(bv) : av - bv;
+      if (r === 0) r = b.errs - a.errs;
+      return r * dir;
+    });
+    $('eps-body').innerHTML = rows.map(function (x) {
+      var fill = Math.min(x.ratio / 2, 1) * 100;
+      var statusTxt = x.sev === 3 ? 'Errors and slow' : x.sev === 2 ? 'Errors' : x.sev === 1 ? 'Slow' : 'Within targets';
+      var cls = x.sev === 3 ? 'both' : x.sev === 2 ? 'bad' : x.sev === 1 ? 'slow' : 'good';
+      var glyph = x.sev ? '▲' : '✓';
+      var xTxt = x.ratio >= 1 ? x.ratio.toFixed(1) + '× budget' : Math.round(x.ratio * 100) + '% of budget';
+      return '<tr><th scope="row" class="ep" style="font-weight:400"><span class="meth">' + x.m + '</span>' + esc(x.p) + '</th>' +
+        '<td>' + nf.format(x.req) + '</td>' +
+        '<td class="' + (x.badErr ? 'bad' : '') + '">' + pct(x.rate) + '</td>' +
+        '<td>' + ms(x.p50) + '</td>' +
+        '<td class="' + (x.badLat ? 'slow' : '') + '">' + ms(x.p95) + '</td>' +
+        '<td>' + ms(x.p99) + '</td>' +
+        '<td class="l"><div class="budget"><span class="track" aria-hidden="true"><span class="f' + (x.badLat ? ' over' : '') + '" style="width:' + fill + '%"></span><span class="tick"></span></span>' +
+        '<span class="x' + (x.badLat ? ' over' : '') + '">' + xTxt + '</span></div></td>' +
+        '<td class="l"><span class="st ' + cls + '"><span aria-hidden="true">' + glyph + '</span> ' + statusTxt + '</span></td></tr>';
+    }).join('');
+    // the first-cell th must keep sticky styling
+    var ths = document.querySelectorAll('#eps thead th');
+    Array.prototype.forEach.call(ths, function (th) {
+      var on = th.getAttribute('data-k') === k;
+      th.setAttribute('aria-sort', on ? (dir > 0 ? 'ascending' : 'descending') : 'none');
+      th.querySelector('.arr').textContent = on ? (dir > 0 ? '▲' : '▼') : '';
+    });
+    $('sort-label').textContent = LABELS[k] + (dir > 0 ? ', ascending' : ', descending');
+  }
+
+  /* ---------- wiring ---------- */
+  function setRange(key, announce) {
+    state.range = key; state.sel = null; state.model = build(key);
+    var m = state.model;
+    renderSummary(m); renderQuota(m); renderMini(); renderTable();
+    $('bucket-hint').textContent = m.c.label.charAt(0).toUpperCase() + m.c.label.slice(1) + ', ' + m.c.bucket + ' intervals';
+    renderCharts();
+    if (announce) $('announce').textContent = 'Showing ' + m.c.label + '. ' + $('lead').textContent;
+  }
+
+  document.getElementById('range').addEventListener('change', function (e) {
+    if (e.target && e.target.name === 'range') setRange(e.target.value, true);
+  });
+
+  var charts = $('charts');
+  charts.addEventListener('pointermove', function (e) {
+    var i = indexFromX(e.clientX); if (i === state.sel) return; state.sel = i; renderCharts();
+  });
+  charts.addEventListener('pointerleave', function () { if (state.sel != null && document.activeElement !== charts) { state.sel = null; renderCharts(); } });
+  charts.addEventListener('keydown', function (e) {
+    var n = state.model.pts.length, i = state.sel == null ? n - 1 : state.sel;
+    if (e.key === 'ArrowLeft') i = Math.max(0, i - 1);
+    else if (e.key === 'ArrowRight') i = Math.min(n - 1, i + 1);
+    else if (e.key === 'Home') i = 0;
+    else if (e.key === 'End') i = n - 1;
+    else if (e.key === 'Escape') { state.sel = null; renderCharts(); return; }
+    else return;
+    e.preventDefault(); state.sel = i; renderCharts();
+  });
+  charts.addEventListener('blur', function () { state.sel = null; renderCharts(); });
+
+  document.querySelector('#eps thead').addEventListener('click', function (e) {
+    var th = e.target.closest('th'); if (!th) return;
+    var k = th.getAttribute('data-k');
+    if (state.sortKey === k) state.sortDir *= -1;
+    else { state.sortKey = k; state.sortDir = (k === 'name') ? 1 : -1; }
+    renderTable();
+  });
+
+  $('slo-txt').textContent = pct(SLO, 1);
+
+  var raf = null, lastW = 0;
+  window.addEventListener('resize', function () {
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(function () { var w = charts.clientWidth; if (w !== lastW) { lastW = w; renderCharts(); } });
+  });
+
+  setRange('24h', false);
+  lastW = charts.clientWidth;
+})();
+</script>
+</body>
+</html>

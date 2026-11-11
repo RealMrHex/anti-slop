@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atmos – Weather, planned around your day</title>
+<meta name="description" content="Atmos: current conditions, a 24-hour curve and a 7-day outlook for San Francisco, Tokyo, London and New York.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  fontFamily: { display: ['"Bricolage Grotesque"','ui-rounded','system-ui','sans-serif'], sans: ['"Instrument Sans"','system-ui','sans-serif'] },
+  colors: { ink:'#14233a', mute:'#4a5a70', paper:'#eef0ee', sun:'#f2a413' }
+}}};
+</script>
+<style>
+:root{
+  --ink:#14233a; --mute:#4a5a70; --paper:#eef0ee; --card:#fbfbf9; --line:#d9ddd8;
+  --sun:#f2a413; --sun-deep:#a35f00; --rain:#3c6fb0; --radius:22px; --radius-sm:12px;
+  --sky-a:#cfdde6; --sky-b:#f6d9bf; --sky-c:#fbf0e2;
+  --shadow:0 1px 2px rgba(20,35,58,.06), 0 8px 24px -12px rgba(20,35,58,.18);
+}
+html{ -webkit-text-size-adjust:100%; }
+body{ background:var(--paper); color:var(--ink); font-family:"Instrument Sans",system-ui,sans-serif; }
+.num{ font-family:"Bricolage Grotesque",ui-rounded,system-ui,sans-serif; font-variant-numeric:tabular-nums; }
+.card{ background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); }
+.sky{ background:
+  radial-gradient(120% 90% at 100% 0%, var(--sky-b) 0%, transparent 55%),
+  linear-gradient(180deg, var(--sky-a) 0%, var(--sky-c) 100%);
+  transition:background .4s; }
+:focus-visible{ outline:3px solid #1b4fd8; outline-offset:2px; border-radius:8px; }
+.seg button{ min-height:44px; padding:0 16px; border-radius:999px; font-weight:600; font-size:.95rem; color:var(--ink); transition:background .15s, color .15s, transform .1s; }
+.seg button:hover{ background:rgba(20,35,58,.08); }
+.seg button:active{ transform:scale(.97); }
+.seg button[aria-pressed="true"]{ background:var(--ink); color:#fff; }
+.seg{ background:rgba(255,255,255,.7); border:1px solid var(--line); border-radius:999px; padding:3px; display:inline-flex; gap:2px; }
+.scroller{ overflow-x:auto; scrollbar-width:thin; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; }
+.row{ transition:background .15s; }
+.row:hover{ background:rgba(20,35,58,.04); }
+.sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+@keyframes rise{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:none;} }
+.rise{ animation:rise .45s ease both; }
+@media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
+</style>
+</head>
+<body class="font-sans antialiased">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-clear" viewBox="0 0 32 32"><circle cx="16" cy="16" r="6.5" fill="#f2a413"/><g stroke="#f2a413" stroke-width="2.4" stroke-linecap="round"><path d="M16 3v3M16 26v3M3 16h3M26 16h3M6.8 6.8l2.1 2.1M23.1 23.1l2.1 2.1M25.2 6.8l-2.1 2.1M8.9 23.1l-2.1 2.1"/></g></symbol>
+    <symbol id="i-partly" viewBox="0 0 32 32"><circle cx="12" cy="11" r="5.5" fill="#f2a413"/><g stroke="#f2a413" stroke-width="2.2" stroke-linecap="round"><path d="M12 2v2M3 11h2M5.6 4.6l1.4 1.4M18.4 4.6L17 6"/></g><path d="M10 25a5 5 0 0 1 .6-9.96A7 7 0 0 1 24 16.6 4.2 4.2 0 0 1 23.2 25z" fill="#fff" stroke="#8fa0b4" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 32 32"><path d="M9 25a5.5 5.5 0 0 1 .5-10.97A8 8 0 0 1 25 15.8 4.6 4.6 0 0 1 24 25z" fill="#dfe5ec" stroke="#7d8ea3" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-rain" viewBox="0 0 32 32"><path d="M9 20a5.5 5.5 0 0 1 .5-10.97A8 8 0 0 1 25 10.8 4.6 4.6 0 0 1 24 20z" fill="#dfe5ec" stroke="#7d8ea3" stroke-width="1.6" stroke-linejoin="round"/><g stroke="#3c6fb0" stroke-width="2.2" stroke-linecap="round"><path d="M11 23.5l-1.4 4M17 23.5l-1.4 4M23 23.5l-1.4 4"/></g></symbol>
+    <symbol id="i-fog" viewBox="0 0 32 32"><path d="M9 18a5 5 0 0 1 .5-9.97A7.5 7.5 0 0 1 24 9.8 4.2 4.2 0 0 1 23.5 18z" fill="#e6eaef" stroke="#8fa0b4" stroke-width="1.6" stroke-linejoin="round"/><g stroke="#8fa0b4" stroke-width="2.2" stroke-linecap="round"><path d="M6 22h20M9 26.5h14"/></g></symbol>
+    <symbol id="i-moon" viewBox="0 0 32 32"><path d="M21.5 5.5A11 11 0 1 0 26.5 21 9 9 0 0 1 21.5 5.5z" fill="#c9d3e3" stroke="#7d8ea3" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+    <symbol id="i-moonc" viewBox="0 0 32 32"><path d="M15 4.5A8.5 8.5 0 1 0 22 18a7 7 0 0 1-7-13.5z" fill="#c9d3e3" stroke="#7d8ea3" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 28a4.6 4.6 0 0 1 .5-9.2A6.4 6.4 0 0 1 24.8 20 3.8 3.8 0 0 1 24 28z" fill="#fff" stroke="#8fa0b4" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<a href="#today" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded-lg">Skip to forecast</a>
+
+<div class="mx-auto max-w-[1180px] px-4 sm:px-6 lg:px-8 pb-16">
+
+  <header class="flex flex-wrap items-center min-w-0 justify-between gap-x-6 gap-y-3 py-5">
+    <a href="#" class="flex items-center gap-2.5 font-display font-extrabold text-[1.4rem] tracking-tight" aria-label="Atmos home">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="#14233a"/><path d="M5 20c4-8 8-8 11-3s7 5 11-4" fill="none" stroke="#f2a413" stroke-width="3" stroke-linecap="round"/></svg>
+      Atmos
+    </a>
+    <div class="flex flex-wrap items-center gap-3 order-3 sm:order-2 w-full sm:w-auto">
+      <nav aria-label="City">
+        <div class="seg" id="cities" role="group" aria-label="Choose a city"></div>
+      </nav>
+    </div>
+    <div class="seg order-2 sm:order-3" id="units" role="group" aria-label="Temperature unit">
+      <button type="button" data-u="C" aria-pressed="true"><span aria-hidden="true">°C</span><span class="sr-only">Celsius</span></button>
+      <button type="button" data-u="F" aria-pressed="false"><span aria-hidden="true">°F</span><span class="sr-only">Fahrenheit</span></button>
+    </div>
+  </header>
+
+  <main id="today">
+    <div class="grid gap-5 grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_340px]">
+
+      <!-- Overview + 24h curve -->
+      <section class="card sky overflow-hidden flex flex-col min-w-0" aria-labelledby="city-name" id="hero">
+        <div class="p-6 sm:p-9 pb-2 sm:pb-3">
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h1 class="font-display font-bold text-2xl sm:text-3xl tracking-tight" id="city-name">San Francisco</h1>
+            <p class="text-mute font-medium"><span id="region"></span> · <time id="clock" aria-label="Current local time"></time></p>
+          </div>
+          <div class="mt-5 flex flex-wrap items-end gap-x-6 gap-y-3">
+            <p class="num font-extrabold leading-[.82] tracking-[-0.05em] text-[7.5rem] sm:text-[11rem]" aria-live="polite"><span id="temp">19</span><span class="text-[.42em] align-top relative top-[.12em] text-sun-deep" id="deg">°</span></p>
+            <div class="pb-2 sm:pb-5">
+              <p class="flex items-center gap-2 font-display font-bold text-2xl sm:text-3xl leading-tight"><svg class="w-10 h-10" aria-hidden="true"><use id="cond-icon" href="#i-partly"/></svg><span id="cond">Partly Cloudy</span></p>
+              <p class="mt-1 text-lg text-mute font-medium"><span class="sr-only">High </span><span id="hi" class="text-ink font-semibold"></span> <span aria-hidden="true">↑</span> &nbsp;<span class="sr-only">Low </span><span id="lo" class="text-ink font-semibold"></span> <span aria-hidden="true">↓</span> &nbsp;·&nbsp; Feels like <span id="feels-top" class="text-ink font-semibold"></span></p>
+            </div>
+          </div>
+          <p class="mt-5 max-w-[46ch] text-[1.05rem] leading-snug" id="summary"></p>
+        </div>
+
+        <div class="px-2 sm:px-5 pb-5 pt-3 mt-auto min-w-0">
+          <div class="flex items-center justify-between px-4 sm:px-4 pb-1">
+            <h2 class="font-display font-bold text-lg">Next 24 hours</h2>
+            <p class="text-sm text-mute">Scroll sideways <span aria-hidden="true">→</span></p>
+          </div>
+          <div class="scroller rounded-2xl bg-white/55" tabindex="0" role="region" aria-label="Hourly forecast, scrollable" id="hourly"></div>
+          <ol class="sr-only" id="hourly-list"></ol>
+        </div>
+      </section>
+
+      <!-- Details -->
+      <aside class="flex flex-col gap-5" aria-label="Conditions">
+        <section class="card p-6" aria-labelledby="det-h">
+          <h2 id="det-h" class="font-display font-bold text-lg mb-1">Right now</h2>
+          <dl class="divide-y divide-[var(--line)]" id="details"></dl>
+        </section>
+        <section class="card p-6" aria-labelledby="sun-h">
+          <h2 id="sun-h" class="font-display font-bold text-lg">Daylight</h2>
+          <div id="sunarc" class="mt-2"></div>
+          <dl class="mt-1 grid grid-cols-2 gap-4">
+            <div><dt class="text-sm text-mute">Sunrise</dt><dd class="num font-bold text-2xl" id="sunrise"></dd></div>
+            <div class="text-right"><dt class="text-sm text-mute">Sunset</dt><dd class="num font-bold text-2xl" id="sunset"></dd></div>
+          </dl>
+        </section>
+      </aside>
+    </div>
+
+    <!-- 7-day -->
+    <section class="card mt-5 p-4 sm:p-7" aria-labelledby="week-h">
+      <div class="flex flex-wrap items-baseline justify-between gap-2 px-2 sm:px-0">
+        <h2 id="week-h" class="font-display font-bold text-2xl">7-day forecast</h2>
+        <p class="text-sm text-mute">Bars show each day's low to high against the week.</p>
+      </div>
+      <ul class="mt-3 divide-y divide-[var(--line)]" id="week"></ul>
+    </section>
+  </main>
+
+  <footer class="mt-8 px-2 text-sm text-mute">
+    Atmos uses sample data for illustration. Forecasts here are not live.
+  </footer>
+</div>
+
+<script>
+(function(){
+  const CITIES = {
+    sf: { name:'San Francisco', region:'California, US', tz:'America/Los_Angeles', now:19, cond:'p', hi:22, lo:14, hum:64, wind:12, uv:5, vis:10, feels:18, sr:[6,42], ss:[19,28],
+      hours:'ffffffffppppppppppppppff',
+      week:[['p',22,14,10],['c',23,14,0],['c',24,15,0],['p',21,14,10],['f',19,13,20],['p',20,13,10],['c',22,14,0]],
+      note:'Fog burns off by late morning. Bring a layer for the evening.' },
+    tokyo: { name:'Tokyo', region:'Japan', tz:'Asia/Tokyo', now:16, cond:'c', hi:19, lo:11, hum:52, wind:9, uv:4, vis:16, feels:15, sr:[6,8], ss:[16,38],
+      hours:'cccccccccccccppppccccccc',
+      week:[['c',19,11,0],['p',18,11,10],['o',17,12,30],['r',15,12,70],['p',16,10,20],['c',18,9,0],['c',19,10,0]],
+      note:'Crisp and clear. Sunset is early, so plan outdoor time before 4:30.' },
+    london: { name:'London', region:'England, UK', tz:'Europe/London', now:9, cond:'r', hi:11, lo:6, hum:83, wind:19, uv:1, vis:7, feels:6, sr:[7,5], ss:[16,8],
+      hours:'ooooooooorrooooorrrooooo',
+      week:[['r',11,6,70],['o',10,5,30],['r',9,6,60],['p',11,5,10],['o',10,4,20],['r',9,5,55],['p',11,6,15]],
+      note:'Showers on and off. Carry an umbrella; the wind makes it feel colder.' },
+    ny: { name:'New York', region:'New York, US', tz:'America/New_York', now:8, cond:'o', hi:11, lo:4, hum:58, wind:15, uv:2, vis:16, feels:5, sr:[6,35], ss:[16,45],
+      hours:'oooooooopppppppppoooooooo'.slice(0,24),
+      week:[['o',11,4,20],['p',13,5,10],['c',14,6,0],['o',12,7,35],['r',10,6,65],['p',11,3,10],['c',12,3,0]],
+      note:'Cloudy but dry. A cold breeze picks up after sunset.' }
+  };
+  const COND = { c:'Clear', p:'Partly Cloudy', o:'Overcast', r:'Rain', f:'Fog' };
+  const ICON = { c:'clear', p:'partly', o:'cloud', r:'rain', f:'fog' };
+  const SKY = {
+    sf:['#cfdde6','#f6d9bf','#fbf0e2'], tokyo:['#cde3f2','#f7cfd3','#fdf1ee'],
+    london:['#c3ccd6','#dfe3e8','#f1f2f1'], ny:['#cbd9e8','#e9dcc8','#f7f3ea']
+  };
+  const state = { city:'sf', unit:'C' };
+  const $ = id => document.getElementById(id);
+  const cvt = c => state.unit==='C' ? Math.round(c) : Math.round(c*9/5+32);
+  const T = c => cvt(c) + '°';
+  const spd = k => state.unit==='C' ? k+' km/h' : Math.round(k*0.621)+' mph';
+  const dist = k => state.unit==='C' ? k+' km' : Math.round(k*0.621)+' mi';
+  const fmt = (h,m) => { const ap=h>=12?'PM':'AM'; const hh=((h+11)%12)+1; return hh+':'+String(m).padStart(2,'0')+' '+ap; };
+  const hr = h => { const ap=h>=12?'PM':'AM'; return (((h%24)+11)%12+1)+' '+ap; };
+
+  function localNow(tz){
+    const p = new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'numeric',minute:'numeric',weekday:'short',hour12:false}).formatToParts(new Date());
+    const g = t => p.find(x=>x.type===t).value;
+    return { h:(+g('hour'))%24, m:+g('minute'), wd:g('weekday') };
+  }
+  const diurnal = (c,h) => c.lo + (c.hi-c.lo)*(0.5+0.5*Math.cos(2*Math.PI*(h-15)/24));
+  const isDay = (c,h) => h+.5 >= c.sr[0]+c.sr[1]/60 && h+.5 <= c.ss[0]+c.ss[1]/60;
+  function iconFor(c,code,h){
+    if(isDay(c,h)) return ICON[code];
+    return code==='c' ? 'moon' : code==='p' ? 'moonc' : ICON[code];
+  }
+  function hourlySeries(c){
+    const n = localNow(c.tz), delta = c.now - diurnal(c,n.h);
+    return Array.from({length:24},(_,i)=>{
+      const h=(n.h+i)%24;
+      const t = diurnal(c,h) + (i===0? delta : delta*Math.exp(-i/7));
+      const code = i===0 ? c.cond : c.hours[h];
+      return { h, i, t, code };
+    });
+  }
+
+  function renderCities(){
+    $('cities').innerHTML = Object.entries(CITIES).map(([k,c])=>
+      `<button type="button" data-c="${k}" aria-pressed="${k===state.city}">${c.name}</button>`).join('');
+  }
+
+  function renderHourly(c){
+    const s = hourlySeries(c), colW=68, W=colW*24, H=250, top=50, bot=150;
+    const ts = s.map(x=>x.t), mn=Math.min(...ts), mx=Math.max(...ts);
+    const y = t => bot - (t-mn)/(mx-mn||1)*(bot-top);
+    const pts = s.map((x,i)=>[colW*i+colW/2, y(x.t)]);
+    // smooth path
+    let d = `M${pts[0][0]},${pts[0][1]}`;
+    for(let i=1;i<pts.length;i++){ const p0=pts[i-1],p1=pts[i],mx_=(p0[0]+p1[0])/2; d+=` C${mx_},${p0[1]} ${mx_},${p1[1]} ${p1[0]},${p1[1]}`; }
+    const area = d + ` L${pts[23][0]},${H-4} L${pts[0][0]},${H-4} Z`;
+    // night bands
+    let bands='';
+    s.forEach((x,i)=>{ if(!isDay(c,x.h)) bands+=`<rect x="${colW*i}" y="0" width="${colW}" height="${H}" fill="#14233a" opacity=".07"/>`; });
+    const hiI = ts.indexOf(mx), loI = ts.indexOf(mn);
+    let cols='';
+    s.forEach((x,i)=>{
+      const cx=colW*i+colW/2, label = i===0?'Now':hr(x.h);
+      cols += `<g>
+        <text x="${cx}" y="${pts[i][1]-14}" text-anchor="middle" class="num" font-size="17" font-weight="${i===0||i===hiI?800:600}" fill="#14233a">${T(x.t)}</text>
+        <circle cx="${cx}" cy="${pts[i][1]}" r="${i===0?7:i===hiI||i===loI?5:3.2}" fill="${i===0?'#f2a413':'#fff'}" stroke="#14233a" stroke-width="2"/>
+        <use href="#i-${iconFor(c,x.code,x.h)}" x="${cx-14}" y="${bot+20}" width="28" height="28"/>
+        <text x="${cx}" y="${H-20}" text-anchor="middle" font-size="13" font-weight="${i===0?700:500}" fill="${i===0?'#14233a':'#4a5a70'}">${label}</text>
+      </g>`;
+    });
+    $('hourly').innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true" style="display:block;min-width:${W}px">
+      <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2a413" stop-opacity=".38"/><stop offset="1" stop-color="#f2a413" stop-opacity="0"/></linearGradient></defs>
+      ${bands}<path d="${area}" fill="url(#ag)"/><path d="${d}" fill="none" stroke="#14233a" stroke-width="2.5" stroke-linecap="round"/>${cols}</svg>`;
+    $('hourly-list').innerHTML = s.map((x,i)=>`<li>${i===0?'Now':hr(x.h)}: ${T(x.t)}, ${COND[x.code]}</li>`).join('');
+  }
+
+  function renderWeek(c){
+    const lo = Math.min(...c.week.map(w=>w[2])), hi = Math.max(...c.week.map(w=>w[1])), span = hi-lo||1;
+    const n = localNow(c.tz);
+    const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], start=days.indexOf(n.wd);
+    $('week').innerHTML = c.week.map((w,i)=>{
+      const l=(w[2]-lo)/span*100, r=(w[1]-lo)/span*100;
+      const name = i===0?'Today':days[(start+i)%7];
+      return `<li class="row grid grid-cols-[3.6rem_2rem_1fr] sm:grid-cols-[5.5rem_2.2rem_8.5rem_1fr] items-center gap-x-3 sm:gap-x-5 gap-y-1 px-2 sm:px-3 py-3 rounded-xl rise" style="animation-delay:${i*40}ms">
+        <span class="font-display font-bold text-lg">${name}</span>
+        <svg class="w-8 h-8" aria-hidden="true"><use href="#i-${ICON[w[0]]}"/></svg>
+        <span class="hidden sm:block text-[.95rem]"><span class="block font-medium">${COND[w[0]]}</span><span class="${w[3]?'text-[var(--rain)]':'text-mute'} text-sm font-medium">${w[3]?w[3]+'% rain':'Dry'}</span></span>
+        <span class="flex items-center gap-3 num">
+          <span class="w-11 text-right text-mute font-semibold"><span class="sr-only">Low </span>${T(w[2])}</span>
+          <span class="relative flex-1 h-2.5 rounded-full bg-[#e3e6e1]" aria-hidden="true"><span class="absolute top-0 h-full rounded-full" style="left:${l}%;width:${Math.max(r-l,10)}%;background:linear-gradient(90deg,#7fa6cf,#f2a413)"></span></span>
+          <span class="w-11 font-bold text-lg"><span class="sr-only">High </span>${T(w[1])}</span>
+        </span>
+        <span class="sr-only">${COND[w[0]]}, ${w[3]?w[3]+'% chance of rain':'dry'}</span>
+      </li>`;
+    }).join('');
+  }
+
+  function renderDetails(c){
+    const uvL = c.uv<3?'Low':c.uv<6?'Moderate':c.uv<8?'High':'Very high';
+    const rows = [
+      ['Feels like', T(c.feels), c.feels<c.now?'Cooler than the air because of wind':'Close to the air temperature'],
+      ['Humidity', c.hum+'%', c.hum>75?'Damp':c.hum>55?'Comfortable':'Dry-ish'],
+      ['Wind', spd(c.wind), c.wind>=18?'Breezy':'Light breeze'],
+      ['UV index', String(c.uv), uvL],
+      ['Visibility', dist(c.vis), c.vis>=10?'Clear':'Reduced']
+    ];
+    $('details').innerHTML = rows.map(r=>`<div class="py-3 flex items-baseline justify-between gap-4">
+      <div><dt class="font-medium">${r[0]}</dt><dd class="text-sm text-mute">${r[2]}</dd></div>
+      <dd class="num font-bold text-2xl whitespace-nowrap">${r[1]}</dd></div>`+(r[0]==='UV index'?`<div class="pb-3" aria-hidden="true"><div class="relative h-2 rounded-full" style="background:linear-gradient(90deg,#7fb77e,#f2d04d 40%,#f2a413 65%,#d9533a)"><span class="absolute -top-1 w-4 h-4 rounded-full bg-white border-2 border-ink" style="left:calc(${Math.min(c.uv,11)/11*100}% - 8px)"></span></div></div>`:'')).join('')
+  ;
+  }
+
+  function renderSun(c){
+    const n = localNow(c.tz), cur = n.h+n.m/60;
+    const a=c.sr[0]+c.sr[1]/60, b=c.ss[0]+c.ss[1]/60;
+    const f = Math.min(1,Math.max(0,(cur-a)/(b-a))), up = cur>=a && cur<=b;
+    const cx=150, cy=118, r=110, ang=Math.PI*(1-f);
+    const sx=cx+r*Math.cos(ang), sy=cy-r*Math.sin(ang);
+    $('sunarc').innerHTML = `<svg viewBox="0 20 300 120" class="w-full max-w-[300px] mx-auto" role="img" aria-label="${up?'The sun is up, '+Math.round(f*100)+'% of the way through the day':'The sun is below the horizon'}">
+      <path d="M${cx-r},${cy} A${r},${r} 0 0 1 ${cx+r},${cy}" fill="none" stroke="#d9ddd8" stroke-width="3" stroke-dasharray="2 7" stroke-linecap="round"/>
+      ${up?`<path d="M${cx-r},${cy} A${r},${r} 0 0 1 ${sx},${sy}" fill="none" stroke="#f2a413" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="${sx}" cy="${sy}" r="11" fill="#f2a413" stroke="#fff" stroke-width="3"/>`:
+      `<use href="#i-moon" x="${cx-14}" y="${cy-48}" width="28" height="28"/>`}
+      <line x1="14" y1="${cy}" x2="286" y2="${cy}" stroke="#14233a" stroke-width="2" stroke-linecap="round"/>
+    </svg>`;
+    $('sunrise').textContent = fmt(...c.sr); $('sunset').textContent = fmt(...c.ss);
+  }
+
+  function renderTop(c){
+    $('city-name').textContent=c.name; $('region').textContent=c.region;
+    $('temp').textContent=cvt(c.now); $('deg').textContent='°'+state.unit;
+    $('cond').textContent=COND[c.cond]; $('cond-icon').setAttribute('href','#i-'+(isDay(c,localNow(c.tz).h)?ICON[c.cond]:(c.cond==='c'?'moon':c.cond==='p'?'moonc':ICON[c.cond])));
+    $('hi').textContent=T(c.hi); $('lo').textContent=T(c.lo); $('feels-top').textContent=T(c.feels);
+    $('summary').textContent=c.note;
+    const sk = SKY[state.city], s=document.documentElement.style;
+    s.setProperty('--sky-a',sk[0]); s.setProperty('--sky-b',sk[1]); s.setProperty('--sky-c',sk[2]);
+  }
+  function tick(){
+    const c=CITIES[state.city];
+    $('clock').textContent = new Intl.DateTimeFormat('en-US',{timeZone:c.tz,weekday:'long',hour:'numeric',minute:'2-digit'}).format(new Date());
+  }
+  function render(){
+    const c=CITIES[state.city];
+    renderCities(); renderTop(c); renderHourly(c); renderWeek(c); renderDetails(c); renderSun(c); tick();
+    document.title = `${c.name} ${cvt(c.now)}°${state.unit} · Atmos`;
+  }
+
+  $('cities').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    state.city=b.dataset.c; render();
+    $('cities').querySelector(`[data-c="${state.city}"]`).focus();
+  });
+  $('units').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    state.unit=b.dataset.u;
+    $('units').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    render();
+  });
+  render(); setInterval(tick,15000);
+})();
+</script>
+</body>
+</html>

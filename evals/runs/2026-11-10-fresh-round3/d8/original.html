@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stockroom | Inventory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #0b1026; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .float-slow { animation: float 4s ease-in-out infinite; }
+    .glow-orange { box-shadow: 0 0 24px rgba(251, 146, 60, 0.6); }
+    .glow-pink { box-shadow: 0 0 24px rgba(236, 72, 153, 0.6); }
+    .bar-rainbow { background: linear-gradient(90deg, #f43f5e, #fb923c, #facc15, #4ade80, #38bdf8, #a78bfa); box-shadow: 0 0 14px rgba(244, 114, 182, 0.8); }
+  </style>
+</head>
+<body class="text-white min-h-screen overflow-hidden">
+  <div class="fixed -top-40 -left-32 w-[520px] h-[520px] rounded-full bg-orange-500/30 blur-3xl"></div>
+  <div class="fixed -bottom-48 right-0 w-[600px] h-[600px] rounded-full bg-pink-500/30 blur-3xl"></div>
+
+  <div class="relative flex h-[900px] w-[1280px]">
+    <aside class="w-[236px] bg-white/5 backdrop-blur-xl border-r-2 border-pink-500/40 p-[18px] flex flex-col">
+      <div class="flex items-center gap-3 mb-[30px]">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-orange-400 to-pink-600 glow-pink flex items-center justify-center text-xl float-slow">📦</div>
+        <div>
+          <p class="font-black text-lg leading-none">Stockroom</p>
+          <span class="text-[10px] font-black tracking-[0.2em] uppercase text-pink-300">PRO PLAN ✨</span>
+        </div>
+      </div>
+      <nav class="space-y-[7px] text-sm font-extrabold">
+        <a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-pink-600 glow-orange">🏠 Dashboard</a>
+        <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10">🧰 Inventory <span class="ml-auto text-[11px] bg-pink-500 px-2 py-[2px] rounded-full">NEW</span></a>
+        <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10">🚚 Suppliers</a>
+        <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10">🧾 Purchase Orders</a>
+        <a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10">📊 Reports 🔥</a>
+      </nav>
+      <div class="mt-auto rounded-2xl border border-orange-400/50 bg-white/5 p-4 text-xs">
+        <p class="font-black uppercase tracking-[0.15em] text-orange-300">Trusted by #1 shops!</p>
+        <p class="mt-1 text-white/70">Used by 10,000+ warehouses worldwide 🚀</p>
+      </div>
+    </aside>
+
+    <main class="flex-1 p-[26px] overflow-hidden">
+      <header class="flex items-center justify-between gap-4">
+        <div>
+          <p class="text-[11px] font-black tracking-[0.25em] uppercase text-pink-300">Welcome back! 👋</p>
+          <h1 class="text-[34px] font-black leading-tight bg-gradient-to-r from-orange-300 via-pink-400 to-fuchsia-400 bg-clip-text text-transparent">Let's crush inventory today!!</h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <input type="text" placeholder="🔍 Search SKUs, parts, suppliers..." class="w-[300px] bg-white/10 border border-pink-400/40 rounded-full px-5 py-[11px] text-sm placeholder-white/50 focus:outline-none">
+          </div>
+          <button class="bg-gradient-to-r from-orange-500 via-pink-500 to-fuchsia-600 glow-pink rounded-full px-6 py-[11px] font-black text-sm hover:scale-110 transition-transform duration-300">➕ ADD PRODUCT!</button>
+        </div>
+      </header>
+
+      <section class="grid grid-cols-4 gap-[18px] mt-[22px]">
+        <div class="rounded-3xl bg-white/5 backdrop-blur-md border-2 border-orange-400/60 p-5">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-lg glow-orange">🏷️</div>
+          <p class="mt-4 text-[10px] font-black tracking-[0.2em] uppercase text-orange-200">Total SKUs</p>
+          <p class="text-[34px] font-black"><span class="inline-block bg-orange-500/30 rounded-xl px-3 glow-orange">09</span> 🚀</p>
+        </div>
+        <div class="rounded-3xl bg-white/5 backdrop-blur-md border-2 border-pink-400/60 p-5">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-pink-400 to-fuchsia-600 flex items-center justify-center text-lg glow-pink">📦</div>
+          <p class="mt-4 text-[10px] font-black tracking-[0.2em] uppercase text-pink-200">Units in stock</p>
+          <p class="text-[34px] font-black"><span class="inline-block bg-pink-500/30 rounded-xl px-3 glow-pink">1,284</span></p>
+        </div>
+        <div class="rounded-3xl bg-white/5 backdrop-blur-md border-2 border-yellow-300/60 p-5 float-slow">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-yellow-300 to-red-500 flex items-center justify-center text-lg">⚠️</div>
+          <p class="mt-4 text-[10px] font-black tracking-[0.2em] uppercase text-yellow-200">Low stock!!</p>
+          <p class="text-[34px] font-black"><span class="inline-block bg-yellow-400/30 rounded-xl px-3 animate-pulse">04</span> 🔥</p>
+        </div>
+        <div class="rounded-3xl bg-white/5 backdrop-blur-md border-2 border-cyan-300/60 p-5">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-300 to-violet-500 flex items-center justify-center text-lg">💎</div>
+          <p class="mt-4 text-[10px] font-black tracking-[0.2em] uppercase text-cyan-200">Stock value</p>
+          <p class="text-[34px] font-black">$48,2K <span class="text-sm text-green-300">▲ 12.5%!</span></p>
+        </div>
+      </section>
+
+      <section class="mt-[20px] grid grid-cols-[1fr_300px] gap-[18px]">
+        <div class="rounded-3xl bg-white/5 backdrop-blur-md border-2 border-fuchsia-400/50 p-[18px] overflow-hidden">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-lg font-black">🛠️ PRODUCTS IN STOCK</h2>
+            <span class="text-[11px] font-black uppercase tracking-[0.15em] text-pink-300">Updated 3/11/26 at 2:05pm ⏰</span>
+          </div>
+          <table class="w-full text-[13px]">
+            <thead>
+              <tr class="text-left text-[10px] font-black tracking-[0.2em] uppercase text-pink-200 border-b border-pink-400/30">
+                <th class="py-2 pr-2">SKU</th>
+                <th class="py-2 pr-2">Name</th>
+                <th class="py-2 pr-2">Category</th>
+                <th class="py-2 pr-2">In stock</th>
+                <th class="py-2 pr-2">Reorder pt</th>
+                <th class="py-2 pr-2">Status</th>
+                <th class="py-2">Supplier</th>
+              </tr>
+            </thead>
+            <tbody class="font-semibold">
+              <tr class="border-b border-white/10 hover:bg-white/10">
+                <td class="py-[9px] pr-2 font-black text-orange-300">BK-0001</td>
+                <td class="pr-2">Carbon Road Chain 🔗</td>
+                <td class="pr-2">Drivetrain</td>
+                <td class="pr-2"><div class="w-[90px] h-2.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-[85%] bar-rainbow rounded-full"></div></div></td>
+                <td class="pr-2">12</td>
+                <td class="pr-2"><span class="px-3 py-[3px] rounded-full bg-green-400 text-black text-[10px] font-black">IN STOCK ✅</span></td>
+                <td>Velocity Co.</td>
+              </tr>
+              <tr class="border-b border-white/10 hover:bg-white/10">
+                <td class="py-[9px] pr-2 font-black text-orange-300">BK-0002</td>
+                <td class="pr-2">Alloy Disc Brake Pads!</td>
+                <td class="pr-2">Brakes</td>
+                <td class="pr-2"><div class="w-[90px] h-2.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-[40%] bar-rainbow rounded-full"></div></div></td>
+                <td class="pr-2">15</td>
+                <td class="pr-2"><span class="px-3 py-[3px] rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-[10px] font-black glow-orange animate-pulse">LOW 🔥</span></td>
+                <td>Torque Works</td>
+              </tr>
+              <tr class="border-b border-white/10 hover:bg-white/10">
+                <td class="py-[9px] pr-2 font-black text-orange-300">BK-0003</td>
+                <td class="pr-2">Tubeless Tyre Sealant 💥</td>
+                <td class="pr-2">Tyres</td>
+                <td class="pr-2"><div class="w-[90px] h-2.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-[62%] bar-rainbow rounded-full"></div></div></td>
+                <td class="pr-2">20</td>
+                <td class="pr-2"><span class="px-3 py-[3px] rounded-full bg-green-400 text-black text-[10px] font-black">IN STOCK ✅</span></td>
+                <td>Grip &amp; Go Ltd</td>
+              </tr>
+              <tr class="border-b border-white/10 hover:bg-white/10">
+                <td class="py-[9px] pr-2 font-black text-orange-300">BK-0004</td>
+                <td class="pr-2">Hydraulic Hose 1.2m</td>
+                <td class="pr-2">Brakes</td>
+                <td class="pr-2"><div class="w-[90px] h-2.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-[12%] bar-rainbow rounded-full"></div></div></td>
+                <td class="pr-2">10</td>
+                <td class="pr-2"><span class="px-3 py-[3px] rounded-full bg-gradient-to-r from-pink-500 to-red-600 text-[10px] font-black glow-pink animate-pulse">LOW 🔥</span></td>
+                <td>Torque Works</td>
+              </tr>
+              <tr class="border-b border-white/10 hover:bg-white/10">
+                <td class="py-[9px] pr-2 font-black text-orange-300">BK-0005</td>
+                <td class="pr-2">Cassette 11-34T ⚡</td>
+                <td class="pr-2">Drivetrain</td>
+                <td class="pr-2"><div class="w-[90px] h-2.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-[70%] bar-rainbow rounded-full"></div></div></td>
+                <td class="pr-2">8</td>
+                <td class="pr-2"><span class="px-3 py-[3px] rounded-full bg-green-400 text-black text-[10px] font-black">IN STOCK ✅</span></td>
+                <td>Velocity Co.</td>
+              </tr>
+              <tr class="border-b border-white/10 hover:bg-white/10">
+                <td class="py-[9px] pr-2 font-black text-orange-300">BK-0006</td>
+                <td class="pr-2">Tyre Liner 29"</td>
+                <td class="pr-2">Tyres</td>
+                <td class="pr-2"><div class="w-[90px] h-2.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-[25%] bar-rainbow rounded-full"></div></div></td>
+                <td class="pr-2">6</td>
+                <td class="pr-2"><span class="px-3 py-[3px] rounded-full bg-gradient-to-r from-orange-500 to-yellow-400 text-[10px] font-black glow-orange">LOW 🔥</span></td>
+                <td>Grip &amp; Go Ltd</td>
+              </tr>
+              <tr class="border-b border-white/10 hover:bg-white/10">
+                <td class="py-[9px] pr-2 font-black text-orange-300">BK-0007</td>
+                <td class="pr-2">Pedal Bearing Kit</td>
+                <td class="pr-2">Hubs</td>
+                <td class="pr-2"><div class="w-[90px] h-2.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-[55%] bar-rainbow rounded-full"></div></div></td>
+                <td class="pr-2">9</td>
+                <td class="pr-2"><span class="px-3 py-[3px] rounded-full bg-green-400 text-black text-[10px] font-black">IN STOCK ✅</span></td>
+                <td>Axle Pro</td>
+              </tr>
+              <tr class="border-b border-white/10 hover:bg-white/10">
+                <td class="py-[9px] pr-2 font-black text-orange-300">BK-0008</td>
+                <td class="pr-2">Gel Saddle Pro 🍑</td>
+                <td class="pr-2">Cockpit</td>
+                <td class="pr-2"><div class="w-[90px] h-2.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-[92%] bar-rainbow rounded-full"></div></div></td>
+                <td class="pr-2">5</td>
+                <td class="pr-2"><span class="px-3 py-[3px] rounded-full bg-green-400 text-black text-[10px] font-black">IN STOCK ✅</span></td>
+                <td>Axle Pro</td>
+              </tr>
+              <tr class="hover:bg-white/10">
+                <td class="py-[9px] pr-2 font-black text-orange-300">BK-0009</td>
+                <td class="pr-2">Bar Tape Cork 🎉</td>
+                <td class="pr-2">Cockpit</td>
+                <td class="pr-2"><div class="w-[90px] h-2.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-[18%] bar-rainbow rounded-full"></div></div></td>
+                <td class="pr-2">7</td>
+                <td class="pr-2"><span class="px-3 py-[3px] rounded-full bg-gradient-to-r from-pink-500 to-orange-500 text-[10px] font-black glow-pink animate-pulse">LOW 🔥</span></td>
+                <td>Handlebar HQ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="rounded-3xl bg-white/5 backdrop-blur-md border-2 border-violet-400/50 p-[18px]">
+          <h2 class="text-lg font-black">📝 Pending POs!!</h2>
+          <p class="text-[10px] font-black tracking-[0.2em] uppercase text-violet-200 mb-3">Awaiting delivery 🚚</p>
+          <ul class="space-y-[11px] text-sm">
+            <li class="rounded-2xl bg-gradient-to-r from-orange-500/30 to-pink-500/30 p-3 border border-orange-300/40">
+              <div class="flex justify-between font-black"><span>PO-2207</span><span>Velocity Co.</span></div>
+              <p class="text-xs text-white/70 mt-1">Due 14/11/2026 · 40 units ⚡</p>
+            </li>
+            <li class="rounded-2xl bg-white/5 p-3 border border-violet-300/30">
+              <div class="flex justify-between font-black"><span>PO-2208</span><span>Torque Works</span></div>
+              <p class="text-xs text-white/70 mt-1">Due Nov 18, 2026 · 24 units 🛞</p>
+            </li>
+            <li class="rounded-2xl bg-white/5 p-3 border border-cyan-300/30">
+              <div class="flex justify-between font-black"><span>PO-2209</span><span>Grip &amp; Go</span></div>
+              <p class="text-xs text-white/70 mt-1">Due 2026-11-21 · 60 units 💥</p>
+            </li>
+          </ul>
+          <button class="mt-[18px] w-full bg-gradient-to-r from-cyan-400 to-violet-600 rounded-full py-[11px] font-black text-sm glow-pink hover:scale-110 transition-transform duration-300">🚀 CREATE NEW PO!</button>
+          <p class="mt-3 text-center text-[10px] font-black uppercase tracking-[0.2em] text-yellow-200">Guaranteed fastest restock!!</p>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

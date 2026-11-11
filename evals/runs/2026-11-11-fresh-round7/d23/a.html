@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peloton Club Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #090f21;
+    --sidebar: #020617;
+    --card: #0f172a;
+    --raised: #1e293b;
+    --line: #1e293b;
+    --bar: #334155;
+    --text: #f1f5f9;
+    --text-2: #cbd5e1;
+    --muted: #94a3b8;
+    --accent: #5eead4;
+    --on-accent: #042f2e;
+    --live: #4ade80;
+    --font: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --ease: cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--page);
+    color: var(--text);
+    font: 400 14px/20px var(--font);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, p, dl, dd, ol, ul { margin: 0; }
+  ol, ul { padding: 0; list-style: none; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tnum { font-variant-numeric: tabular-nums; }
+  .muted { color: var(--muted); }
+
+  .app {
+    display: grid;
+    grid-template-columns: 248px 1fr;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--sidebar);
+    border-right: 1px solid var(--line);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 12px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+  }
+  nav { display: flex; flex-direction: column; gap: 4px; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    color: var(--text-2);
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .nav-item svg {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .nav-item:hover { background: var(--raised); color: var(--text); }
+  .nav-item[aria-current="page"] { background: var(--raised); color: var(--text); font-weight: 500; }
+  .plan {
+    margin-top: auto;
+    padding: 16px 12px 0;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .plan strong { font-weight: 500; }
+  .plan a {
+    color: var(--text-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    width: max-content;
+  }
+
+  /* Main */
+  main {
+    padding: 32px 40px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+  }
+  .page-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  h1 { font-size: 30px; line-height: 36px; font-weight: 500; letter-spacing: -0.01em; }
+  .page-head .muted { margin-top: 4px; }
+  .head-actions { display: flex; align-items: center; gap: 16px; }
+  .live { display: inline-flex; align-items: center; gap: 8px; color: var(--text-2); }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--live);
+  }
+  .btn-primary {
+    height: 36px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 500;
+    cursor: pointer;
+    transition: filter 150ms var(--ease);
+  }
+  .btn-primary:hover { filter: brightness(1.08); }
+
+  .grid { display: grid; gap: 16px; }
+  .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .row-chart { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+  .row-lower { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 24px;
+    min-width: 0;
+  }
+  .card h2 { font-size: 16px; line-height: 24px; font-weight: 500; }
+  .card-head { margin-bottom: 16px; }
+  .card-head p { margin-top: 4px; color: var(--muted); }
+
+  .stat .label { color: var(--muted); }
+  .stat .figure {
+    margin-top: 8px;
+    font-size: 30px;
+    line-height: 36px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .change { margin-top: 4px; color: var(--muted); }
+
+  /* Chart */
+  .chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    height: 176px;
+    border-bottom: 1px solid var(--bar);
+  }
+  .bar {
+    flex: 1;
+    background: var(--bar);
+    border-radius: 4px 4px 0 0;
+  }
+  .bar.is-current { background: var(--accent); }
+  .bar-labels {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .bar-labels span { flex: 1; text-align: center; }
+
+  /* Goal meter */
+  .goal .figure {
+    margin-top: 8px;
+    font-size: 30px;
+    line-height: 36px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .meter {
+    height: 8px;
+    margin: 20px 0 12px;
+    border-radius: 999px;
+    background: var(--raised);
+    overflow: hidden;
+  }
+  .meter span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    border-radius: inherit;
+  }
+
+  /* Rides */
+  .rides { display: flex; flex-direction: column; }
+  .rides li {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+  }
+  .rides li:first-child { border-top: 0; padding-top: 0; }
+  .rides li:last-child { padding-bottom: 0; }
+  .ride-name { font-weight: 500; }
+  .ride-meta { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ride-meta .muted { margin-top: 4px; }
+
+  /* Records */
+  .records { display: flex; flex-direction: column; }
+  .records div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+  }
+  .records div:first-child { border-top: 0; padding-top: 0; }
+  .records div:last-child { padding-bottom: 0; }
+  .records dt { color: var(--text-2); }
+  .records dd {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Leaderboard */
+  .board { display: flex; flex-direction: column; gap: 4px; }
+  .board li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .board li.is-you { background: var(--raised); }
+  .board .rank { width: 16px; color: var(--muted); }
+  .board .who { flex: 1; min-width: 0; }
+  .board .km { text-align: right; }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .row-lower { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .row-lower .upcoming { grid-column: 1 / -1; }
+  }
+  @media (max-width: 860px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .sidebar {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+      padding: 16px;
+      gap: 16px;
+    }
+    nav { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+    .plan { margin-top: 0; padding-top: 0; border-top: 0; flex-direction: row; align-items: center; gap: 12px; }
+    .row-chart, .row-lower { grid-template-columns: minmax(0, 1fr); }
+    .row-lower .upcoming { grid-column: auto; }
+    main { padding: 24px 16px 40px; }
+  }
+  @media (max-width: 520px) {
+    .stats { grid-template-columns: minmax(0, 1fr); }
+    .card { padding: 20px; }
+    .chart { height: 144px; gap: 8px; }
+    .bar-labels { gap: 8px; font-size: 12px; }
+    .bar-labels span { font-size: 10px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/>
+        <circle cx="12" cy="12" r="2.5" fill="currentColor"/>
+      </svg>
+      <span>Peloton Club</span>
+    </div>
+
+    <nav aria-label="Main">
+      <a class="nav-item" href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>
+        Dashboard
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>
+        Club rides
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg>
+        Leaderboard
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M7 17v-6M12 17V7M17 17v-4"/></svg>
+        Stats
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <div class="plan">
+      <strong>Pro plan</strong>
+      <a href="#">Manage plan</a>
+    </div>
+  </aside>
+
+  <main>
+
+    <header class="page-head">
+      <div>
+        <h1>Dashboard</h1>
+        <p class="muted">Week 46, 9 to 15 Nov</p>
+      </div>
+      <div class="head-actions">
+        <span class="live"><span class="dot" aria-hidden="true"></span>Live</span>
+        <button class="btn-primary" type="button">Log ride</button>
+      </div>
+    </header>
+
+    <section class="grid stats" aria-label="This week">
+      <div class="card stat">
+        <p class="label">Distance</p>
+        <p class="figure">148.3 km</p>
+        <p class="change">+12% vs last week</p>
+      </div>
+      <div class="card stat">
+        <p class="label">Ride time</p>
+        <p class="figure">6h 42m</p>
+        <p class="change">Week 46 total</p>
+      </div>
+      <div class="card stat">
+        <p class="label">Elevation</p>
+        <p class="figure">1,284 m</p>
+        <p class="change">Week 46 total</p>
+      </div>
+      <div class="card stat">
+        <p class="label">Rides</p>
+        <p class="figure">5</p>
+        <p class="change">Week 46 total</p>
+      </div>
+    </section>
+
+    <section class="grid row-chart">
+      <div class="card">
+        <div class="card-head">
+          <h2>Weekly distance</h2>
+          <p>Last 8 weeks</p>
+        </div>
+        <div class="chart" role="img" aria-label="Weekly distance for weeks 39 to 46. Bars show relative distance; the chart has no values. Week 46 is the highest.">
+          <div class="bar" style="height: 45%"></div>
+          <div class="bar" style="height: 62%"></div>
+          <div class="bar" style="height: 38%"></div>
+          <div class="bar" style="height: 71%"></div>
+          <div class="bar" style="height: 55%"></div>
+          <div class="bar" style="height: 88%"></div>
+          <div class="bar" style="height: 64%"></div>
+          <div class="bar is-current" style="height: 97%"></div>
+        </div>
+        <div class="bar-labels" aria-hidden="true">
+          <span>W39</span><span>W40</span><span>W41</span><span>W42</span><span>W43</span><span>W44</span><span>W45</span><span>W46</span>
+        </div>
+      </div>
+
+      <div class="card goal">
+        <div class="card-head">
+          <h2>Monthly goal</h2>
+        </div>
+        <p class="figure">312 km</p>
+        <p class="muted">of 400 km, 78%</p>
+        <div class="meter" role="meter" aria-label="Monthly goal progress" aria-valuemin="0" aria-valuemax="400" aria-valuenow="312" aria-valuetext="312 of 400 km">
+          <span style="width: 78%"></span>
+        </div>
+        <p class="muted">88 km to go</p>
+      </div>
+    </section>
+
+    <section class="grid row-lower">
+      <div class="card upcoming">
+        <div class="card-head">
+          <h2>Upcoming club rides</h2>
+        </div>
+        <ul class="rides">
+          <li>
+            <div>
+              <p class="ride-name">Sunrise Summit Climb</p>
+              <p class="muted">Sat 14 Nov, 07:00, 62 km</p>
+            </div>
+            <div class="ride-meta">
+              <p>Pace A</p>
+              <p class="muted">14 riders</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p class="ride-name">Coffee &amp; Flats</p>
+              <p class="muted">Sun 15 Nov, 08:30, 38 km</p>
+            </div>
+            <div class="ride-meta">
+              <p>Pace B</p>
+              <p class="muted">9 riders</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p class="ride-name">Night Ride Blitz!!</p>
+              <p class="muted">Wed 18 Nov, 19:30, 25 km</p>
+            </div>
+            <div class="ride-meta">
+              <p>Pace C</p>
+              <p class="muted">22 riders</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <p class="ride-name">Hill Repeats</p>
+              <p class="muted">Sat 21 Nov, 06:45, 47.5 km</p>
+            </div>
+            <div class="ride-meta">
+              <p>Pace A</p>
+              <p class="muted">6 riders</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Personal records</h2>
+        </div>
+        <dl class="records">
+          <div><dt>5 km</dt><dd>19:42</dd></div>
+          <div><dt>20 km</dt><dd>41:08</dd></div>
+          <div><dt>Longest ride</dt><dd>128.4 km</dd></div>
+        </dl>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Club leaderboard</h2>
+        </div>
+        <ol class="board">
+          <li><span class="rank">1</span><span class="who">Maria R.</span><span class="km">612.5 km</span></li>
+          <li><span class="rank">2</span><span class="who">Jonas K.</span><span class="km">598.0 km</span></li>
+          <li><span class="rank">3</span><span class="who">Priya S.</span><span class="km">574.2 km</span></li>
+          <li><span class="rank">4</span><span class="who">Tom B.</span><span class="km">540.0 km</span></li>
+          <li class="is-you"><span class="rank">5</span><span class="who">Alex (you)</span><span class="km">312.0 km</span></li>
+        </ol>
+      </div>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>

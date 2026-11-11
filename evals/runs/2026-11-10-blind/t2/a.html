@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Streaks - Today</title>
+<style>
+:root{--bg:#f4efe6;--ink:#1b1a24;--mute:#6b6877;--card:#fffdf8;--line:#e3dccd;--acc:#5b3df5;--lime:#c8f169;--pink:#ff7a9c;--sun:#ffc94a;--sky:#7cc7ff}
+@media(prefers-color-scheme:dark){:root{--bg:#14131b;--ink:#f3f0ea;--mute:#a09cb0;--card:#1f1d29;--line:#2f2c3d;--acc:#9a86ff}}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.4 ui-rounded,"SF Pro Rounded",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;padding:20px 16px 110px}
+header{display:flex;justify-content:space-between;align-items:center}
+h1{font-size:28px;line-height:1.1;letter-spacing:-.02em}
+.sub{color:var(--mute);font-size:14px;margin-top:2px}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--pink);display:grid;place-items:center;font-size:22px;border:2px solid var(--ink)}
+.week{display:flex;gap:6px;margin:20px 0}
+.day{flex:1;text-align:center;padding:8px 0;border-radius:14px;font-size:12px;color:var(--mute);border:1.5px solid transparent}
+.day b{display:block;font-size:17px;color:var(--ink);margin-top:2px}
+.day.done b{color:var(--acc)}
+.day.today{background:var(--ink);color:var(--bg)}.day.today b{color:var(--bg)}
+.hero{background:var(--acc);color:#fff;border-radius:26px;padding:20px;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:var(--lime);opacity:.25}
+.ring{position:relative;width:84px;height:84px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring span{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;font-size:20px}
+.hero h2{font-size:20px;line-height:1.2}
+.hero p{font-size:14px;opacity:.85;margin-top:4px}
+.streak{display:flex;gap:10px;margin:12px 0 4px}
+.stat{flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:12px 14px}
+.stat b{font-size:22px;display:block}.stat small{color:var(--mute);font-size:13px}
+h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:22px 4px 10px}
+ul{list-style:none;padding:0;display:grid;gap:10px}
+.habit{display:flex;align-items:center;gap:14px;background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:12px 14px;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;transition:transform .12s}
+.habit:active{transform:scale(.98)}
+.habit:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:23px;flex:none}
+.txt{flex:1;min-width:0}.txt strong{display:block;font-size:16px}.txt small{color:var(--mute);font-size:13px}
+.chk{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;flex:none;transition:.15s;color:transparent;font-weight:900}
+.habit[aria-pressed=true]{background:color-mix(in srgb,var(--lime) 35%,var(--card))}
+.habit[aria-pressed=true] .chk{background:var(--ink);border-color:var(--ink);color:var(--lime)}
+.habit[aria-pressed=true] strong{text-decoration:line-through;text-decoration-thickness:2px}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;width:min(448px,calc(100% - 32px));background:var(--ink);border-radius:26px;display:flex;justify-content:space-around;align-items:center;padding:8px}
+nav a{color:var(--bg);opacity:.6;text-decoration:none;font-size:12px;padding:6px 14px;text-align:center}
+nav a[aria-current]{opacity:1}
+nav .add{width:54px;height:54px;border-radius:50%;background:var(--lime);color:#1b1a24;opacity:1;font-size:30px;line-height:54px;padding:0;font-weight:700}
+</style></head><body>
+<div class="app">
+<header><div><h1 id="hi">Hey, Maya</h1><div class="sub" id="date"></div></div><div class="avatar" aria-hidden="true">😎</div></header>
+<div class="week" id="week" aria-label="This week"></div>
+<section class="hero" aria-live="polite">
+<div class="ring"><svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r="35" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="9"/><circle id="arc" cx="42" cy="42" r="35" fill="none" stroke="#c8f169" stroke-width="9" stroke-linecap="round" stroke-dasharray="220" stroke-dashoffset="220" style="transition:stroke-dashoffset .4s"/></svg><span id="pct">0%</span></div>
+<div><h2 id="msg"></h2><p id="cnt"></p></div>
+</section>
+<div class="streak"><div class="stat"><b>🔥 12 days</b><small>Current streak</small></div><div class="stat"><b>⭐ 340 XP</b><small>Level 5</small></div></div>
+<h3>Today's habits</h3>
+<ul id="list"></ul>
+</div>
+<nav><a href="#" aria-current="page">Today</a><a href="#">Stats</a><a href="#" class="add" aria-label="Add habit">+</a><a href="#">Crew</a><a href="#">Me</a></nav>
+<script>
+const habits=[["💧","Drink 2L of water","6 of 8 glasses","#cfe9ff",1],["📚","Read 15 minutes","Chapter 7","#ffe3a3",0],["🏃","Move for 20 min","Walk, skate, anything","#ffc9d6",0],["📵","Phone off by 10pm","Wind down","#e0d8ff",0],["😴","Sleep 8 hours","Last night: 7h 40m","#d4f5b0",1]];
+const list=document.getElementById('list');
+habits.forEach(([e,t,s,c,d])=>{const li=document.createElement('li'),b=document.createElement('button');b.className='habit';b.setAttribute('aria-pressed',!!d);
+b.innerHTML=`<span class="ico" style="background:${c}">${e}</span><span class="txt"><strong>${t}</strong><small>${s}</small></span><span class="chk">✓</span>`;
+b.onclick=()=>{b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true');upd()};li.append(b);list.append(li)});
+function upd(){const all=[...list.querySelectorAll('.habit')],n=all.filter(x=>x.getAttribute('aria-pressed')==='true').length,p=Math.round(n/all.length*100);
+pct.textContent=p+'%';arc.style.strokeDashoffset=220*(1-p/100);cnt.textContent=n+' of '+all.length+' done today';
+msg.textContent=p==100?'Perfect day. Streak locked in!':p>=50?'Past halfway, keep going':n?'Nice start':'Fresh day, let\'s go'}
+const now=new Date(),dn=['S','M','T','W','T','F','S'];
+date.textContent=now.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+for(let i=-3;i<=3;i++){const d=new Date(now);d.setDate(now.getDate()+i);const x=document.createElement('div');x.className='day'+(i==0?' today':i<0?' done':'');x.innerHTML=dn[d.getDay()]+'<b>'+d.getDate()+'</b>';week.append(x)}
+upd();
+</script></body></html>

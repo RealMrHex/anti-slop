@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anti-Slob blind test</title>
+<style>
+  :root { color-scheme: light dark; --bg: #f4f4f2; --fg: #1a1a1a; --muted: #555; --line: #9a9a96; --panel: #fff; --pick: #1d4ed8; --pick-fg: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #161616; --fg: #f2f2f0; --muted: #b0b0ac; --line: #666; --panel: #0c0c0c; --pick: #93b4ff; --pick-fg: #0b1020; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; background: var(--bg); color: var(--fg); font: 15px/1.5 system-ui, sans-serif; }
+  h1 { font-size: 22px; margin: 0 0 6px; } h2 { font-size: 17px; margin: 44px 0 10px; }
+  p { margin: 0 0 10px; color: var(--muted); max-width: 78ch; }
+  .pair { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+  figure { margin: 0; } figcaption { display: flex; justify-content: space-between; padding: 4px 0; font-weight: 700; font-size: 16px; }
+  figcaption a { font-weight: 400; font-size: 13px; color: inherit; }
+  iframe { width: 100%; height: 640px; border: 1px solid var(--line); background: var(--panel); }
+  .phone iframe { max-width: 390px; height: 780px; display: block; margin: 0 auto; }
+  .vote { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 12px; }
+  button { font: inherit; font-weight: 600; min-height: 40px; padding: 0 18px; border: 1.5px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--fg); cursor: pointer; }
+  button[aria-pressed="true"] { background: var(--pick); border-color: var(--pick); color: var(--pick-fg); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  :focus-visible { outline: 3px solid var(--pick); outline-offset: 2px; }
+  #end { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); }
+  #out { white-space: pre-wrap; font: 13px/1.5 ui-monospace, Menlo, monospace; background: var(--panel); border: 1px solid var(--line); padding: 12px; margin-top: 12px; }
+</style>
+</head>
+<body>
+  <h1>Anti-Slob blind test</h1>
+  <p>12 tasks. For each, one page was built by an agent using the skill and one by the same agent without it. Which side is which was randomised and is hidden. Pick the one you think is better: cooler, better looking, more usable, whatever matters to you. Open them full size if the frames are cramped.</p>
+  <p>When you have picked for all of them, press Reveal.</p>
+
+  <section class="task desktop" data-task="t01">
+    <h2>1. Settings page for a project management app</h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="t01/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t01/a.html" title="Settings page for a project management app, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t01/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t01/b.html" title="Settings page for a project management app, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 1">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task desktop" data-task="t02">
+    <h2>2. Kanban board for a small team</h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="t02/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t02/a.html" title="Kanban board for a small team, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t02/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t02/b.html" title="Kanban board for a small team, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 2">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task phone" data-task="t03">
+    <h2>3. Recipe detail screen for a cooking app</h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="t03/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t03/a.html" title="Recipe detail screen for a cooking app, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t03/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t03/b.html" title="Recipe detail screen for a cooking app, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 3">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task desktop" data-task="t04">
+    <h2>4. Landing page for a yoga studio</h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="t04/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t04/a.html" title="Landing page for a yoga studio, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t04/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t04/b.html" title="Landing page for a yoga studio, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 4">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task phone" data-task="t05">
+    <h2>5. Weather app home screen</h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="t05/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t05/a.html" title="Weather app home screen, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t05/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t05/b.html" title="Weather app home screen, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 5">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task desktop" data-task="t06">
+    <h2>6. Analytics dashboard for an online store</h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="t06/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t06/a.html" title="Analytics dashboard for an online store, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t06/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t06/b.html" title="Analytics dashboard for an online store, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 6">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task phone" data-task="t07">
+    <h2>7. Sign-up screen for a language learning app</h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="t07/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t07/a.html" title="Sign-up screen for a language learning app, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t07/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t07/b.html" title="Sign-up screen for a language learning app, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 7">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task desktop" data-task="t08">
+    <h2>8. Portfolio home page for a photographer</h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="t08/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t08/a.html" title="Portfolio home page for a photographer, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t08/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t08/b.html" title="Portfolio home page for a photographer, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 8">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task phone" data-task="t09">
+    <h2>9. Workout summary after a run</h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="t09/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t09/a.html" title="Workout summary after a run, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t09/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t09/b.html" title="Workout summary after a run, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 9">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task desktop" data-task="t10">
+    <h2>10. Inbox view for a web email client</h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="t10/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t10/a.html" title="Inbox view for a web email client, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t10/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t10/b.html" title="Inbox view for a web email client, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 10">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task phone" data-task="t11">
+    <h2>11. Restaurant menu in a food delivery app</h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="t11/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t11/a.html" title="Restaurant menu in a food delivery app, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t11/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t11/b.html" title="Restaurant menu in a food delivery app, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 11">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task desktop" data-task="t12">
+    <h2>12. Event page for a music festival</h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="t12/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t12/a.html" title="Event page for a music festival, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t12/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t12/b.html" title="Event page for a music festival, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 12">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+  <div id="end">
+    <button type="button" id="reveal" disabled>Reveal which was which</button>
+    <span id="progress" role="status"></span>
+    <div id="out" hidden></div>
+    <p id="hint" hidden>Copy the text above and paste it back to Claude.</p>
+  </div>
+<script>
+  const K = "fSJCIiA6IjIxdCIgLCJCIiA6IjExdCIgLCJCIiA6IjAxdCIgLCJBIiA6IjkwdCIgLCJBIiA6IjgwdCIgLCJCIiA6IjcwdCIgLCJBIiA6IjYwdCIgLCJCIiA6IjUwdCIgLCJCIiA6IjQwdCIgLCJBIiA6IjMwdCIgLCJCIiA6IjIwdCIgLCJBIiA6IjEwdCJ7", META = {"t01": {"title": "Settings page for a project management app", "set": "new"}, "t02": {"title": "Kanban board for a small team", "set": "new"}, "t03": {"title": "Recipe detail screen for a cooking app", "set": "new"}, "t04": {"title": "Landing page for a yoga studio", "set": "new"}, "t05": {"title": "Weather app home screen", "set": "new"}, "t06": {"title": "Analytics dashboard for an online store", "set": "new"}, "t07": {"title": "Sign-up screen for a language learning app", "set": "new"}, "t08": {"title": "Portfolio home page for a photographer", "set": "new"}, "t09": {"title": "Workout summary after a run", "set": "new"}, "t10": {"title": "Inbox view for a web email client", "set": "new"}, "t11": {"title": "Restaurant menu in a food delivery app", "set": "new"}, "t12": {"title": "Event page for a music festival", "set": "new"}}, picks = {};
+  const store = { get() { try { return JSON.parse(localStorage.getItem("antislob-blind-12") || "{}"); } catch (e) { return {}; } },
+                  set(v) { try { localStorage.setItem("antislob-blind-12", JSON.stringify(v)); } catch (e) {} } };
+  Object.assign(picks, store.get());
+  const total = Object.keys(META).length, reveal = document.getElementById("reveal"), progress = document.getElementById("progress");
+  function paint() {
+    document.querySelectorAll(".task").forEach(s => s.querySelectorAll("button").forEach(b =>
+      b.setAttribute("aria-pressed", String(picks[s.dataset.task] === b.dataset.pick))));
+    const n = Object.keys(picks).length;
+    reveal.disabled = n < total; progress.textContent = " " + n + " of " + total + " picked";
+  }
+  document.querySelectorAll(".task button").forEach(b => b.addEventListener("click", () => {
+    picks[b.closest(".task").dataset.task] = b.dataset.pick; store.set(picks); paint();
+  }));
+  reveal.addEventListener("click", () => {
+    const key = JSON.parse(atob(K).split("").reverse().join(""));
+    let skill = 0, base = 0, same = 0; const lines = [];
+    Object.keys(META).forEach((t, i) => {
+      const p = picks[t], r = p === "same" ? "same" : (p === key[t] ? "with skill" : "without skill");
+      if (r === "same") same++; else if (r === "with skill") skill++; else base++;
+      lines.push((i + 1) + ". " + META[t].title + " [" + META[t].set + "]: picked " + p + " = " + r + " (skill was " + key[t] + ")");
+    });
+    const out = document.getElementById("out");
+    out.textContent = "Anti-Slob 0.3.0 blind test\nPreferred with skill: " + skill + "\nPreferred without skill: " + base + "\nAbout the same: " + same + "\n\n" + lines.join("\n");
+    out.hidden = false; document.getElementById("hint").hidden = false;
+  });
+  paint();
+</script>
+</body>
+</html>

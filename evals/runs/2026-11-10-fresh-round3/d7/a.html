@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vetline | Appointments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ee;
+    --surface: #fdfbf7;
+    --raised: #efe9df;
+    --line: rgba(31, 27, 22, 0.09);
+    --text: #1f1b16;
+    --text-2: #5e554a;
+    --text-3: #6b6257;
+    --accent: #b4532a;
+    --ink: #1f1b16;
+    --pos: #2f7a4a;
+    --neg: #b42318;
+    --warn: #8a5d00;
+    --st-wait: #c98a14;
+    --st-surg: #4a6fa5;
+    --st-done: #8c8476;
+    --st-open: #ddd4c4;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --serif: 'Instrument Serif', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.4;
+    font-weight: 400;
+    color: var(--text);
+    background: var(--bg);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, a { font: inherit; color: inherit; }
+  a { text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .num { font-variant-numeric: tabular-nums; }
+  .muted { color: var(--text-3); }
+  .secondary { color: var(--text-2); }
+
+  /* Shell */
+  .app { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+
+  .sidebar {
+    border-right: 1px solid var(--line);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+  .brand-mark {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--accent);
+    display: grid; place-items: center; color: #fff; flex: none;
+  }
+  .brand-mark svg { width: 16px; height: 16px; }
+  .brand-name { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex; align-items: center; gap: 10px;
+    height: 36px; padding: 0 10px;
+    border-radius: 8px;
+    color: var(--text-2);
+    font-weight: 500;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .nav a svg { width: 16px; height: 16px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .nav a:hover { background: var(--raised); color: var(--text); }
+  .nav a[aria-current="page"] { background: var(--raised); color: var(--text); box-shadow: inset 2px 0 0 var(--accent); }
+  .nav .count { margin-left: auto; font-size: 12px; color: var(--text-3); }
+
+  .sidebar-foot { margin-top: auto; padding: 0 8px; font-size: 13px; color: var(--text-3); }
+
+  /* Main */
+  .main { padding: 32px 40px 40px; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .eyebrow { margin: 0; font-size: 13px; color: var(--text-3); }
+  .page-title { margin: 4px 0 0; font-family: var(--serif); font-weight: 400; font-size: 40px; line-height: 1.1; letter-spacing: -0.01em; }
+  .actions { display: flex; gap: 8px; }
+
+  .btn { white-space: nowrap; }
+  .btn {
+    height: 40px; padding: 0 16px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 150ms var(--ease), transform 150ms var(--ease);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn:hover { background: var(--raised); }
+  .btn:active { transform: scale(0.98); }
+  .btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; }
+  .btn-ink { background: var(--ink); border-color: var(--ink); color: #fbf8f2; }
+  .btn-ink:hover { background: #3a342c; }
+  .btn-accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-accent:hover { background: #9c4520; }
+  .badge { font-size: 12px; font-weight: 600; background: var(--raised); color: var(--text-2); border-radius: 6px; padding: 2px 6px; }
+
+  /* Stat strip */
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+  .stat { padding: 20px 24px; border-left: 1px solid var(--line); }
+  .stat:first-child { border-left: 0; }
+  .stat-label { margin: 0; font-size: 13px; color: var(--text-2); }
+  .stat-value { margin: 6px 0 0; font-size: 32px; font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .stat-note { margin: 8px 0 0; font-size: 13px; color: var(--text-3); }
+  .stat-note.up { color: var(--pos); }
+
+  /* Content grid */
+  .content { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 24px;
+    min-width: 0;
+  }
+  .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+  .panel-title { margin: 0; font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
+  .panel-meta { font-size: 13px; color: var(--text-3); }
+
+  /* Timeline */
+  .timeline { display: block; width: 100%; height: auto; margin: 0 0 12px; overflow: visible; }
+  .timeline text { font-family: var(--sans); font-size: 12px; fill: var(--text-3); font-variant-numeric: tabular-nums; }
+
+  /* Schedule table */
+  .table-wrap { overflow-x: auto; margin: 0 -8px; }
+  table { width: 100%; border-collapse: collapse; min-width: 600px; }
+  th {
+    text-align: left; font-weight: 400; font-size: 13px; color: var(--text-3);
+    padding: 8px; border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 0 8px; height: 56px;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px; vertical-align: middle;
+  }
+  tbody tr { cursor: pointer; transition: background-color 150ms var(--ease); }
+  tbody tr:hover { background: var(--raised); }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr[aria-selected="true"] { background: var(--raised); box-shadow: inset 2px 0 0 var(--accent); }
+  tbody tr[aria-selected="true"]:hover { background: var(--raised); }
+  .time { font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; width: 84px; }
+  .patient-name { font-weight: 500; }
+  .patient-meta { display: block; font-size: 13px; color: var(--text-3); margin-top: 2px; }
+  .reason { color: var(--text); }
+  .vet { color: var(--text-2); white-space: nowrap; }
+
+  .status { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 13px; color: var(--text-2); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--st-open); box-shadow: inset 0 0 0 1.5px var(--text-3); }
+  .dot-pos { background: var(--pos); box-shadow: none; }
+  .dot-wait { background: var(--st-wait); box-shadow: none; }
+  .dot-surg { background: var(--st-surg); box-shadow: none; }
+  .dot-done { background: var(--st-done); box-shadow: none; }
+  .dot-neg { background: var(--neg); box-shadow: none; }
+  .status-neg { color: var(--neg); font-weight: 500; }
+
+  /* Patient panel */
+  .patient-head { display: flex; align-items: center; gap: 16px; }
+  .avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--raised);
+    display: grid; place-items: center;
+    font-family: var(--serif); font-size: 28px; color: var(--accent);
+    flex: none;
+  }
+  .patient-title { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -0.01em; }
+  .patient-sub { margin: 2px 0 0; font-size: 13px; color: var(--text-3); }
+
+  .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 16px; margin: 20px 0 0; padding: 0; }
+  .facts div { min-width: 0; }
+  .facts .wide { grid-column: span 2; }
+  .facts dt { font-size: 13px; color: var(--text-3); }
+  .facts dd { margin: 2px 0 0; font-weight: 500; font-variant-numeric: tabular-nums; }
+
+  .notes {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+  }
+  .notes-label { margin: 0 0 6px; font-size: 13px; color: var(--text-3); }
+  .notes p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--text); }
+
+  .patient-actions { display: flex; gap: 8px; margin-top: 20px; }
+  .patient-actions .btn { flex: 1; justify-content: center; }
+  .live { margin: 16px 0 0; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; color: var(--text-3); }
+
+  /* Responsive */
+  @media (max-width: 1180px) {
+    .content { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 860px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .sidebar { border-right: 0; border-bottom: 1px solid var(--line); padding: 16px; gap: 12px; }
+    .nav { flex-direction: row; overflow-x: auto; gap: 4px; }
+    .nav a { white-space: nowrap; }
+    .nav a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--accent); }
+    .sidebar-foot { display: none; }
+    .main { padding: 24px 16px 32px; }
+    .page-title { font-size: 34px; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .stat:nth-child(3) { border-left: 0; }
+    .stat:nth-child(n + 3) { border-top: 1px solid var(--line); }
+    .panel { padding: 16px; }
+  }
+  @media (max-width: 480px) {
+    .actions { width: 100%; }
+    .actions .btn { flex: 1; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><circle cx="6" cy="9" r="2" fill="currentColor"/><circle cx="10" cy="5" r="2" fill="currentColor"/><circle cx="14" cy="5" r="2" fill="currentColor"/><circle cx="18" cy="9" r="2" fill="currentColor"/><path d="M7.5 15.5c0-2.6 2-5 4.5-5s4.5 2.4 4.5 5c0 1.6-1.1 2.6-2.4 2.6-1 0-1.5-.6-2.1-.6s-1.1.6-2.1.6c-1.3 0-2.4-1-2.4-2.6z" fill="currentColor"/></svg>
+      </div>
+      <span class="brand-name">Vetline</span>
+    </div>
+
+    <nav class="nav" aria-label="Main">
+      <a href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Appointments
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="9" r="1.5"/><circle cx="10" cy="5" r="1.5"/><circle cx="14" cy="5" r="1.5"/><circle cx="18" cy="9" r="1.5"/><path d="M8 15c0-2.5 1.8-4.5 4-4.5s4 2 4 4.5c0 1.5-1 2.5-2.2 2.5-1 0-1.3-.5-1.8-.5s-.8.5-1.8.5C9 17.5 8 16.5 8 15z"/></svg>
+        Patients
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3.5a4.95 4.95 0 0 1 7 7l-7 7a4.95 4.95 0 0 1-7-7z"/><path d="m8.5 8.5 7 7"/></svg>
+        Pharmacy
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14v18l-2.33-1.6L14.33 21 12 19.4 9.67 21l-2.34-1.6L5 21z"/><path d="M9 8h6M9 12h6"/></svg>
+        Billing
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <p class="sidebar-foot">Clinic OS v2.0</p>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <p class="eyebrow">Tuesday, 10 November 2026</p>
+        <h1 class="page-title">Appointments</h1>
+      </div>
+      <div class="actions">
+        <button class="btn" type="button">Alerts <span class="badge num">3</span></button>
+        <button class="btn btn-ink" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          New appointment
+        </button>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Today at a glance">
+      <div class="stat">
+        <p class="stat-label">Today</p>
+        <p class="stat-value">14</p>
+        <p class="stat-note up">+3 vs yesterday</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Checked in</p>
+        <p class="stat-value">6</p>
+        <p class="stat-note">Of 14 booked</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Waiting</p>
+        <p class="stat-value">2</p>
+        <p class="stat-note">Average wait 12 min</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Completed</p>
+        <p class="stat-value">3</p>
+        <p class="stat-note">Finished so far today</p>
+      </div>
+    </section>
+
+    <div class="content">
+      <section class="panel" aria-labelledby="schedule-title">
+        <div class="panel-head">
+          <h2 class="panel-title" id="schedule-title">Today's schedule</h2>
+          <span class="panel-meta">8 of 14 shown, sorted by time</span>
+        </div>
+
+        <svg class="timeline" viewBox="0 0 640 60" role="img" aria-label="Day timeline, 8 AM to 2 PM, appointments coloured by status">
+          <rect x="53.3" y="8" width="50" height="24" rx="4" style="fill:var(--pos)"><title>8:30 AM Biscuit, checked in</title></rect>
+          <rect x="106.7" y="8" width="50" height="24" rx="4" style="fill:var(--st-wait)"><title>9:00 AM Mochi, waiting</title></rect>
+          <rect x="160" y="8" width="50" height="24" rx="4" style="fill:var(--st-open)" style="stroke:var(--st-done)" stroke-width="0.75"><title>9:30 AM Kiwi, scheduled</title></rect>
+          <rect x="240" y="8" width="50" height="24" rx="4" style="fill:var(--st-surg)"><title>10:15 AM Clover, in surgery</title></rect>
+          <rect x="293.3" y="8" width="50" height="24" rx="4" style="fill:var(--st-done)"><title>10:45 AM Rex, completed</title></rect>
+          <rect x="320" y="8" width="50" height="24" rx="4" style="fill:var(--neg)"><title>11:00 AM Nugget, no-show</title></rect>
+          <rect x="373.3" y="8" width="50" height="24" rx="4" style="fill:var(--st-open)" style="stroke:var(--st-done)" stroke-width="0.75"><title>11:30 AM Luna, on hold</title></rect>
+          <rect x="533.3" y="8" width="50" height="24" rx="4" style="fill:var(--st-open)" style="stroke:var(--st-done)" stroke-width="0.75"><title>1:00 PM Shelly, confirmed</title></rect>
+          <line x1="0" y1="40.5" x2="640" y2="40.5" style="stroke:var(--line)" stroke-width="1"/>
+          <g style="stroke:var(--line)" stroke-width="1">
+            <line x1="0" y1="36" x2="0" y2="45"/>
+            <line x1="106.7" y1="36" x2="106.7" y2="45"/>
+            <line x1="213.3" y1="36" x2="213.3" y2="45"/>
+            <line x1="320" y1="36" x2="320" y2="45"/>
+            <line x1="426.7" y1="36" x2="426.7" y2="45"/>
+            <line x1="533.3" y1="36" x2="533.3" y2="45"/>
+            <line x1="640" y1="36" x2="640" y2="45"/>
+          </g>
+          <text x="0" y="58" text-anchor="start">8 AM</text>
+          <text x="106.7" y="58" text-anchor="middle">9 AM</text>
+          <text x="213.3" y="58" text-anchor="middle">10 AM</text>
+          <text x="320" y="58" text-anchor="middle">11 AM</text>
+          <text x="426.7" y="58" text-anchor="middle">12 PM</text>
+          <text x="533.3" y="58" text-anchor="middle">1 PM</text>
+          <text x="640" y="58" text-anchor="end">2 PM</text>
+        </svg>
+
+        <div class="table-wrap">
+          <table>
+            <caption class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Today's appointments. Select a row to view the patient.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Time</th>
+                <th scope="col">Patient</th>
+                <th scope="col">Reason</th>
+                <th scope="col">Vet</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="r1" tabindex="0" aria-selected="false" onclick="pick('r1')" onkeydown="rowKey(event, 'r1')">
+                <td class="time">8:30 AM</td>
+                <td><span class="patient-name">Biscuit</span><span class="patient-meta">Dog · Maria Lopez</span></td>
+                <td class="reason">Annual vaccines</td>
+                <td class="vet">Dr. Sam</td>
+                <td><span class="status"><span class="dot dot-pos"></span>Checked in</span></td>
+              </tr>
+              <tr id="r2" tabindex="0" aria-selected="false" onclick="pick('r2')" onkeydown="rowKey(event, 'r2')">
+                <td class="time">9:00 AM</td>
+                <td><span class="patient-name">Mochi</span><span class="patient-meta">Cat · J. Park</span></td>
+                <td class="reason">Limping, urgent</td>
+                <td class="vet">Dr. Lee</td>
+                <td><span class="status"><span class="dot dot-wait"></span>Waiting</span></td>
+              </tr>
+              <tr id="r3" tabindex="0" aria-selected="false" onclick="pick('r3')" onkeydown="rowKey(event, 'r3')">
+                <td class="time">9:30 AM</td>
+                <td><span class="patient-name">Kiwi</span><span class="patient-meta">Bird · A. Chen</span></td>
+                <td class="reason">Feather plucking</td>
+                <td class="vet">Dr. Sam</td>
+                <td><span class="status"><span class="dot"></span>Scheduled</span></td>
+              </tr>
+              <tr id="r4" tabindex="0" aria-selected="false" onclick="pick('r4')" onkeydown="rowKey(event, 'r4')">
+                <td class="time">10:15 AM</td>
+                <td><span class="patient-name">Clover</span><span class="patient-meta">Rabbit · T. Okafor</span></td>
+                <td class="reason">Dental check</td>
+                <td class="vet">Dr. Lee</td>
+                <td><span class="status"><span class="dot dot-surg"></span>In surgery</span></td>
+              </tr>
+              <tr id="r5" tabindex="0" aria-selected="false" onclick="pick('r5')" onkeydown="rowKey(event, 'r5')">
+                <td class="time">10:45 AM</td>
+                <td><span class="patient-name">Rex</span><span class="patient-meta">Dog · D. Novak</span></td>
+                <td class="reason">Post-op follow-up</td>
+                <td class="vet">Dr. Sam</td>
+                <td><span class="status"><span class="dot dot-done"></span>Completed</span></td>
+              </tr>
+              <tr id="r6" tabindex="0" aria-selected="false" onclick="pick('r6')" onkeydown="rowKey(event, 'r6')">
+                <td class="time">11:00 AM</td>
+                <td><span class="patient-name">Nugget</span><span class="patient-meta">Hamster · L. Brandt</span></td>
+                <td class="reason">Weight check</td>
+                <td class="vet">Dr. Lee</td>
+                <td><span class="status status-neg"><span class="dot dot-neg"></span>No-show</span></td>
+              </tr>
+              <tr id="r7" tabindex="0" aria-selected="false" onclick="pick('r7')" onkeydown="rowKey(event, 'r7')">
+                <td class="time">11:30 AM</td>
+                <td><span class="patient-name">Luna</span><span class="patient-meta">Cat · S. Rivera</span></td>
+                <td class="reason">Grooming</td>
+                <td class="vet">Dr. Sam</td>
+                <td><span class="status"><span class="dot"></span>On hold</span></td>
+              </tr>
+              <tr id="r8" tabindex="0" aria-selected="false" onclick="pick('r8')" onkeydown="rowKey(event, 'r8')">
+                <td class="time">1:00 PM</td>
+                <td><span class="patient-name">Shelly</span><span class="patient-meta">Turtle · K. Müller</span></td>
+                <td class="reason">Shell check</td>
+                <td class="vet">Dr. Lee</td>
+                <td><span class="status"><span class="dot"></span>Confirmed</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <aside class="panel" aria-labelledby="patient-title">
+        <div class="patient-head">
+          <div class="avatar" aria-hidden="true">B</div>
+          <div>
+            <p class="patient-sub">Selected patient</p>
+            <h2 class="patient-title" id="patient-title">Biscuit</h2>
+          </div>
+        </div>
+
+        <dl class="facts">
+          <div><dt>Species</dt><dd>Dog</dd></div>
+          <div><dt>Age</dt><dd>4 years</dd></div>
+          <div><dt>Owner</dt><dd>Maria Lopez</dd></div>
+          <div><dt>Weight</dt><dd>23.4 kg</dd></div>
+          <div class="wide"><dt>Last visit</dt><dd>22 Mar 2026</dd></div>
+        </dl>
+
+        <div class="notes">
+          <p class="notes-label">Clinical notes</p>
+          <p>Loves treats. Vaccines due. Owner prefers morning slots.</p>
+        </div>
+
+        <div class="patient-actions">
+          <button class="btn btn-accent" type="button">Start visit</button>
+          <button class="btn" type="button">Message</button>
+        </div>
+
+        <p class="live"><span class="dot dot-pos" aria-hidden="true"></span>Live sync active</p>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+  function pick(id) {
+    document.querySelectorAll('tbody tr[id^="r"]').forEach(function (row) {
+      row.setAttribute('aria-selected', 'false');
+    });
+    var row = document.getElementById(id);
+    if (row) row.setAttribute('aria-selected', 'true');
+  }
+  function rowKey(event, id) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      pick(id);
+    }
+  }
+  pick('r1');
+</script>
+</body>
+</html>

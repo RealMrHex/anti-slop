@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three-way blind test</title>
+<style>
+  :root { color-scheme: light dark; --bg:#f4f4f2; --fg:#1a1a1a; --muted:#555; --line:#9a9a96; --panel:#fff; --pick:#1d4ed8; --pick-fg:#fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#161616; --fg:#f2f2f0; --muted:#b0b0ac; --line:#666; --panel:#0c0c0c; --pick:#93b4ff; --pick-fg:#0b1020; } }
+  * { box-sizing: border-box; } body { margin:0; padding:24px; background:var(--bg); color:var(--fg); font:15px/1.5 system-ui,sans-serif; }
+  h1 { font-size:22px; margin:0 0 6px; } h2 { font-size:17px; margin:44px 0 10px; } p { margin:0 0 10px; color:var(--muted); max-width:78ch; }
+  .trio { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); }
+  figure { margin:0; } figcaption { display:flex; justify-content:space-between; padding:4px 0; font-weight:700; font-size:16px; } figcaption a { font-weight:400; font-size:13px; color:inherit; }
+  iframe { width:100%; height:640px; border:1px solid var(--line); background:var(--panel); }
+  .vote { display:flex; gap:8px; align-items:center; justify-content:center; margin-top:10px; } .vote span { width:56px; text-align:right; color:var(--muted); }
+  button { font:inherit; font-weight:600; min-height:40px; min-width:56px; padding:0 18px; border:1.5px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); cursor:pointer; }
+  button[aria-pressed="true"] { background:var(--pick); border-color:var(--pick); color:var(--pick-fg); } button:disabled { opacity:.5; cursor:not-allowed; }
+  :focus-visible { outline:3px solid var(--pick); outline-offset:2px; }
+  #end { margin-top:56px; padding-top:20px; border-top:1px solid var(--line); } #out { white-space:pre-wrap; font:13px/1.5 ui-monospace,Menlo,monospace; background:var(--panel); border:1px solid var(--line); padding:12px; margin-top:12px; }
+</style></head><body>
+  <h1>Three-way blind test</h1>
+  <p>Two prompts, each built three times by a stronger model (Claude Opus): with no skill, with Anti-Slob, and with another publicly available skill for the same problem. The order is random and hidden. For each prompt pick the best and the worst, then press Reveal. Open pages full size if the frames are cramped.</p>
+
+  <section class="task" data-task="mf">
+    <h2>1. MetricFlow analytics dashboard</h2>
+    <div class="trio">
+      <figure><figcaption>A <a href="mf/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="mf/a.html" title="MetricFlow analytics dashboard, option A"></iframe></figure>
+      <figure><figcaption>B <a href="mf/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="mf/b.html" title="MetricFlow analytics dashboard, option B"></iframe></figure>
+      <figure><figcaption>C <a href="mf/c.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="mf/c.html" title="MetricFlow analytics dashboard, option C"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Best for task 1"><span>Best:</span>
+      <button type="button" data-kind="best" data-pick="A">A</button><button type="button" data-kind="best" data-pick="B">B</button><button type="button" data-kind="best" data-pick="C">C</button></div>
+    <div class="vote" role="group" aria-label="Worst for task 1"><span>Worst:</span>
+      <button type="button" data-kind="worst" data-pick="A">A</button><button type="button" data-kind="worst" data-pick="B">B</button><button type="button" data-kind="worst" data-pick="C">C</button></div>
+  </section>
+
+  <section class="task" data-task="at">
+    <h2>2. Atmos weather homepage</h2>
+    <div class="trio">
+      <figure><figcaption>A <a href="at/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="at/a.html" title="Atmos weather homepage, option A"></iframe></figure>
+      <figure><figcaption>B <a href="at/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="at/b.html" title="Atmos weather homepage, option B"></iframe></figure>
+      <figure><figcaption>C <a href="at/c.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="at/c.html" title="Atmos weather homepage, option C"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Best for task 2"><span>Best:</span>
+      <button type="button" data-kind="best" data-pick="A">A</button><button type="button" data-kind="best" data-pick="B">B</button><button type="button" data-kind="best" data-pick="C">C</button></div>
+    <div class="vote" role="group" aria-label="Worst for task 2"><span>Worst:</span>
+      <button type="button" data-kind="worst" data-pick="A">A</button><button type="button" data-kind="worst" data-pick="B">B</button><button type="button" data-kind="worst" data-pick="C">C</button></div>
+  </section>
+  <div id="end"><button type="button" id="reveal" disabled>Reveal which was which</button> <span id="progress" role="status"></span>
+    <div id="out" hidden></div><p id="hint" hidden>Copy the text above and paste it back to Claude.</p></div>
+<script>
+  const K="fX0iYm9sUy1pdG5BIiA6IkMiICwibGxpa3MgcmVodG8gZWh0IiA6IkIiICwibGxpa3Mgb24iIDoiQSJ7IDoidGEiICx9ImJvbFMtaXRuQSIgOiJDIiAsImxsaWtzIHJlaHRvIGVodCIgOiJCIiAsImxsaWtzIG9uIiA6IkEieyA6ImZtIns=", META={"mf": "MetricFlow analytics dashboard", "at": "Atmos weather homepage"}, picks={};
+  const store={get(){try{return JSON.parse(localStorage.getItem("antislob-three-way-strong")||"{}")}catch(e){return {}}},set(v){try{localStorage.setItem("antislob-three-way-strong",JSON.stringify(v))}catch(e){}}};
+  Object.assign(picks, store.get());
+  const need=Object.keys(META).length*2, reveal=document.getElementById("reveal"), progress=document.getElementById("progress");
+  function paint(){ document.querySelectorAll(".task").forEach(s=>s.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(picks[s.dataset.task+":"+b.dataset.kind]===b.dataset.pick))));
+    const n=Object.keys(picks).length; reveal.disabled=n<need; progress.textContent=n+" of "+need+" picks made"; }
+  document.querySelectorAll(".task button").forEach(b=>b.addEventListener("click",()=>{ const t=b.closest(".task").dataset.task; picks[t+":"+b.dataset.kind]=b.dataset.pick; store.set(picks); paint(); }));
+  reveal.addEventListener("click",()=>{ const key=JSON.parse(atob(K).split("").reverse().join("")); const lines=[];
+    Object.keys(META).forEach((t,i)=>{ const b=picks[t+":best"], w=picks[t+":worst"];
+      lines.push((i+1)+". "+META[t]+": best "+b+" = "+key[t][b]+"; worst "+w+" = "+key[t][w]+" (A = "+key[t].A+", B = "+key[t].B+", C = "+key[t].C+")"); });
+    const out=document.getElementById("out"); out.textContent="Three-way blind test (stronger model)\n\n"+lines.join("\n"); out.hidden=false; document.getElementById("hint").hidden=false; });
+  paint();
+</script></body></html>

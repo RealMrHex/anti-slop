@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inbox</title>
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--line:#e4e6eb;--text:#1d2129;--muted:#6b7280;--accent:#2f5bea;--accent-bg:#eaf0ff;--unread:#fff;--read:#f9fafb}
+@media (prefers-color-scheme:dark){:root{--bg:#14161a;--panel:#1c1f25;--line:#2c3038;--text:#e8eaee;--muted:#9aa1ad;--accent:#7b9bff;--accent-bg:#232b45;--unread:#1c1f25;--read:#181b20}}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:grid;grid-template-columns:220px 1fr}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+aside{padding:16px 12px;border-right:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;gap:4px;overflow:auto}
+.compose{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px;font-weight:600;margin-bottom:12px}
+@media (prefers-color-scheme:dark){.compose{color:#101320}}
+nav button{display:flex;justify-content:space-between;width:100%;border:0;background:none;padding:8px 10px;border-radius:6px;text-align:left}
+nav button:hover{background:var(--bg)}
+nav button[aria-current=true]{background:var(--accent-bg);color:var(--accent);font-weight:600}
+nav .n{color:var(--muted);font-size:12px}
+main{display:flex;flex-direction:column;min-width:0;height:100vh}
+.bar{display:flex;gap:10px;align-items:center;padding:12px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+.bar h1{font-size:18px;margin:0 8px 0 0}
+.bar input[type=search]{flex:1;min-width:0;max-width:420px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:inherit;font:inherit}
+.bar .sp{flex:1}
+.bar .ghost{border:1px solid var(--line);background:none;border-radius:6px;padding:6px 10px}
+.bar .ghost:disabled{opacity:.4;cursor:default}
+.list{flex:1;overflow:auto;background:var(--panel)}
+.row{display:grid;grid-template-columns:24px 24px 190px 1fr auto;gap:10px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--read);cursor:pointer}
+.row.unread{background:var(--unread);font-weight:600}
+.row:hover{box-shadow:inset 3px 0 var(--accent)}
+.row.sel{background:var(--accent-bg)}
+.star{border:0;background:none;color:var(--muted);font-size:16px;padding:0}
+.star[aria-pressed=true]{color:#e9a400}
+.snip{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.snip b{font-weight:inherit}
+.snip span{color:var(--muted);font-weight:400}
+.from{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.date{color:var(--muted);font-size:12px;font-weight:400;white-space:nowrap}
+.tag{font-size:11px;padding:1px 6px;border-radius:999px;background:var(--accent-bg);color:var(--accent);margin-right:6px;font-weight:600}
+.empty{padding:60px 16px;text-align:center;color:var(--muted)}
+.foot{padding:8px 16px;color:var(--muted);font-size:12px;background:var(--panel);border-top:1px solid var(--line)}
+@media (max-width:700px){
+body{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+aside{flex-direction:row;overflow-x:auto;padding:8px;border-right:0;border-bottom:1px solid var(--line);align-items:center}
+.compose{margin:0 8px 0 0;white-space:nowrap}
+nav{display:flex;gap:2px}nav button{white-space:nowrap;gap:6px}
+.row{grid-template-columns:24px 1fr auto;grid-template-areas:"s f d" ". b b"}
+.row>.chk{display:none}
+.row .star{grid-area:s}.row .from{grid-area:f}.row .date{grid-area:d}.row .snip{grid-area:b}
+.bar .sp{display:none}
+}
+</style>
+</head>
+<body>
+<aside>
+  <button class="compose">Compose</button>
+  <nav id="folders" aria-label="Folders"></nav>
+</aside>
+<main>
+  <div class="bar">
+    <h1 id="title">Inbox</h1>
+    <input type="search" id="q" placeholder="Search mail" aria-label="Search mail">
+    <span class="sp"></span>
+    <button class="ghost" id="markread" disabled>Mark read</button>
+    <button class="ghost" id="archive" disabled>Archive</button>
+  </div>
+  <div class="list" id="list" role="list"></div>
+  <div class="foot" id="foot"></div>
+</main>
+<script>
+const mails=[
+["Priya Raman","Q4 roadmap review moved to Thursday","Hi all, I've shifted the review to Thursday 2pm so design can join. Agenda attached.","9:41 AM",1,1,"Work"],
+["GitHub","[atlas-web] Pull request #214 merged","Your pull request \"Tighten spacing tokens\" was merged into main by mrhex.","8:15 AM",1,0,""],
+["Marcus Lee","Lunch tomorrow?","There's a new ramen place near the office. Want to try it around 12:30?","Yesterday",1,0,"Personal"],
+["Stripe","Your October invoice is ready","Your invoice for October totals $48.00. You can view or download it from the dashboard.","Yesterday",0,0,"Billing"],
+["Dana Whitfield","Re: Contract draft","Thanks for the quick turnaround. Legal has two small comments on section 4 and otherwise we're good.","Nov 8",0,1,"Work"],
+["Linear","3 issues assigned to you this week","ENG-412 Fix focus ring on dialogs, ENG-418 Update icon set, ENG-421 Improve empty states.","Nov 8",1,0,""],
+["Mom","Photos from the weekend","Sending the pictures from Sunday. Grandpa loved the cake! Call me when you have a minute.","Nov 7",0,1,"Personal"],
+["Airline Desk","Check-in opens for flight LH 457","Online check-in is now available for your flight to Berlin on November 14.","Nov 6",0,0,"Travel"],
+["Jonas Weber","Notes from the design sync","Summary: we agreed to drop the card layout for lists, keep dense rows, revisit in two weeks.","Nov 5",0,0,"Work"],
+["The Weekly Digest","Ten articles worth your Sunday","This week: why small teams ship faster, a deep dive on CSS container queries, and more.","Nov 3",0,0,""],
+["Bank Alerts","Statement available","Your monthly statement for account ending 2291 is now available in online banking.","Nov 1",0,0,"Billing"]
+].map((m,i)=>({id:i,from:m[0],subj:m[1],snip:m[2],date:m[3],unread:!!m[4],star:!!m[5],tag:m[6],folder:"Inbox"}));
+let folder="Inbox",query="",sel=new Set();
+const folders=["Inbox","Starred","Archive"];
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const inFolder=m=>folder==="Starred"?m.star&&m.folder!=="Archive":m.folder===folder;
+function render(){
+  $("folders").innerHTML=folders.map(f=>{
+    const n=mails.filter(m=>(f==="Starred"?m.star&&m.folder!=="Archive":m.folder===f)&&m.unread).length;
+    return `<button data-f="${f}" ${f===folder?'aria-current="true"':''}><span>${f}</span><span class="n">${n||""}</span></button>`}).join("");
+  $("title").textContent=folder;
+  const q=query.toLowerCase();
+  const rows=mails.filter(m=>inFolder(m)&&(!q||(m.from+m.subj+m.snip).toLowerCase().includes(q)));
+  $("list").innerHTML=rows.length?rows.map(m=>`<div class="row ${m.unread?'unread':''} ${sel.has(m.id)?'sel':''}" role="listitem" data-id="${m.id}">
+    <input class="chk" type="checkbox" aria-label="Select message from ${esc(m.from)}" ${sel.has(m.id)?'checked':''}>
+    <button class="star" aria-pressed="${m.star}" aria-label="Star">${m.star?"★":"☆"}</button>
+    <span class="from">${esc(m.from)}</span>
+    <span class="snip">${m.tag?`<span class="tag">${m.tag}</span>`:""}<b>${esc(m.subj)}</b> <span>— ${esc(m.snip)}</span></span>
+    <span class="date">${m.date}</span></div>`).join(""):`<div class="empty">${query?"No messages match your search.":"Nothing here."}</div>`;
+  const un=mails.filter(m=>m.folder==="Inbox"&&m.unread).length;
+  $("foot").textContent=`${rows.length} conversation${rows.length===1?"":"s"} · ${un} unread in Inbox`;
+  $("markread").disabled=$("archive").disabled=!sel.size;
+  document.title=un?`Inbox (${un})`:"Inbox";
+}
+$("folders").onclick=e=>{const b=e.target.closest("button");if(b){folder=b.dataset.f;sel.clear();render()}};
+$("q").oninput=e=>{query=e.target.value;render()};
+$("list").onclick=e=>{
+  const r=e.target.closest(".row");if(!r)return;const m=mails[r.dataset.id];
+  if(e.target.closest(".star")){m.star=!m.star}
+  else if(e.target.classList.contains("chk")){sel.has(m.id)?sel.delete(m.id):sel.add(m.id)}
+  else{m.unread=false}
+  render();
+};
+$("markread").onclick=()=>{sel.forEach(i=>mails[i].unread=false);sel.clear();render()};
+$("archive").onclick=()=>{sel.forEach(i=>mails[i].folder="Archive");sel.clear();render()};
+render();
+</script>
+</body>
+</html>

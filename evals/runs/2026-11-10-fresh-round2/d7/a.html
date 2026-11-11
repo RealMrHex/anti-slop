@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vetline | Appointments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #f7f4ee;
+    --card: #fdfbf7;
+    --raised: #efe9df;
+    --line: rgba(31, 27, 22, 0.08);
+    --ink: #1f1b16;
+    --ink-2: #5e554a;
+    --ink-3: #7b7266;
+    --accent: #1f6f5c;
+    --pos: #16a34a;
+    --pos-text: #15803d;
+    --warn: #d97706;
+    --neg: #dc2626;
+    --idle: #a39a8c;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --sans: 'Instrument Sans', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button { font: inherit; color: inherit; }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .i {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: 248px minmax(0, 1fr);
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--card);
+    border-right: 1px solid var(--line);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+  .brand svg { width: 24px; height: 24px; color: var(--accent); }
+  .wordmark { font-size: 16px; font-weight: 600; }
+  .sub-brand { margin: -12px 0 0 42px; font-size: 13px; color: var(--ink-3); }
+
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 10px;
+    color: var(--ink-2);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .nav a:hover { background: var(--raised); color: var(--ink); }
+  .nav a[aria-current="page"] {
+    background: var(--raised);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  /* Main */
+  .main {
+    padding: 24px 32px 40px;
+    min-width: 0;
+    max-width: 1440px;
+    animation: rise 400ms var(--ease) both;
+  }
+  .page-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .eyebrow { margin: 0 0 4px; font-size: 13px; color: var(--ink-3); }
+  h1 { margin: 0; font-size: 32px; line-height: 1.15; font-weight: 500; }
+  h2 { margin: 0; font-size: 18px; line-height: 24px; font-weight: 500; }
+  h3 { margin: 0; font-size: 24px; line-height: 1.2; font-weight: 500; }
+
+  .actions { display: flex; gap: 8px; }
+  .btn {
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 160ms var(--ease), transform 160ms var(--ease);
+  }
+  .btn:hover { background: var(--raised); }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); border-color: transparent; color: #fff; }
+  .btn-primary:hover { background: #185c4c; }
+  .btn-lg { height: 40px; }
+  .count { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-label { margin: 0; font-size: 13px; color: var(--ink-2); }
+  .stat-value {
+    margin: 8px 0 0;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-note { margin: 8px 0 0; font-size: 13px; color: var(--ink-3); }
+  .pos { color: var(--pos-text); }
+
+  /* Content grid */
+  .content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 288px;
+    gap: 20px;
+    align-items: start;
+  }
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 12px;
+    padding: 0 4px;
+  }
+  .meta { font-size: 13px; color: var(--ink-3); }
+
+  /* Schedule table */
+  .table-head,
+  .row {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1.5fr) minmax(0, 1.2fr) minmax(0, 1.5fr) minmax(0, 0.75fr) 116px;
+    align-items: center;
+    gap: 12px;
+    padding: 0 12px;
+  }
+  .table-head {
+    height: 32px;
+    font-size: 13px;
+    color: var(--ink-3);
+    border-bottom: 1px solid var(--line);
+  }
+  .rows { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+  .row {
+    width: 100%;
+    height: 44px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 160ms var(--ease), border-color 160ms var(--ease);
+  }
+  .row:hover { background: var(--raised); }
+  .row[aria-pressed="true"] {
+    background: var(--raised);
+    border-color: var(--line);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+  .time {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .patient-cell { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .name { font-weight: 500; }
+  .sub { color: var(--ink-3); font-size: 13px; }
+  .cell-ink2 { color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .status { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-2); white-space: nowrap; }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--idle);
+    flex: none;
+  }
+  .dot-pos { background: var(--pos); }
+  .dot-warn { background: var(--warn); }
+  .dot-neg { background: var(--neg); }
+  .dot-accent { background: var(--accent); }
+
+  /* Selected patient */
+  .detail {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+  }
+  .patient { display: flex; align-items: center; gap: 16px; }
+  .avatar {
+    width: 56px;
+    height: 56px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--raised);
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  dl { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 12px; margin: 0; }
+  dl > div:last-child:nth-child(odd) { grid-column: span 2; }
+  dt { font-size: 13px; color: var(--ink-3); }
+  dd { margin: 4px 0 0; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .notes { padding: 16px; border-radius: 12px; background: var(--raised); }
+  .notes .eyebrow { margin: 0; }
+  .notes p { margin: 8px 0 0; font-size: 14px; line-height: 22px; color: var(--ink-2); }
+  .detail-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
+  .live {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .main { animation: none; }
+  }
+
+  @media (max-width: 1080px) {
+    .content { grid-template-columns: minmax(0, 1fr); }
+    .detail { position: static; }
+    .detail-actions { margin-top: 0; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 800px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .sidebar {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .sub-brand { display: none; }
+    .nav { flex-direction: row; overflow-x: auto; width: 100%; }
+    .nav a { flex: none; }
+    .main { padding: 16px; }
+    h1 { font-size: 26px; }
+    .actions { width: 100%; }
+    .actions .btn { flex: 1; }
+    .table-head { display: none; }
+    .row {
+      grid-template-columns: 64px minmax(0, 1fr) auto;
+      height: auto;
+      padding: 10px 12px;
+    }
+    .row .c-owner,
+    .row .c-reason,
+    .row .c-vet { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" fill="currentColor"/><path d="M12 7v10M7 12h10" stroke="#fdfbf7" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <span class="wordmark">Vetline</span>
+    </div>
+    <p class="sub-brand">Clinic OS v2.0</p>
+    <nav class="nav" aria-label="Main">
+      <a href="#" aria-current="page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Appointments</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.05C6.52 17.48 4.46 16.84 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/></svg>Patients</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m10.5 20.5 10-10a4.95 4.95 0 0 0-7-7l-10 10a4.95 4.95 0 0 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>Pharmacy</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2Z"/><path d="M9 8h6M9 12h6"/></svg>Billing</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>Settings</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div>
+        <p class="eyebrow">Appointments</p>
+        <h1>Tuesday, 10 November 2026</h1>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary btn-lg"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>New appointment</button>
+        <button class="btn btn-lg"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>Alerts <span class="count">3</span></button>
+      </div>
+    </header>
+
+    <section class="stats">
+      <div class="card">
+        <p class="stat-label">Today</p>
+        <p class="stat-value">14</p>
+        <p class="stat-note pos">+3 vs yesterday</p>
+      </div>
+      <div class="card">
+        <p class="stat-label">Checked in</p>
+        <p class="stat-value">6</p>
+        <p class="stat-note">of 14 today</p>
+      </div>
+      <div class="card">
+        <p class="stat-label">Waiting</p>
+        <p class="stat-value">2</p>
+        <p class="stat-note">Average wait 12 min</p>
+      </div>
+      <div class="card">
+        <p class="stat-label">Completed</p>
+        <p class="stat-value">3</p>
+        <p class="stat-note">Finished today</p>
+      </div>
+    </section>
+
+    <div class="content">
+      <section class="card">
+        <div class="section-head">
+          <h2>Today's schedule</h2>
+          <span class="meta">Sorted by time</span>
+        </div>
+        <div class="table-head" aria-hidden="true">
+          <span>Time</span><span>Patient</span><span class="c-owner">Owner</span><span class="c-reason">Reason</span><span class="c-vet">Vet</span><span>Status</span>
+        </div>
+        <div class="rows">
+          <button class="row" aria-pressed="false" onclick="pick(this)"><span class="time">8:30 AM</span><span class="patient-cell"><span class="name">Biscuit</span> <span class="sub">· Dog</span></span><span class="cell-ink2 c-owner">Maria Lopez</span><span class="cell-ink2 c-reason">Annual vaccines</span><span class="cell-ink2 c-vet">Dr. Sam</span><span class="status"><span class="dot dot-pos"></span>Checked in</span></button>
+          <button class="row" aria-pressed="false" onclick="pick(this)"><span class="time">9:00 AM</span><span class="patient-cell"><span class="name">Mochi</span> <span class="sub">· Cat</span></span><span class="cell-ink2 c-owner">J. Park</span><span class="cell-ink2 c-reason">Limping, urgent</span><span class="cell-ink2 c-vet">Dr. Lee</span><span class="status"><span class="dot dot-warn"></span>Waiting</span></button>
+          <button class="row" aria-pressed="false" onclick="pick(this)"><span class="time">9:30 AM</span><span class="patient-cell"><span class="name">Kiwi</span> <span class="sub">· Bird</span></span><span class="cell-ink2 c-owner">A. Chen</span><span class="cell-ink2 c-reason">Feather plucking</span><span class="cell-ink2 c-vet">Dr. Sam</span><span class="status"><span class="dot"></span>Scheduled</span></button>
+          <button class="row" aria-pressed="false" onclick="pick(this)"><span class="time">10:15 AM</span><span class="patient-cell"><span class="name">Clover</span> <span class="sub">· Rabbit</span></span><span class="cell-ink2 c-owner">T. Okafor</span><span class="cell-ink2 c-reason">Dental check</span><span class="cell-ink2 c-vet">Dr. Lee</span><span class="status"><span class="dot dot-accent"></span>In surgery</span></button>
+          <button class="row" aria-pressed="false" onclick="pick(this)"><span class="time">10:45 AM</span><span class="patient-cell"><span class="name">Rex</span> <span class="sub">· Dog</span></span><span class="cell-ink2 c-owner">D. Novak</span><span class="cell-ink2 c-reason">Post-op follow-up</span><span class="cell-ink2 c-vet">Dr. Sam</span><span class="status"><span class="dot"></span>Completed</span></button>
+          <button class="row" aria-pressed="false" onclick="pick(this)"><span class="time">11:00 AM</span><span class="patient-cell"><span class="name">Nugget</span> <span class="sub">· Hamster</span></span><span class="cell-ink2 c-owner">L. Brandt</span><span class="cell-ink2 c-reason">Weight check</span><span class="cell-ink2 c-vet">Dr. Lee</span><span class="status"><span class="dot dot-neg"></span>No-show</span></button>
+          <button class="row" aria-pressed="false" onclick="pick(this)"><span class="time">11:30 AM</span><span class="patient-cell"><span class="name">Luna</span> <span class="sub">· Cat</span></span><span class="cell-ink2 c-owner">S. Rivera</span><span class="cell-ink2 c-reason">Grooming</span><span class="cell-ink2 c-vet">Dr. Sam</span><span class="status"><span class="dot"></span>On hold</span></button>
+          <button class="row" aria-pressed="false" onclick="pick(this)"><span class="time">1:00 PM</span><span class="patient-cell"><span class="name">Shelly</span> <span class="sub">· Turtle</span></span><span class="cell-ink2 c-owner">K. Müller</span><span class="cell-ink2 c-reason">Shell check</span><span class="cell-ink2 c-vet">Dr. Lee</span><span class="status"><span class="dot"></span>Confirmed</span></button>
+        </div>
+      </section>
+
+      <aside class="card detail">
+        <div class="patient">
+          <div class="avatar" aria-hidden="true">B</div>
+          <div>
+            <p class="eyebrow">Selected patient</p>
+            <h3>Biscuit</h3>
+          </div>
+        </div>
+        <dl>
+          <div><dt>Species</dt><dd>Dog</dd></div>
+          <div><dt>Age</dt><dd>4 years</dd></div>
+          <div><dt>Owner</dt><dd>Maria Lopez</dd></div>
+          <div><dt>Weight</dt><dd>23.4 kg</dd></div>
+          <div><dt>Last visit</dt><dd>22 Mar 2026</dd></div>
+        </dl>
+        <div class="notes">
+          <p class="eyebrow">Clinical notes</p>
+          <p>Loves treats. Vaccines due. Owner prefers morning slots.</p>
+        </div>
+        <div class="detail-actions">
+          <button class="btn btn-primary btn-lg">Start visit</button>
+          <button class="btn btn-lg"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>Message</button>
+        </div>
+        <p class="live"><span class="dot dot-pos"></span>Live sync active</p>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+  function pick(row) {
+    document.querySelectorAll('.row').forEach(function (el) {
+      el.setAttribute('aria-pressed', el === row ? 'true' : 'false');
+    });
+  }
+  pick(document.querySelector('.row'));
+</script>
+</body>
+</html>

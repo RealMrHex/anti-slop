@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ledgerly: bookkeeping for freelancers</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            page: '#f5f7fa',
+            card: '#ffffff',
+            raised: '#eceff4',
+            ink: { DEFAULT: '#111827', 2: '#4b5565', 3: '#6b7487' },
+            line: 'rgba(17,24,39,0.08)',
+            accent: { DEFAULT: '#0f766e', hover: '#0c5f59', soft: '#e3f1ef' },
+            pos: '#16a34a',
+            warn: '#b45309'
+          },
+          fontFamily: {
+            sans: ['Geist', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', 'ui-monospace', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen bg-page font-sans font-normal text-ink antialiased">
+
+  <header class="mx-auto flex max-w-6xl items-center justify-between px-6 pt-6">
+    <a href="#" class="flex items-center gap-2 text-[17px] font-medium text-ink">
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+        <rect width="20" height="20" rx="5" fill="#0f766e"/>
+        <path d="M6 7h8M6 10h8M6 13h5" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      Ledgerly
+    </a>
+    <nav class="flex items-center gap-6 text-sm text-ink-2">
+      <a href="#" class="hidden transition-colors duration-150 hover:text-ink sm:inline">Features</a>
+      <a href="#" class="hidden transition-colors duration-150 hover:text-ink sm:inline">Pricing</a>
+      <a href="#" class="hidden transition-colors duration-150 hover:text-ink sm:inline">Blog</a>
+      <a href="#" class="font-medium text-ink transition-colors duration-150 hover:text-accent">Log in</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)] items-center gap-12 px-6 pb-20 pt-14 lg:grid-cols-[1fr_1.1fr] lg:gap-16 lg:pt-20">
+    <div>
+      <p class="text-sm font-medium text-ink-2">Bookkeeping for freelancers</p>
+      <h1 class="mt-4 text-[44px] font-medium leading-[1.04] tracking-[-0.03em] text-ink sm:text-[56px]">
+        Your transactions, sorted. Your quarterly tax, estimated.
+      </h1>
+      <p class="mt-6 max-w-[36rem] text-lg leading-7 text-ink-2">
+        Connect your bank and Ledgerly sorts each transaction automatically, then estimates your quarterly tax in one click.
+      </p>
+      <div class="mt-9 flex flex-wrap items-center gap-3">
+        <a href="#" class="inline-flex h-12 items-center rounded-lg bg-accent px-6 text-[15px] font-medium text-white transition-colors duration-150 hover:bg-accent-hover">Get started free</a>
+        <a href="#" class="inline-flex h-12 items-center rounded-lg border border-line bg-card px-6 text-[15px] font-medium text-ink transition-colors duration-150 hover:bg-raised">Watch demo</a>
+      </div>
+    </div>
+
+    <section aria-label="Example quarter in Ledgerly" class="rounded-2xl border border-line bg-card p-5 shadow-[0_8px_24px_rgba(0,0,0,0.06)] sm:p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-ink">Q4 2026</p>
+          <p class="text-xs text-ink-3">Sample data</p>
+        </div>
+        <p class="text-xs text-ink-3">Last synced Nov 9</p>
+      </div>
+
+      <div class="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
+        <div class="rounded-xl bg-raised p-3.5">
+          <p class="text-xs text-ink-3">Income</p>
+          <p class="mt-2 font-mono text-[17px] tabular-nums text-ink sm:text-2xl">$12,480</p>
+        </div>
+        <div class="rounded-xl bg-raised p-3.5">
+          <p class="text-xs text-ink-3">Expenses</p>
+          <p class="mt-2 font-mono text-[17px] tabular-nums text-ink sm:text-2xl">$4,236</p>
+        </div>
+        <div class="rounded-xl bg-accent-soft p-3.5">
+          <p class="text-xs text-ink-2">Set aside for tax</p>
+          <p class="mt-2 font-mono text-[17px] tabular-nums text-accent sm:text-2xl">$3,120</p>
+          <p class="mt-1 text-xs text-ink-3">25% of income</p>
+        </div>
+      </div>
+
+      <ul class="mt-5 divide-y divide-line">
+        <li class="flex items-center gap-3 py-3 text-sm">
+          <span class="w-12 shrink-0 font-mono text-xs tabular-nums text-ink-3">Nov 9</span>
+          <span class="min-w-0 flex-1 truncate text-ink">Client: Brightline Studio</span>
+          <span class="hidden w-20 text-ink-3 sm:block">Income</span>
+          <span class="hidden w-28 items-center gap-2 text-xs text-ink-2 sm:flex"><span class="h-1.5 w-1.5 rounded-full bg-pos"></span>Categorised</span>
+          <span class="w-20 shrink-0 text-right font-mono tabular-nums text-ink">+$2,400</span>
+        </li>
+        <li class="flex items-center gap-3 py-3 text-sm">
+          <span class="w-12 shrink-0 font-mono text-xs tabular-nums text-ink-3">Nov 7</span>
+          <span class="min-w-0 flex-1 truncate text-ink">Coworking desk</span>
+          <span class="hidden w-20 text-ink-3 sm:block">Office</span>
+          <span class="hidden w-28 items-center gap-2 text-xs text-ink-2 sm:flex"><span class="h-1.5 w-1.5 rounded-full bg-pos"></span>Categorised</span>
+          <span class="w-20 shrink-0 text-right font-mono tabular-nums text-ink">−$240</span>
+        </li>
+        <li class="flex items-center gap-3 py-3 text-sm">
+          <span class="w-12 shrink-0 font-mono text-xs tabular-nums text-ink-3">Nov 6</span>
+          <span class="min-w-0 flex-1 truncate text-ink">Printer ink</span>
+          <span class="hidden w-20 text-ink-3 sm:block">Office</span>
+          <span class="hidden w-28 items-center gap-2 text-xs text-ink-2 sm:flex"><span class="h-1.5 w-1.5 rounded-full bg-warn"></span>Needs review</span>
+          <span class="w-20 shrink-0 text-right font-mono tabular-nums text-ink">−$68</span>
+        </li>
+        <li class="flex items-center gap-3 py-3 text-sm">
+          <span class="w-12 shrink-0 font-mono text-xs tabular-nums text-ink-3">Nov 4</span>
+          <span class="min-w-0 flex-1 truncate text-ink">Software subscription</span>
+          <span class="hidden w-20 text-ink-3 sm:block">Software</span>
+          <span class="hidden w-28 items-center gap-2 text-xs text-ink-2 sm:flex"><span class="h-1.5 w-1.5 rounded-full bg-pos"></span>Categorised</span>
+          <span class="w-20 shrink-0 text-right font-mono tabular-nums text-ink">−$59</span>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <section class="mx-auto grid max-w-6xl gap-10 border-t border-line px-6 py-12 md:grid-cols-3">
+    <div>
+      <svg class="h-[18px] w-[18px] text-ink-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 22h18"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 2 2 7h20L12 2z"/></svg>
+      <h2 class="mt-3 text-[15px] font-medium text-ink">Connect your bank</h2>
+      <p class="mt-1 text-sm leading-6 text-ink-2">Link your bank accounts so transactions come in without manual entry.</p>
+    </div>
+    <div>
+      <svg class="h-[18px] w-[18px] text-ink-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
+      <h2 class="mt-3 text-[15px] font-medium text-ink">Sorted automatically</h2>
+      <p class="mt-1 text-sm leading-6 text-ink-2">Ledgerly sorts every transaction for you, and flags the ones it is unsure about.</p>
+    </div>
+    <div>
+      <svg class="h-[18px] w-[18px] text-ink-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2v20l3-2 3 2 3-2 3 2 3-2 3 2V2l-3 2-3-2-3 2-3-2-3 2z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+      <h2 class="mt-3 text-[15px] font-medium text-ink">Tax estimates</h2>
+      <p class="mt-1 text-sm leading-6 text-ink-2">See what to set aside for each quarter, based on your income so far.</p>
+    </div>
+  </section>
+
+</body>
+</html>

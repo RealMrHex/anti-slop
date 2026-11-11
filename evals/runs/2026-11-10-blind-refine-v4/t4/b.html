@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiln Street Climbing - Book a Class</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--clay:#c8431f;--clay-d:#9c3015;--bone:#f1e8da;--ink:#1d1613;--sand:#e2d4bd;--moss:#3f5a3a;}
+  body{background:var(--bone);color:var(--ink);font-family:'Archivo',sans-serif;}
+  .display{font-family:'Archivo Black',sans-serif;letter-spacing:-.02em;text-transform:uppercase;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .brick{background-image:linear-gradient(rgba(29,22,19,.08) 2px,transparent 2px),linear-gradient(90deg,rgba(29,22,19,.08) 2px,transparent 2px);background-size:64px 32px,64px 32px;}
+  .tab[aria-selected=true]{background:var(--ink);color:var(--bone);transform:translateY(-3px);box-shadow:0 5px 0 var(--clay);}
+  .card{transition:transform .15s,box-shadow .15s;}
+  .card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink);}
+  .card.sel{background:var(--ink);color:var(--bone);box-shadow:6px 6px 0 var(--clay);}
+  .card.full{opacity:.55;cursor:not-allowed;}
+  .card.full:hover{transform:none;box-shadow:none;}
+  .hold{clip-path:polygon(50% 0,100% 40%,85% 100%,15% 100%,0 40%);}
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--clay);outline-offset:3px;}
+  .card.sel:focus-visible{outline-color:var(--ink);}
+  .card{position:relative;display:flex;flex-direction:column;background:#fbf6ec;border-radius:2px;}
+  .card.sel{background:var(--ink);}
+  .card.sel .pip{border-color:var(--bone)}
+  .card.sel .pip.on{background:var(--clay);border-color:var(--clay)}
+  .card.sel .low{color:#ffb59e}
+  .pip{width:9px;height:9px;border:1.5px solid var(--ink);border-radius:50%;display:inline-block}
+  .pip.on{background:var(--ink)}
+  .pips{display:flex;gap:4px;flex-wrap:wrap;max-width:110px;justify-content:flex-end}
+  .card.full{opacity:1;background:repeating-linear-gradient(135deg,#ece2d0 0 8px,#e6dbc6 8px 16px);color:#5b5047;border-color:#7a6e62;border-style:dashed;}
+  .card.full .stamp{border:2px solid var(--clay-d);color:var(--clay-d);transform:rotate(-4deg);padding:1px 8px;}
+  .lvl{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--moss)}
+  .lvl.Intermediate,.lvl.Advanced{background:var(--clay)}
+  .lvl.Advanced{box-shadow:0 0 0 2px #fbf6ec,0 0 0 3.5px var(--clay)}
+  .lvl.Kids,.lvl.Kidsadults{background:#c98a1b}
+  .stub{border-top:2px dashed rgba(128,112,100,.55)}
+  .checks li{padding-left:1.4rem;position:relative}
+  .checks li::before{content:"";position:absolute;left:0;top:.35em;width:.7rem;height:.35rem;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg)}
+  .tab:hover:not([aria-selected=true]){background:var(--sand)}
+  #qty-wrap button:hover{background:var(--ink);color:var(--bone)}
+  .sticker{position:absolute;left:-18px;bottom:28px;transform:rotate(-6deg)}
+  @media (prefers-reduced-motion:reduce){.card,.tab{transition:none}}
+</style>
+</head>
+<body>
+<header class="border-b-2 border-[color:var(--ink)]">
+  <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="hold w-8 h-8 bg-[color:var(--clay)]"></div>
+      <span class="display text-xl">Kiln Street</span>
+    </div>
+    <nav class="hidden sm:flex gap-6 text-sm font-semibold">
+      <a href="#classes" class="hover:text-[color:var(--clay)]">Classes</a>
+      <a href="#membership" class="hover:text-[color:var(--clay)]">Membership</a>
+    </nav>
+  </div>
+</header>
+
+<section class="relative overflow-hidden brick">
+  <div class="max-w-6xl mx-auto px-4 py-14 grid md:grid-cols-2 gap-8 items-center">
+    <div>
+      <p class="mono text-xs uppercase tracking-widest text-[color:var(--clay-d)] mb-3">Indoor climbing / Fired in clay, chalked by hand</p>
+      <h1 class="display text-5xl md:text-7xl leading-[.95]">Get off<br>the <span class="text-[color:var(--clay)]">floor.</span></h1>
+      <p class="mt-5 max-w-md text-lg">Intro sessions, technique clinics and kids' club on 40-foot walls. Pick a class, grab a spot, we'll lend you the shoes.</p>
+      <a href="#classes" class="inline-block mt-6 bg-[color:var(--clay)] text-white font-bold px-6 py-3 border-2 border-[color:var(--ink)] shadow-[4px_4px_0_var(--ink)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition">See this week</a>
+      <a href="#membership" class="inline-block mt-6 ml-3 px-2 py-3 font-bold underline underline-offset-4 decoration-2 decoration-[color:var(--clay)] hover:text-[color:var(--clay-d)]">Membership</a>
+    </div>
+    <div class="relative">
+      <img class="w-full h-72 md:h-96 object-cover border-2 border-[color:var(--ink)] shadow-[8px_8px_0_var(--clay)]" src="https://images.unsplash.com/photo-1522163182402-834f871fd851?auto=format&fit=crop&w=1000&q=70" alt="Climber on an indoor wall">
+      <div class="sticker hidden sm:flex items-center gap-2 bg-[color:var(--bone)] border-2 border-[color:var(--ink)] px-3 py-2 shadow-[3px_3px_0_var(--ink)]"><span class="hold w-5 h-5 bg-[color:var(--clay)]"></span><span class="mono text-xs font-semibold uppercase">Shoes on us</span></div>
+    </div>
+  </div>
+</section>
+
+<main id="classes" class="max-w-6xl mx-auto px-4 py-14">
+  <div class="flex items-end justify-between flex-wrap gap-2 mb-6">
+    <h2 class="display text-4xl">This week</h2>
+    <p class="mono text-xs uppercase">Spots update live / Max 8 per coach</p>
+  </div>
+  <div id="tabs" role="tablist" class="flex gap-2 overflow-x-auto pb-4 pt-2"></div>
+
+  <div class="grid lg:grid-cols-3 gap-8 mt-2">
+    <div id="list" class="lg:col-span-2 grid sm:grid-cols-2 gap-4 content-start"></div>
+
+    <aside class="lg:sticky lg:top-6 self-start border-2 border-[color:var(--ink)] bg-[color:var(--sand)] p-6 shadow-[6px_6px_0_var(--ink)]">
+      <p class="mono text-xs uppercase tracking-widest text-[color:var(--clay-d)]">Your booking</p>
+      <div id="panel-empty" class="py-8"><div class="hold w-10 h-10 bg-[color:var(--clay)] opacity-30 mb-4" aria-hidden="true"></div>
+        <p class="display text-2xl">Nothing picked yet</p>
+        <p class="mt-2 text-sm">Choose a class from the list to reserve a spot.</p>
+      </div>
+      <div id="panel" class="hidden">
+        <h3 id="p-title" class="display text-2xl mt-2"></h3>
+        <p id="p-when" class="mono text-sm mt-1"></p>
+        <dl class="mt-4 text-sm divide-y divide-[color:var(--ink)]/20">
+          <div class="flex justify-between py-2"><dt>Coach</dt><dd id="p-coach" class="font-semibold"></dd></div>
+          <div class="flex justify-between py-2"><dt>Level</dt><dd id="p-level" class="font-semibold"></dd></div>
+          <div class="flex justify-between py-2"><dt>Spots left</dt><dd id="p-spots" class="font-semibold"></dd></div>
+          <div class="flex justify-between py-2 items-center"><dt>Climbers</dt>
+            <dd id="qty-wrap" class="flex items-center gap-3">
+              <button id="minus" class="w-9 h-9 border-2 border-[color:var(--ink)] font-bold transition" aria-label="Fewer">-</button>
+              <span id="qty" class="mono w-4 text-center">1</span>
+              <button id="plus" class="w-9 h-9 border-2 border-[color:var(--ink)] font-bold transition" aria-label="More">+</button>
+            </dd></div>
+          <div class="flex justify-between py-3 items-center"><dt class="font-semibold">Total</dt><dd id="p-total" class="display text-3xl text-[color:var(--clay-d)]"></dd></div>
+        </dl>
+        <label for="name" class="mono text-xs uppercase tracking-widest mt-5 block">Name on the booking</label>
+        <input id="name" type="text" placeholder="Your name" autocomplete="name" class="mt-1 w-full border-2 border-[color:var(--ink)] bg-[color:var(--bone)] px-3 py-2">
+        <button id="book" class="mt-4 w-full bg-[color:var(--clay)] text-white font-bold py-3 border-2 border-[color:var(--ink)] shadow-[4px_4px_0_var(--ink)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition">Reserve spot</button>
+        <p id="msg" class="mt-3 text-sm font-semibold text-[color:var(--moss)]" role="status"></p>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<section id="membership" class="bg-[color:var(--ink)] text-[color:var(--bone)] brick">
+  <div class="max-w-6xl mx-auto px-4 py-16">
+    <h2 class="display text-4xl">Membership</h2>
+    <p class="mt-2 opacity-80">Classes are discounted for members. Cancel any time.</p>
+    <div class="grid md:grid-cols-3 gap-6 mt-8">
+      <div class="border-2 border-[color:var(--bone)] p-6">
+        <p class="mono text-xs uppercase">Drop-in</p>
+        <p class="display text-5xl mt-3">$22</p><p class="text-sm opacity-80">per visit</p>
+        <ul class="checks mt-5 text-sm space-y-2"><li>Full gym access</li><li>Shoe rental $5</li></ul>
+      </div>
+      <div class="border-2 border-[color:var(--clay)] bg-[color:var(--clay)] text-white p-6 relative md:-translate-y-3">
+        <span class="absolute -top-3 right-4 mono text-xs bg-[color:var(--bone)] text-[color:var(--ink)] px-2 py-1">Most chosen</span>
+        <p class="mono text-xs uppercase">Monthly</p>
+        <p class="display text-5xl mt-3">$79</p><p class="text-sm opacity-80">per month</p>
+        <ul class="checks mt-5 text-sm space-y-2"><li>Unlimited climbing</li><li>Free shoe rental</li><li>15% off classes</li></ul>
+      </div>
+      <div class="border-2 border-[color:var(--bone)] p-6">
+        <p class="mono text-xs uppercase">Annual</p>
+        <p class="display text-5xl mt-3">$790</p><p class="text-sm opacity-80">two months free</p>
+        <ul class="checks mt-5 text-sm space-y-2"><li>Everything in Monthly</li><li>4 guest passes</li><li>20% off classes</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="max-w-6xl mx-auto px-4 py-8 text-sm flex flex-wrap justify-between gap-2">
+  <span class="display">Kiln Street Climbing</span>
+  <span class="mono">14 Kiln Street / Open 6am - 10pm daily</span>
+</footer>
+
+<script>
+const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const C=(t,time,coach,level,price,left)=>({t,time,coach,level,price,left});
+const data={
+Mon:[C('Intro to Climbing','6:30 PM','Maya','Beginner',35,5),C('Lead Basics','8:00 PM','Tomas','Intermediate',45,2)],
+Tue:[C('Morning Boulder Flow','7:00 AM','Ines','All levels',30,6),C('Kids Club (7-10)','4:30 PM','Maya','Kids',28,0),C('Technique Clinic','7:00 PM','Dev','Intermediate',40,4)],
+Wed:[C('Intro to Climbing','6:00 PM','Tomas','Beginner',35,8),C('Yoga for Climbers','7:30 PM','Ines','All levels',25,3)],
+Thu:[C('Auto-Belay Taster','5:30 PM','Dev','Beginner',30,7),C('Lead Basics','7:00 PM','Tomas','Intermediate',45,1),C('Campus & Core','8:15 PM','Maya','Advanced',40,5)],
+Fri:[C('Intro to Climbing','6:00 PM','Ines','Beginner',35,4),C('Friday Social Send','7:30 PM','Dev','All levels',20,9)],
+Sat:[C('Kids Club (7-10)','10:00 AM','Maya','Kids',28,3),C('Intro to Climbing','12:00 PM','Tomas','Beginner',35,0),C('Route Setting Workshop','2:30 PM','Dev','Advanced',55,6)],
+Sun:[C('Family Climb','11:00 AM','Ines','Kids + adults',30,6),C('Technique Clinic','1:00 PM','Tomas','Intermediate',40,5)]
+};
+let day=days[(new Date().getDay()+6)%7],sel=null,qty=1;
+const $=id=>document.getElementById(id);
+function renderTabs(){
+  $('tabs').innerHTML=days.map((d,i)=>`<button role="tab" aria-selected="${d===day}" data-d="${d}" class="tab shrink-0 border-2 border-[color:var(--ink)] px-5 py-3 text-left transition bg-[color:var(--bone)]"><span class="display block text-lg">${d}</span><span class="mono text-xs">${data[d].length} classes</span></button>`).join('');
+  $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{day=b.dataset.d;sel=null;qty=1;renderTabs();renderList();renderPanel();});
+}
+function renderList(){
+  $('list').innerHTML=data[day].map((c,i)=>{
+    const full=c.left===0,low=c.left>0&&c.left<=2;
+    const pips=Array.from({length:8},(_,k)=>`<span class="pip ${k<c.left?'on':''}"></span>`).join('');
+    const tag=full?'<span class="mono text-xs font-semibold uppercase stamp">Full</span>':`<span class="flex flex-col items-end gap-1"><span class="mono text-xs font-semibold ${low?'low text-[color:var(--clay-d)]':''}">${low?'Only ':''}${c.left} left</span><span class="pips" aria-hidden="true">${pips}</span></span>`;
+    return `<button data-i="${i}" ${full?'disabled':''} aria-pressed="${sel===i}" class="card ${full?'full':''} ${sel===i?'sel':''} text-left border-2 border-[color:var(--ink)] p-5">
+      <div class="flex justify-between items-start gap-3"><span class="mono text-base font-semibold">${c.time}</span>${tag}</div>
+      <h3 class="display text-xl mt-3 leading-tight">${c.t}</h3>
+      <p class="text-sm mt-1"><span class="lvl ${c.level.replace(/[^A-Za-z]/g,'')}" aria-hidden="true"></span>${c.level} / with ${c.coach}</p>
+      <p class="stub mt-4 pt-3 flex justify-between items-baseline"><span class="display text-2xl">$${c.price}</span><span class="mono text-xs uppercase">${full?'Sold out':(sel===i?'Selected':'per climber')}</span></p></button>`;}).join('');
+  $('list').querySelectorAll('button:not([disabled])').forEach(b=>b.onclick=()=>{sel=+b.dataset.i;qty=1;renderList();renderPanel();});
+}
+function renderPanel(){
+  const c=sel!==null?data[day][sel]:null;
+  $('panel-empty').classList.toggle('hidden',!!c);$('panel').classList.toggle('hidden',!c);
+  if(!c)return;
+  $('p-title').textContent=c.t;$('p-when').textContent=day+' / '+c.time;
+  $('p-coach').textContent=c.coach;$('p-level').textContent=c.level;$('p-spots').textContent=c.left;
+  $('qty').textContent=qty;$('p-total').textContent='$'+c.price*qty;$('msg').textContent='';
+}
+$('minus').onclick=()=>{if(qty>1){qty--;renderPanel();}};
+$('plus').onclick=()=>{const c=data[day][sel];if(qty<c.left){qty++;renderPanel();}};
+$('book').onclick=()=>{
+  const c=data[day][sel],n=$('name').value.trim();
+  if(!n){$('msg').style.color='var(--clay-d)';$('msg').textContent='Add your name to reserve.';return;}
+  c.left-=qty;const q=qty;qty=1;renderList();renderTabs();renderPanel();
+  $('msg').style.color='var(--moss)';$('msg').textContent=`Booked ${q} spot${q>1?'s':''} for ${n}. See you ${day}!`;
+};
+renderTabs();renderList();renderPanel();
+</script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Castline Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --paper:#f3ede1; --card:#fbf8f1; --ink:#14261f; --ink2:#4b5c54; --line:#ddd3bf;
+    --spruce:#1d4a3b; --signal:#e4572e; --sand:#c9a96a; --sky:#5b8fa8; --mist:#a9b8a3;
+    --sidebar:#10231c;
+  }
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:'Instrument Sans',system-ui,sans-serif;
+    background-image:radial-gradient(rgba(20,38,31,.06) 1px,transparent 1px);background-size:22px 22px}
+  .display{font-family:'Fraunces',serif;font-optical-sizing:auto;letter-spacing:-.02em}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 12px 30px -22px rgba(20,38,31,.35)}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
+  .seg{display:inline-flex;background:#ece4d2;border:1px solid var(--line);border-radius:999px;padding:3px}
+  .seg button{font:500 13px 'Instrument Sans';padding:7px 15px;border-radius:999px;color:var(--ink2);transition:.2s}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-pressed=true]{background:var(--sidebar);color:#fbf8f1;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+  .seg button:focus-visible,.navlink:focus-visible,.ep:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+  .navlink{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;color:#a9bdb2;font-size:14px;transition:.2s}
+  .navlink:hover{background:rgba(255,255,255,.06);color:#fff}
+  .navlink.active{background:rgba(228,87,46,.16);color:#fff}
+  .navlink.active i{background:var(--signal)}
+  .navlink i{width:6px;height:6px;border-radius:50%;background:#51695e}
+  .delta{font-family:'JetBrains Mono',monospace;font-size:12px;padding:2px 8px;border-radius:999px}
+  .up{background:#dcebdd;color:#1d5a32}.down{background:#f6d9cf;color:#a3300f}
+  .bar{height:6px;border-radius:99px;background:#e8dfcb;overflow:hidden}
+  .bar>span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--spruce),var(--signal));transition:width .6s cubic-bezier(.2,.8,.2,1)}
+  .ep{transition:.2s;border-radius:12px}
+  .ep:hover{background:#f1e9d6}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .rise{animation:rise .6s both cubic-bezier(.2,.8,.2,1)}
+  @media (prefers-reduced-motion:reduce){.rise{animation:none}.bar>span{transition:none}}
+  canvas{max-width:100%}
+  .card{transition:transform .25s,box-shadow .25s}
+  .kpi:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 18px 34px -20px rgba(20,38,31,.45)}
+  .kpi{position:relative;overflow:hidden}
+  .kpi::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:3px;border-radius:0 3px 3px 0;background:var(--signal);opacity:.85}
+  .display,.mono,.delta{font-variant-numeric:tabular-nums}
+  main h2{letter-spacing:-.015em}
+  .ep:hover .bar>span{filter:saturate(1.2)}
+  .navlink.active{box-shadow:inset 2px 0 0 var(--signal)}
+</style>
+</head>
+<body>
+<div class="lg:flex min-h-screen">
+
+  <!-- Sidebar -->
+  <aside class="lg:w-64 lg:fixed lg:inset-y-0 text-white flex lg:flex-col justify-between items-center lg:items-stretch px-5 py-4 lg:py-7" style="background:var(--sidebar)">
+    <div class="w-full">
+      <div class="flex items-center gap-3 lg:mb-10">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+          <circle cx="17" cy="17" r="16" stroke="#e4572e" stroke-width="1.5"/>
+          <path d="M5 22c6 0 7-10 12-10s6 10 12 10" stroke="#fbf8f1" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="17" cy="12" r="2.4" fill="#e4572e"/>
+        </svg>
+        <span class="display text-2xl font-semibold">Castline</span>
+      </div>
+      <nav class="hidden lg:block space-y-1" aria-label="Main">
+        <a href="#" class="navlink active"><i></i>Overview</a>
+        <a href="#episodes" class="navlink"><i></i>Episodes</a>
+        <a href="#listeners" class="navlink"><i></i>Audience</a>
+        <a href="#" class="navlink"><i></i>Distribution</a>
+        <a href="#" class="navlink"><i></i>Monetization</a>
+        <a href="#" class="navlink"><i></i>Settings</a>
+      </nav>
+    </div>
+    <div class="hidden lg:block rounded-2xl p-4 relative overflow-hidden" style="background:#17332a">
+      <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&w=400&q=60" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20">
+      <div class="relative">
+        <div class="eyebrow" style="color:#a9bdb2">Show</div>
+        <div class="display text-lg mt-1">The Long Cast</div>
+        <div class="text-xs text-[#a9bdb2] mt-1">148 episodes · weekly</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="lg:ml-64 flex-1 px-5 sm:px-8 lg:px-10 py-8 max-w-[1400px]">
+    <header class="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8 rise">
+      <div>
+        <div class="eyebrow mb-2">Dashboard · <span id="rangeLabel">Last 30 days</span></div>
+        <h1 class="display text-4xl sm:text-5xl font-semibold leading-none">Your signal, <em class="font-normal" style="color:var(--signal)">cast wide.</em></h1>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="seg" role="group" aria-label="Date range">
+          <button data-days="7" aria-pressed="false">7D</button>
+          <button data-days="30" aria-pressed="true">30D</button>
+          <button data-days="90" aria-pressed="false">90D</button>
+          <button data-days="365" aria-pressed="false">1Y</button>
+        </div>
+        <span class="mono text-xs text-[color:var(--ink2)]" id="dateSpan"></span>
+      </div>
+    </header>
+
+    <!-- KPIs -->
+    <section class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-5" aria-label="Key figures">
+      <div class="card kpi p-5 rise" style="animation-delay:.05s">
+        <div class="eyebrow">Total downloads</div>
+        <div class="display text-3xl sm:text-4xl font-semibold mt-3" id="kDownloads">–</div>
+        <div class="mt-3 flex items-center gap-2"><span class="delta" id="dDownloads"></span><span class="text-xs text-[color:var(--ink2)]">vs prior period</span></div>
+      </div>
+      <div class="card kpi p-5 rise" style="animation-delay:.1s">
+        <div class="eyebrow">Unique listeners</div>
+        <div class="display text-3xl sm:text-4xl font-semibold mt-3" id="kListeners">–</div>
+        <div class="mt-3 flex items-center gap-2"><span class="delta" id="dListeners"></span><span class="text-xs text-[color:var(--ink2)]">vs prior period</span></div>
+      </div>
+      <div class="card kpi p-5 rise" style="animation-delay:.15s">
+        <div class="eyebrow">Avg. completion</div>
+        <div class="display text-3xl sm:text-4xl font-semibold mt-3" id="kComp">–</div>
+        <div class="mt-3 flex items-center gap-2"><span class="delta" id="dComp"></span><span class="text-xs text-[color:var(--ink2)]">vs prior period</span></div>
+      </div>
+      <div class="card kpi p-5 rise" style="animation-delay:.2s">
+        <div class="eyebrow">Peak day</div>
+        <div class="display text-3xl sm:text-4xl font-semibold mt-3" id="kPeak">–</div>
+        <div class="mt-3 text-xs text-[color:var(--ink2)] mono" id="kPeakDate"></div>
+      </div>
+    </section>
+
+    <!-- Downloads chart -->
+    <section class="card p-5 sm:p-6 mb-5 rise" style="animation-delay:.25s">
+      <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+        <div>
+          <h2 class="display text-2xl font-semibold">Downloads over time</h2>
+          <p class="text-sm text-[color:var(--ink2)]">Daily downloads compared with the previous period.</p>
+        </div>
+        <div class="flex items-center gap-4 text-xs text-[color:var(--ink2)]">
+          <span class="flex items-center gap-2"><span class="inline-block w-5 h-[3px] rounded" style="background:var(--signal)"></span>This period</span>
+          <span class="flex items-center gap-2"><span class="inline-block w-5 border-t-2 border-dashed" style="border-color:var(--sky)"></span>Previous</span>
+        </div>
+      </div>
+      <div class="relative h-[300px] sm:h-[340px]"><canvas id="lineChart" role="img" aria-label="Line chart of daily downloads"></canvas></div>
+    </section>
+
+    <div class="grid lg:grid-cols-5 gap-5 mb-5">
+      <!-- Top episodes -->
+      <section id="episodes" class="card p-5 sm:p-6 lg:col-span-3 rise" style="animation-delay:.3s">
+        <div class="flex items-baseline justify-between mb-3">
+          <h2 class="display text-2xl font-semibold">Top episodes</h2>
+          <span class="eyebrow">By downloads</span>
+        </div>
+        <ol id="epList" class="space-y-1"></ol>
+      </section>
+
+      <!-- Apps -->
+      <section id="listeners" class="card p-5 sm:p-6 lg:col-span-2 rise" style="animation-delay:.35s">
+        <h2 class="display text-2xl font-semibold">Listener apps</h2>
+        <p class="text-sm text-[color:var(--ink2)] mb-3">Where your audience presses play.</p>
+        <div class="relative h-[220px]"><canvas id="donut" role="img" aria-label="Doughnut chart of listening apps"></canvas>
+          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <div class="display text-3xl font-semibold" id="appTop">–</div>
+            <div class="eyebrow">leading app</div>
+          </div>
+        </div>
+        <ul id="appList" class="mt-4 space-y-2 text-sm"></ul>
+      </section>
+    </div>
+
+    <!-- Weekday -->
+    <section class="card p-5 sm:p-6 mb-8 rise" style="animation-delay:.4s">
+      <div class="flex flex-wrap justify-between gap-2 mb-4">
+        <div>
+          <h2 class="display text-2xl font-semibold">When they listen</h2>
+          <p class="text-sm text-[color:var(--ink2)]">Average downloads by weekday in the selected range.</p>
+        </div>
+      </div>
+      <div class="relative h-[200px]"><canvas id="bars" role="img" aria-label="Bar chart of downloads by weekday"></canvas></div>
+    </section>
+
+    <footer class="eyebrow pb-6">Castline · Podcast hosting · Data refreshed hourly</footer>
+  </main>
+</div>
+
+<script>
+(function(){
+  const C={spruce:'#1d4a3b',signal:'#e4572e',sand:'#c9a96a',sky:'#5b8fa8',mist:'#a9b8a3',ink:'#14261f',ink2:'#4b5c54',line:'#ddd3bf'};
+  Chart.defaults.font.family="'Instrument Sans',sans-serif";
+  Chart.defaults.color=C.ink2;
+
+  // seeded data: 730 days, last day = yesterday-ish
+  let s=7;const rnd=()=>{s=(s*16807)%2147483647;return s/2147483647};
+  const N=730, today=new Date(2026,10,9);
+  const data=[];
+  for(let i=0;i<N;i++){
+    const d=new Date(today);d.setDate(today.getDate()-(N-1-i));
+    const dow=d.getDay();
+    const trend=2600+i*5.2;
+    const wk=[0.82,1.08,1.18,1.12,1.04,0.9,0.78][dow];
+    const spike=(i%47===0)?1.7:(i%47===1?1.35:1);
+    data.push({d,v:Math.round(trend*wk*spike*(0.9+rnd()*0.2))});
+  }
+  const fmt=n=>n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e4?(n/1e3).toFixed(1)+'K':n.toLocaleString('en-US');
+  const fd=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const fdy=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const labels={7:'Last 7 days',30:'Last 30 days',90:'Last 90 days',365:'Last 12 months'};
+
+  const episodes=[
+    {t:'The Salt Line: Inside a Cargo Port at 3 a.m.',n:'Ep 142',w:1.00,img:'photo-1494412574643-ff11b0a5c1c3'},
+    {t:'Why Every Lighthouse Keeper Kept a Diary',n:'Ep 139',w:.84,img:'photo-1507525428034-b723cf961d3e'},
+    {t:'Rope, Knots & the Science of Holding On',n:'Ep 135',w:.71,img:'photo-1520454974749-611b7248ffdb'},
+    {t:'A Radio Operator’s Last Broadcast',n:'Ep 128',w:.58,img:'photo-1478737270239-2f02b77fc618'},
+    {t:'Tidewater: Building a Town Underwater',n:'Ep 144',w:.49,img:'photo-1505118380757-91f5f5632de0'}
+  ];
+  const apps=[
+    {n:'Apple Podcasts',w:.38,c:C.spruce},{n:'Spotify',w:.29,c:C.signal},{n:'Overcast',w:.11,c:C.sand},
+    {n:'Pocket Casts',w:.09,c:C.sky},{n:'Web player',w:.07,c:C.mist},{n:'Other',w:.06,c:'#8a8f86'}
+  ];
+
+  const sum=a=>a.reduce((x,y)=>x+y,0);
+  const dlt=(el,cur,prev,inv)=>{
+    const p=prev?((cur-prev)/prev*100):0;
+    el.textContent=(p>=0?'▲ ':'▼ ')+Math.abs(p).toFixed(1)+'%';
+    el.className='delta '+((p>=0)!==!!inv?'up':'down');
+  };
+
+  const line=new Chart(document.getElementById('lineChart'),{
+    type:'line',
+    data:{labels:[],datasets:[
+      {label:'This period',data:[],borderColor:C.signal,borderWidth:2.5,tension:.35,pointRadius:0,pointHoverRadius:5,pointHoverBackgroundColor:C.signal,fill:true,
+        backgroundColor:ctx=>{const {chart}=ctx;if(!chart.chartArea)return 'transparent';const g=chart.ctx.createLinearGradient(0,chart.chartArea.top,0,chart.chartArea.bottom);g.addColorStop(0,'rgba(228,87,46,.28)');g.addColorStop(1,'rgba(228,87,46,0)');return g}},
+      {label:'Previous',data:[],borderColor:C.sky,borderWidth:1.8,borderDash:[5,5],tension:.35,pointRadius:0,pointHoverRadius:4}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{left:4,right:6,top:6}},interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#10231c',padding:12,titleFont:{family:'JetBrains Mono',size:11},bodyFont:{size:13},cornerRadius:10,
+        callbacks:{label:c=>' '+c.dataset.label+': '+c.parsed.y.toLocaleString('en-US')}}},
+      scales:{x:{grid:{display:false},border:{color:C.line},ticks:{maxTicksLimit:8,maxRotation:0,font:{family:'JetBrains Mono',size:11}}},
+        y:{beginAtZero:true,grid:{color:'rgba(20,38,31,.07)'},border:{display:false},ticks:{maxTicksLimit:5,padding:10,callback:v=>fmt(v),font:{family:'JetBrains Mono',size:11}}}}}
+  });
+
+  const donut=new Chart(document.getElementById('donut'),{
+    type:'doughnut',
+    data:{labels:apps.map(a=>a.n),datasets:[{data:[],backgroundColor:apps.map(a=>a.c),borderColor:'#fbf8f1',borderWidth:3,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{display:false},
+      tooltip:{backgroundColor:'#10231c',cornerRadius:10,padding:10,callbacks:{label:c=>' '+c.label+': '+c.parsed.toLocaleString('en-US')}}}}
+  });
+
+  const bars=new Chart(document.getElementById('bars'),{
+    type:'bar',
+    data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],datasets:[{data:[],borderRadius:8,borderSkipped:false,backgroundColor:[]}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+      tooltip:{backgroundColor:'#10231c',cornerRadius:10,padding:10,callbacks:{label:c=>' '+c.parsed.y.toLocaleString('en-US')+' avg downloads'}}},
+      scales:{x:{grid:{display:false},border:{display:false}},y:{beginAtZero:true,grid:{color:'rgba(20,38,31,.07)'},border:{display:false},ticks:{maxTicksLimit:4,callback:v=>fmt(v),font:{family:'JetBrains Mono',size:11}}}}}
+  });
+
+  function render(days){
+    const cur=data.slice(-days), prev=data.slice(-days*2,-days);
+    const tot=sum(cur.map(x=>x.v)), ptot=sum(prev.map(x=>x.v));
+    document.getElementById('rangeLabel').textContent=labels[days];
+    document.getElementById('dateSpan').textContent=fd(cur[0].d)+' – '+fdy(cur[cur.length-1].d);
+
+    // KPIs
+    const ratio=0.41+days*0.00004, pratio=ratio*0.97;
+    const lis=Math.round(tot*(0.62-Math.min(days,365)*0.00028)), plis=Math.round(ptot*(0.62-Math.min(days,365)*0.00028)*0.96);
+    const comp=71.4+(days===7?1.2:days===90?-0.6:days===365?-1.4:0), pcomp=comp-0.9;
+    document.getElementById('kDownloads').textContent=fmt(tot);
+    document.getElementById('kListeners').textContent=fmt(lis);
+    document.getElementById('kComp').textContent=comp.toFixed(1)+'%';
+    dlt(document.getElementById('dDownloads'),tot,ptot);
+    dlt(document.getElementById('dListeners'),lis,plis);
+    dlt(document.getElementById('dComp'),comp,pcomp);
+    const pk=cur.reduce((a,b)=>b.v>a.v?b:a);
+    document.getElementById('kPeak').textContent=pk.v.toLocaleString('en-US');
+    document.getElementById('kPeakDate').textContent=pk.d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+
+    // Line (aggregate weekly for 1Y)
+    let L,A,B;
+    if(days>=365){
+      L=[];A=[];B=[];
+      for(let i=0;i<cur.length;i+=7){const a=cur.slice(i,i+7),b=prev.slice(i,i+7);
+        L.push(fd(a[0].d));A.push(Math.round(sum(a.map(x=>x.v))/a.length));B.push(Math.round(sum(b.map(x=>x.v))/b.length));}
+    }else{L=cur.map(x=>fd(x.d));A=cur.map(x=>x.v);B=prev.map(x=>x.v);}
+    line.data.labels=L;line.data.datasets[0].data=A;line.data.datasets[1].data=B;line.update();
+
+    // Episodes
+    const base=tot*0.2;
+    document.getElementById('epList').innerHTML=episodes.map((e,i)=>{
+      const v=Math.round(base*e.w);
+      return `<li class="ep flex items-center gap-4 p-2.5" tabindex="0">
+        <span class="display text-2xl w-6 text-center" style="color:${i===0?'var(--signal)':'var(--mist)'}">${i+1}</span>
+        <img src="https://images.unsplash.com/${e.img}?auto=format&fit=crop&w=120&h=120&q=60" alt="" width="52" height="52" class="w-[52px] h-[52px] rounded-xl object-cover shrink-0" loading="lazy">
+        <div class="min-w-0 flex-1">
+          <div class="flex justify-between gap-3 items-baseline">
+            <div class="font-medium truncate">${e.t}</div>
+            <div class="mono text-sm shrink-0">${fmt(v)}</div>
+          </div>
+          <div class="flex items-center gap-3 mt-1.5"><span class="eyebrow shrink-0">${e.n}</span><div class="bar flex-1"><span style="width:${e.w*100}%"></span></div></div>
+        </div></li>`}).join('');
+
+    // Apps
+    const av=apps.map(a=>Math.round(tot*a.w));
+    donut.data.datasets[0].data=av;donut.update();
+    document.getElementById('appTop').textContent=Math.round(apps[0].w*100)+'%';
+    document.getElementById('appList').innerHTML=apps.map((a,i)=>`<li class="flex items-center justify-between">
+      <span class="flex items-center gap-2.5"><span class="w-3 h-3 rounded-[4px]" style="background:${a.c}"></span>${a.n}</span>
+      <span class="mono text-xs text-[color:var(--ink2)]">${(a.w*100).toFixed(0)}% · ${fmt(av[i])}</span></li>`).join('');
+
+    // Weekday (Mon-Sun)
+    const acc=Array.from({length:7},()=>[]);
+    cur.forEach(x=>acc[(x.d.getDay()+6)%7].push(x.v));
+    const avg=acc.map(a=>a.length?Math.round(sum(a)/a.length):0), mx=Math.max(...avg);
+    bars.data.datasets[0].data=avg;
+    bars.data.datasets[0].backgroundColor=avg.map(v=>v===mx?C.signal:C.spruce);
+    bars.update();
+  }
+
+  document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    render(+b.dataset.days);
+  }));
+  render(30);
+})();
+</script>
+</body>
+</html>

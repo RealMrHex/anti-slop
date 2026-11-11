@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing &amp; invoices | Lumen Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --page: #111113;
+      --side: #09090b;
+      --card: #18181b;
+      --raised: #27272a;
+      --hair: #27272a;
+      --edge: #71717a;
+      --text: #f4f4f5;
+      --text-2: #d4d4d8;
+      --muted: #a1a1aa;
+      --accent: #93c5fd;
+      --accent-hover: #bfdbfe;
+      --on-accent: #0b1222;
+      --ok: #4ade80;
+      --bad: #f87171;
+      --sans: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --ease: cubic-bezier(0, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 20px;
+      background: var(--page);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    h1, h2, p { margin: 0; }
+    h1 { font-size: 30px; line-height: 36px; font-weight: 500; letter-spacing: -0.01em; }
+    h2 { font-size: 16px; line-height: 24px; font-weight: 500; }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+    .i { width: 18px; height: 18px; flex: none; }
+    .mono { font-family: var(--mono); font-size: 13px; }
+    .num { font-variant-numeric: tabular-nums; }
+    .muted { color: var(--muted); }
+
+    /* Shell */
+    .shell { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: 100vh; }
+
+    aside {
+      background: var(--side);
+      border-right: 1px solid var(--hair);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 4px 10px 20px; font-weight: 500; font-size: 15px; }
+    .mark {
+      width: 22px; height: 22px; border-radius: 6px;
+      background: var(--text); color: var(--side);
+      display: grid; place-items: center; font-size: 13px; font-weight: 500;
+    }
+    nav { display: flex; flex-direction: column; gap: 2px; }
+    nav a {
+      display: flex; align-items: center; gap: 10px;
+      height: 34px; padding: 0 10px; border-radius: 8px;
+      color: var(--text-2); text-decoration: none;
+      transition: background-color 150ms var(--ease);
+    }
+    nav a:hover { background: var(--card); color: var(--text); }
+    nav a[aria-current="page"] { background: var(--raised); color: var(--text); font-weight: 500; }
+    nav .count {
+      margin-left: auto; font-size: 12px; color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Main */
+    main { padding: 32px 40px 48px; min-width: 0; }
+    .wrap { max-width: 1080px; }
+    .top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap; margin-bottom: 32px;
+    }
+    .search { position: relative; }
+    .search .i { position: absolute; left: 10px; top: 9px; color: var(--muted); }
+    .search input {
+      width: 280px; height: 36px; border-radius: 8px;
+      border: 1px solid var(--edge); background: var(--card); color: var(--text);
+      padding: 0 12px 0 36px; font: inherit;
+    }
+    .search input::placeholder { color: var(--muted); }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .label { color: var(--muted); font-size: 14px; line-height: 20px; }
+    .figure {
+      font-size: 36px; line-height: 40px; font-weight: 500;
+      letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+      margin-top: 8px;
+    }
+    .figure-sm { font-size: 30px; line-height: 36px; }
+
+    .stats { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 16px; margin-bottom: 24px; }
+    .balance { display: flex; flex-direction: column; }
+    .balance-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+    .balance-meta { color: var(--text-2); margin-top: 8px; }
+
+    .btn {
+      height: 36px; padding: 0 14px; border-radius: 8px;
+      border: 1px solid var(--edge); background: var(--raised); color: var(--text);
+      font: inherit; font-weight: 500; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+      transition: background-color 150ms var(--ease);
+    }
+    .btn:hover { background: #3f3f46; }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-ghost { height: 30px; padding: 0 10px; font-size: 14px; font-weight: 400; background: transparent; border-color: var(--hair); }
+    .btn-ghost:hover { background: var(--raised); }
+    .btn .i { width: 16px; height: 16px; }
+
+    /* One thin drawn element, built from the invoice amounts below */
+    .strip { display: flex; height: 8px; border-radius: 4px; overflow: hidden; gap: 2px; margin-top: 28px; }
+    .strip span { display: block; min-width: 0; }
+    .legend {
+      list-style: none; padding: 0; margin: 12px 0 0;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, max-content));
+      gap: 8px 28px; color: var(--text-2);
+    }
+    .legend li { display: flex; align-items: center; gap: 8px; }
+    .legend .amt { color: var(--muted); font-variant-numeric: tabular-nums; }
+    .swatch { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+
+    /* Invoice table */
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
+    .table-card { padding: 0; overflow: hidden; margin-bottom: 24px; }
+    .table-card .section-head { padding: 20px 24px 0; }
+    .table-wrap { overflow-x: auto; position: relative; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 0 16px; white-space: nowrap; }
+    thead th { height: 40px; font-weight: 400; color: var(--muted); border-bottom: 1px solid var(--hair); }
+    tbody td { height: 44px; border-top: 1px solid var(--hair); color: var(--text-2); }
+    tbody tr:first-child td { border-top-color: var(--hair); }
+    th:first-child, td:first-child { padding-left: 24px; }
+    th:last-child, td:last-child { padding-right: 24px; }
+    .num-col { text-align: right; font-variant-numeric: tabular-nums; }
+    td.id { color: var(--text); }
+
+    .status { display: inline-flex; align-items: center; gap: 8px; color: var(--text-2); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; background: currentColor; }
+    .dot-paid { color: var(--ok); }
+    .dot-overdue { color: var(--bad); }
+    .dot-open { color: var(--muted); background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; }
+
+    .download { color: var(--text-2); }
+
+    /* Lower row */
+    .lower { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .lower h2 { margin-bottom: 16px; }
+    .method {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      background: var(--raised); border-radius: 8px; padding: 16px;
+    }
+    .method .name { font-weight: 500; color: var(--text); }
+    .method .meta { color: var(--muted); margin-top: 2px; }
+    .fine { color: var(--muted); margin-top: 12px; }
+
+    form { display: flex; flex-direction: column; gap: 16px; }
+    .field { display: flex; flex-direction: column; gap: 6px; color: var(--text-2); }
+    .field input {
+      height: 36px; border-radius: 8px;
+      border: 1px solid var(--edge); background: var(--page); color: var(--text);
+      padding: 0 12px; font: inherit;
+    }
+    .field input::placeholder { color: var(--muted); }
+    .form-actions { display: flex; }
+
+    /* Narrower screens */
+    @media (max-width: 960px) {
+      .shell { grid-template-columns: minmax(0, 1fr); }
+      aside {
+        flex-direction: row; flex-wrap: wrap; align-items: center;
+        gap: 4px 12px; padding: 14px 20px; border-right: 0; border-bottom: 1px solid var(--hair);
+      }
+      .brand { padding: 0 8px 0 0; }
+      nav { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+      nav a { height: 32px; }
+      nav .count { display: none; }
+      .stats { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 640px) {
+      main { padding: 24px 16px 40px; }
+      h1 { font-size: 24px; line-height: 32px; }
+      .search, .search input { width: 100%; }
+      .figure { font-size: 30px; line-height: 36px; }
+      .lower { grid-template-columns: minmax(0, 1fr); }
+      .card:not(.table-card) { padding: 20px; }
+      .table-card .section-head { padding: 20px 20px 0; }
+      .table-wrap { max-width: 100%; }
+      th:first-child, td:first-child { padding-left: 20px; }
+      th:last-child, td:last-child { padding-right: 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand">
+        <span class="mark" aria-hidden="true">L</span>
+        <span>Lumen Studio</span>
+      </div>
+      <nav aria-label="Account">
+        <a href="#">
+          <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>
+          Overview
+        </a>
+        <a href="#">
+          <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+          Profile
+        </a>
+        <a href="#" aria-current="page">
+          <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 6.75A2.25 2.25 0 014.5 4.5h15a2.25 2.25 0 012.25 2.25v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75zM6 15.75h3"/></svg>
+          Billing &amp; invoices
+        </a>
+        <a href="#">
+          <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V6.75A2.25 2.25 0 014.5 4.5h4.5l2.25 2.25h6.25A2.25 2.25 0 0119.75 9v3.75M2.25 12.75v4.5A2.25 2.25 0 004.5 19.5h15a2.25 2.25 0 002.25-2.25v-4.5H2.25z"/></svg>
+          Projects
+        </a>
+        <a href="#">
+          <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+          Notifications
+        </a>
+        <a href="#">
+          <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+          Security
+        </a>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="wrap">
+        <header class="top">
+          <h1>Billing &amp; invoices</h1>
+          <div class="search">
+            <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+            <label class="sr-only" for="search">Search invoices</label>
+            <input id="search" type="search" placeholder="Search invoices">
+          </div>
+        </header>
+
+        <section class="stats" aria-label="Summary">
+          <div class="card balance">
+            <p class="label">Outstanding balance</p>
+            <div class="balance-row">
+              <div>
+                <p class="figure">$4,820.50</p>
+                <p class="balance-meta">3 invoices pending, 1 overdue</p>
+              </div>
+              <button class="btn btn-primary" type="button">Pay now</button>
+            </div>
+
+            <div class="strip" role="img" aria-label="Invoices in this list by status: paid $4,300.50, pending $5,075.75, overdue $860.00, draft $640.00">
+              <span style="flex: 4300.50; background: #52525b;"></span>
+              <span style="flex: 5075.75; background: #71717a;"></span>
+              <span style="flex: 860; background: var(--accent);"></span>
+              <span style="flex: 640; background: #3f3f46;"></span>
+            </div>
+            <ul class="legend">
+              <li><span class="swatch" style="background:#52525b"></span>Paid <span class="amt">$4,300.50</span></li>
+              <li><span class="swatch" style="background:#71717a"></span>Pending <span class="amt">$5,075.75</span></li>
+              <li><span class="swatch" style="background:var(--accent)"></span>Overdue <span class="amt">$860.00</span></li>
+              <li><span class="swatch" style="background:#3f3f46"></span>Draft <span class="amt">$640.00</span></li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <p class="label">Paid this year</p>
+            <p class="figure figure-sm">$18,300.00</p>
+          </div>
+        </section>
+
+        <section class="card table-card" aria-labelledby="invoices-title">
+          <div class="section-head">
+            <h2 id="invoices-title">Invoices</h2>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Invoice</th>
+                  <th scope="col">Project</th>
+                  <th scope="col">Issued</th>
+                  <th scope="col">Due</th>
+                  <th scope="col" class="num-col">Amount</th>
+                  <th scope="col">Status</th>
+                  <th scope="col"><span class="sr-only">Download</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="id mono">INV-1041</td>
+                  <td>Brand Refresh</td>
+                  <td class="num">Mar 2, 2026</td>
+                  <td class="num">Mar 16, 2026</td>
+                  <td class="num-col">$1,200.00</td>
+                  <td><span class="status"><span class="dot dot-paid" aria-hidden="true"></span>Paid</span></td>
+                  <td><button class="btn btn-ghost download" type="button" aria-label="Download PDF for INV-1041"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>PDF</button></td>
+                </tr>
+                <tr>
+                  <td class="id mono">INV-1042</td>
+                  <td>App Mockups</td>
+                  <td class="num">Mar 9, 2026</td>
+                  <td class="num">Apr 2, 2026</td>
+                  <td class="num-col">$2,450.00</td>
+                  <td><span class="status"><span class="dot dot-open" aria-hidden="true"></span>Pending</span></td>
+                  <td><button class="btn btn-ghost download" type="button" aria-label="Download PDF for INV-1042"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>PDF</button></td>
+                </tr>
+                <tr>
+                  <td class="id mono">INV-1043</td>
+                  <td>Video Ads</td>
+                  <td class="num">Mar 15, 2026</td>
+                  <td class="num">Mar 30, 2026</td>
+                  <td class="num-col">$860.00</td>
+                  <td><span class="status"><span class="dot dot-overdue" aria-hidden="true"></span>Overdue</span></td>
+                  <td><button class="btn btn-ghost download" type="button" aria-label="Download PDF for INV-1043"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>PDF</button></td>
+                </tr>
+                <tr>
+                  <td class="id mono">INV-1044</td>
+                  <td>E-commerce UI</td>
+                  <td class="num">Feb 27, 2026</td>
+                  <td class="num">Apr 5, 2026</td>
+                  <td class="num-col">$3,100.50</td>
+                  <td><span class="status"><span class="dot dot-paid" aria-hidden="true"></span>Paid</span></td>
+                  <td><button class="btn btn-ghost download" type="button" aria-label="Download PDF for INV-1044"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>PDF</button></td>
+                </tr>
+                <tr>
+                  <td class="id mono">INV-1045</td>
+                  <td>Pitch Deck</td>
+                  <td class="num">Apr 1, 2026</td>
+                  <td class="num">Apr 20, 2026</td>
+                  <td class="num-col">$975.00</td>
+                  <td><span class="status"><span class="dot dot-open" aria-hidden="true"></span>Pending</span></td>
+                  <td><button class="btn btn-ghost download" type="button" aria-label="Download PDF for INV-1045"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>PDF</button></td>
+                </tr>
+                <tr>
+                  <td class="id mono">INV-1046</td>
+                  <td>Icon Set 2.0</td>
+                  <td class="num">Apr 8, 2026</td>
+                  <td class="num">May 1, 2026</td>
+                  <td class="num-col">$640.00</td>
+                  <td><span class="status"><span class="dot dot-open" aria-hidden="true"></span>Draft</span></td>
+                  <td><button class="btn btn-ghost download" type="button" aria-label="Download PDF for INV-1046"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>PDF</button></td>
+                </tr>
+                <tr>
+                  <td class="id mono">INV-1047</td>
+                  <td>Retainer Q2</td>
+                  <td class="num">Jun 4, 2026</td>
+                  <td class="num">Jun 30, 2026</td>
+                  <td class="num-col">$1,650.75</td>
+                  <td><span class="status"><span class="dot dot-open" aria-hidden="true"></span>Pending</span></td>
+                  <td><button class="btn btn-ghost download" type="button" aria-label="Download PDF for INV-1047"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>PDF</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="lower">
+          <div class="card">
+            <h2>Payment method</h2>
+            <div class="method">
+              <div>
+                <p class="name">Visa ending 6411</p>
+                <p class="meta mono">•••• •••• •••• 6411</p>
+              </div>
+              <p class="muted">Expires 09/28</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Billing contact</h2>
+            <form>
+              <label class="field">
+                <span>Full name</span>
+                <input name="name" type="text" autocomplete="name" placeholder="Jordan Lee">
+              </label>
+              <label class="field">
+                <span>Email address</span>
+                <input name="email" type="email" autocomplete="email" placeholder="name@company.com">
+              </label>
+              <label class="field">
+                <span>Company</span>
+                <input name="company" type="text" autocomplete="organization" placeholder="Company name">
+              </label>
+              <div class="form-actions">
+                <button type="button" class="btn">Save contact</button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!--
+    Figures to confirm with the owner (not resolved in the layout):
+    - Outstanding balance $4,820.50 does not match the open invoices in the list:
+      pending + overdue = $5,935.75 (draft excluded).
+    - Retainer Q2 issue date "06/04/2026" read as Jun 4, 2026; it could be Apr 6, 2026.
+    - INV-1045 issue date "4-1-26" read as Apr 1, 2026; it could be Jan 4, 2026.
+    - INV-1041 issue date "3/2/26" read as Mar 2, 2026; it could be Feb 3, 2026.
+    Removed claims: "Top 1% client", "Trusted by 10,000+ clients", "100% secure, guaranteed",
+    "Unlock 100x power", "PRO PLAN" and "PRO" badges, "NEW" badge on Notifications.
+  -->
+</body>
+</html>

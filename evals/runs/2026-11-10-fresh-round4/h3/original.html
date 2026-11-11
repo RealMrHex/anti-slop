@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pingly - Next-gen uptime monitoring!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Inter', sans-serif; background: #05050a; }
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(0, 255, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139, 92, 246, 0.06) 1px, transparent 1px);
+    background-size: 43px 43px;
+  }
+  .glow-orb-cyan { box-shadow: 0 0 140px 60px rgba(34, 211, 238, 0.35); }
+  .glow-orb-violet { box-shadow: 0 0 160px 70px rgba(168, 85, 247, 0.35); }
+  .grad-text {
+    background: linear-gradient(90deg, #22d3ee, #a855f7, #f472b6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .glass { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.09); }
+  .neon-btn {
+    box-shadow: 0 0 22px rgba(34, 211, 238, 0.6), 0 0 48px rgba(168, 85, 247, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .neon-btn:hover { transform: scale(1.08); box-shadow: 0 0 34px rgba(34, 211, 238, 0.9), 0 0 70px rgba(168, 85, 247, 0.55); }
+  .term-glow { box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.6), 0 0 40px rgba(34, 211, 238, 0.35); }
+</style>
+</head>
+<body class="text-white min-h-screen overflow-hidden">
+<div class="grid-bg fixed inset-0 opacity-70"></div>
+<div class="glow-orb-cyan fixed -top-[120px] -left-[90px] w-[300px] h-[300px] rounded-full bg-cyan-500/30"></div>
+<div class="glow-orb-violet fixed top-[260px] -right-[110px] w-[340px] h-[340px] rounded-full bg-violet-600/30"></div>
+
+<div class="relative z-10 h-[900px] w-[1280px] mx-auto flex flex-col">
+  <nav class="glass mt-[18px] mx-[27px] rounded-[22px] px-[26px] py-[13px] flex items-center justify-between">
+    <div class="flex items-center gap-[11px]">
+      <div class="w-[34px] h-[34px] rounded-[11px] bg-gradient-to-br from-cyan-400 to-violet-600 neon-btn"></div>
+      <span class="text-[23px] font-black tracking-[-0.6px]">Pingly</span>
+    </div>
+    <div class="flex items-center gap-[30px] text-[15px] font-semibold text-zinc-300">
+      <a href="#" class="hover:text-white">⚡ Features</a>
+      <a href="#" class="hover:text-white">📊 Status Pages</a>
+      <a href="#" class="hover:text-white">💬 Integrations</a>
+      <a href="#" class="hover:text-white">💰 Pricing</a>
+      <a href="#" class="hover:text-white">📚 Docs</a>
+    </div>
+    <div class="flex items-center gap-[14px]">
+      <a href="#" class="text-[15px] font-semibold text-zinc-300 hover:text-white">🔑 Log in</a>
+      <a href="#" class="neon-btn rounded-[14px] px-[22px] py-[11px] text-[15px] font-extrabold bg-gradient-to-r from-cyan-400 to-violet-500 text-black">🚀 Start free!</a>
+    </div>
+  </nav>
+
+  <section class="flex-1 flex flex-col items-center justify-center text-center px-[61px] pb-[57px]">
+    <div class="glass rounded-full px-[19px] py-[7px] text-[14px] font-bold text-cyan-300 animate-pulse mb-[27px]">
+      🚀 v2.0 is live!
+    </div>
+    <h1 class="text-[78px] leading-[0.98] font-black tracking-[-2.4px] max-w-[1000px]">
+      <span class="grad-text">Next-gen uptime monitoring</span> for developers!
+    </h1>
+    <p class="mt-[25px] text-[21px] text-zinc-300 max-w-[760px] leading-[1.45] font-medium">
+      Supercharge your APIs with checks every 30 seconds from 12 regions. Alerts fly to Slack and PagerDuty instantly, and public status pages keep your users in the loop!
+    </p>
+    <div class="mt-[38px] flex items-center gap-[18px]">
+      <a href="#" class="neon-btn rounded-[16px] px-[34px] py-[16px] text-[18px] font-black bg-gradient-to-r from-cyan-400 to-violet-500 text-black">✨ Start monitoring free!</a>
+      <a href="#" class="glass rounded-[16px] px-[30px] py-[15px] text-[18px] font-extrabold hover:bg-white/10">🎬 Watch demo</a>
+    </div>
+    <p class="mt-[16px] text-[14px] text-zinc-400 font-semibold">⭐ Loved by a 99.999% of our happy devs!</p>
+
+    <div class="mt-[44px] grid grid-cols-3 gap-[38px] w-[860px]">
+      <div>
+        <div class="text-[58px] font-black grad-text leading-none">10M+</div>
+        <div class="mt-[9px] text-[15px] font-bold text-zinc-400">checks run 🔥</div>
+      </div>
+      <div>
+        <div class="text-[58px] font-black grad-text leading-none">500+</div>
+        <div class="mt-[9px] text-[15px] font-bold text-zinc-400">teams trust us 🙌</div>
+      </div>
+      <div>
+        <div class="text-[58px] font-black grad-text leading-none">24/7</div>
+        <div class="mt-[9px] text-[15px] font-bold text-zinc-400">watching your stack 👀</div>
+      </div>
+    </div>
+
+    <div class="term-glow glass mt-[40px] w-[640px] rounded-[18px] text-left overflow-hidden">
+      <div class="flex items-center gap-[7px] px-[16px] py-[11px] border-b border-white/10">
+        <span class="w-[11px] h-[11px] rounded-full bg-rose-400"></span>
+        <span class="w-[11px] h-[11px] rounded-full bg-amber-300"></span>
+        <span class="w-[11px] h-[11px] rounded-full bg-emerald-400"></span>
+        <span class="ml-[12px] text-[13px] font-semibold text-zinc-400">💻 pingly-cli ~ zsh</span>
+      </div>
+      <pre class="px-[22px] py-[18px] font-mono text-[14px] leading-[1.7] text-cyan-200">$ pingly monitor add api.acme.dev --interval 30s
+<span class="text-emerald-300">✔ Monitor created! 🎉</span>
+$ pingly regions --list
+<span class="text-violet-300">  us-east  eu-west  ap-south  +9 more 🌍</span>
+$ pingly alerts --route slack,pagerduty
+<span class="text-emerald-300">✔ All systems go! 🚀</span></pre>
+    </div>
+  </section>
+</div>
+</body>
+</html>

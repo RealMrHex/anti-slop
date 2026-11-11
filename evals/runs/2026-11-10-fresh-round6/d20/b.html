@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Margin Book Club</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --surface: #fdfbf7;
+      --raised: #efe9df;
+      --hair: rgba(31, 27, 22, 0.08);
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --text-3: #6f665a;
+      --accent: #8c2f39;
+      --accent-hover: #742630;
+      --avatar: #e4dccd;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    h1, h2, h3, p, ul { margin: 0; padding: 0; }
+    ul { list-style: none; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .app > *, .grid > *, .talk > * { min-width: 0; }
+
+    /* Sidebar */
+    .side {
+      background: var(--surface);
+      border-right: 1px solid var(--hair);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 8px;
+      margin-bottom: 32px;
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+
+    .brand svg { flex: none; }
+
+    .nav { display: flex; flex-direction: column; gap: 2px; }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 8px;
+      color: var(--text-2);
+      font-weight: 500;
+      transition: background-color 150ms var(--ease), color 150ms var(--ease);
+    }
+
+    .nav a:hover { background: var(--raised); color: var(--text); }
+
+    .nav a[aria-current="page"] {
+      background: var(--raised);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--hair);
+    }
+
+    .nav .icon { color: var(--text-3); }
+    .nav a[aria-current="page"] .icon { color: var(--text); }
+
+    .chip {
+      margin-left: auto;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+      color: var(--text-3);
+      border: 1px solid var(--hair);
+      border-radius: 4px;
+      padding: 0 6px;
+    }
+
+    .streak {
+      margin-top: auto;
+      background: var(--raised);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .streak h2 { font-size: 14px; font-weight: 500; }
+    .streak p { margin-top: 4px; color: var(--text-2); font-size: 13px; line-height: 20px; }
+
+    /* Main */
+    .main {
+      padding: 32px 40px 40px;
+      min-width: 0;
+      animation: rise 420ms var(--ease) both;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .page-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .date { color: var(--text-3); font-size: 13px; line-height: 16px; }
+
+    h1 {
+      margin-top: 4px;
+      font-family: var(--serif);
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 1.15;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font: inherit;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--surface);
+      border-color: var(--hair);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 150ms var(--ease), border-color 150ms var(--ease);
+    }
+
+    .btn:hover { background: var(--raised); }
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .btn-primary:focus-visible { outline-color: var(--accent); }
+
+    .grid { display: grid; gap: 16px; }
+    .grid-top { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+    .grid-mid { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); margin-top: 16px; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--hair);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .card > h2 {
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .full { margin-top: 16px; }
+
+    .num { font-variant-numeric: tabular-nums; }
+
+    /* Current book: the one rendered moment */
+    .book { display: flex; gap: 24px; }
+
+    .cover {
+      flex: none;
+      width: 112px;
+      height: 160px;
+      border-radius: 4px 8px 8px 4px;
+      box-shadow: 0 1px 2px rgba(31, 27, 22, 0.1), 0 10px 24px rgba(31, 27, 22, 0.14);
+      display: block;
+    }
+
+    .book-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+    .book h3 {
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.15;
+    }
+
+    .book .meta { margin-top: 6px; color: var(--text-2); }
+
+    .progress { margin-top: 20px; }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-2);
+      font-size: 13px;
+      line-height: 16px;
+      margin-bottom: 8px;
+    }
+
+    .meter {
+      height: 6px;
+      border-radius: 999px;
+      background: var(--raised);
+      overflow: hidden;
+    }
+
+    .meter > span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent);
+    }
+
+    .next { margin-top: 20px; color: var(--text-2); }
+    .next strong { color: var(--text); font-weight: 500; }
+
+    .book .btn { margin-top: 20px; align-self: flex-start; }
+
+    /* Lists */
+    .list { margin-top: 12px; }
+
+    .member {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 40px;
+      border-top: 1px solid var(--hair);
+    }
+
+    .member:first-child { border-top: 0; }
+
+    .avatar {
+      flex: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--avatar);
+      color: var(--text-2);
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .member .name { flex: 1; font-weight: 500; }
+    .member .pct { color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+    .meet {
+      padding: 12px 0;
+      border-top: 1px solid var(--hair);
+    }
+
+    .meet:first-child { border-top: 0; padding-top: 0; }
+    .meet strong { display: block; font-weight: 500; font-variant-numeric: tabular-nums; }
+    .meet span { display: block; margin-top: 2px; color: var(--text-2); font-size: 13px; }
+
+    .shelf {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .book-tile {
+      background: var(--raised);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-height: 112px;
+    }
+
+    .book-tile .t {
+      font-family: var(--serif);
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 22px;
+    }
+
+    .book-tile .a { color: var(--text-2); font-size: 13px; }
+
+    .book-tile .v {
+      margin-top: auto;
+      padding-top: 8px;
+      color: var(--text-3);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--text-2);
+      border: 1px solid var(--hair);
+      border-radius: 4px;
+      padding: 1px 6px;
+      background: var(--surface);
+    }
+
+    .talk {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .post {
+      display: flex;
+      gap: 12px;
+      background: var(--raised);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .post .who { font-weight: 500; }
+    .post .when { color: var(--text-3); font-size: 13px; font-weight: 400; }
+    .post p.text { margin-top: 4px; color: var(--text-2); }
+
+    /* Entrance and motion */
+    @media (prefers-reduced-motion: reduce) {
+      .main { animation: none; }
+      *, *::before, *::after { transition-duration: 0ms !important; }
+    }
+
+    /* Narrow screens */
+    @media (max-width: 1080px) {
+      .grid-top, .grid-mid { grid-template-columns: minmax(0, 1fr); }
+      .shelf { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 800px) {
+      .app { grid-template-columns: minmax(0, 1fr); }
+      .side {
+        position: static;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--hair);
+        padding: 16px;
+      }
+      .brand { margin-bottom: 12px; }
+      .nav { flex-direction: row; overflow-x: auto; gap: 4px; max-width: 100%; }
+      .nav a { flex: none; }
+      .streak { display: none; }
+      .main { padding: 24px 16px 32px; }
+      .talk { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      h1 { font-size: 30px; }
+      .page-head { flex-direction: column; align-items: flex-start; }
+      .book { flex-direction: column; }
+      .cover { width: 96px; height: 136px; }
+      .shelf { grid-template-columns: minmax(0, 1fr); }
+      .card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <aside class="side">
+      <div class="brand">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <rect width="24" height="24" rx="6" fill="#8c2f39"/>
+          <path d="M9 6v12" stroke="#fdfbf7" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>Margin</span>
+      </div>
+
+      <nav class="nav" aria-label="Main">
+        <a href="#home" aria-current="page">
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+          Home
+        </a>
+        <a href="#shelf">
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg>
+          My shelf
+        </a>
+        <a href="#meetings">
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Meetings
+        </a>
+        <a href="#discussions">
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Discussions
+          <span class="chip">New</span>
+        </a>
+        <a href="#pro">
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 3 14.9 8.9 21.4 9.8 16.7 14.3 17.8 20.8 12 17.7 6.2 20.8 7.3 14.3 2.6 9.8 9.1 8.9 12 3"/></svg>
+          Go Pro
+        </a>
+      </nav>
+
+      <div class="streak">
+        <h2>Reading streak</h2>
+        <p>Keep going with The Midnight Garden.</p>
+      </div>
+    </aside>
+
+    <main class="main" id="home">
+      <header class="page-head">
+        <div>
+          <p class="date">Tuesday, Nov 10, 2026</p>
+          <h1>Home</h1>
+        </div>
+        <button class="btn" type="button">Join the club</button>
+      </header>
+
+      <div class="grid grid-top">
+        <section class="card book" aria-labelledby="current-book">
+          <svg class="cover" viewBox="0 0 112 160" role="img" aria-label="Cover of The Midnight Garden">
+            <defs>
+              <linearGradient id="cover-sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#22443b"/>
+                <stop offset="1" stop-color="#132a24"/>
+              </linearGradient>
+            </defs>
+            <rect width="112" height="160" fill="url(#cover-sky)"/>
+            <circle cx="74" cy="66" r="16" fill="#e9cb7f"/>
+            <path d="M0 116 C18 98 30 110 44 94 S70 102 82 88 S104 98 112 90 V160 H0Z" fill="#274f43"/>
+            <path d="M14 150 C20 132 28 128 34 120 C30 134 26 144 14 150Z" fill="#3c6b5a"/>
+            <path d="M92 150 C90 134 84 126 76 122 C82 132 88 140 92 150Z" fill="#3c6b5a"/>
+            <rect width="6" height="160" fill="#000" opacity="0.22"/>
+            <text x="16" y="30" font-family="Newsreader, Georgia, serif" font-size="11" fill="#f3ead6">The Midnight</text>
+            <text x="16" y="44" font-family="Newsreader, Georgia, serif" font-size="11" fill="#f3ead6">Garden</text>
+          </svg>
+
+          <div class="book-info">
+            <h2 id="current-book">Current book</h2>
+            <h3>The Midnight Garden</h3>
+            <p class="meta">by Elena Varga · 412 pages</p>
+
+            <div class="progress">
+              <div class="progress-row"><span>Progress</span><span class="num">64%</span></div>
+              <div class="meter" role="progressbar" aria-label="Reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="64">
+                <span style="width: 64%"></span>
+              </div>
+            </div>
+
+            <p class="next"><strong>Next meeting:</strong> Nov 14, 2026, 7 PM</p>
+
+            <button class="btn btn-primary" type="button">Continue reading</button>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="members">
+          <h2 id="members">Members' progress</h2>
+          <ul class="list">
+            <li class="member"><span class="avatar">AM</span><span class="name">Ana M.</span><span class="pct">92%</span></li>
+            <li class="member"><span class="avatar">JK</span><span class="name">Jun K.</span><span class="pct">78%</span></li>
+            <li class="member"><span class="avatar">RB</span><span class="name">Ravi B.</span><span class="pct">64%</span></li>
+            <li class="member"><span class="avatar">SL</span><span class="name">Sofia L.</span><span class="pct">51%</span></li>
+            <li class="member"><span class="avatar">TO</span><span class="name">Tom O.</span><span class="pct">33%</span></li>
+            <li class="member"><span class="avatar">NC</span><span class="name">Nia C.</span><span class="pct">12%</span></li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="grid grid-mid">
+        <section class="card" id="meetings" aria-labelledby="upcoming">
+          <h2 id="upcoming">Upcoming meetings</h2>
+          <ul class="list">
+            <li class="meet"><strong>Nov 14, 2026, 7 PM</strong><span>The Midnight Garden, ch. 9–12</span></li>
+            <li class="meet"><strong>Nov 21, 2026, 6:30 PM</strong><span>Vote-off night</span></li>
+            <li class="meet"><strong>Dec 5, 2026, 7 PM</strong><span>Holiday potluck</span></li>
+          </ul>
+        </section>
+
+        <section class="card" id="shelf" aria-labelledby="to-read">
+          <h2 id="to-read">To-read shelf</h2>
+          <ul class="shelf">
+            <li class="book-tile"><span class="t">Salt &amp; Static</span><span class="a">R. Okafor</span><span class="v">14 votes</span></li>
+            <li class="book-tile"><span class="t">Paper Lanterns</span><span class="a">M. Chen</span><span class="v">11 votes</span></li>
+            <li class="book-tile"><span class="t">The Quiet Harbor</span><span class="a">L. Brandt</span><span class="v">9 votes</span></li>
+            <li class="book-tile"><span class="t">Wild Tangerine</span><span class="a">A. Haddad</span><span class="v">7 votes</span></li>
+            <li class="book-tile"><span class="t">Glass Orchard</span><span class="a">P. Lindqvist</span><span class="v">5 votes</span></li>
+            <li class="book-tile"><span class="t">Honey &amp; Ash</span><span class="a">S. Ruiz</span><span class="v">3 votes <span class="tag">Pro pick</span></span></li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="card full" id="discussions" aria-labelledby="discussion">
+        <h2 id="discussion">Recent discussion</h2>
+        <ul class="talk">
+          <li class="post">
+            <span class="avatar">AM</span>
+            <div>
+              <p><span class="who">Ana M.</span> <span class="when">· 2 hrs ago</span></p>
+              <p class="text">OMG the ending!!! 😭 Best twist of the year, no contest!</p>
+            </div>
+          </li>
+          <li class="post">
+            <span class="avatar">JK</span>
+            <div>
+              <p><span class="who">Jun K.</span> <span class="when">· Nov 9, 2026</span></p>
+              <p class="text">Chapter 7 totally wrecked me 🥹 unbelievable writing!</p>
+            </div>
+          </li>
+          <li class="post">
+            <span class="avatar">RB</span>
+            <div>
+              <p><span class="who">Ravi B.</span> <span class="when">· yesterday</span></p>
+              <p class="text">Anyone else spot the garden clue?? 🌿 Let's GO deep!</p>
+            </div>
+          </li>
+          <li class="post">
+            <span class="avatar">SL</span>
+            <div>
+              <p><span class="who">Sofia L.</span> <span class="when">· 3 days ago</span></p>
+              <p class="text">Honestly the #1 most-loved pick of all time!! 💖🚀</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

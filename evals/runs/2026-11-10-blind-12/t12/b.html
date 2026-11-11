@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saltmarsh Sessions 2027 – Music Festival</title>
+<meta name="description" content="Two days of live music on the Harbour Meadow. 4–5 September 2027. Lineup and tickets.">
+<style>
+:root{
+  --cream:#fbf3e4; --paper:#fffaf0; --ink:#2a1b3d; --ink-2:#5a4a6e;
+  --tomato:#c93a20; --sun:#f6b53b; --teal:#14767a; --sky:#cfe8e4;
+  --line:rgba(42,27,61,.16);
+  --r-s:10px; --r-m:18px; --r-l:28px;
+  --shadow:0 1px 2px rgba(42,27,61,.08),0 10px 28px -12px rgba(42,27,61,.28);
+  --s1:8px; --s2:16px; --s3:24px; --s4:40px; --s5:72px; --s6:112px;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Avenir Next","Trebuchet MS",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:#fff;padding:8px 14px;border-radius:8px;z-index:10}
+.skip:focus{left:8px}
+
+/* header */
+header.top{display:flex;align-items:center;justify-content:space-between;padding:20px 0}
+.brand{font-family:var(--display);font-weight:700;font-size:1.15rem;text-decoration:none;display:flex;align-items:center;gap:10px}
+.brand i{width:26px;height:26px;border-radius:50%;background:var(--sun);display:inline-block;box-shadow:inset -6px -6px 0 rgba(201,58,32,.25)}
+nav a{margin-left:22px;text-decoration:none;font-weight:600;font-size:.95rem;padding:8px 2px}
+nav a:hover{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
+nav a.btn-s{margin-left:22px;background:var(--ink);color:#fff;padding:9px 18px;border-radius:99px;text-decoration:none}
+nav a.btn-s:hover{background:var(--tomato);text-decoration:none}
+
+/* hero */
+.hero{position:relative;overflow:hidden;background:var(--sun);border-radius:var(--r-l);padding:var(--s5) var(--s4) var(--s4);margin-top:8px;isolation:isolate}
+.sun{position:absolute;right:-90px;top:-110px;width:420px;height:420px;border-radius:50%;background:var(--tomato);z-index:-1}
+.sun::after{content:"";position:absolute;inset:60px;border-radius:50%;background:#e8642b;opacity:.9}
+.waves{position:absolute;left:0;right:0;bottom:0;height:90px;z-index:-1}
+.eyebrow{font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.82rem;margin:0 0 var(--s2)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(3.2rem,10.5vw,8rem);line-height:.9;letter-spacing:-.03em;margin:0 0 var(--s3)}
+h1 em{font-style:italic;font-weight:600;display:block}
+.hero p.lede{font-size:1.25rem;max-width:30ch;margin:0 0 var(--s3);font-weight:500}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding-bottom:70px}
+.btn{display:inline-block;background:var(--ink);color:#fff;font:700 1rem var(--sans);padding:15px 28px;border-radius:99px;text-decoration:none;border:0;cursor:pointer;transition:transform .15s,background .15s}
+.btn:hover{background:var(--tomato);transform:translateY(-2px)}
+.btn:active{transform:none}
+.btn:disabled{background:#8d8499;cursor:not-allowed;transform:none}
+.pill{background:rgba(255,250,240,.75);padding:11px 18px;border-radius:99px;font-weight:600;font-size:.95rem}
+
+section{padding:var(--s5) 0 0}
+h2{font-family:var(--display);font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;letter-spacing:-.02em;margin:0 0 var(--s2)}
+.sec-intro{max-width:52ch;color:var(--ink-2);margin:0 0 var(--s4)}
+
+/* lineup */
+.days{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.day{background:var(--paper);border-radius:var(--r-l);padding:var(--s4) var(--s4) var(--s3);box-shadow:var(--shadow);border-top:10px solid var(--tomato)}
+.day:nth-child(2){border-top-color:var(--teal)}
+.day h3{margin:0;font-size:.85rem;letter-spacing:.14em;text-transform:uppercase}
+.day .date{font-family:var(--display);font-size:1.7rem;font-weight:700;margin:2px 0 var(--s3)}
+.head{font-family:var(--display);font-weight:800;font-size:clamp(2.2rem,4.6vw,3.4rem);line-height:.98;letter-spacing:-.02em;margin:0}
+.head-sub{margin:6px 0 var(--s3);color:var(--ink-2);font-size:.95rem}
+.sub-head{font-family:var(--display);font-weight:700;font-size:1.65rem;line-height:1.1;margin:0}
+ul.acts{list-style:none;margin:var(--s3) 0 0;padding:0}
+ul.acts li{display:flex;gap:16px;align-items:baseline;padding:13px 0;border-top:1px solid var(--line)}
+ul.acts time{font-variant-numeric:tabular-nums;font-weight:700;min-width:3.6em;font-size:.95rem}
+ul.acts b{font-weight:700}
+ul.acts small{display:block;color:var(--ink-2);font-size:.88rem}
+.stage{margin-left:auto;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px;white-space:nowrap;align-self:center}
+.st-main{background:#fbd9d1;color:#7d2412}
+.st-barn{background:var(--sky);color:#0c4c4f}
+
+/* info strip */
+.info{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3)}
+.info div{padding:var(--s3);border-radius:var(--r-m);background:var(--sky)}
+.info h3{margin:0 0 6px;font-family:var(--display);font-size:1.25rem}
+.info p{margin:0;font-size:.97rem}
+
+/* tickets */
+.tickets{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);align-items:stretch}
+.tk{position:relative;background:var(--paper);border-radius:var(--r-m);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
+.tk label{display:flex;flex-direction:column;flex:1;padding:var(--s3);cursor:pointer;border:3px solid transparent;border-radius:var(--r-m)}
+.tk input{position:absolute;opacity:0;pointer-events:none}
+.tk:has(input:checked) label{border-color:var(--ink)}
+.tk:has(input:focus-visible) label{outline:3px solid var(--teal);outline-offset:3px}
+.tk:hover label{background:#fff}
+.tk .tag{align-self:flex-start;background:var(--sun);font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:99px;margin-bottom:12px}
+.tk .tag.none{visibility:hidden}
+.tk h3{font-family:var(--display);font-size:1.5rem;margin:0}
+.tk .price{font-family:var(--display);font-size:3rem;font-weight:800;line-height:1;margin:10px 0 4px;letter-spacing:-.02em}
+.tk .price span{font-size:1rem;font-weight:500;font-family:var(--sans);color:var(--ink-2)}
+.tk ul{list-style:none;padding:0;margin:var(--s2) 0 0;border-top:2px dashed var(--line);padding-top:var(--s2);font-size:.95rem}
+.tk li{padding:3px 0 3px 26px;position:relative}
+.tk li::before{content:"";position:absolute;left:2px;top:.62em;width:11px;height:6px;border-left:2.5px solid var(--teal);border-bottom:2.5px solid var(--teal);transform:rotate(-45deg)}
+.tk .sel{margin-top:auto;padding-top:var(--s2);font-weight:700;font-size:.92rem;color:var(--ink-2)}
+.tk:has(input:checked) .sel{color:var(--tomato)}
+.tk .sel::before{content:"Select";}
+.tk:has(input:checked) .sel::before{content:"Selected \2713";}
+
+.order{margin-top:var(--s3);background:var(--ink);color:#fff;border-radius:var(--r-m);padding:var(--s3);display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center;justify-content:space-between}
+.qty{display:flex;align-items:center;gap:10px}
+.qty button{width:44px;height:44px;border-radius:50%;border:2px solid #fff;background:transparent;color:#fff;font-size:1.4rem;line-height:1;cursor:pointer}
+.qty button:hover{background:#fff;color:var(--ink)}
+.qty output{min-width:2ch;text-align:center;font-weight:800;font-size:1.3rem}
+.total{font-size:.95rem;opacity:.9}
+.total strong{display:block;font-family:var(--display);font-size:2rem;opacity:1;color:var(--sun)}
+.order .btn{background:var(--sun);color:var(--ink)}
+.order .btn:hover{background:#fff}
+.order .btn:disabled{background:#6d6080;color:#d8d0e4}
+.note{font-size:.88rem;color:var(--ink-2);margin:var(--s2) 0 0}
+.msg{margin:var(--s2) 0 0;font-weight:700;color:var(--teal)}
+
+footer{margin-top:var(--s5);background:var(--ink);color:#e9e2f2;padding:var(--s4) 0}
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);justify-content:space-between;font-size:.92rem}
+footer b{font-family:var(--display);font-size:1.2rem;color:#fff}
+
+@media (max-width:860px){
+  .days,.info,.tickets{grid-template-columns:1fr}
+  .hero{padding:var(--s4) var(--s3) var(--s3)}
+  .sun{width:300px;height:300px;right:-110px;top:-100px}
+  nav a:not(.btn-s){display:none}
+  .day{padding:var(--s3)}
+  section{padding-top:var(--s4)}
+  .order{flex-direction:column;align-items:stretch}
+  .order .btn{width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#tickets">Skip to tickets</a>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#"><i aria-hidden="true"></i>Saltmarsh Sessions</a>
+    <nav aria-label="Main">
+      <a href="#lineup">Lineup</a>
+      <a href="#info">Getting here</a>
+      <a class="btn-s" href="#tickets">Tickets</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <div class="hero">
+      <div class="sun" aria-hidden="true"></div>
+      <svg class="waves" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 50 Q 75 20 150 50 T 300 50 T 450 50 T 600 50 T 750 50 T 900 50 T 1050 50 T 1200 50 V90 H0Z" fill="#14767a"/>
+        <path d="M0 68 Q 75 42 150 68 T 300 68 T 450 68 T 600 68 T 750 68 T 900 68 T 1050 68 T 1200 68 V90 H0Z" fill="#2a1b3d"/>
+      </svg>
+      <p class="eyebrow">Sat 4 &amp; Sun 5 September 2027 · Harbour Meadow</p>
+      <h1>Saltmarsh <em>Sessions</em></h1>
+      <p class="lede">Two days of live music on the edge of the estuary. Bring a blanket.</p>
+      <div class="hero-meta">
+        <a class="btn" href="#tickets">Get tickets</a>
+        <span class="pill">14 acts · 2 stages · Gates 12:00</span>
+      </div>
+    </div>
+
+    <section id="lineup" aria-labelledby="lineup-h">
+      <h2 id="lineup-h">The lineup</h2>
+      <p class="sec-intro">Fourteen acts across the Main Stage and the Barn. Set times are provisional and may shift a little.</p>
+      <div class="days">
+        <article class="day">
+          <h3>Saturday</h3>
+          <div class="date">4 September</div>
+          <p class="head">Marigold Tide</p>
+          <p class="head-sub">Headliner · 21:00 · Main Stage</p>
+          <p class="sub-head">The Lowland Choir</p>
+          <ul class="acts">
+            <li><time>12:45</time><span><b>Pip &amp; the Hollows</b><small>Folk-pop duo</small></span><span class="stage st-barn">Barn</span></li>
+            <li><time>14:15</time><span><b>Sorrel Vane</b><small>Soul and strings</small></span><span class="stage st-main">Main</span></li>
+            <li><time>16:00</time><span><b>Brass Knuckle Brass</b><small>Eight-piece street band</small></span><span class="stage st-main">Main</span></li>
+            <li><time>17:45</time><span><b>Nell Okafor</b><small>Piano and voice</small></span><span class="stage st-barn">Barn</span></li>
+            <li><time>19:30</time><span><b>The Lowland Choir</b><small>Choral indie, 20 voices</small></span><span class="stage st-main">Main</span></li>
+          </ul>
+        </article>
+        <article class="day">
+          <h3>Sunday</h3>
+          <div class="date">5 September</div>
+          <p class="head">Dune Static</p>
+          <p class="head-sub">Headliner · 20:45 · Main Stage</p>
+          <p class="sub-head">Rosa Linde Trio</p>
+          <ul class="acts">
+            <li><time>12:30</time><span><b>Kettle Hill Ramblers</b><small>Bluegrass, a bit sideways</small></span><span class="stage st-barn">Barn</span></li>
+            <li><time>14:00</time><span><b>Juniper Hale</b><small>Bedroom pop</small></span><span class="stage st-main">Main</span></li>
+            <li><time>15:45</time><span><b>Tomás Ferreira</b><small>Bossa and tropicália</small></span><span class="stage st-barn">Barn</span></li>
+            <li><time>17:30</time><span><b>Rosa Linde Trio</b><small>Jazz, late-night mood</small></span><span class="stage st-main">Main</span></li>
+            <li><time>19:15</time><span><b>The Wading Birds</b><small>Garage rock</small></span><span class="stage st-main">Main</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="tickets" aria-labelledby="tickets-h">
+      <h2 id="tickets-h">Tickets</h2>
+      <p class="sec-intro">Pick a pass, choose how many, and you are set. Under-12s go free with an adult.</p>
+      <form id="order" novalidate>
+        <fieldset style="border:0;padding:0;margin:0">
+          <legend class="sr" style="position:absolute;left:-999px">Ticket type</legend>
+          <div class="tickets">
+            <div class="tk">
+              <label><input type="radio" name="t" value="day" data-price="45" data-name="Day pass">
+                <span class="tag none">–</span>
+                <h3>Day pass</h3>
+                <div class="price">£45 <span>/ person</span></div>
+                <span style="font-size:.95rem;color:var(--ink-2)">Saturday or Sunday, your choice</span>
+                <ul><li>Entry to both stages</li><li>Free water refills</li><li>Pick your day at the gate</li></ul>
+                <span class="sel"></span></label>
+            </div>
+            <div class="tk">
+              <label><input type="radio" name="t" value="weekend" data-price="79" data-name="Weekend pass" checked>
+                <span class="tag">Best value</span>
+                <h3>Weekend pass</h3>
+                <div class="price">£79 <span>/ person</span></div>
+                <span style="font-size:.95rem;color:var(--ink-2)">Both days, in and out</span>
+                <ul><li>Saturday and Sunday entry</li><li>Re-entry all weekend</li><li>Wristband and festival map</li></ul>
+                <span class="sel"></span></label>
+            </div>
+            <div class="tk">
+              <label><input type="radio" name="t" value="meadow" data-price="149" data-name="Meadow pass">
+                <span class="tag none">–</span>
+                <h3>Meadow pass</h3>
+                <div class="price">£149 <span>/ person</span></div>
+                <span style="font-size:.95rem;color:var(--ink-2)">Both days, front-of-field comfort</span>
+                <ul><li>Everything in Weekend</li><li>Reserved viewing area by the Main Stage</li><li>Fast-lane entry and quieter toilets</li></ul>
+                <span class="sel"></span></label>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="order">
+          <div class="qty" role="group" aria-label="Number of tickets">
+            <button type="button" id="minus" aria-label="Fewer tickets">&minus;</button>
+            <output id="qty" aria-live="polite">2</output>
+            <button type="button" id="plus" aria-label="More tickets">+</button>
+            <span style="margin-left:6px">tickets</span>
+          </div>
+          <div class="total">Your total <strong id="total">£158</strong></div>
+          <button class="btn" type="submit">Reserve tickets</button>
+        </div>
+        <p class="msg" id="msg" role="status"></p>
+        <p class="note">Prices and ticket types are placeholders. Maximum 8 tickets per order.</p>
+      </form>
+    </section>
+
+    <section id="info" aria-labelledby="info-h">
+      <h2 id="info-h">Getting here</h2>
+      <div class="info">
+        <div><h3>Harbour Meadow</h3><p>Quayside Lane, Saltmarsh. A ten-minute walk from the station along the sea wall.</p></div>
+        <div><h3>On the day</h3><p>Gates open at 12:00 and music ends at 22:30. Bring a picnic, a blanket and a refillable bottle.</p></div>
+        <div><h3>Access</h3><p>Step-free paths, a viewing platform and accessible toilets. Email the team to arrange a free carer ticket.</p></div>
+      </div>
+    </section>
+  </main>
+</div>
+<footer>
+  <div class="wrap">
+    <div><b>Saltmarsh Sessions</b><br>Sat 4 &amp; Sun 5 September 2027</div>
+    <div>A fictional festival; all acts, prices and details are placeholders.</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var q=2, qtyEl=document.getElementById('qty'), totalEl=document.getElementById('total'),
+      msg=document.getElementById('msg');
+  function sel(){return document.querySelector('input[name=t]:checked')}
+  function render(){
+    qtyEl.textContent=q;
+    totalEl.textContent='£'+(q*Number(sel().dataset.price));
+    document.getElementById('minus').disabled=q<=1;
+    document.getElementById('plus').disabled=q>=8;
+    msg.textContent='';
+  }
+  document.getElementById('minus').onclick=function(){if(q>1){q--;render()}};
+  document.getElementById('plus').onclick=function(){if(q<8){q++;render()}};
+  document.querySelectorAll('input[name=t]').forEach(function(i){i.onchange=render});
+  document.getElementById('order').onsubmit=function(e){
+    e.preventDefault();
+    msg.textContent=q+' × '+sel().dataset.name+' held for you ('+totalEl.textContent+'). Checkout is not connected in this demo.';
+  };
+  render();
+})();
+</script>
+</body>
+</html>

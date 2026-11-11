@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MetricFlow — Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Instrument Sans"','system-ui','sans-serif'], mono: ['"JetBrains Mono"','ui-monospace','monospace'] },
+  colors: { ink:'#16211f', paper:'#f4f2ec', card:'#fbfaf6', line:'#e3dfd3', mute:'#6b7370', brand:'#0f6b5c', brand2:'#e8f1ee', warm:'#d9822b' } } } }
+</script>
+<style>
+  body{background:#f4f2ec;color:#16211f;font-feature-settings:"tnum"}
+  .grid>*{min-width:0}
+  html,body{overflow-x:hidden}
+  .num{font-variant-numeric:tabular-nums}
+  :focus-visible{outline:2px solid #0f6b5c;outline-offset:2px;border-radius:6px}
+  .bar{transition:height .5s cubic-bezier(.2,.8,.2,1)}
+  .nav-active{background:#0f6b5c;color:#fff}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  .skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;z-index:100;background:#fff;padding:8px 12px;border-radius:8px}
+</style>
+</head>
+<body class="font-sans antialiased">
+<a href="#main" class="skip">Skip to content</a>
+
+<!-- Sidebar -->
+<div id="scrim" class="fixed inset-0 bg-ink/40 z-30 hidden lg:hidden" aria-hidden="true"></div>
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-ink text-[#d7ded9] flex flex-col -translate-x-full lg:translate-x-0 transition-transform duration-200" aria-label="Primary">
+  <div class="h-16 px-5 flex items-center gap-2.5 border-b border-white/10">
+    <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="8" fill="#2fb89c"/><path d="M6 18c3 0 3-8 6-8s3 8 6 8 2-5 4-5" stroke="#16211f" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+    <span class="text-white font-semibold text-lg tracking-tight">MetricFlow</span>
+    <button id="closeNav" class="lg:hidden ml-auto p-2 -mr-2 text-white/70" aria-label="Close navigation">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <nav class="flex-1 p-3 space-y-1 text-[15px]" id="nav">
+    <a href="#overview" aria-current="page" data-title="Overview" class="nav-active flex items-center gap-3 px-3 py-2.5 rounded-lg"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Overview</a>
+    <a href="#analytics" data-title="Analytics" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Analytics</a>
+    <a href="#customers" data-title="Customers" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6M16 4.5a3.5 3.5 0 010 7M21.5 20c0-2.6-1.6-4.6-4-5.5"/></svg>Customers</a>
+    <a href="#reports" data-title="Reports" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>Reports</a>
+    <a href="#settings" data-title="Settings" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/10"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9L7 7M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>Settings</a>
+  </nav>
+  <div class="m-3 p-4 rounded-xl bg-white/5 border border-white/10 text-sm">
+    <p class="text-white font-medium">Q4 goal: $150k</p>
+    <div class="mt-2 h-1.5 rounded-full bg-white/10" role="progressbar" aria-label="Quarterly goal progress" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100"><div class="h-full w-[64%] rounded-full bg-[#2fb89c]"></div></div>
+    <p class="mt-2 text-white/60">64% reached · 23 days left</p>
+  </div>
+</aside>
+
+<div class="lg:pl-64 min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="sticky top-0 z-20 bg-paper/90 backdrop-blur border-b border-line">
+    <div class="h-16 px-4 sm:px-6 lg:px-8 flex items-center gap-3">
+      <button id="openNav" class="lg:hidden p-2 -ml-2 rounded-lg hover:bg-black/5" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <h1 id="pageTitle" class="text-xl font-semibold tracking-tight">Overview</h1>
+
+      <div class="ml-auto flex items-center gap-2 sm:gap-3">
+        <label class="sr-only" for="range">Date range</label>
+        <div class="relative">
+          <select id="range" class="appearance-none bg-card border border-line rounded-lg pl-3 pr-8 py-2 text-sm font-medium cursor-pointer hover:border-brand/40">
+            <option value="12">Last 12 months</option>
+            <option value="6">Last 6 months</option>
+            <option value="3">Last 3 months</option>
+          </select>
+          <svg class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+
+        <div class="relative">
+          <button id="notifBtn" class="relative p-2 rounded-lg hover:bg-black/5" aria-label="Notifications, 3 unread" aria-haspopup="true" aria-expanded="false" aria-controls="notifMenu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9a6 6 0 1112 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9zM10 20a2 2 0 004 0"/></svg>
+            <span id="notifDot" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-warm ring-2 ring-paper"></span>
+          </button>
+          <div id="notifMenu" class="hidden absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-card border border-line rounded-xl shadow-xl p-2" role="menu">
+            <div class="flex items-center justify-between px-3 py-2"><span class="text-sm font-semibold">Notifications</span><button id="markRead" class="text-xs text-brand font-medium hover:underline">Mark all read</button></div>
+            <ul class="text-sm" id="notifList">
+              <li class="px-3 py-2.5 rounded-lg hover:bg-black/5 flex gap-3" data-unread><span class="mt-1.5 w-2 h-2 rounded-full bg-warm shrink-0 dot"></span><span><b>Refund spike</b> on Starter plan, 4 in the last hour.<br><span class="text-mute text-xs">12 min ago</span></span></li>
+              <li class="px-3 py-2.5 rounded-lg hover:bg-black/5 flex gap-3" data-unread><span class="mt-1.5 w-2 h-2 rounded-full bg-warm shrink-0 dot"></span><span><b>Weekly report</b> is ready to download.<br><span class="text-mute text-xs">2 hours ago</span></span></li>
+              <li class="px-3 py-2.5 rounded-lg hover:bg-black/5 flex gap-3" data-unread><span class="mt-1.5 w-2 h-2 rounded-full bg-warm shrink-0 dot"></span><span><b>Northwind Co.</b> upgraded to Enterprise.<br><span class="text-mute text-xs">Yesterday</span></span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="relative">
+          <button id="userBtn" class="flex items-center gap-2 p-1 pr-2 rounded-full hover:bg-black/5" aria-haspopup="true" aria-expanded="false" aria-controls="userMenu">
+            <span class="w-8 h-8 rounded-full bg-brand text-white grid place-items-center text-sm font-semibold" aria-hidden="true">MR</span>
+            <span class="hidden md:block text-left leading-tight"><span class="block text-sm font-medium">Maya Reyes</span><span class="block text-xs text-mute">Head of Growth</span></span>
+          </button>
+          <div id="userMenu" class="hidden absolute right-0 mt-2 w-52 bg-card border border-line rounded-xl shadow-xl p-1.5 text-sm" role="menu">
+            <a href="#settings" role="menuitem" class="block px-3 py-2 rounded-lg hover:bg-black/5">Profile</a>
+            <a href="#settings" role="menuitem" class="block px-3 py-2 rounded-lg hover:bg-black/5">Billing</a>
+            <a href="#" role="menuitem" class="block px-3 py-2 rounded-lg hover:bg-black/5 text-red-700">Sign out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 space-y-6 max-w-[1400px] w-full mx-auto">
+    <div>
+      <p class="text-mute text-sm" id="subtitle">Good morning, Maya. Here is how MetricFlow looked over the last 12 months.</p>
+    </div>
+
+    <!-- KPIs -->
+    <section aria-label="Key metrics" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4" id="kpis"></section>
+
+    <!-- Chart + traffic -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <section class="xl:col-span-2 bg-card border border-line rounded-2xl p-5 sm:p-6" aria-labelledby="revH">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 id="revH" class="font-semibold text-lg">Revenue</h2>
+            <p class="text-sm text-mute"><span id="revTotal" class="num font-medium text-ink"></span> <span id="revSub"></span></p>
+          </div>
+          <div class="inline-flex p-1 bg-paper border border-line rounded-lg text-sm" role="group" aria-label="Chart metric">
+            <button class="seg px-3 py-1 rounded-md font-medium bg-brand text-white" data-m="revenue" aria-pressed="true">Revenue</button>
+            <button class="seg px-3 py-1 rounded-md font-medium text-mute" data-m="orders" aria-pressed="false">Orders</button>
+          </div>
+        </div>
+        <div class="relative mt-6" id="chartWrap">
+          <svg id="chart" viewBox="0 0 720 280" class="w-full h-auto overflow-visible" role="img" aria-label="Monthly revenue chart"></svg>
+          <div id="tip" class="hidden pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full bg-ink text-white text-xs rounded-lg px-2.5 py-1.5 whitespace-nowrap"></div>
+        </div>
+        <details class="mt-4 text-sm"><summary class="cursor-pointer text-mute hover:text-ink w-fit">View data as table</summary>
+          <table class="mt-2 w-full text-left"><caption class="sr-only">Monthly values</caption><thead><tr class="text-mute"><th class="py-1 font-medium">Month</th><th class="py-1 font-medium text-right">Value</th></tr></thead><tbody id="chartTable"></tbody></table>
+        </details>
+      </section>
+
+      <section class="bg-card border border-line rounded-2xl p-5 sm:p-6" aria-labelledby="trH">
+        <h2 id="trH" class="font-semibold text-lg">Traffic sources</h2>
+        <p class="text-sm text-mute">Share of 48.2k sessions</p>
+        <div class="mt-5 flex h-3 rounded-full overflow-hidden gap-0.5" id="stack" aria-hidden="true"></div>
+        <ul class="mt-5 space-y-4" id="sources"></ul>
+      </section>
+    </div>
+
+    <!-- Table + insights -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <section class="xl:col-span-2 bg-card border border-line rounded-2xl" aria-labelledby="txH">
+        <div class="p-5 sm:p-6 pb-3 flex flex-wrap items-center gap-3">
+          <h2 id="txH" class="font-semibold text-lg mr-auto">Recent transactions</h2>
+          <label class="sr-only" for="q">Search transactions</label>
+          <input id="q" type="search" placeholder="Search customer or ID" class="bg-paper border border-line rounded-lg px-3 py-1.5 text-sm w-full sm:w-52">
+          <label class="sr-only" for="status">Filter by status</label>
+          <select id="status" class="bg-paper border border-line rounded-lg px-2 py-1.5 text-sm">
+            <option value="">All statuses</option><option>Paid</option><option>Pending</option><option>Refunded</option><option>Failed</option>
+          </select>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left min-w-[640px]">
+            <caption class="sr-only">Recent transactions</caption>
+            <thead class="text-mute border-y border-line bg-paper/60">
+              <tr>
+                <th scope="col" class="px-5 sm:px-6 py-2.5 font-medium">Customer</th>
+                <th scope="col" class="px-3 py-2.5 font-medium">Plan</th>
+                <th scope="col" class="px-3 py-2.5 font-medium" aria-sort="descending"><button id="sortDate" class="font-medium hover:text-ink">Date <span id="sortArrow" aria-hidden="true">↓</span></button></th>
+                <th scope="col" class="px-3 py-2.5 font-medium">Status</th>
+                <th scope="col" class="px-5 sm:px-6 py-2.5 font-medium text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="tx" class="divide-y divide-line"></tbody>
+          </table>
+        </div>
+        <p id="empty" class="hidden p-6 text-center text-mute text-sm">No transactions match your filters.</p>
+      </section>
+
+      <section class="bg-card border border-line rounded-2xl p-5 sm:p-6" aria-labelledby="inH">
+        <h2 id="inH" class="font-semibold text-lg">Insights</h2>
+        <ul class="mt-4 space-y-4 text-sm">
+          <li class="flex gap-3"><span class="w-8 h-8 shrink-0 rounded-lg bg-brand2 text-brand grid place-items-center" aria-hidden="true"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><p><b>Best month yet.</b> December revenue reached $5.6k, driven by annual-plan upgrades.</p></li>
+          <li class="flex gap-3"><span class="w-8 h-8 shrink-0 rounded-lg bg-brand2 text-brand grid place-items-center" aria-hidden="true"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><p><b>Pricing page converts at 5.1%</b> on mobile, 1.6 points above desktop. Consider mirroring its layout.</p></li>
+          <li class="flex gap-3"><span class="w-8 h-8 shrink-0 rounded-lg bg-[#fbeedd] text-warm grid place-items-center" aria-hidden="true"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 9v4M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.8a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></span><p><b>AOV is slipping</b> 2.1% as more customers pick the Starter plan. A bundle offer could help.</p></li>
+          <li class="flex gap-3"><span class="w-8 h-8 shrink-0 rounded-lg bg-brand2 text-brand grid place-items-center" aria-hidden="true"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6"/></svg></span><p><b>312 new signups</b> this week, 41% from organic search.</p></li>
+        </ul>
+        <button id="dismissInsights" class="mt-5 w-full text-sm font-medium border border-line rounded-lg py-2 hover:bg-paper">View all insights</button>
+        <p id="insightMsg" class="mt-2 text-xs text-mute" role="status"></p>
+      </section>
+    </div>
+
+    <footer class="text-xs text-mute py-4">© 2026 MetricFlow, Inc. · Demo data refreshed 5 minutes ago</footer>
+  </main>
+</div>
+
+<script>
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const fmt$ = n => '$' + n.toLocaleString('en-US');
+
+/* ---------- Data ---------- */
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const revenue = [2860,3120,3340,3010,3690,3980,4120,3870,4450,4890,5320,5640];
+const orders  = [33,36,39,35,43,46,48,45,52,57,62,69];
+let metric = 'revenue', rangeN = 12;
+
+const kpis = [
+  {l:'Total Revenue', v:'$48,290', d:12.8, spark:[3,4,3.5,5,6,6.5,8]},
+  {l:'Active Users', v:'12,840', d:8.2, spark:[4,4.5,5,5,6,6.4,7]},
+  {l:'Conversion Rate', v:'3.24%', d:1.4, spark:[3,3.2,3,3.6,3.8,3.7,4.2]},
+  {l:'Average Order Value', v:'$86.50', d:-2.1, spark:[7,6.8,7.2,6.9,6.6,6.7,6.4]},
+];
+const sources = [
+  {n:'Organic', p:42, c:'#0f6b5c'}, {n:'Direct', p:28, c:'#2fb89c'},
+  {n:'Social', p:18, c:'#d9822b'}, {n:'Referral', p:12, c:'#8a9a96'},
+];
+const txs = [
+  {id:'#MF-10482', n:'Northwind Co.', e:'billing@northwind.io', p:'Enterprise', d:'2026-11-09', s:'Paid', a:1240},
+  {id:'#MF-10481', n:'Elena Vasquez', e:'elena@brightlane.co', p:'Growth', d:'2026-11-09', s:'Paid', a:149},
+  {id:'#MF-10480', n:'Tomás Berger', e:'tomas@berger.studio', p:'Starter', d:'2026-11-08', s:'Pending', a:49},
+  {id:'#MF-10479', n:'Helix Labs', e:'ap@helixlabs.com', p:'Growth', d:'2026-11-08', s:'Paid', a:298},
+  {id:'#MF-10478', n:'Priya Nair', e:'priya@lumencart.com', p:'Starter', d:'2026-11-07', s:'Refunded', a:49},
+  {id:'#MF-10477', n:'Oakridge Dental', e:'office@oakridgedental.com', p:'Growth', d:'2026-11-06', s:'Paid', a:149},
+  {id:'#MF-10476', n:'Jonas Weiß', e:'jonas@weiss-media.de', p:'Starter', d:'2026-11-05', s:'Failed', a:49},
+  {id:'#MF-10475', n:'Cobalt Freight', e:'finance@cobaltfreight.com', p:'Enterprise', d:'2026-11-04', s:'Paid', a:980},
+];
+
+/* ---------- KPIs ---------- */
+function spark(a, up){
+  const w=96,h=32,max=Math.max(...a),min=Math.min(...a);
+  const pts=a.map((v,i)=>`${(i/(a.length-1))*w},${h-2-((v-min)/(max-min||1))*(h-4)}`).join(' ');
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${up?'#0f6b5c':'#b4492f'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+$('#kpis').innerHTML = kpis.map(k=>{
+  const up=k.d>=0;
+  return `<article class="bg-card border border-line rounded-2xl p-5">
+    <h2 class="text-sm text-mute font-medium">${k.l}</h2>
+    <div class="mt-2 flex items-end justify-between gap-2">
+      <p class="text-3xl font-semibold tracking-tight num">${k.v}</p>${spark(k.spark,up)}
+    </div>
+    <p class="mt-3 text-sm flex items-center gap-1.5">
+      <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md font-medium ${up?'bg-brand2 text-brand':'bg-[#f8e6e0] text-[#a13d25]'}">
+        <svg class="w-3 h-3" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">${up?'<path d="M6 2l4.5 6h-9z"/>':'<path d="M6 10L1.5 4h9z"/>'}</svg>
+        <span class="num">${up?'+':'−'}${Math.abs(k.d)}%</span><span class="sr-only">${up?'increase':'decrease'}</span></span>
+      <span class="text-mute">vs prior</span></p>
+  </article>`;}).join('');
+
+/* ---------- Traffic ---------- */
+$('#stack').innerHTML = sources.map(s=>`<div style="width:${s.p}%;background:${s.c}"></div>`).join('');
+$('#sources').innerHTML = sources.map(s=>`<li>
+  <div class="flex justify-between text-sm mb-1.5"><span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm" style="background:${s.c}"></span>${s.n}</span><span class="num font-medium">${s.p}%</span></div>
+  <div class="h-1.5 bg-paper rounded-full"><div class="h-full rounded-full" style="width:${s.p/42*100}%;background:${s.c}"></div></div></li>`).join('');
+
+/* ---------- Chart ---------- */
+function drawChart(){
+  const data = (metric==='revenue'?revenue:orders).slice(-rangeN);
+  const labels = months.slice(-rangeN);
+  const W=720,H=280,pl=44,pr=8,pt=10,pb=28;
+  const max = Math.ceil(Math.max(...data)/ (metric==='revenue'?1000:20))*(metric==='revenue'?1000:20);
+  const bw=(W-pl-pr)/data.length;
+  let g='';
+  for(let i=0;i<=4;i++){
+    const y=pt+(H-pt-pb)*(1-i/4), v=max*i/4;
+    g+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" stroke="#e3dfd3" ${i?'stroke-dasharray="3 4"':''}/>
+        <text x="${pl-8}" y="${y+4}" text-anchor="end" font-size="11" fill="#6b7370" font-family="JetBrains Mono">${metric==='revenue'?(v?'$'+v/1000+'k':'0'):v}</text>`;
+  }
+  const bars = data.map((v,i)=>{
+    const h=(H-pt-pb)*v/max, x=pl+i*bw+bw*.18, w=bw*.64, y=H-pb-h;
+    const last=i===data.length-1;
+    return `<g class="col" data-i="${i}" tabindex="0" role="img" aria-label="${labels[i]}: ${metric==='revenue'?fmt$(v):v+' orders'}">
+      <rect x="${pl+i*bw}" y="${pt}" width="${bw}" height="${H-pt-pb}" fill="transparent"/>
+      <rect class="b" x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="${last?'#0f6b5c':'#9fc9bf'}"/>
+      <text x="${x+w/2}" y="${H-8}" text-anchor="middle" font-size="11" fill="#6b7370" font-family="Instrument Sans">${labels[i]}</text></g>`;
+  }).join('');
+  $('#chart').innerHTML = g+bars;
+  const total = data.reduce((a,b)=>a+b,0);
+  $('#revTotal').textContent = metric==='revenue'?fmt$(total):total.toLocaleString()+' orders';
+  $('#revSub').textContent = '· last '+rangeN+' months';
+  $('#revH').textContent = metric==='revenue'?'Revenue':'Orders';
+  $('#chartTable').innerHTML = data.map((v,i)=>`<tr class="border-t border-line"><td class="py-1">${labels[i]}</td><td class="py-1 text-right num">${metric==='revenue'?fmt$(v):v}</td></tr>`).join('');
+  $('#chart').setAttribute('aria-label', `Monthly ${metric} chart, last ${rangeN} months`);
+  $$('#chart .col').forEach(c=>{
+    const show=()=>{
+      const i=+c.dataset.i, r=c.querySelector('.b'), svg=$('#chart'), wrap=$('#chartWrap');
+      const sc=svg.getBoundingClientRect().width/W;
+      const tip=$('#tip');
+      tip.textContent=`${labels[i]} · ${metric==='revenue'?fmt$(data[i]):data[i]+' orders'}`;
+      tip.style.left=((+r.getAttribute('x')+ +r.getAttribute('width')/2)*sc)+'px';
+      tip.style.top=((+r.getAttribute('y'))*sc-6)+'px';
+      tip.classList.remove('hidden'); r.setAttribute('fill','#0f6b5c');
+    };
+    const hide=()=>{ $('#tip').classList.add('hidden'); const i=+c.dataset.i; c.querySelector('.b').setAttribute('fill', i===data.length-1?'#0f6b5c':'#9fc9bf'); };
+    c.addEventListener('mouseenter',show); c.addEventListener('mouseleave',hide);
+    c.addEventListener('focus',show); c.addEventListener('blur',hide);
+  });
+}
+$$('.seg').forEach(b=>b.addEventListener('click',()=>{
+  metric=b.dataset.m;
+  $$('.seg').forEach(x=>{const on=x===b; x.setAttribute('aria-pressed',on); x.className='seg px-3 py-1 rounded-md font-medium '+(on?'bg-brand text-white':'text-mute');});
+  drawChart();
+}));
+$('#range').addEventListener('change',e=>{
+  rangeN=+e.target.value; drawChart();
+  $('#subtitle').textContent=`Good morning, Maya. Here is how MetricFlow looked over the last ${rangeN} months.`;
+});
+
+/* ---------- Transactions ---------- */
+let sortDesc=true;
+const badge={Paid:'bg-brand2 text-brand',Pending:'bg-[#fbeedd] text-[#9a5a14]',Refunded:'bg-[#ebeae6] text-[#4b5350]',Failed:'bg-[#f8e6e0] text-[#a13d25]'};
+function drawTx(){
+  const q=$('#q').value.trim().toLowerCase(), st=$('#status').value;
+  const rows=txs.filter(t=>(!st||t.s===st)&&(!q||(t.n+t.id+t.e).toLowerCase().includes(q)))
+    .sort((a,b)=>sortDesc?b.d.localeCompare(a.d):a.d.localeCompare(b.d));
+  $('#tx').innerHTML=rows.map(t=>`<tr class="hover:bg-paper/60">
+    <td class="px-5 sm:px-6 py-3"><div class="font-medium">${t.n}</div><div class="text-xs text-mute font-mono">${t.id}</div></td>
+    <td class="px-3 py-3">${t.p}</td>
+    <td class="px-3 py-3 text-mute num whitespace-nowrap">${new Date(t.d+'T12:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td>
+    <td class="px-3 py-3"><span class="px-2 py-0.5 rounded-full text-xs font-medium ${badge[t.s]}">${t.s}</span></td>
+    <td class="px-5 sm:px-6 py-3 text-right font-medium num ${t.s==='Refunded'?'line-through text-mute':''}">${fmt$(t.a)}.00</td></tr>`).join('');
+  $('#empty').classList.toggle('hidden',rows.length>0);
+}
+$('#q').addEventListener('input',drawTx); $('#status').addEventListener('change',drawTx);
+$('#sortDate').addEventListener('click',()=>{sortDesc=!sortDesc;$('#sortArrow').textContent=sortDesc?'↓':'↑';$('#sortDate').closest('th').setAttribute('aria-sort',sortDesc?'descending':'ascending');drawTx();});
+
+/* ---------- Menus & nav ---------- */
+function menu(btn, panel){
+  btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    const open=panel.classList.contains('hidden');
+    $$('[aria-haspopup]').forEach(b=>{b.setAttribute('aria-expanded','false');$('#'+b.getAttribute('aria-controls')).classList.add('hidden');});
+    panel.classList.toggle('hidden',!open); btn.setAttribute('aria-expanded',open);
+  });
+  panel.addEventListener('click',e=>e.stopPropagation());
+}
+menu($('#notifBtn'),$('#notifMenu')); menu($('#userBtn'),$('#userMenu'));
+const closeMenus=()=>$$('[aria-haspopup]').forEach(b=>{b.setAttribute('aria-expanded','false');$('#'+b.getAttribute('aria-controls')).classList.add('hidden');});
+document.addEventListener('click',closeMenus);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenus();toggleNav(false);}});
+$('#markRead').addEventListener('click',()=>{
+  $$('#notifList .dot').forEach(d=>d.classList.add('invisible'));
+  $('#notifDot').classList.add('hidden'); $('#notifBtn').setAttribute('aria-label','Notifications, none unread');
+});
+
+function toggleNav(open){
+  $('#sidebar').classList.toggle('-translate-x-full',!open);
+  $('#scrim').classList.toggle('hidden',!open);
+  $('#openNav').setAttribute('aria-expanded',open);
+}
+$('#openNav').addEventListener('click',e=>{e.stopPropagation();toggleNav(true);});
+$('#closeNav').addEventListener('click',()=>toggleNav(false));
+$('#scrim').addEventListener('click',()=>toggleNav(false));
+$$('#nav a').forEach(a=>a.addEventListener('click',e=>{
+  e.preventDefault();
+  $$('#nav a').forEach(x=>{x.classList.remove('nav-active');x.classList.add('hover:bg-white/10');x.removeAttribute('aria-current');});
+  a.classList.add('nav-active');a.classList.remove('hover:bg-white/10');a.setAttribute('aria-current','page');
+  $('#pageTitle').textContent=a.dataset.title; document.title='MetricFlow — '+a.dataset.title;
+  toggleNav(false);
+}));
+$('#dismissInsights').addEventListener('click',()=>{$('#insightMsg').textContent='You are all caught up: 4 of 4 insights shown.';});
+
+drawChart(); drawTx();
+window.addEventListener('resize',()=>$('#tip').classList.add('hidden'));
+</script>
+</body>
+</html>

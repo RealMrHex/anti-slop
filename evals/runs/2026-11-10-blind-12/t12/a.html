@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riverbend Roots Festival 2027</title>
+<style>
+:root{--bg:#14110f;--panel:#1e1a17;--ink:#f4ece0;--mute:#b3a898;--accent:#f2a33a;--accent2:#e4572e;--line:#3a332d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Georgia,"Iowa Old Style",serif}
+a{color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+nav{border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:14px;padding-bottom:14px;font:600 14px/1 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0}
+nav a{text-decoration:none;color:var(--mute)}nav a:hover{color:var(--accent)}
+header.hero{padding:72px 0 64px;background:radial-gradient(900px 400px at 85% 0,#4a2a14 0,transparent 70%)}
+.kicker{font:600 14px/1 system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(44px,8vw,96px);line-height:.95;margin:16px 0 20px;letter-spacing:-.02em}
+h1 em{color:var(--accent);font-style:italic}
+.lede{max-width:34em;color:var(--mute);font-size:20px}
+.facts{display:flex;flex-wrap:wrap;gap:12px 36px;margin:28px 0;font:15px/1.4 system-ui,sans-serif}
+.facts b{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);font-weight:600}
+.btn{display:inline-block;background:var(--accent);color:#1a1209;padding:14px 26px;border-radius:4px;font:700 15px/1 system-ui,sans-serif;text-decoration:none;border:0;cursor:pointer}
+.btn:hover{background:#ffb853}
+.btn:focus-visible,a:focus-visible{outline:3px solid #fff;outline-offset:3px}
+section{padding:60px 0;border-top:1px solid var(--line)}
+h2{font-size:38px;margin:0 0 8px}
+.sub{color:var(--mute);margin:0 0 32px}
+.tabs{display:flex;gap:8px;margin-bottom:24px}
+.tabs button{font:600 14px system-ui,sans-serif;background:none;color:var(--mute);border:1px solid var(--line);padding:10px 18px;border-radius:999px;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--ink);color:#1a1209;border-color:var(--ink)}
+.day[hidden]{display:none}
+.headliner{font-size:clamp(30px,5vw,52px);line-height:1.05;margin:0 0 6px}
+.slot{display:grid;grid-template-columns:90px 1fr auto;gap:16px;align-items:baseline;padding:16px 0;border-top:1px solid var(--line)}
+.slot time{font:600 14px system-ui,sans-serif;color:var(--accent)}
+.slot strong{font-size:21px;font-weight:normal}
+.slot span{font:13px system-ui,sans-serif;color:var(--mute)}
+.stage{font:600 12px system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:30px 0 0}
+.tickets{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:26px;display:flex;flex-direction:column}
+.card.feat{border-color:var(--accent)}
+.card h3{margin:0;font-size:22px}
+.price{font-size:44px;margin:10px 0;line-height:1}
+.price small{font:14px system-ui,sans-serif;color:var(--mute)}
+.card ul{padding-left:18px;margin:0 0 22px;color:var(--mute);font-size:15px;flex:1}
+.card .btn{text-align:center}
+.card .btn.alt{background:none;color:var(--ink);border:1px solid var(--mute)}
+.note{margin-top:22px;font:14px system-ui,sans-serif;color:var(--mute)}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px}
+.info h3{margin:0 0 6px;font-size:19px;color:var(--accent)}
+.info p{margin:0;color:var(--mute);font-size:16px}
+footer{border-top:1px solid var(--line);padding:32px 0;color:var(--mute);font:14px system-ui,sans-serif}
+@media(max-width:560px){.slot{grid-template-columns:70px 1fr}.slot span{grid-column:2}nav ul{gap:14px}h2{font-size:32px}}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><span>Riverbend Roots</span>
+<ul><li><a href="#lineup">Lineup</a></li><li><a href="#tickets">Tickets</a></li><li><a href="#info">Visit</a></li></ul></div></nav>
+
+<header class="hero"><div class="wrap">
+<div class="kicker">9th annual · Free parking · Family friendly</div>
+<h1>Riverbend <em>Roots</em> Festival</h1>
+<p class="lede">Two days of folk, blues and homegrown rock on the Millrace Park lawn, with 14 local acts, food trucks and a view of the water.</p>
+<div class="facts">
+<div><b>When</b>Sat–Sun, 12–13 June 2027</div>
+<div><b>Where</b>Millrace Park, Riverbend</div>
+<div><b>Gates</b>11:00 am both days</div>
+</div>
+<a class="btn" href="#tickets">Get tickets</a>
+</div></header>
+
+<section id="lineup"><div class="wrap">
+<h2>Lineup</h2>
+<p class="sub">Fourteen artists, two stages. Set times may shift slightly.</p>
+<div class="tabs" role="tablist">
+<button role="tab" id="t1" aria-selected="true" aria-controls="d1">Saturday</button>
+<button role="tab" id="t2" aria-selected="false" aria-controls="d2">Sunday</button>
+</div>
+
+<div class="day" id="d1" role="tabpanel" aria-labelledby="t1">
+<p class="kicker">Headlining</p>
+<h3 class="headliner">The Hollow Pines</h3>
+<p class="sub">Harmony-heavy Americana from just up the valley. 8:30 pm, Main Stage.</p>
+<p class="stage">Main Stage</p>
+<div class="slot"><time>1:00 pm</time><strong>June Calloway</strong><span>Solo folk</span></div>
+<div class="slot"><time>2:30 pm</time><strong>Brass Tacks Brass Band</strong><span>New Orleans-style brass</span></div>
+<div class="slot"><time>4:30 pm</time><strong>Marisol &amp; The Tides</strong><span>Latin soul</span></div>
+<div class="slot"><time>6:30 pm</time><strong>Old Dominion Fiddlers</strong><span>Bluegrass</span></div>
+<div class="slot"><time>8:30 pm</time><strong>The Hollow Pines</strong><span>Americana</span></div>
+<p class="stage">Porch Stage</p>
+<div class="slot"><time>12:30 pm</time><strong>Wren Atwater</strong><span>Singer-songwriter</span></div>
+<div class="slot"><time>3:30 pm</time><strong>Dusty Boots Duo</strong><span>Country blues</span></div>
+<div class="slot"><time>5:30 pm</time><strong>Lantern Lane</strong><span>Indie folk</span></div>
+</div>
+
+<div class="day" id="d2" role="tabpanel" aria-labelledby="t2" hidden>
+<p class="kicker">Headlining</p>
+<h3 class="headliner">Delta Mercy</h3>
+<p class="sub">Electric blues with a horn section. 8:30 pm, Main Stage.</p>
+<p class="stage">Main Stage</p>
+<div class="slot"><time>1:00 pm</time><strong>Riverbend Youth Choir</strong><span>Gospel and spirituals</span></div>
+<div class="slot"><time>2:30 pm</time><strong>Tomas Reyes Trio</strong><span>Flamenco jazz</span></div>
+<div class="slot"><time>4:30 pm</time><strong>The Salt Flats</strong><span>Garage rock</span></div>
+<div class="slot"><time>6:30 pm</time><strong>Nina Okafor</strong><span>Soul and R&amp;B</span></div>
+<div class="slot"><time>8:30 pm</time><strong>Delta Mercy</strong><span>Electric blues</span></div>
+<p class="stage">Porch Stage</p>
+<div class="slot"><time>12:30 pm</time><strong>Pocket Orchestra</strong><span>Chamber folk</span></div>
+<div class="slot"><time>3:30 pm</time><strong>Cedar &amp; Sage</strong><span>Harmony duo</span></div>
+<div class="slot"><time>5:30 pm</time><strong>Hank Voss</strong><span>Honky-tonk</span></div>
+</div>
+</div></section>
+
+<section id="tickets"><div class="wrap">
+<h2>Tickets</h2>
+<p class="sub">Prices include fees. Children 12 and under are free with an adult.</p>
+<div class="tickets">
+<div class="card"><h3>Single Day</h3><div class="price">$45 <small>per day</small></div>
+<ul><li>Entry for Saturday or Sunday</li><li>Both stages</li><li>Free parking</li></ul>
+<a class="btn alt" href="#tickets">Choose a day</a></div>
+<div class="card feat"><h3>Weekend Pass</h3><div class="price">$80 <small>both days</small></div>
+<ul><li>Saturday and Sunday entry</li><li>Re-entry all weekend</li><li>Free festival tote</li></ul>
+<a class="btn" href="#tickets">Buy weekend pass</a></div>
+<div class="card"><h3>Front Porch VIP</h3><div class="price">$165 <small>both days</small></div>
+<ul><li>Reserved seating by the Main Stage</li><li>Shaded lounge and private bar</li><li>Fast-lane entry</li></ul>
+<a class="btn alt" href="#tickets">Go VIP</a></div>
+</div>
+<p class="note">Early-bird pricing ends 1 March. Tickets are non-refundable but transferable. All sales go to the Riverbend Music Education Fund.</p>
+</div></section>
+
+<section id="info"><div class="wrap">
+<h2>Plan your visit</h2><p class="sub">&nbsp;</p>
+<div class="info">
+<div><h3>Getting there</h3><p>Free shuttle from Riverbend Station every 15 minutes. Bike valet at the north gate.</p></div>
+<div><h3>Bring</h3><p>Blankets and low chairs are welcome. Sealed water bottles are fine; no glass or outside alcohol.</p></div>
+<div><h3>Food</h3><p>Twelve local food trucks, a farmers' market tent, and vegetarian options at every stall.</p></div>
+<div><h3>Access</h3><p>Step-free paths, accessible viewing platforms and quiet area. Contact us for assistance.</p></div>
+</div></div></section>
+
+<footer><div class="wrap">Riverbend Roots Festival is a fictional event. Questions: hello@riverbendroots.example</div></footer>
+
+<script>
+const tabs=document.querySelectorAll('[role=tab]');
+tabs.forEach(t=>t.addEventListener('click',()=>{
+tabs.forEach(o=>{const on=o===t;o.setAttribute('aria-selected',on);document.getElementById(o.getAttribute('aria-controls')).hidden=!on});
+}));
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fresh screens blind test</title>
+<style>
+  :root { color-scheme: light dark; --bg:#f4f4f2; --fg:#1a1a1a; --muted:#555; --line:#9a9a96; --panel:#fff; --pick:#1d4ed8; --pick-fg:#fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#161616; --fg:#f2f2f0; --muted:#b0b0ac; --line:#666; --panel:#0c0c0c; --pick:#93b4ff; --pick-fg:#0b1020; } }
+  * { box-sizing: border-box; } body { margin:0; padding:24px; background:var(--bg); color:var(--fg); font:15px/1.5 system-ui,sans-serif; }
+  h1 { font-size:22px; margin:0 0 6px; } h2 { font-size:17px; margin:44px 0 10px; } h2 a { font-weight:400; font-size:13px; color:inherit; margin-left:8px; } p { margin:0 0 10px; color:var(--muted); max-width:78ch; }
+  .pair { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(420px,1fr)); }
+  figure { margin:0; } figcaption { display:flex; justify-content:space-between; padding:4px 0; font-weight:700; font-size:16px; } figcaption a { font-weight:400; font-size:13px; color:inherit; }
+  iframe { width:100%; height:680px; border:1px solid var(--line); background:var(--panel); }
+  .vote { display:flex; gap:8px; align-items:center; justify-content:center; margin-top:10px; } .vote span { color:var(--muted); }
+  button { font:inherit; font-weight:600; min-height:40px; min-width:64px; padding:0 18px; border:1.5px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); cursor:pointer; }
+  button[aria-pressed="true"] { background:var(--pick); border-color:var(--pick); color:var(--pick-fg); } button:disabled { opacity:.5; cursor:not-allowed; }
+  :focus-visible { outline:3px solid var(--pick); outline-offset:2px; }
+  #end { margin-top:56px; padding-top:20px; border-top:1px solid var(--line); } #out { white-space:pre-wrap; font:13px/1.5 ui-monospace,Menlo,monospace; background:var(--panel); border:1px solid var(--line); padding:12px; margin-top:12px; }
+</style></head><body>
+  <h1>Fresh screens blind test</h1>
+  <p>Ten AI-looking screens neither skill has seen. Each was fixed twice by the same small model: once with Anti-Slob, once with the other skill. The order is random and hidden. Pick the better fix for each (or Same), then press Reveal. Open pages full size if the frames are cramped.</p>
+
+  <section class="task" data-task="h11">
+    <h2>1. Parcelry hero <a href="h11/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="h11/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h11/a.html" title="Parcelry hero, option A"></iframe></figure>
+      <figure><figcaption>B <a href="h11/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h11/b.html" title="Parcelry hero, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 1"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="h12">
+    <h2>2. Notewell hero <a href="h12/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="h12/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h12/a.html" title="Notewell hero, option A"></iframe></figure>
+      <figure><figcaption>B <a href="h12/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h12/b.html" title="Notewell hero, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 2"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="h13">
+    <h2>3. Harbor hero <a href="h13/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="h13/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h13/a.html" title="Harbor hero, option A"></iframe></figure>
+      <figure><figcaption>B <a href="h13/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h13/b.html" title="Harbor hero, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 3"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="h14">
+    <h2>4. Loaf hero <a href="h14/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="h14/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h14/a.html" title="Loaf hero, option A"></iframe></figure>
+      <figure><figcaption>B <a href="h14/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h14/b.html" title="Loaf hero, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 4"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="h15">
+    <h2>5. Stride hero <a href="h15/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="h15/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h15/a.html" title="Stride hero, option A"></iframe></figure>
+      <figure><figcaption>B <a href="h15/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h15/b.html" title="Stride hero, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 5"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="d11">
+    <h2>6. Innkeeper bookings <a href="d11/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="d11/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d11/a.html" title="Innkeeper bookings, option A"></iframe></figure>
+      <figure><figcaption>B <a href="d11/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d11/b.html" title="Innkeeper bookings, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 6"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="d12">
+    <h2>7. Hirewell pipeline <a href="d12/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="d12/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d12/a.html" title="Hirewell pipeline, option A"></iframe></figure>
+      <figure><figcaption>B <a href="d12/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d12/b.html" title="Hirewell pipeline, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 7"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="d13">
+    <h2>8. Gridwatch overview <a href="d13/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="d13/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d13/a.html" title="Gridwatch overview, option A"></iframe></figure>
+      <figure><figcaption>B <a href="d13/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d13/b.html" title="Gridwatch overview, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 8"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="d14">
+    <h2>9. Ferry API keys <a href="d14/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="d14/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d14/a.html" title="Ferry API keys, option A"></iframe></figure>
+      <figure><figcaption>B <a href="d14/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d14/b.html" title="Ferry API keys, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 9"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="d15">
+    <h2>10. Studio Nine schedule <a href="d15/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="d15/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d15/a.html" title="Studio Nine schedule, option A"></iframe></figure>
+      <figure><figcaption>B <a href="d15/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d15/b.html" title="Studio Nine schedule, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 10"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+  <div id="end"><button type="button" id="reveal" disabled>Reveal which was which</button> <span id="progress" role="status"></span>
+    <div id="out" hidden></div><p id="hint" hidden>Copy the text above and paste it back to Claude.</p></div>
+<script>
+  const K="fX0iYm9sUy1pdG5BIiA6IkIiICwibGxpa3MgcmVodG8gZWh0IiA6IkEieyA6IjUxZCIgLH0iYm9sUy1pdG5BIiA6IkIiICwibGxpa3MgcmVodG8gZWh0IiA6IkEieyA6IjQxZCIgLH0iYm9sUy1pdG5BIiA6IkIiICwibGxpa3MgcmVodG8gZWh0IiA6IkEieyA6IjMxZCIgLH0ibGxpa3MgcmVodG8gZWh0IiA6IkIiICwiYm9sUy1pdG5BIiA6IkEieyA6IjIxZCIgLH0ibGxpa3MgcmVodG8gZWh0IiA6IkIiICwiYm9sUy1pdG5BIiA6IkEieyA6IjExZCIgLH0iYm9sUy1pdG5BIiA6IkIiICwibGxpa3MgcmVodG8gZWh0IiA6IkEieyA6IjUxaCIgLH0ibGxpa3MgcmVodG8gZWh0IiA6IkIiICwiYm9sUy1pdG5BIiA6IkEieyA6IjQxaCIgLH0ibGxpa3MgcmVodG8gZWh0IiA6IkIiICwiYm9sUy1pdG5BIiA6IkEieyA6IjMxaCIgLH0iYm9sUy1pdG5BIiA6IkIiICwibGxpa3MgcmVodG8gZWh0IiA6IkEieyA6IjIxaCIgLH0iYm9sUy1pdG5BIiA6IkIiICwibGxpa3MgcmVodG8gZWh0IiA6IkEieyA6IjExaCJ7", META={"h11": "Parcelry hero", "h12": "Notewell hero", "h13": "Harbor hero", "h14": "Loaf hero", "h15": "Stride hero", "d11": "Innkeeper bookings", "d12": "Hirewell pipeline", "d13": "Gridwatch overview", "d14": "Ferry API keys", "d15": "Studio Nine schedule"}, picks={};
+  const store={get(){try{return JSON.parse(localStorage.getItem("antislob-fresh-5")||"{}")}catch(e){return {}}},set(v){try{localStorage.setItem("antislob-fresh-5",JSON.stringify(v))}catch(e){}}};
+  Object.assign(picks, store.get());
+  const need=Object.keys(META).length, reveal=document.getElementById("reveal"), progress=document.getElementById("progress");
+  function paint(){ document.querySelectorAll(".task").forEach(s=>s.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(picks[s.dataset.task]===b.dataset.pick))));
+    const n=Object.keys(picks).length; reveal.disabled=n<need; progress.textContent=n+" of "+need+" picks made"; }
+  document.querySelectorAll(".task button").forEach(b=>b.addEventListener("click",()=>{ picks[b.closest(".task").dataset.task]=b.dataset.pick; store.set(picks); paint(); }));
+  reveal.addEventListener("click",()=>{ const key=JSON.parse(atob(K).split("").reverse().join("")); const lines=[]; const tally={};
+    Object.keys(META).forEach((t,i)=>{ const p=picks[t]; const who=p==="same"?"same":key[t][p]; tally[who]=(tally[who]||0)+1;
+      lines.push((i+1)+". "+META[t]+": "+(p==="same"?"same":p+" = "+who)+" (A = "+key[t].A+", B = "+key[t].B+")"); });
+    const out=document.getElementById("out"); out.textContent="Fresh screens blind test, round 5\n\n"+lines.join("\n")+"\n\nTotals: "+Object.entries(tally).map(([k,v])=>k+" "+v).join(", "); out.hidden=false; document.getElementById("hint").hidden=false; });
+  paint();
+</script></body></html>

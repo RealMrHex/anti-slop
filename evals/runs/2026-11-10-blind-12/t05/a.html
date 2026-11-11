@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Weather</title>
+<style>
+:root{
+  --ink:#0f2236; --ink-2:#4a6076; --line:rgba(15,34,54,.10);
+  --card:rgba(255,255,255,.72); --accent:#e8742a;
+  --sky-top:#9cc8ee; --sky-bot:#eef4f8; --bg:#eef4f8;
+  --cool:#3d8fd1; --warm:#f0a03a;
+}
+@media (prefers-color-scheme:dark){
+  :root{--ink:#eaf1f8; --ink-2:#9bb0c4; --line:rgba(255,255,255,.12);
+  --card:rgba(20,36,56,.72); --sky-top:#1d3a5c; --sky-bot:#0c1826; --bg:#0c1826;
+  --cool:#6fb4ee; --warm:#f5b04d;}
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.screen{min-height:100vh;max-width:480px;margin:0 auto;padding:max(20px,env(safe-area-inset-top)) 16px 40px;
+  background:linear-gradient(180deg,var(--sky-top) 0,var(--bg) 380px)}
+header{display:flex;justify-content:space-between;align-items:center}
+.loc{display:flex;align-items:center;gap:6px;font-weight:600;font-size:17px}
+.loc svg,.icon-btn svg{width:18px;height:18px}
+.icon-btn{width:40px;height:40px;border-radius:50%;border:0;background:var(--card);color:var(--ink);
+  display:grid;place-items:center;cursor:pointer}
+.icon-btn:focus-visible,.hour:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hero{text-align:center;padding:18px 0 26px}
+.hero .sun{width:96px;height:96px;margin:0 auto 4px}
+.temp{font-size:104px;font-weight:200;line-height:1;letter-spacing:-4px;padding-left:18px}
+.temp sup{font-size:48px;font-weight:300;vertical-align:top;position:relative;top:10px;letter-spacing:0}
+.cond{font-size:20px;font-weight:600;margin-top:4px}
+.hl{color:var(--ink-2);margin-top:4px;font-size:15px}
+.alert{display:flex;gap:10px;align-items:center;background:var(--card);border-radius:16px;
+  padding:12px 14px;font-size:14px;margin-bottom:14px;border-left:4px solid var(--accent)}
+.alert b{display:block;font-size:14px}
+.alert span{color:var(--ink-2)}
+.card{background:var(--card);border-radius:20px;padding:14px 16px;margin-bottom:14px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:600;margin-bottom:10px}
+.hours{display:flex;gap:6px;overflow-x:auto;margin:0 -6px;padding:0 6px 4px;scrollbar-width:none}
+.hours::-webkit-scrollbar{display:none}
+.hour{flex:0 0 58px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 0;border-radius:14px;font-size:15px;font-weight:600}
+.hour.now{background:var(--ink);color:var(--bg)}
+.hour small{font-size:12px;font-weight:500;opacity:.7}
+.hour svg{width:26px;height:26px}
+.hour .p{font-size:11px;color:var(--cool);font-weight:600;height:13px}
+.hour.now .p{color:inherit}
+.day{display:grid;grid-template-columns:52px 28px 1fr;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line);font-size:16px}
+.day:first-of-type{border-top:0}
+.day svg{width:24px;height:24px}
+.range{display:grid;grid-template-columns:32px 1fr 32px;gap:10px;align-items:center;font-variant-numeric:tabular-nums}
+.range .lo{color:var(--ink-2);text-align:right}
+.range .hi{font-weight:600}
+.bar{height:5px;border-radius:3px;background:var(--line);position:relative}
+.bar i{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,var(--cool),var(--warm))}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid .card{margin:0;min-height:128px;display:flex;flex-direction:column}
+.big{font-size:32px;font-weight:300;margin-top:2px}
+.note{font-size:13px;color:var(--ink-2);margin-top:auto}
+.uvbar{height:5px;border-radius:3px;margin:8px 0;position:relative;background:linear-gradient(90deg,#5cc16b,#f2d34b,#f0883a,#d9453b)}
+.uvbar i{position:absolute;top:-3px;width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid var(--ink);left:42%}
+.updated{text-align:center;color:var(--ink-2);font-size:12px;margin-top:18px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-sun" viewBox="0 0 48 48"><circle cx="24" cy="24" r="9" fill="#f6b73c"/><g stroke="#f6b73c" stroke-width="3" stroke-linecap="round"><path d="M24 4v6M24 38v6M4 24h6M38 24h6M9.9 9.9l4.2 4.2M33.9 33.9l4.2 4.2M9.9 38.1l4.2-4.2M33.9 14.1l4.2-4.2"/></g></symbol>
+    <symbol id="i-pc" viewBox="0 0 48 48"><circle cx="18" cy="17" r="7" fill="#f6b73c"/><path d="M18 3v3M5 17h3M8.8 7.8l2.1 2.1M27.2 7.8l-2.1 2.1" stroke="#f6b73c" stroke-width="2.5" stroke-linecap="round"/><path d="M15 40a8 8 0 0 1 0-16 11 11 0 0 1 21 2 7 7 0 0 1-1 14z" fill="#c9d6e3"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 48 48"><path d="M13 38a9 9 0 0 1 0-18 12 12 0 0 1 23 3 7.5 7.5 0 0 1-1 15z" fill="#aebdcc"/></symbol>
+    <symbol id="i-rain" viewBox="0 0 48 48"><path d="M13 32a8 8 0 0 1 0-16 12 12 0 0 1 23 3 6.5 6.5 0 0 1-1 13z" fill="#9aabbd"/><path d="M16 36l-2 6M25 36l-2 6M34 36l-2 6" stroke="#3d8fd1" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.800 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.5" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<main class="screen">
+  <header>
+    <div class="loc"><svg><use href="#i-pin"/></svg>Lisbon, Portugal</div>
+    <button class="icon-btn" aria-label="Search locations">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+    </button>
+  </header>
+
+  <section class="hero">
+    <svg class="sun"><use href="#i-pc"/></svg>
+    <div class="temp">21<sup>°</sup></div>
+    <div class="cond">Partly cloudy</div>
+    <div class="hl">H 24° &nbsp; L 15° &nbsp;·&nbsp; Feels like 20°</div>
+  </section>
+
+  <div class="alert" role="status">
+    <div><b>Rain expected after 6 PM</b><span>About 4 mm, mostly light. Bring a jacket.</span></div>
+  </div>
+
+  <section class="card" aria-label="Hourly forecast">
+    <div class="label">Hourly</div>
+    <div class="hours" id="hours"></div>
+  </section>
+
+  <section class="card" aria-label="7-day forecast">
+    <div class="label">7-day forecast</div>
+    <div id="days"></div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <div class="label">UV index</div>
+      <div class="big">5</div>
+      <div class="uvbar"><i></i></div>
+      <div class="note">Moderate. Sunscreen advised.</div>
+    </section>
+    <section class="card">
+      <div class="label">Wind</div>
+      <div class="big">14 <span style="font-size:15px">km/h</span></div>
+      <div class="note">From the northwest, gusts to 27 km/h.</div>
+    </section>
+    <section class="card">
+      <div class="label">Humidity</div>
+      <div class="big">62%</div>
+      <div class="note">Dew point is 14°.</div>
+    </section>
+    <section class="card">
+      <div class="label">Sunset</div>
+      <div class="big">5:12 PM</div>
+      <div class="note">Sunrise was 7:03 AM.</div>
+    </section>
+  </div>
+  <p class="updated">Updated 4:40 PM</p>
+</main>
+
+<script>
+const hours=[["Now",21,"pc",0],["5 PM",20,"pc",0],["6 PM",19,"cloud",20],["7 PM",18,"rain",60],["8 PM",17,"rain",70],["9 PM",17,"rain",40],["10 PM",16,"cloud",10],["11 PM",16,"cloud",0]];
+document.getElementById("hours").innerHTML=hours.map((h,i)=>
+ `<div class="hour${i?"":" now"}" tabindex="0"><small>${h[0]}</small><svg><use href="#i-${h[2]}"/></svg><span>${h[1]}°</span><span class="p">${h[3]?h[3]+"%":""}</span></div>`).join("");
+const days=[["Today","pc",15,24],["Wed","rain",14,19],["Thu","cloud",13,18],["Fri","pc",14,21],["Sat","sun",15,25],["Sun","sun",16,27],["Mon","pc",15,23]];
+const MIN=12,MAX=28;
+document.getElementById("days").innerHTML=days.map(d=>{
+ const l=(d[2]-MIN)/(MAX-MIN)*100,w=(d[3]-d[2])/(MAX-MIN)*100;
+ return `<div class="day"><span>${d[0]}</span><svg><use href="#i-${d[1]}"/></svg><div class="range"><span class="lo">${d[2]}°</span><div class="bar"><i style="left:${l}%;width:${w}%"></i></div><span class="hi">${d[3]}°</span></div></div>`}).join("");
+</script>
+</body>
+</html>

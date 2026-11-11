@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wrenchly Jobs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --page: #111113;
+      --sidebar: #09090b;
+      --card: #18181b;
+      --raised: #27272a;
+      --hairline: #27272a;
+      --text: #f4f4f5;
+      --text-2: #d4d4d8;
+      --text-3: #a1a1aa;
+      --edge: #71717a;
+      --accent: #93c5fd;
+      --accent-ink: #09090b;
+      --ok: #4ade80;
+      --wait: #fbbf24;
+      --radius-control: 8px;
+      --radius-card: 12px;
+      --font: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --mono: 'Geist Mono', ui-monospace, Menlo, monospace;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 20px;
+      background: var(--page);
+      color: var(--text-2);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    h1, h2, p { margin: 0; }
+    button, input { font: inherit; color: inherit; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .num { font-variant-numeric: tabular-nums; }
+    .mono { font-family: var(--mono); font-size: 13px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .muted { color: var(--text-3); }
+
+    .app { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--sidebar);
+      border-right: 1px solid var(--hairline);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px; }
+    .brand-mark {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: var(--text); color: var(--sidebar);
+      display: grid; place-items: center; flex: none;
+    }
+    .brand-name { font-size: 16px; font-weight: 500; color: var(--text); }
+    .nav { display: flex; flex-direction: column; gap: 2px; }
+    .nav-label { font-size: 12px; color: var(--text-3); padding: 0 8px 8px; }
+    .nav a {
+      display: flex; align-items: center; gap: 12px;
+      height: 36px; padding: 0 10px; border-radius: var(--radius-control);
+      color: var(--text-3); font-weight: 400;
+      transition: background-color 150ms cubic-bezier(0, 0, 0.2, 1), color 150ms cubic-bezier(0, 0, 0.2, 1);
+    }
+    .nav a:hover { background: var(--card); color: var(--text); }
+    .nav a[aria-current="page"] { background: var(--raised); color: var(--text); font-weight: 500; }
+    .nav svg { width: 18px; height: 18px; flex: none; }
+
+    /* Main */
+    .main { padding: 28px 32px 40px; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+    .header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .title { font-size: 30px; line-height: 36px; font-weight: 500; color: var(--text); letter-spacing: -0.02em; }
+    .subtitle { color: var(--text-3); margin-top: 4px; }
+    .header-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    .search {
+      display: flex; align-items: center; gap: 8px;
+      width: 260px; height: 36px; padding: 0 12px;
+      border: 1px solid var(--edge); border-radius: var(--radius-control);
+      background: var(--card);
+    }
+    .search svg { width: 16px; height: 16px; color: var(--text-3); flex: none; }
+    .search input { background: transparent; border: 0; outline: none; width: 100%; color: var(--text); }
+    .search input::placeholder { color: var(--text-3); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 36px; padding: 0 14px; border-radius: var(--radius-control);
+      border: 1px solid var(--edge); background: transparent; color: var(--text);
+      font-weight: 500; cursor: pointer; white-space: nowrap;
+      transition: background-color 150ms cubic-bezier(0, 0, 0.2, 1);
+    }
+    .btn:hover { background: var(--raised); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    .btn-primary:hover { background: #bfdbfe; border-color: #bfdbfe; }
+    .btn svg { width: 16px; height: 16px; }
+    .btn-block { width: 100%; }
+
+    /* Stats strip */
+    .stats {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+      background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-card);
+    }
+    .stat { padding: 20px 24px; }
+    .stat + .stat { border-left: 1px solid var(--hairline); }
+    .stat-label { color: var(--text-3); }
+    .stat-figure { font-size: 30px; line-height: 36px; font-weight: 500; color: var(--text); margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+    /* Content grid */
+    .content { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; }
+    .panel { background: var(--card); border: 1px solid var(--hairline); border-radius: var(--radius-card); padding: 20px; min-width: 0; }
+    .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+    .h2 { font-size: 18px; line-height: 28px; font-weight: 500; color: var(--text); }
+    .meta { color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    /* Status bar (drawn element built from the table's own rows) */
+    .status-bar { display: flex; height: 6px; border-radius: 3px; overflow: hidden; gap: 2px; margin: 16px 0 12px; }
+    .status-bar span { display: block; }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--text-3); }
+    .legend b { color: var(--text-2); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+    /* Table */
+    .table-wrap { overflow-x: auto; margin: 16px -20px -20px; padding: 0 20px 20px; }
+    table { width: 100%; border-collapse: collapse; min-width: 720px; }
+    th {
+      text-align: left; font-weight: 400; color: var(--text-3);
+      padding: 10px 12px 10px 0; border-bottom: 1px solid var(--hairline); white-space: nowrap;
+    }
+    th.num-col, td.num-col { text-align: right; padding-right: 0; }
+    td {
+      padding: 12px 12px 12px 0; border-bottom: 1px solid var(--hairline);
+      color: var(--text-2); vertical-align: middle;
+    }
+    tbody tr:hover td { background: #1f1f23; }
+    tbody tr:last-child td { border-bottom: 0; }
+    .job-id { color: var(--text-3); }
+    .customer { color: var(--text); font-weight: 500; }
+    .vehicle { color: var(--text-3); font-size: 13px; }
+    .status { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; color: var(--text-2); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+    .dot-ready { background: var(--ok); }
+    .dot-progress { background: var(--text-2); }
+    .dot-wait { background: var(--wait); }
+
+    /* Parts panel */
+    .parts-list { list-style: none; margin: 12px 0 0; padding: 0; }
+    .parts-list li {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 12px 0; border-bottom: 1px solid var(--hairline); color: var(--text-2);
+    }
+    .parts-list li:last-child { border-bottom: 0; }
+    .parts-list .eta { color: var(--text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .parts-foot { margin-top: 16px; }
+
+    /* Responsive */
+    @media (max-width: 1320px) {
+      .content { grid-template-columns: minmax(0, 1fr); }
+      .parts-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); column-gap: 24px; }
+      .parts-list li { border-bottom: 1px solid var(--hairline); }
+      .parts-foot { margin-top: 12px; display: flex; justify-content: flex-end; }
+      .parts-foot .btn { width: auto; }
+    }
+    @media (max-width: 860px) {
+      .app { grid-template-columns: minmax(0, 1fr); }
+      .sidebar {
+        flex-direction: column; border-right: 0; border-bottom: 1px solid var(--hairline);
+        gap: 12px; padding: 12px 16px;
+      }
+      .sidebar .nav-label { display: none; }
+      .nav { flex-direction: row; overflow-x: auto; gap: 4px; }
+      .nav a { flex: none; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .stat:nth-child(3) { border-left: 0; }
+      .stat:nth-child(n+3) { border-top: 1px solid var(--hairline); }
+      .search { width: 100%; }
+      .header-actions { width: 100%; }
+      .main { padding: 20px 16px 32px; }
+      .title { font-size: 24px; line-height: 32px; }
+    }
+    @media (max-width: 480px) {
+      .stat { padding: 16px; }
+      .stat-figure { font-size: 24px; line-height: 32px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Main">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.6-.6-.6-2.6z"/></svg>
+        </div>
+        <span class="brand-name">Wrenchly</span>
+      </div>
+
+      <div>
+        <p class="nav-label">Menu</p>
+        <nav class="nav" aria-label="Sections">
+          <a href="#" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.25 12l8.95-8.96a1.13 1.13 0 0 1 1.6 0L21.75 12M4.5 9.75V20a1.13 1.13 0 0 0 1.13 1.13H9.75v-4.88a1.13 1.13 0 0 1 1.13-1.13h2.25a1.13 1.13 0 0 1 1.13 1.13v4.88h4.12A1.13 1.13 0 0 0 19.5 20V9.75"/></svg>
+            Dashboard
+          </a>
+          <a href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l2-5a2 2 0 0 1 1.9-1.4h10.2A2 2 0 0 1 19 8l2 5v5h-2.5a2 2 0 0 1-4 0h-5a2 2 0 0 1-4 0H3z"/><path d="M3 13h18"/></svg>
+            Vehicles
+          </a>
+          <a href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            Mechanics
+          </a>
+          <a href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg>
+            Invoices
+          </a>
+          <a href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+            Parts
+          </a>
+          <a href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
+            Settings
+          </a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="header">
+        <div>
+          <h1 class="title">Today</h1>
+          <p class="subtitle num">Wed 11 Nov 2026</p>
+        </div>
+        <div class="header-actions">
+          <label class="search">
+            <span class="sr-only">Search jobs</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
+            <input type="search" placeholder="Search jobs" />
+          </label>
+          <button class="btn btn-primary" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            New job
+          </button>
+        </div>
+      </header>
+
+      <section class="stats" aria-label="Today at a glance">
+        <div class="stat">
+          <p class="stat-label">Cars in today</p>
+          <p class="stat-figure">24</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">In progress</p>
+          <p class="stat-figure">11</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">Waiting for parts</p>
+          <p class="stat-figure">6</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">Ready for pickup</p>
+          <p class="stat-figure">9</p>
+        </div>
+      </section>
+
+      <div class="content">
+        <section class="panel" aria-labelledby="jobs-title">
+          <div class="panel-head">
+            <h2 class="h2" id="jobs-title">Today's jobs</h2>
+            <span class="meta">Updated 2:15 pm</span>
+          </div>
+
+          <div class="status-bar" role="img" aria-label="Jobs shown by status: 3 ready, 3 in progress, 2 waiting for parts">
+            <span style="flex:3; background:#a1a1aa"></span>
+            <span style="flex:3; background:#d4d4d8"></span>
+            <span style="flex:2; background:#71717a"></span>
+          </div>
+          <div class="legend" aria-hidden="true">
+            <span>Ready <b>3</b></span>
+            <span>In progress <b>3</b></span>
+            <span>Waiting for parts <b>2</b></span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <caption class="sr-only">Jobs scheduled today</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Job</th>
+                  <th scope="col">Customer and vehicle</th>
+                  <th scope="col">Work</th>
+                  <th scope="col">Mechanic</th>
+                  <th scope="col">Status</th>
+                  <th scope="col" class="num-col">Estimate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="mono job-id">WR-1041</td>
+                  <td><div class="customer">Jordan Blake</div><div class="vehicle">2019 Honda Civic</div></td>
+                  <td>Brake pads!</td>
+                  <td>Marco</td>
+                  <td><span class="status"><span class="dot dot-ready" aria-hidden="true"></span>Ready</span></td>
+                  <td class="num-col num">$320.00</td>
+                </tr>
+                <tr>
+                  <td class="mono job-id">WR-1042</td>
+                  <td><div class="customer">Priya Natarajan</div><div class="vehicle">2016 Ford F-150</div></td>
+                  <td>Oil change + tires</td>
+                  <td>Dev</td>
+                  <td><span class="status"><span class="dot dot-progress" aria-hidden="true"></span>In progress</span></td>
+                  <td class="num-col num">$1,140.00</td>
+                </tr>
+                <tr>
+                  <td class="mono job-id">WR-1043</td>
+                  <td><div class="customer">Sam O'Connor</div><div class="vehicle">2021 Tesla Model 3</div></td>
+                  <td>Suspension check</td>
+                  <td>Ana</td>
+                  <td><span class="status"><span class="dot dot-wait" aria-hidden="true"></span>Waiting for parts</span></td>
+                  <td class="num-col num">$580.50</td>
+                </tr>
+                <tr>
+                  <td class="mono job-id">WR-1044</td>
+                  <td><div class="customer">Lena Fischer</div><div class="vehicle">2014 BMW 320i</div></td>
+                  <td>Engine diagnostic</td>
+                  <td>Marco</td>
+                  <td><span class="status"><span class="dot dot-progress" aria-hidden="true"></span>In progress</span></td>
+                  <td class="num-col num">$212.00</td>
+                </tr>
+                <tr>
+                  <td class="mono job-id">WR-1045</td>
+                  <td><div class="customer">Tomás Ruiz</div><div class="vehicle">2018 Jeep Wrangler</div></td>
+                  <td>Alignment!!</td>
+                  <td>Dev</td>
+                  <td><span class="status"><span class="dot dot-ready" aria-hidden="true"></span>Ready</span></td>
+                  <td class="num-col num">$95.00</td>
+                </tr>
+                <tr>
+                  <td class="mono job-id">WR-1046</td>
+                  <td><div class="customer">Hannah Lee</div><div class="vehicle">2020 Subaru Outback</div></td>
+                  <td>Timing belt</td>
+                  <td>Ana</td>
+                  <td><span class="status"><span class="dot dot-wait" aria-hidden="true"></span>Waiting for parts</span></td>
+                  <td class="num-col num">$860.00</td>
+                </tr>
+                <tr>
+                  <td class="mono job-id">WR-1047</td>
+                  <td><div class="customer">Omar Haddad</div><div class="vehicle">2012 Toyota Camry</div></td>
+                  <td>AC recharge</td>
+                  <td>Marco</td>
+                  <td><span class="status"><span class="dot dot-progress" aria-hidden="true"></span>In progress</span></td>
+                  <td class="num-col num">$150.50</td>
+                </tr>
+                <tr>
+                  <td class="mono job-id">WR-1048</td>
+                  <td><div class="customer">Grace Kim</div><div class="vehicle">2023 Hyundai Kona</div></td>
+                  <td>Battery swap</td>
+                  <td>Dev</td>
+                  <td><span class="status"><span class="dot dot-ready" aria-hidden="true"></span>Ready</span></td>
+                  <td class="num-col num">$189.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside class="panel" aria-labelledby="parts-title">
+          <div class="panel-head">
+            <h2 class="h2" id="parts-title">Parts on order</h2>
+            <span class="meta">5 items</span>
+          </div>
+          <ul class="parts-list">
+            <li><span>All-season tires</span><span class="eta">Tue</span></li>
+            <li><span>Brake rotors (x2)</span><span class="eta">Wed</span></li>
+            <li><span>Timing belt kit</span><span class="eta">12 Nov</span></li>
+            <li><span>12V battery</span><span class="eta">Thu</span></li>
+            <li><span>AC compressor</span><span class="eta">14 Nov</span></li>
+          </ul>
+          <div class="parts-foot">
+            <button class="btn btn-block" type="button">Track all parts</button>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

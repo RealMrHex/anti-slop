@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Readwell Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Newsreader:wght@500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #161513;
+    --side: #121110;
+    --card: #1c1a18;
+    --raised: #262421;
+    --raised-hover: #2e2c28;
+    --hair: rgba(239, 233, 222, 0.08);
+    --text: #efe9de;
+    --text2: #aaa398;
+    --muted: #8a847a;
+    --accent: #e9a25b;
+    --pos: #4cc38a;
+    --bar: #6b655c;
+    --ink: #161513;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Instrument Sans", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .app { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  .side {
+    width: 240px;
+    flex: none;
+    background: var(--side);
+    border-right: 1px solid var(--hair);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .brand {
+    font-family: "Newsreader", Georgia, serif;
+    font-size: 20px;
+    line-height: 24px;
+    padding: 0 8px;
+  }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 8px;
+    color: var(--text2);
+    text-decoration: none;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .nav a:hover { background: var(--raised); color: var(--text); }
+  .nav a[aria-current] {
+    background: var(--raised);
+    color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  .i {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .nav a[aria-current] .i { stroke: var(--text2); }
+
+  /* Main */
+  main {
+    flex: 1;
+    min-width: 0;
+    max-width: 1440px;
+    padding: 28px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .top {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  h1 {
+    font-family: "Newsreader", Georgia, serif;
+    font-size: 36px;
+    line-height: 1.15;
+    font-weight: 500;
+  }
+  .sub { color: var(--text2); margin-top: 4px; }
+  .actions { display: flex; gap: 8px; align-items: center; }
+
+  .input {
+    width: 220px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    background: var(--card);
+    border: 1px solid var(--hair);
+    color: var(--text);
+  }
+  .input::placeholder { color: var(--muted); }
+
+  .btn {
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 10px;
+    background: var(--raised);
+    border: 1px solid var(--hair);
+    color: var(--text);
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 150ms var(--ease);
+  }
+  .btn:hover { background: var(--raised-hover); }
+  .btn.primary {
+    background: var(--text);
+    border-color: transparent;
+    color: var(--ink);
+  }
+  .btn.primary:hover { background: #ffffff; }
+
+  .range { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .range .label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    margin-right: 8px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 14px;
+    padding: 20px;
+  }
+  .meta { color: var(--muted); font-size: 13px; }
+  .num { font-variant-numeric: tabular-nums; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 12px; color: var(--muted); }
+  .pos { color: var(--pos); }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .stat .label { color: var(--text2); font-size: 13px; }
+  .stat .fig {
+    margin-top: 12px;
+    font-size: 32px;
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .chg {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .chg span:first-child { color: var(--pos); }
+
+  /* Chart and sources */
+  .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+  .head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  h2 { font-size: 15px; font-weight: 500; }
+  .chart { margin-top: 16px; }
+  .chart svg { display: block; width: 100%; height: 280px; }
+  .axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .src { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+  .src .line { display: flex; justify-content: space-between; gap: 12px; }
+  .src .pct { color: var(--text2); font-variant-numeric: tabular-nums; }
+  .track { height: 4px; border-radius: 2px; background: var(--raised); margin-top: 8px; overflow: hidden; }
+  .track i { display: block; height: 100%; border-radius: 2px; background: var(--bar); }
+
+  /* Table */
+  .tablewrap { overflow-x: auto; margin-top: 12px; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    text-align: left;
+    padding: 8px 16px 8px 0;
+  }
+  td {
+    height: 40px;
+    padding: 0 16px 0 0;
+    border-top: 1px solid var(--hair);
+    white-space: nowrap;
+  }
+  td.dt { color: var(--text2); }
+  .r { text-align: right; font-variant-numeric: tabular-nums; }
+  th:last-child, td:last-child { padding-right: 0; }
+
+  @media (max-width: 900px) {
+    .app { flex-direction: column; }
+    .side { width: 100%; }
+    main { padding: 24px 16px; }
+    .top { flex-direction: column; align-items: flex-start; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand">Readwell</div>
+    <nav class="nav" aria-label="Main">
+      <a href="#" aria-current="page">
+        <svg class="i" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+        Analytics
+      </a>
+      <a href="#">
+        <svg class="i" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        Issues
+      </a>
+      <a href="#">
+        <svg class="i" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Subscribers
+      </a>
+      <a href="#">
+        <svg class="i" viewBox="0 0 24 24"><rect width="18" height="7" x="3" y="3" rx="1"/><rect width="9" height="7" x="3" y="14" rx="1"/><rect width="5" height="7" x="16" y="14" rx="1"/></svg>
+        Templates
+      </a>
+      <a href="#">
+        <svg class="i" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+        Automations
+      </a>
+      <a href="#">
+        <svg class="i" viewBox="0 0 24 24"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg>
+        Settings
+      </a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="top">
+      <div>
+        <h1>Analytics</h1>
+        <p class="sub">How readers respond to your issues</p>
+      </div>
+      <div class="actions">
+        <input class="input" type="text" placeholder="Search" aria-label="Search">
+        <button class="btn">Boost</button>
+      </div>
+    </header>
+
+    <div class="range">
+      <span class="label">
+        <svg class="i" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+        Date range
+      </span>
+      <button class="btn">Last 12 weeks</button>
+      <button class="btn">Aug 16 to Nov 8, 2026</button>
+      <button class="btn primary">Apply</button>
+    </div>
+
+    <section class="stats">
+      <div class="card stat">
+        <p class="label">Subscribers</p>
+        <p class="fig">48,210</p>
+        <p class="chg"><span>+12%</span> <span>vs previous period</span></p>
+      </div>
+      <div class="card stat">
+        <p class="label">Open rate</p>
+        <p class="fig">41.7%</p>
+        <p class="chg"><span>+3.2 pts</span> <span>vs previous period</span></p>
+      </div>
+      <div class="card stat">
+        <p class="label">Click rate</p>
+        <p class="fig">6.9%</p>
+        <p class="chg"><span>+0.8 pts</span> <span>vs previous period</span></p>
+      </div>
+      <div class="card stat">
+        <p class="label">Unsubscribes</p>
+        <p class="fig">0.4%</p>
+        <p class="chg"><span>-0.1 pts</span> <span>vs previous period</span></p>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <div class="head">
+          <h2>Subscriber growth</h2>
+          <span class="meta">Last 12 weeks</span>
+        </div>
+        <div class="chart">
+          <svg id="growth" role="img" aria-label="Subscriber growth over 12 weeks, rising to 48,210"></svg>
+          <div class="axis mono"><span>Aug 16</span><span>Nov 8</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="head">
+          <h2>Top traffic sources</h2>
+          <span class="meta">Share of traffic</span>
+        </div>
+        <div class="src">
+          <div class="row">
+            <div class="line"><span>Google Search</span><span class="pct">38%</span></div>
+            <div class="track"><i style="width:100%"></i></div>
+          </div>
+          <div class="row">
+            <div class="line"><span>Instagram</span><span class="pct">24.5%</span></div>
+            <div class="track"><i style="width:64.5%"></i></div>
+          </div>
+          <div class="row">
+            <div class="line"><span>X / Twitter</span><span class="pct">17%</span></div>
+            <div class="track"><i style="width:44.7%"></i></div>
+          </div>
+          <div class="row">
+            <div class="line"><span>Direct and email</span><span class="pct">12.3%</span></div>
+            <div class="track"><i style="width:32.4%"></i></div>
+          </div>
+          <div class="row">
+            <div class="line"><span>Referrals</span><span class="pct">8.2%</span></div>
+            <div class="track"><i style="width:21.6%"></i></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="head">
+        <h2>Recent issues</h2>
+        <button class="btn" style="height:32px;padding:0 12px;">View all</button>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Sent</th>
+              <th class="r">Opens</th>
+              <th class="r">Clicks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>You won't believe issue <span class="mono">#48</span></td><td class="dt">Nov 3, 2026</td><td class="r">19,840</td><td class="r">2,311</td></tr>
+            <tr><td>10 hacks to 10x your reach</td><td class="dt">Oct 27, 2026</td><td class="r">18,205</td><td class="r">1,987</td></tr>
+            <tr><td>Our biggest update yet</td><td class="dt">Oct 20, 2026</td><td class="r">17,612</td><td class="r">1,740</td></tr>
+            <tr><td>Genius idea, seriously</td><td class="dt">Oct 13, 2026</td><td class="r">16,990</td><td class="r">1,502</td></tr>
+            <tr><td>#1 newsletter platform</td><td class="dt">Oct 6, 2026</td><td class="r">15,430</td><td class="r">1,388</td></tr>
+            <tr><td>Don't miss this</td><td class="dt">Sep 29, 2026</td><td class="r">14,075</td><td class="r">1,219</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+</div>
+
+<script>
+(function () {
+  var svg = document.getElementById('growth');
+  var NS = 'http://www.w3.org/2000/svg';
+  var W = 680, H = 280, padX = 12, padT = 40, base = 240;
+  var values = [38, 44, 41, 52, 58, 55, 63, 70, 66, 78, 84, 92];
+  var step = (W - padX * 2) / (values.length - 1);
+  var pts = values.map(function (v, i) {
+    return [padX + i * step, base - (v / 100) * (base - padT)];
+  });
+
+  function smooth(p) {
+    var d = 'M' + p[0][0].toFixed(1) + ',' + p[0][1].toFixed(1);
+    for (var i = 0; i < p.length - 1; i++) {
+      var p0 = p[i - 1] || p[i], p1 = p[i], p2 = p[i + 1], p3 = p[i + 2] || p2;
+      var c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
+      var c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
+      d += ' C' + c1x.toFixed(1) + ',' + c1y.toFixed(1) + ' ' + c2x.toFixed(1) + ',' + c2y.toFixed(1) + ' ' + p2[0].toFixed(1) + ',' + p2[1].toFixed(1);
+    }
+    return d;
+  }
+
+  function el(name, attrs, text) {
+    var n = document.createElementNS(NS, name);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text) n.textContent = text;
+    svg.appendChild(n);
+    return n;
+  }
+
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+
+  [25, 50, 75].forEach(function (p) {
+    var y = base - (p / 100) * (base - padT);
+    el('line', { x1: padX, x2: W - padX, y1: y, y2: y, stroke: 'rgba(239,233,222,0.06)', 'stroke-width': 1 });
+  });
+  el('line', { x1: padX, x2: W - padX, y1: base, y2: base, stroke: 'rgba(239,233,222,0.12)', 'stroke-width': 1 });
+
+  var line = smooth(pts);
+  var last = pts[pts.length - 1];
+  var first = pts[0];
+  el('path', {
+    d: line + ' L' + last[0] + ',' + base + ' L' + first[0] + ',' + base + ' Z',
+    fill: '#e9a25b',
+    'fill-opacity': 0.12
+  });
+  el('path', {
+    d: line,
+    fill: 'none',
+    stroke: '#e9a25b',
+    'stroke-width': 2,
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round'
+  });
+  el('circle', { cx: last[0], cy: last[1], r: 5, fill: '#e9a25b', stroke: '#1c1a18', 'stroke-width': 2 });
+  el('text', {
+    x: last[0],
+    y: last[1] - 16,
+    'text-anchor': 'end',
+    fill: '#efe9de',
+    'font-family': 'JetBrains Mono, ui-monospace, monospace',
+    'font-size': 13,
+    'font-weight': 500
+  }, '48,210');
+})();
+</script>
+</body>
+</html>

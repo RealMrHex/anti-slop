@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stackhost Billing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep: #07080d;
+    --bg: #0b0d14;
+    --card: #11141c;
+    --raised: #1a1e28;
+    --line: rgba(238, 240, 245, 0.08);
+    --text: #eef0f5;
+    --text2: #a3a9b8;
+    --muted: #7a8296;
+    --accent: #8ab4ff;
+    --primary: #eef0f5;
+    --on-primary: #0b0d14;
+    --pos: #4cc38a;
+    --neg: #e5484d;
+    --meter: #4a5266;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font-family: 'Geist', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button, input { font: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tn { font-variant-numeric: tabular-nums; }
+  .mono { font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  .app {
+    display: grid;
+    grid-template-columns: 248px 1fr;
+    min-height: 900px;
+  }
+
+  /* Sidebar */
+  .side {
+    background: var(--deep);
+    border-right: 1px solid var(--line);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 32px;
+    padding: 0 10px;
+    margin-bottom: 28px;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .brand svg { color: var(--accent); }
+  .side-label {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--muted);
+    padding: 0 10px;
+    margin: 0 0 8px;
+  }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 8px;
+    color: var(--text2);
+    transition: background-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .nav a svg { flex: none; color: var(--muted); transition: color 160ms var(--ease); }
+  .nav a:hover { background: rgba(238, 240, 245, 0.04); color: var(--text); }
+  .nav a:hover svg { color: var(--text2); }
+  .nav a[aria-current="page"] {
+    background: var(--raised);
+    color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  .nav a[aria-current="page"] svg { color: var(--accent); }
+
+  .help {
+    margin-top: auto;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .help strong { display: block; font-weight: 500; font-size: 14px; }
+  .help p { margin: 4px 0 0; font-size: 13px; line-height: 20px; color: var(--text2); }
+
+  /* Main */
+  .main {
+    padding: 28px 40px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+  }
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 36px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .sub { margin: 4px 0 0; font-size: 14px; color: var(--text2); }
+  .tools { display: flex; align-items: center; gap: 12px; }
+  .search { position: relative; }
+  .search svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .search input {
+    width: 240px;
+    height: 36px;
+    padding: 0 12px 0 34px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--text);
+    outline: none;
+  }
+  .search input::placeholder { color: var(--muted); }
+  .search input:focus { border-color: rgba(138, 180, 255, 0.5); }
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--raised);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+  }
+
+  .row { display: grid; gap: 20px; }
+  .row-a { grid-template-columns: 5fr 7fr; }
+  .row-b { grid-template-columns: 4fr 8fr; }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  h2 {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+  }
+  .label { margin: 0; font-size: 13px; line-height: 20px; color: var(--text2); }
+  .quiet { color: var(--muted); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background-color 160ms var(--ease), color 160ms var(--ease), border-color 160ms var(--ease);
+  }
+  .btn-primary { background: var(--primary); color: var(--on-primary); }
+  .btn-primary:hover { background: #ffffff; }
+  .btn-secondary {
+    background: var(--raised);
+    border-color: var(--line);
+    color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+  .btn-secondary:hover { border-color: rgba(238, 240, 245, 0.16); }
+
+  /* Plan */
+  .plan-top { display: flex; align-items: baseline; gap: 8px; }
+  .plan-name { margin: 12px 0 0; font-size: 28px; line-height: 36px; font-weight: 500; letter-spacing: -0.01em; }
+  .price { margin: 20px 0 0; display: flex; align-items: baseline; gap: 4px; }
+  .price .amount { font-size: 40px; line-height: 44px; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .price .per { font-size: 14px; color: var(--text2); }
+  .renews { margin: 8px 0 0; font-size: 13px; color: var(--text2); }
+  .plan-actions { margin-top: auto; padding-top: 24px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* Usage */
+  .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .meters { margin-top: 20px; display: flex; flex-direction: column; gap: 18px; }
+  .meter-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; font-size: 14px; }
+  .meter-top .val { color: var(--text2); font-variant-numeric: tabular-nums; }
+  .meter-track { height: 6px; border-radius: 999px; background: rgba(238, 240, 245, 0.08); overflow: hidden; }
+  .meter-fill { height: 100%; border-radius: 999px; background: var(--meter); }
+  .meter-fill.focus { background: var(--accent); }
+
+  /* Payment */
+  .pay-card {
+    margin-top: 16px;
+    height: 176px;
+    border-radius: 14px;
+    border: 1px solid rgba(238, 240, 245, 0.1);
+    background: linear-gradient(160deg, #232a3a 0%, #171c28 55%, #12161f 100%);
+    box-shadow: 0 16px 32px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .pay-top { display: flex; align-items: center; justify-content: space-between; }
+  .chip {
+    width: 32px;
+    height: 24px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #c9bb8f, #9b8f66);
+    position: relative;
+    overflow: hidden;
+  }
+  .chip::before, .chip::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(40, 34, 20, 0.45);
+  }
+  .chip::before { top: 8px; }
+  .chip::after { top: 15px; }
+  .brand-mark { font-size: 15px; font-weight: 600; letter-spacing: 0.04em; color: var(--text); }
+  .pay-number { font-size: 16px; letter-spacing: 0.1em; color: var(--text); }
+  .pay-bottom { display: flex; justify-content: space-between; align-items: flex-end; font-size: 12px; color: var(--text2); }
+  .pay-bottom span:first-child { color: var(--muted); margin-right: 6px; }
+  .pay-actions { margin-top: 16px; }
+  .pay-actions .btn { width: 100%; }
+  .billing-email { margin-top: auto; padding-top: 20px; }
+  .billing-email .label { font-size: 12px; color: var(--muted); }
+  .billing-email .value { margin-top: 2px; font-size: 14px; color: var(--text); }
+
+  /* Invoices */
+  .link {
+    font-size: 13px;
+    color: var(--text2);
+    border-radius: 6px;
+    transition: color 160ms var(--ease);
+  }
+  .link:hover { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+  .table-wrap { margin-top: 16px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+  th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    padding: 0 16px 10px 0;
+    white-space: nowrap;
+  }
+  td {
+    height: 44px;
+    padding: 0 16px 0 0;
+    border-top: 1px solid var(--line);
+    white-space: nowrap;
+    color: var(--text);
+  }
+  td.muted { color: var(--text2); }
+  td.num { font-family: 'Geist Mono', ui-monospace, Menlo, monospace; font-size: 13px; color: var(--text2); }
+  th:last-child, td:last-child { padding-right: 0; text-align: right; }
+  .status { display: inline-flex; align-items: center; gap: 8px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
+  .dot.pos { background: var(--pos); }
+  .dot.neg { background: var(--neg); }
+  .dot.idle { background: var(--muted); }
+  .dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text2);
+    font-size: 13px;
+    border-radius: 6px;
+    transition: color 160ms var(--ease);
+  }
+  .dl:hover { color: var(--text); }
+  .dl svg { flex: none; }
+
+  @media (max-width: 960px) {
+    .app { grid-template-columns: 1fr; min-height: 0; }
+    .side { border-right: 0; border-bottom: 1px solid var(--line); }
+    .nav { flex-direction: row; flex-wrap: wrap; }
+    .help { display: none; }
+    .main { padding: 24px 16px 32px; }
+    .head { flex-wrap: wrap; }
+    .tools { width: 100%; }
+    .search, .search input { width: 100%; }
+    .row-a, .row-b { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <rect x="2" y="3" width="16" height="3.5" rx="1.75" fill="currentColor"/>
+        <rect x="2" y="8.25" width="16" height="3.5" rx="1.75" fill="currentColor" opacity="0.6"/>
+        <rect x="2" y="13.5" width="16" height="3.5" rx="1.75" fill="currentColor" opacity="0.3"/>
+      </svg>
+      <span>Stackhost</span>
+    </div>
+
+    <p class="side-label">Settings</p>
+    <nav class="nav" aria-label="Settings">
+      <a href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>
+        Profile
+      </a>
+      <a href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1M10 21v-3h4v3"/></svg>
+        Team
+      </a>
+      <a href="#" aria-current="page">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        Billing
+      </a>
+      <a href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 21 2M18 5l3 3M15 8l2 2"/></svg>
+        API keys
+      </a>
+      <a href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+        Notifications
+      </a>
+      <a href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Security
+      </a>
+      <a href="#">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h8"/></svg>
+        Usage logs
+      </a>
+    </nav>
+
+    <div class="help">
+      <strong>Need help?</strong>
+      <p>Chat with support any time.</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="head">
+      <div>
+        <h1>Billing and plans</h1>
+        <p class="sub">Manage your subscription</p>
+      </div>
+      <div class="tools">
+        <label class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search</span>
+          <input type="text" placeholder="Search">
+        </label>
+        <div class="avatar" aria-label="Account">AR</div>
+      </div>
+    </header>
+
+    <section class="row row-a">
+      <div class="panel">
+        <p class="label">Current plan <span class="quiet">&middot; Most popular</span></p>
+        <h2 class="plan-name">Team</h2>
+        <p class="price"><span class="amount">$49</span><span class="per">/ month</span></p>
+        <p class="renews">Renews 3 December 2026</p>
+        <div class="plan-actions">
+          <button class="btn btn-primary">Upgrade plan</button>
+          <button class="btn btn-secondary">Change plan</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Usage this cycle</h2>
+          <span class="label">Resets in 23 days</span>
+        </div>
+        <div class="meters">
+          <div>
+            <div class="meter-top"><span>Bandwidth</span><span class="val">73%</span></div>
+            <div class="meter-track"><div class="meter-fill" style="width: 73%"></div></div>
+          </div>
+          <div>
+            <div class="meter-top"><span>Storage</span><span class="val">41%</span></div>
+            <div class="meter-track"><div class="meter-fill" style="width: 41%"></div></div>
+          </div>
+          <div>
+            <div class="meter-top"><span>Build minutes</span><span class="val">88%</span></div>
+            <div class="meter-track"><div class="meter-fill focus" style="width: 88%"></div></div>
+          </div>
+          <div>
+            <div class="meter-top"><span>Seats <span class="quiet">(6 of 8)</span></span><span class="val">75%</span></div>
+            <div class="meter-track"><div class="meter-fill" style="width: 75%"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="row row-b">
+      <div class="panel">
+        <h2>Payment method</h2>
+        <div class="pay-card" role="img" aria-label="Visa ending in 4242, expires 08/28">
+          <div class="pay-top">
+            <span class="chip" aria-hidden="true"></span>
+            <span class="brand-mark">VISA</span>
+          </div>
+          <div>
+            <p class="pay-number mono" style="margin:0">&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4242</p>
+            <div class="pay-bottom" style="margin-top:10px">
+              <span>Expires</span><span class="mono" style="color:var(--text2)">08/28</span>
+            </div>
+          </div>
+        </div>
+        <div class="pay-actions">
+          <button class="btn btn-secondary">Update card</button>
+        </div>
+        <div class="billing-email">
+          <p class="label">Billing email</p>
+          <p class="value">billing@acme-team.io</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Invoice history</h2>
+          <a href="#" class="link">View all</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Invoice</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Status</th>
+                <th scope="col"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">File</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Nov 3, 2026</td>
+                <td class="num">INV-2026-0311</td>
+                <td>$49.00</td>
+                <td><span class="status"><span class="dot pos"></span><span class="muted">Paid</span></span></td>
+                <td><a href="#" class="dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Download</a></td>
+              </tr>
+              <tr>
+                <td>Oct 3, 2026</td>
+                <td class="num">INV-2026-1003</td>
+                <td>$49.00</td>
+                <td><span class="status"><span class="dot pos"></span><span class="muted">Paid</span></span></td>
+                <td><a href="#" class="dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Download</a></td>
+              </tr>
+              <tr>
+                <td>Sep 3, 2026</td>
+                <td class="num">INV-2026-0903</td>
+                <td>$49.00</td>
+                <td><span class="status"><span class="dot idle"></span><span class="muted">Pending</span></span></td>
+                <td><a href="#" class="dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Download</a></td>
+              </tr>
+              <tr>
+                <td>Aug 3, 2026</td>
+                <td class="num">INV-2026-0803</td>
+                <td>$49.00</td>
+                <td><span class="status"><span class="dot pos"></span><span class="muted">Paid</span></span></td>
+                <td><a href="#" class="dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Download</a></td>
+              </tr>
+              <tr>
+                <td>Jul 3, 2026</td>
+                <td class="num">INV-2026-0703</td>
+                <td>$49.00</td>
+                <td><span class="status"><span class="dot neg"></span><span>Failed</span></span></td>
+                <td><a href="#" class="dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Download</a></td>
+              </tr>
+              <tr>
+                <td>Jun 3, 2026</td>
+                <td class="num">INV-2026-0603</td>
+                <td>$49.00</td>
+                <td><span class="status"><span class="dot pos"></span><span class="muted">Paid</span></span></td>
+                <td><a href="#" class="dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Download</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+</html>

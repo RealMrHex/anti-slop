@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Olive &amp; Thyme | Book a Table</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --ink: #1f1b16;
+      --ink-2: #5e554a;
+      --ink-3: #6f6759;
+      --line: rgba(31, 27, 22, 0.1);
+      --line-strong: rgba(31, 27, 22, 0.2);
+      --accent: #4d5a2a;
+      --on-accent: #fdfbf7;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 8px;
+    }
+
+    /* Navigation */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px 40px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .brand svg { color: var(--accent); flex: none; }
+
+    .links {
+      display: none;
+      gap: 32px;
+      font-size: 15px;
+      color: var(--ink-2);
+    }
+
+    .links a { transition: color 160ms var(--ease); }
+    .links a:hover { color: var(--ink); }
+
+    @media (min-width: 768px) {
+      .links { display: flex; }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background-color 160ms var(--ease), color 160ms var(--ease), border-color 160ms var(--ease);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--on-accent);
+    }
+    .btn-primary:hover { background: #3f4a21; }
+
+    .btn-secondary {
+      border: 1px solid var(--line-strong);
+      color: var(--ink);
+      background: transparent;
+    }
+    .btn-secondary:hover { background: var(--raised); }
+
+    .btn-small { height: 36px; padding: 0 16px; font-size: 14px; }
+
+    /* Hero */
+    .hero {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 48px 40px 64px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 56px;
+      align-items: center;
+      min-height: calc(100vh - 96px);
+    }
+
+    @media (min-width: 960px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 64px;
+        padding-top: 32px;
+      }
+    }
+
+    .copy {
+      animation: rise 480ms var(--ease) both;
+    }
+
+    .eyebrow {
+      margin: 0 0 16px;
+      font-size: 14px;
+      color: var(--ink-3);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-size: 44px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+
+    @media (min-width: 960px) {
+      h1 { font-size: 68px; }
+    }
+
+    .sub {
+      margin: 24px 0 0;
+      max-width: 36rem;
+      font-size: 19px;
+      line-height: 1.5;
+      color: var(--ink-2);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .facts {
+      margin: 48px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 0;
+      border-top: 1px solid var(--line);
+      max-width: 36rem;
+    }
+
+    .facts > div {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+    }
+
+    .facts dt { color: var(--ink-3); }
+    .facts dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+    /* Product moment: booking preview */
+    .preview {
+      display: flex;
+      justify-content: center;
+      animation: rise 480ms var(--ease) 80ms both;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.06);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .card-meta {
+      margin: 0;
+      font-size: 14px;
+      color: var(--ink-3);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .label {
+      margin: 24px 0 12px;
+      font-size: 13px;
+      color: var(--ink-3);
+    }
+
+    .slots {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .slots li {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+    }
+
+    .slots li.taken {
+      background: var(--raised);
+      color: var(--ink-3);
+      border-color: transparent;
+    }
+
+    .slots li.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--on-accent);
+    }
+
+    .card-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+
+    .card-foot span:last-child {
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .card .btn { width: 100%; margin-top: 16px; }
+
+    /* Footer line */
+    .foot {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 40px 40px;
+      font-size: 14px;
+      color: var(--ink-3);
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 520px) {
+      .nav { padding: 20px 20px; }
+      .hero { padding: 32px 20px 48px; gap: 40px; }
+      .foot { padding: 0 20px 32px; }
+      .facts > div { grid-template-columns: 1fr; gap: 4px; }
+      .slots { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .copy, .preview { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="#">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 18C4 11 9 6 19 4c-1 10-6 15-13 15-1 0-2 0-2-1z" fill="currentColor" />
+        <path d="M6 19 13 12" stroke="#f7f4ee" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+      Olive &amp; Thyme
+    </a>
+    <nav class="links" aria-label="Main">
+      <a href="#">Menu</a>
+      <a href="#">Hours</a>
+      <a href="#">Private dining</a>
+    </nav>
+    <a class="btn btn-primary btn-small" href="#book">Book a table</a>
+  </header>
+
+  <main class="hero">
+    <section class="copy">
+      <p class="eyebrow">Open Tuesday to Sunday</p>
+      <h1>Reserve a table for tonight</h1>
+      <p class="sub">Book online, check tonight's menu, and plan private dining for groups of 8 or more.</p>
+
+      <div id="book" class="actions">
+        <a class="btn btn-primary" href="#">Book a table</a>
+        <a class="btn btn-secondary" href="#">See tonight's menu</a>
+      </div>
+
+      <dl class="facts">
+        <div>
+          <dt>Opening hours</dt>
+          <dd>Tuesday to Sunday, 17:00 to 23:00</dd>
+        </div>
+        <div>
+          <dt>Tonight</dt>
+          <dd>Wednesday 11 November, from 19:00</dd>
+        </div>
+        <div>
+          <dt>Private dining</dt>
+          <dd>Groups of 8 or more</dd>
+        </div>
+      </dl>
+    </section>
+
+    <aside class="preview" aria-label="Table booking preview">
+      <div class="card">
+        <div class="card-head">
+          <p class="card-title">Table for two</p>
+          <p class="card-meta">Wed 11 Nov</p>
+        </div>
+        <p class="label">Available times</p>
+        <ul class="slots">
+          <li>18:00</li>
+          <li>18:30</li>
+          <li class="selected">19:00</li>
+          <li>19:30</li>
+          <li class="taken">20:00</li>
+          <li>20:30</li>
+          <li class="taken">21:00</li>
+          <li>21:30</li>
+        </ul>
+        <div class="card-foot">
+          <span>Selected</span>
+          <span>19:00, table for two</span>
+        </div>
+        <a class="btn btn-primary" href="#">Confirm booking</a>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="foot">Walk-ins welcome</footer>
+</body>
+</html>

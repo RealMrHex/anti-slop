@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wavecast - Podcast hosting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --hairline: rgba(31, 27, 22, 0.08);
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --text-3: #7b7266;
+      --accent: #b45309;
+      --accent-hover: #954207;
+      --wave-idle: #d9d0bf;
+      --positive: #16a34a;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --sans: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+      --serif: 'Instrument Serif', Georgia, serif;
+      --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Header */
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 17px;
+      letter-spacing: -0.01em;
+    }
+
+    .brand svg { display: block; }
+
+    .site-nav {
+      display: flex;
+      gap: 32px;
+      font-size: 15px;
+      color: var(--text-2);
+    }
+
+    .site-nav a { transition: color 160ms var(--ease); }
+    .site-nav a:hover { color: var(--text); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 15px;
+    }
+
+    .log-in {
+      color: var(--text-2);
+      transition: color 160ms var(--ease);
+    }
+    .log-in:hover { color: var(--text); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background-color 160ms var(--ease), color 160ms var(--ease), border-color 160ms var(--ease), transform 160ms var(--ease);
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    .btn-secondary {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--hairline);
+    }
+    .btn-secondary:hover { background: var(--raised); }
+
+    .btn-small { height: 36px; padding: 0 16px; font-size: 14px; }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 64px;
+      align-items: center;
+      padding: 64px 0 96px;
+    }
+
+    .eyebrow {
+      font-size: 13px;
+      color: var(--text-3);
+      margin: 0 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .eyebrow .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(44px, 5.4vw, 68px);
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+    }
+
+    .lede {
+      margin: 24px 0 0;
+      max-width: 36rem;
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--text-2);
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 36px;
+    }
+
+    /* Product preview */
+    .hero > * { min-width: 0; }
+
+    .episode {
+      background: var(--card);
+      border: 1px solid var(--hairline);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.06);
+    }
+
+    .episode-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .episode-meta {
+      margin: 0;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    .episode-title {
+      margin: 6px 0 0;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+
+    .play {
+      flex: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 0;
+      background: var(--text);
+      color: var(--card);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform 160ms var(--ease), background-color 160ms var(--ease);
+    }
+    .play:hover { background: #3a342c; }
+    .play:active { transform: scale(0.97); }
+
+    .wave {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 24px 0 8px;
+    }
+
+    .wave rect { fill: var(--wave-idle); }
+    .wave rect.p { fill: var(--accent); }
+
+    .times {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-3);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .distribution {
+      margin: 24px 0 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--hairline);
+    }
+
+    .distribution li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 48px;
+      border-bottom: 1px solid var(--hairline);
+      font-size: 15px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-2);
+      font-size: 14px;
+    }
+
+    .status .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--positive);
+    }
+
+    .status .dot.muted { background: var(--text-3); }
+
+    /* Features */
+    .features {
+      border-top: 1px solid var(--hairline);
+      padding: 56px 0 96px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 40px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .feature-grid li {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--text-3);
+      flex: none;
+    }
+
+    .feature-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .feature-text {
+      margin: 0;
+      font-size: 15px;
+      color: var(--text-2);
+    }
+
+    /* Entrance */
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .hero-copy, .episode {
+      animation: rise 480ms var(--ease) both;
+    }
+    .episode { animation-delay: 80ms; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 48px;
+        padding: 40px 0 64px;
+      }
+      .feature-grid { grid-template-columns: 1fr; gap: 32px; }
+    }
+
+    @media (max-width: 767px) {
+      .wrap { padding: 0 16px; }
+      .site-nav { display: none; }
+      .log-in { display: none; }
+      .site-header { height: 64px; }
+      .hero-copy h1 { font-size: 44px; }
+      .episode { padding: 20px; }
+      .btn { width: 100%; }
+      .cta-row { flex-direction: column; }
+      .features { padding: 48px 0 64px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Wavecast home">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+          <rect x="2" y="8" width="2.5" height="6" rx="1.25" fill="#1f1b16"/>
+          <rect x="6.5" y="4" width="2.5" height="14" rx="1.25" fill="#b45309"/>
+          <rect x="11" y="6" width="2.5" height="10" rx="1.25" fill="#1f1b16"/>
+          <rect x="15.5" y="9" width="2.5" height="4" rx="1.25" fill="#1f1b16"/>
+        </svg>
+        <span>Wavecast</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Analytics</a>
+        <a href="#">Resources</a>
+      </nav>
+      <div class="header-actions">
+        <a class="log-in" href="#">Log in</a>
+        <a class="btn btn-primary btn-small" href="#">Start free</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span>New: AI show notes</p>
+          <h1>Upload an episode once. It is live on Spotify and Apple Podcasts.</h1>
+          <p class="lede">Upload your episodes once and distribute them to Spotify and Apple Podcasts in seconds.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#">Start publishing</a>
+            <a class="btn btn-secondary" href="#">Watch demo</a>
+          </div>
+        </div>
+
+        <figure class="episode" style="margin: 0;">
+          <div class="episode-head">
+            <div>
+              <p class="episode-meta">Episode 42 &middot; Draft</p>
+              <p class="episode-title">Why we rewrote the intro</p>
+            </div>
+            <button class="play" type="button" aria-label="Play episode preview">
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.8v10.4a.6.6 0 0 0 .9.5l8.4-5.2a.6.6 0 0 0 0-1L3.9 1.3a.6.6 0 0 0-.9.5z" fill="currentColor"/></svg>
+            </button>
+          </div>
+
+          <svg class="wave" viewBox="0 0 480 120" preserveAspectRatio="none" role="img" aria-label="Waveform, about 38 percent played">
+            <rect x="0" y="34.5" width="4" height="51" rx="2" class="p"/>
+        <rect x="8" y="33" width="4" height="54" rx="2" class="p"/>
+        <rect x="16" y="30" width="4" height="60" rx="2" class="p"/>
+        <rect x="24" y="22.5" width="4" height="75" rx="2" class="p"/>
+        <rect x="32" y="34" width="4" height="52" rx="2" class="p"/>
+        <rect x="40" y="34.5" width="4" height="51" rx="2" class="p"/>
+        <rect x="48" y="25" width="4" height="70" rx="2" class="p"/>
+        <rect x="56" y="27.5" width="4" height="65" rx="2" class="p"/>
+        <rect x="64" y="21.5" width="4" height="77" rx="2" class="p"/>
+        <rect x="72" y="22" width="4" height="76" rx="2" class="p"/>
+        <rect x="80" y="34" width="4" height="52" rx="2" class="p"/>
+        <rect x="88" y="25.5" width="4" height="69" rx="2" class="p"/>
+        <rect x="96" y="20" width="4" height="80" rx="2" class="p"/>
+        <rect x="104" y="23" width="4" height="74" rx="2" class="p"/>
+        <rect x="112" y="17" width="4" height="86" rx="2" class="p"/>
+        <rect x="120" y="25.5" width="4" height="69" rx="2" class="p"/>
+        <rect x="128" y="30" width="4" height="60" rx="2" class="p"/>
+        <rect x="136" y="17" width="4" height="86" rx="2" class="p"/>
+        <rect x="144" y="18.5" width="4" height="83" rx="2" class="p"/>
+        <rect x="152" y="19.5" width="4" height="81" rx="2" class="p"/>
+        <rect x="160" y="17.5" width="4" height="85" rx="2" class="p"/>
+        <rect x="168" y="28.5" width="4" height="63" rx="2" class="p"/>
+        <rect x="176" y="23" width="4" height="74" rx="2" class="p"/>
+        <rect x="184" y="13" width="4" height="94" rx="2"/>
+        <rect x="192" y="19.5" width="4" height="81" rx="2"/>
+        <rect x="200" y="17.5" width="4" height="85" rx="2"/>
+        <rect x="208" y="21" width="4" height="78" rx="2"/>
+        <rect x="216" y="28" width="4" height="64" rx="2"/>
+        <rect x="224" y="15" width="4" height="90" rx="2"/>
+        <rect x="232" y="14" width="4" height="92" rx="2"/>
+        <rect x="240" y="21.5" width="4" height="77" rx="2"/>
+        <rect x="248" y="18" width="4" height="84" rx="2"/>
+        <rect x="256" y="25.5" width="4" height="69" rx="2"/>
+        <rect x="264" y="24" width="4" height="72" rx="2"/>
+        <rect x="272" y="11.5" width="4" height="97" rx="2"/>
+        <rect x="280" y="19" width="4" height="82" rx="2"/>
+        <rect x="288" y="22.5" width="4" height="75" rx="2"/>
+        <rect x="296" y="21" width="4" height="78" rx="2"/>
+        <rect x="304" y="28" width="4" height="64" rx="2"/>
+        <rect x="312" y="18.5" width="4" height="83" rx="2"/>
+        <rect x="320" y="13.5" width="4" height="93" rx="2"/>
+        <rect x="328" y="25.5" width="4" height="69" rx="2"/>
+        <rect x="336" y="24" width="4" height="72" rx="2"/>
+        <rect x="344" y="25.5" width="4" height="69" rx="2"/>
+        <rect x="352" y="27.5" width="4" height="65" rx="2"/>
+        <rect x="360" y="16" width="4" height="88" rx="2"/>
+        <rect x="368" y="22" width="4" height="76" rx="2"/>
+        <rect x="376" y="31" width="4" height="58" rx="2"/>
+        <rect x="384" y="26" width="4" height="68" rx="2"/>
+        <rect x="392" y="30" width="4" height="60" rx="2"/>
+        <rect x="400" y="26" width="4" height="68" rx="2"/>
+        <rect x="408" y="19.5" width="4" height="81" rx="2"/>
+        <rect x="416" y="33" width="4" height="54" rx="2"/>
+        <rect x="424" y="35" width="4" height="50" rx="2"/>
+        <rect x="432" y="30.5" width="4" height="59" rx="2"/>
+        <rect x="440" y="34.5" width="4" height="51" rx="2"/>
+        <rect x="448" y="27.5" width="4" height="65" rx="2"/>
+        <rect x="456" y="30" width="4" height="60" rx="2"/>
+        <rect x="464" y="42.5" width="4" height="35" rx="2"/>
+        <rect x="472" y="35.5" width="4" height="49" rx="2"/>
+          </svg>
+
+          <div class="times">
+            <span>12:08</span>
+            <span>38:14</span>
+          </div>
+
+          <ul class="distribution">
+            <li>
+              <span>Spotify</span>
+              <span class="status"><span class="dot" aria-hidden="true"></span>Live</span>
+            </li>
+            <li>
+              <span>Apple Podcasts</span>
+              <span class="status"><span class="dot" aria-hidden="true"></span>Live</span>
+            </li>
+            <li>
+              <span>Show notes</span>
+              <span class="status"><span class="dot muted" aria-hidden="true"></span>Drafted</span>
+            </li>
+          </ul>
+        </figure>
+      </section>
+
+      <section class="features" aria-label="Highlights">
+        <ul class="feature-grid">
+          <li>
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <p class="feature-title">Fast</p>
+            <p class="feature-text">Publish in seconds.</p>
+          </li>
+          <li>
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <p class="feature-title">Secure</p>
+            <p class="feature-text">Your content is kept safe.</p>
+          </li>
+          <li>
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+            <p class="feature-title">Scalable</p>
+            <p class="feature-text">Grows with your show.</p>
+          </li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

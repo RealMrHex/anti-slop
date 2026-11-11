@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ferry API Keys & Webhooks</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at 20% 10%, #4338ca 0%, #1e1b4b 45%, #0f0a2e 100%); min-height: 100vh; }
+  .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(14px); border: 1.5px solid; }
+  .glow { box-shadow: 0 0 28px rgba(139,92,246,0.55); }
+  .pulse-btn { animation: pulse 2s ease-in-out infinite; background-image: linear-gradient(90deg,#f0abfc,#818cf8,#22d3ee); }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 18px rgba(129,140,248,.6); } 50% { box-shadow: 0 0 40px rgba(34,211,238,.9); } }
+  .float { animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  .blob { position: absolute; border-radius: 9999px; filter: blur(90px); opacity: .55; pointer-events: none; }
+</style>
+</head>
+<body class="text-white font-black antialiased relative overflow-hidden">
+<div class="blob w-[420px] h-[420px] bg-fuchsia-500 -top-20 -left-16"></div>
+<div class="blob w-[380px] h-[380px] bg-cyan-400 top-40 right-[-80px]"></div>
+
+<div class="relative flex h-[900px]">
+  <aside class="w-[248px] shrink-0 p-[22px] glass border-r-[1.5px] border-r-violet-400/40 flex flex-col gap-[6px]">
+    <div class="text-[22px] font-black tracking-tight mb-[18px] float">🚢 Ferry</div>
+    <div class="text-[11px] uppercase tracking-[0.22em] text-indigo-200 mb-[4px] font-extrabold">Settings</div>
+    <a class="rounded-xl px-[14px] py-[10px] bg-gradient-to-r from-violet-600 to-fuchsia-600 glow">🔑 API Keys</a>
+    <a class="rounded-xl px-[14px] py-[10px] hover:bg-white/10">🪝 Webhooks</a>
+    <a class="rounded-xl px-[14px] py-[10px] hover:bg-white/10">👥 Team Members</a>
+    <a class="rounded-xl px-[14px] py-[10px] hover:bg-white/10">💳 Billing <span class="ml-1 text-[10px] bg-amber-400 text-black rounded-full px-2 py-[2px]">PRO</span></a>
+    <a class="rounded-xl px-[14px] py-[10px] hover:bg-white/10">🛡️ Security</a>
+    <div class="mt-auto glass rounded-2xl p-[14px] border-emerald-400">
+      <div class="text-[10px] uppercase tracking-[0.2em] text-emerald-300">🚀 NEW</div>
+      <p class="text-[13px] font-semibold mt-[6px] leading-snug">99.999% uptime!! Blazing fast payouts 🔥</p>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-[30px] overflow-y-auto">
+    <header class="flex items-center justify-between gap-6">
+      <h1 class="text-[34px] font-black tracking-tight">✨ API Keys &amp; Webhooks 🔐</h1>
+      <div class="relative w-[320px]">
+        <input placeholder="Search anything..." class="w-full rounded-full bg-white/10 border border-white/20 px-[18px] py-[10px] text-sm font-semibold placeholder:text-indigo-200 focus:outline-none">
+        <span class="absolute right-4 top-[9px]">🔎</span>
+      </div>
+    </header>
+    <p class="text-indigo-100 font-semibold mt-[6px] text-[15px]">Supercharge your integrations!! Manage keys &amp; endpoints in one place 🚀</p>
+
+    <div class="grid grid-cols-[1.6fr_1fr] gap-[22px] mt-[26px]">
+      <section class="glass rounded-3xl border-cyan-400/60 p-[22px] glow">
+        <div class="flex items-center justify-between mb-[14px]">
+          <h2 class="text-[19px] font-black">🗝️ Your Keys</h2>
+          <span class="text-[11px] uppercase tracking-[0.2em] bg-emerald-400/20 text-emerald-300 rounded-full px-[10px] py-[4px]">● 5 Active</span>
+        </div>
+        <table class="w-full text-[13px]">
+          <thead class="text-[10px] uppercase tracking-[0.22em] text-indigo-200">
+            <tr class="text-left"><th class="pb-[10px]">Name</th><th>Prefix</th><th>Created</th><th>Last used</th><th>Permissions</th><th class="text-right">Actions</th></tr>
+          </thead>
+          <tbody class="font-semibold">
+            <tr class="border-t border-white/10"><td class="py-[11px]">🔥 Prod Live</td><td class="font-mono text-cyan-300">fk_live_9Xq2</td><td>03/14/2026</td><td>2 min ago!</td><td><span class="bg-red-500 rounded-full px-2 py-[2px] text-[11px]">ADMIN</span></td><td class="text-right"><button class="text-pink-300 hover:scale-110 transition">🗑️ Revoke</button></td></tr>
+            <tr class="border-t border-white/10"><td class="py-[11px]">⚡ Staging</td><td class="font-mono text-cyan-300">fk_test_4Lp8</td><td>Jan 2, 2026</td><td>Yesterday</td><td><span class="bg-blue-500 rounded-full px-2 py-[2px] text-[11px]">WRITE</span></td><td class="text-right"><button class="text-pink-300 hover:scale-110 transition">🗑️ Revoke</button></td></tr>
+            <tr class="border-t border-white/10"><td class="py-[11px]">🧪 Sandbox QA</td><td class="font-mono text-cyan-300">fk_test_7Hd1</td><td>2026-02-19</td><td>3 days ago</td><td><span class="bg-amber-400 text-black rounded-full px-2 py-[2px] text-[11px]">READ</span></td><td class="text-right"><button class="text-pink-300 hover:scale-110 transition">🗑️ Revoke</button></td></tr>
+            <tr class="border-t border-white/10"><td class="py-[11px]">📊 Analytics</td><td class="font-mono text-cyan-300">fk_live_2Zm7</td><td>12.11.2025</td><td>Never!!</td><td><span class="bg-emerald-500 rounded-full px-2 py-[2px] text-[11px]">PAYOUTS</span></td><td class="text-right"><button class="text-pink-300 hover:scale-110 transition">🗑️ Revoke</button></td></tr>
+            <tr class="border-t border-white/10"><td class="py-[11px]">🤖 Bot Zeta</td><td class="font-mono text-cyan-300">fk_live_5Vb3</td><td>Oct 9, 2025</td><td>1 hr ago</td><td><span class="bg-fuchsia-500 rounded-full px-2 py-[2px] text-[11px]">REFUNDS</span></td><td class="text-right"><button class="text-pink-300 hover:scale-110 transition">🗑️ Revoke</button></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="glass rounded-3xl border-fuchsia-400/60 p-[22px] float">
+        <h2 class="text-[19px] font-black mb-[4px]">➕ Create a New Key!</h2>
+        <p class="text-[12px] text-indigo-200 font-semibold mb-[16px]">Unlock the power of Ferry 💫 Only shown ONCE!</p>
+        <form class="flex flex-col gap-[14px]" onsubmit="event.preventDefault()">
+          <label class="text-[10px] uppercase tracking-[0.22em] text-indigo-200">Key name
+            <input class="mt-[6px] w-full rounded-xl bg-white/10 border border-white/20 px-[14px] py-[10px] text-sm font-semibold focus:outline-none" placeholder="e.g. My Awesome App 🚀">
+          </label>
+          <label class="text-[10px] uppercase tracking-[0.22em] text-indigo-200">Environment
+            <select class="mt-[6px] w-full rounded-xl bg-indigo-900 border border-white/20 px-[14px] py-[10px] text-sm font-semibold focus:outline-none">
+              <option>Live 🔥</option><option>Test 🧪</option>
+            </select>
+          </label>
+          <div class="grid grid-cols-3 gap-[9px] text-[11px] uppercase tracking-[0.12em]">
+            <span class="bg-red-500/80 rounded-lg px-[7px] py-[6px] text-center">Admin</span>
+            <span class="bg-blue-500/80 rounded-lg px-[7px] py-[6px] text-center">Write</span>
+            <span class="bg-amber-400 text-black rounded-lg px-[7px] py-[6px] text-center">Read</span>
+            <span class="bg-emerald-500/80 rounded-lg px-[7px] py-[6px] text-center">Payouts</span>
+            <span class="bg-fuchsia-500/80 rounded-lg px-[7px] py-[6px] text-center">Refunds</span>
+          </div>
+          <button class="pulse-btn rounded-full px-[22px] py-[13px] text-[15px] font-black hover:scale-105 transition-transform duration-200">🚀 CREATE KEY NOW!!! ⚡</button>
+          <p class="text-[11px] text-center text-cyan-200">🏆 Trusted by 10,000+ teams worldwide!</p>
+        </form>
+      </section>
+    </div>
+
+    <div class="grid grid-cols-[1.4fr_1fr] gap-[22px] mt-[24px]">
+      <section class="glass rounded-3xl border-violet-400/60 p-[22px]">
+        <div class="flex items-center justify-between mb-[14px]">
+          <h2 class="text-[19px] font-black">🪝 Webhook Endpoints</h2>
+          <button class="rounded-full bg-gradient-to-r from-pink-500 to-violet-500 px-[16px] py-[8px] text-[12px] font-black hover:scale-110 transition duration-300 shadow-lg shadow-pink-500/40">➕ ADD ENDPOINT</button>
+        </div>
+        <ul class="flex flex-col gap-[12px] text-[13px]">
+          <li class="glass rounded-2xl border-emerald-400/70 p-[14px] float">
+            <div class="flex justify-between"><span class="font-mono text-cyan-300">https://hooks.acme.io/ferry/prod</span><span class="bg-emerald-400 text-black rounded-full px-[10px] py-[3px] text-[11px]">✅ ACTIVE</span></div>
+            <div class="text-indigo-200 mt-[6px] font-semibold">Events: payment.succeeded, refund.created, payout.paid 🎉</div>
+            <div class="text-[12px] text-indigo-300 mt-[4px]">Last delivery: 2026-11-09 · 14:22 ✨</div>
+          </li>
+          <li class="glass rounded-2xl border-amber-400/70 p-[14px]">
+            <div class="flex justify-between"><span class="font-mono text-cyan-300">https://staging.acme.io/hooks/ferry</span><span class="bg-amber-400 text-black rounded-full px-[10px] py-[3px] text-[11px]">⏳ RETRYING</span></div>
+            <div class="text-indigo-200 mt-[6px] font-semibold">Events: payment.failed, dispute.opened ⚠️</div>
+            <div class="text-[12px] text-indigo-300 mt-[4px]">Last delivery: 9 Nov 2026, 3:07 PM 💥</div>
+          </li>
+          <li class="glass rounded-2xl border-rose-400/70 p-[14px]">
+            <div class="flex justify-between"><span class="font-mono text-cyan-300">https://old.acme.io/legacy-hook</span><span class="bg-rose-500 rounded-full px-[10px] py-[3px] text-[11px]">❌ FAILED</span></div>
+            <div class="text-indigo-200 mt-[6px] font-semibold">Events: * (all events!!) 🌍</div>
+            <div class="text-[12px] text-indigo-300 mt-[4px]">Last delivery: 2026/10/28 · 08:41 🕒</div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="glass rounded-3xl border-cyan-400/60 p-[22px]">
+        <h2 class="text-[19px] font-black mb-[14px]">📜 Recent Deliveries</h2>
+        <div class="flex flex-col gap-[8px] text-[12px] font-semibold">
+          <div class="flex justify-between bg-white/5 rounded-xl px-[12px] py-[9px]"><span>🟢 200 · payment.succeeded</span><span class="text-indigo-300">142ms</span></div>
+          <div class="flex justify-between bg-white/5 rounded-xl px-[12px] py-[9px]"><span>🟢 200 · refund.created</span><span class="text-indigo-300">98ms</span></div>
+          <div class="flex justify-between bg-white/5 rounded-xl px-[12px] py-[9px]"><span>🔴 500 · payout.paid</span><span class="text-indigo-300">2.4s</span></div>
+          <div class="flex justify-between bg-white/5 rounded-xl px-[12px] py-[9px]"><span>🟢 200 · payment.succeeded</span><span class="text-indigo-300">117ms</span></div>
+          <div class="flex justify-between bg-white/5 rounded-xl px-[12px] py-[9px]"><span>🟡 429 · dispute.opened</span><span class="text-indigo-300">61ms</span></div>
+          <div class="flex justify-between bg-white/5 rounded-xl px-[12px] py-[9px]"><span>🟢 200 · payment.failed</span><span class="text-indigo-300">203ms</span></div>
+        </div>
+        <p class="mt-[14px] text-[11px] text-center text-fuchsia-200">⭐ 99.99% delivery success — guaranteed!!! ⭐</p>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

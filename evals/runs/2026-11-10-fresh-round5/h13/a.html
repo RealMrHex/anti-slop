@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harbor - Managed Postgres</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #0b0d14;
+    --card: #11141c;
+    --raised: #1a1e28;
+    --line: rgba(238, 240, 245, 0.08);
+    --line-strong: rgba(238, 240, 245, 0.14);
+    --text: #eef0f5;
+    --text-2: #a3a9b8;
+    --text-3: #7a8296;
+    --accent: #5eead4;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--page);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  a, button, summary { transition: color 150ms var(--ease), background-color 150ms var(--ease), border-color 150ms var(--ease); }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  .page { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* Header */
+  .top {
+    height: 64px;
+    border-bottom: 1px solid var(--line);
+  }
+  .top .page {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .brand svg { color: var(--text); }
+  .links {
+    display: flex;
+    gap: 28px;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .links a:hover { color: var(--text); }
+  .links { display: flex; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--text);
+    color: var(--page);
+    border: 1px solid var(--text);
+  }
+  .btn-primary:hover { background: #d7dbe5; border-color: #d7dbe5; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-secondary:hover { background: var(--raised); }
+  .top .btn { height: 36px; padding: 0 16px; }
+
+  .menu { display: none; position: relative; }
+  .menu summary {
+    list-style: none;
+    cursor: pointer;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .menu summary::-webkit-details-marker { display: none; }
+  .menu .links { display: none; }
+  .menu[open] .links {
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: 46px;
+    flex-direction: column;
+    gap: 0;
+    background: var(--card);
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    padding: 6px;
+    min-width: 180px;
+  }
+  .menu[open] .links a { padding: 10px 12px; border-radius: 8px; }
+  .menu[open] .links a:hover { background: var(--raised); }
+
+  /* Hero */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 56px;
+    align-items: center;
+    padding: 96px 0 88px;
+  }
+  .eyebrow {
+    margin: 0 0 20px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  h1 {
+    margin: 0;
+    font-size: 56px;
+    line-height: 1.04;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+  .lede {
+    margin: 24px 0 0;
+    max-width: 34rem;
+    font-size: 18px;
+    line-height: 28px;
+    color: var(--text-2);
+  }
+  .actions {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* The one rich moment: the deploy panel */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    min-width: 0;
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .panel-head .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-2);
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+  }
+  .log {
+    margin: 0;
+    padding: 24px 24px 20px;
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 26px;
+    color: var(--text-2);
+    overflow-x: auto;
+    white-space: pre;
+    font-variant-numeric: tabular-nums;
+  }
+  .log .prompt { color: var(--text-3); }
+  .log .cmd { color: var(--text); }
+  .log .done { color: var(--accent); }
+  .log .muted { color: var(--text-3); }
+  .cursor { color: var(--text); }
+
+  .topology {
+    border-top: 1px solid var(--line);
+    padding: 24px 24px 20px;
+  }
+  .topology svg { display: block; width: 100%; height: auto; }
+  .topology .cap {
+    margin: 12px 0 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  /* Facts row */
+  .facts {
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+    padding: 40px 0 96px;
+  }
+  .fact dt {
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .fact dd {
+    margin: 6px 0 0;
+    font-size: 16px;
+    color: var(--text);
+  }
+
+  .enter { animation: rise 420ms var(--ease) both; }
+  .enter-2 { animation-delay: 60ms; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: minmax(0, 1fr); gap: 48px; padding: 64px 0 64px; }
+    h1 { font-size: 44px; }
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: 0 16px; }
+    .desktop-links { display: none; }
+    .menu { display: block; }
+    .top .btn { display: none; }
+    .hero { padding: 48px 0 48px; gap: 40px; }
+    h1 { font-size: 36px; line-height: 1.08; }
+    .lede { font-size: 16px; line-height: 24px; }
+    .actions .btn { flex: 1 1 auto; }
+    .log { font-size: 13px; line-height: 24px; padding: 20px 16px 16px; }
+    .topology { padding: 20px 16px 16px; }
+    .facts { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 32px 0 64px; }
+    .top .page { gap: 12px; }
+    .top .brand { min-width: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .enter { animation: none; }
+    a, button, summary { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="page">
+    <a class="brand" href="#" aria-label="Harbor home">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <ellipse cx="12" cy="5" rx="7" ry="3"/>
+        <path d="M5 5v14c0 1.66 3.13 3 7 3s7-1.34 7-3V5"/>
+        <path d="M5 12c0 1.66 3.13 3 7 3s7-1.34 7-3"/>
+      </svg>
+      Harbor
+    </a>
+    <details class="menu">
+      <summary>Menu</summary>
+      <nav class="links" aria-label="Main">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Docs</a>
+        <a href="#">Blog</a>
+      </nav>
+    </details>
+    <nav class="links desktop-links" aria-label="Main">
+      <a href="#">Features</a>
+      <a href="#">Pricing</a>
+      <a href="#">Docs</a>
+      <a href="#">Blog</a>
+    </nav>
+    <a class="btn btn-primary" href="#">Start free</a>
+  </div>
+</header>
+
+<main class="page">
+  <section class="hero">
+    <div class="enter">
+      <p class="eyebrow">Managed PostgreSQL</p>
+      <h1>Deploy Postgres with one command</h1>
+      <p class="lede">Daily backups, point-in-time restore and read replicas are on from the first deploy.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#">Deploy now</a>
+        <a class="btn btn-secondary" href="#">Read the docs</a>
+      </div>
+    </div>
+
+    <div class="panel enter enter-2" aria-label="Example deploy output">
+      <div class="panel-head">
+        <span>~/harbor</span>
+        <span class="status"><span class="dot" aria-hidden="true"></span>Live</span>
+      </div>
+      <pre class="log"><span class="prompt">$</span> <span class="cmd">harbor deploy --name my-db</span>
+<span class="muted">→</span> Provisioning cluster <span class="muted">..........</span> <span class="done">done</span>
+<span class="muted">→</span> Backups enabled <span class="muted">(daily, 03:00 UTC)</span>
+<span class="muted">→</span> Replica added <span class="muted">eu-west-1</span>
+<span class="done">Database is live</span> <span class="muted">at 2026-11-10 14:05 UTC</span>
+<span class="prompt">$</span> <span class="cursor">_</span></pre>
+      <div class="topology">
+        <svg viewBox="0 0 560 130" role="img" aria-label="The my-db primary with one read replica in eu-west-1, connected by replication">
+          <rect x="1" y="30" width="184" height="70" rx="10" fill="#1a1e28" stroke="rgba(238,240,245,0.14)"/>
+          <text x="20" y="60" fill="#eef0f5" font-family="Geist, sans-serif" font-size="15" font-weight="500">my-db</text>
+          <text x="20" y="82" fill="#7a8296" font-family="Geist Mono, monospace" font-size="12">primary</text>
+
+          <rect x="375" y="30" width="184" height="70" rx="10" fill="#1a1e28" stroke="rgba(238,240,245,0.14)"/>
+          <text x="394" y="60" fill="#eef0f5" font-family="Geist, sans-serif" font-size="15" font-weight="500">eu-west-1</text>
+          <text x="394" y="82" fill="#7a8296" font-family="Geist Mono, monospace" font-size="12">read replica</text>
+          <circle cx="541" cy="46" r="4" fill="#5eead4"/>
+
+          <line x1="186" y1="65" x2="373" y2="65" stroke="#5eead4" stroke-width="1.5" stroke-dasharray="4 5"/>
+          <text x="280" y="55" text-anchor="middle" fill="#7a8296" font-family="Geist Mono, monospace" font-size="12">replication</text>
+        </svg>
+        <p class="cap">One primary, one replica. Reads can go to the copy.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="facts" aria-label="What every database includes">
+    <div class="fact">
+      <dt>Backups</dt>
+      <dd>Daily at 03:00 UTC</dd>
+    </div>
+    <div class="fact">
+      <dt>Restore</dt>
+      <dd>Point-in-time restore</dd>
+    </div>
+    <div class="fact">
+      <dt>Replicas</dt>
+      <dd>Read replicas from the same deploy</dd>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

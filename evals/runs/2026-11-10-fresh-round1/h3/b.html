@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pingly: uptime monitoring for APIs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0d1014;
+    --surface: #141921;
+    --line: #232a33;
+    --text: #e7ebf0;
+    --text-2: #a7b0bd;
+    --text-3: #7d8694;
+    --accent: #7cc4ff;
+    --accent-hi: #a6d8ff;
+    --accent-ink: #0b1016;
+    --up: #5fd39a;
+    --down: #f0716a;
+    --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --r-control: 8px;
+    --r-card: 12px;
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  * { box-sizing: border-box; }
+  html { color-scheme: dark; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+  .skip {
+    position: absolute; left: 16px; top: -48px;
+    background: var(--accent); color: var(--accent-ink);
+    padding: 8px 12px; border-radius: var(--r-control); font-weight: 500;
+  }
+  .skip:focus { top: 12px; }
+
+  /* Header */
+  .top {
+    border-bottom: 1px solid var(--line);
+  }
+  .top .wrap {
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  }
+  .logo {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+  }
+  .logo-mark {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(124, 196, 255, 0.14);
+  }
+  .links { display: flex; gap: 28px; font-size: 15px; color: var(--text-2); }
+  .links a { transition: color 150ms var(--ease); }
+  .links a:hover { color: var(--text); }
+  .auth { display: flex; align-items: center; gap: 20px; font-size: 15px; }
+  .auth .login { color: var(--text-2); transition: color 150ms var(--ease); }
+  .auth .login:hover { color: var(--text); }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 44px; padding: 0 18px;
+    border-radius: var(--r-control);
+    font: inherit; font-size: 15px; font-weight: 500;
+    border: 1px solid transparent;
+    transition: background-color 150ms var(--ease), border-color 150ms var(--ease), transform 120ms var(--ease);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: var(--accent-hi); }
+  .btn-ghost { border-color: var(--line); color: var(--text); background: transparent; }
+  .btn-ghost:hover { background: var(--surface); border-color: #323b47; }
+
+  /* Hero */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 64px;
+    align-items: center;
+    padding: 72px 0 56px;
+  }
+  .eyebrow {
+    margin: 0 0 16px;
+    font-size: 14px; color: var(--text-3); font-weight: 500;
+  }
+  h1 {
+    margin: 0 0 20px;
+    font-size: 56px; line-height: 1.05; font-weight: 600;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .lede {
+    margin: 0;
+    max-width: 46ch;
+    font-size: 18px; line-height: 1.55; color: var(--text-2);
+  }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+
+  /* CLI sample */
+  .cli {
+    margin-top: 48px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    max-width: 560px;
+  }
+  .cli-head {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--mono); font-size: 13px; color: var(--text-3);
+  }
+  .cli pre {
+    margin: 0;
+    padding: 16px 20px 18px;
+    font-family: var(--mono); font-size: 14px; line-height: 1.75;
+    color: var(--text-2);
+    overflow-x: auto;
+  }
+  .cli .p { color: var(--text-3); user-select: none; }
+  .cli .ok { color: var(--up); }
+  .cli .cmd { color: var(--text); }
+
+  /* Product sample */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 24px;
+  }
+  .panel-head {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+  }
+  .panel-title { font-family: var(--mono); font-size: 15px; font-weight: 500; }
+  .panel-sub { margin-top: 2px; font-size: 13px; color: var(--text-3); }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-2); white-space: nowrap; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--up); flex: none; }
+
+  .figure { margin-top: 28px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .figure .num {
+    font-size: 48px; line-height: 1; font-weight: 500;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+  }
+  .figure .label { font-size: 14px; color: var(--text-3); }
+  .delta { margin-top: 6px; font-size: 14px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+  .strip {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(90, minmax(0, 1fr));
+    gap: 3px;
+    height: 40px;
+  }
+  .strip span { background: #2a4a3d; border-radius: 2px; }
+  .strip span.up { background: #2f5b4a; }
+  .strip span.down { background: var(--down); }
+  .strip-axis {
+    display: flex; justify-content: space-between;
+    margin-top: 8px; font-size: 13px; color: var(--text-3);
+  }
+  .incident { margin-top: 12px; font-size: 14px; color: var(--text-2); }
+
+  .regions-title {
+    margin: 28px 0 0;
+    font-size: 13px; color: var(--text-3); font-weight: 500;
+  }
+  .regions { list-style: none; margin: 8px 0 0; padding: 0; }
+  .regions li {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+    font-size: 15px;
+  }
+  .regions li .meta { display: inline-flex; align-items: center; gap: 12px; }
+  .regions li .ms {
+    font-family: var(--mono); font-size: 14px; color: var(--text-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .regions li.more { color: var(--text-3); font-size: 14px; }
+  .regions li.more .dot { display: none; }
+  .sample-note { margin: 20px 0 0; font-size: 12px; color: var(--text-3); }
+
+  /* Facts row */
+  .facts {
+    border-top: 1px solid var(--line);
+    padding: 28px 0 80px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px;
+  }
+  .fact-value { font-size: 17px; font-weight: 500; color: var(--text); }
+  .fact-label { margin-top: 4px; font-size: 14px; color: var(--text-3); }
+
+  /* Responsive */
+  @media (max-width: 960px) {
+    .links { display: none; }
+    .hero { grid-template-columns: 1fr; gap: 48px; padding-top: 48px; }
+    h1 { font-size: 44px; }
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 0 16px; }
+    .top .wrap { gap: 12px; }
+    .auth .login { display: none; }
+    h1 { font-size: 36px; letter-spacing: -0.02em; }
+    .lede { font-size: 17px; }
+    .actions .btn { flex: 1 1 auto; }
+    .cli pre { font-size: 13px; }
+    .strip { gap: 2px; }
+    .facts { gap: 24px; padding-bottom: 56px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#" aria-label="Pingly home">
+      <span class="logo-mark" aria-hidden="true"></span>
+      Pingly
+    </a>
+    <nav class="links" aria-label="Primary">
+      <a href="#">Features</a>
+      <a href="#">Status pages</a>
+      <a href="#">Integrations</a>
+      <a href="#">Pricing</a>
+      <a href="#">Docs</a>
+    </nav>
+    <div class="auth">
+      <a class="login" href="#">Log in</a>
+      <a class="btn btn-primary" href="#">Start free</a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+    <section class="hero" aria-labelledby="headline">
+      <div>
+        <h1 id="headline">Know your API is down before your users do.</h1>
+        <p class="lede">Pingly checks each endpoint every 30 seconds from 12 regions. Alerts go to Slack and PagerDuty, and public status pages keep your users informed.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#">Start free</a>
+          <a class="btn btn-ghost" href="#">Watch demo</a>
+        </div>
+
+        <div class="cli">
+          <div class="cli-head">pingly-cli</div>
+          <pre><span class="p">$</span> <span class="cmd">pingly monitor add api.acme.dev --interval 30s</span>
+<span class="ok">Monitor created</span>
+<span class="p">$</span> <span class="cmd">pingly regions --list</span>
+  us-east  eu-west  ap-south  +9 more
+<span class="p">$</span> <span class="cmd">pingly alerts --route slack,pagerduty</span>
+<span class="ok">Alerts routed</span></pre>
+        </div>
+      </div>
+
+      <aside class="panel" aria-label="Sample monitor">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">api.acme.dev</div>
+            <div class="panel-sub">Checked every 30 seconds</div>
+          </div>
+          <div class="status"><span class="dot" aria-hidden="true"></span>Up</div>
+        </div>
+
+        <div class="figure">
+          <span class="num">99.94%</span>
+          <span class="label">uptime, last 90 days</span>
+        </div>
+        <div class="delta">+0.02 points vs the 90 days before</div>
+
+        <div class="strip" id="strip" aria-hidden="true"></div>
+        <div class="strip-axis" aria-hidden="true"><span>90 days ago</span><span>Today</span></div>
+        <div class="incident">One incident, 41 days ago, lasting 14 minutes</div>
+
+        <h2 class="regions-title">Response time by region</h2>
+        <ul class="regions">
+          <li><span class="meta"><span class="dot" aria-hidden="true"></span>us-east</span><span class="ms">142 ms</span></li>
+          <li><span class="meta"><span class="dot" aria-hidden="true"></span>eu-west</span><span class="ms">96 ms</span></li>
+          <li><span class="meta"><span class="dot" aria-hidden="true"></span>ap-south</span><span class="ms">231 ms</span></li>
+          <li class="more"><span>+9 more regions</span></li>
+        </ul>
+
+        <p class="sample-note">Sample data for illustration.</p>
+      </aside>
+    </section>
+
+    <section class="facts" aria-label="Key facts">
+      <div>
+        <div class="fact-value">30 seconds</div>
+        <div class="fact-label">Between checks</div>
+      </div>
+      <div>
+        <div class="fact-value">12 regions</div>
+        <div class="fact-label">Each endpoint is checked from</div>
+      </div>
+      <div>
+        <div class="fact-value">Slack and PagerDuty</div>
+        <div class="fact-label">Where alerts are sent</div>
+      </div>
+      <div>
+        <div class="fact-value">Public status pages</div>
+        <div class="fact-label">For your users</div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+  (function () {
+    var strip = document.getElementById('strip');
+    var incident = 48; // 41 days ago on a 90-day strip
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < 90; i++) {
+      var s = document.createElement('span');
+      s.className = i === incident ? 'down' : 'up';
+      frag.appendChild(s);
+    }
+    strip.appendChild(frag);
+  })();
+</script>
+</body>
+</html>

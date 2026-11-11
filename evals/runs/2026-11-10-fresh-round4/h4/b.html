@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rootline - Houseplant care</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #f5f2ea;
+      --stone: #e9e4d7;
+      --card: #fbfaf6;
+      --ink: #1d2420;
+      --ink-2: #545d56;
+      --ink-3: #7d857e;
+      --line: rgba(29, 36, 32, 0.10);
+      --accent: #2f5b44;
+      --accent-hover: #264a37;
+      --font-ui: 'Inter', system-ui, sans-serif;
+      --font-display: 'Newsreader', Georgia, serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --paper: #171b19;
+        --stone: #1f2420;
+        --card: #1d2320;
+        --ink: #eceee9;
+        --ink-2: #aab2aa;
+        --ink-3: #7f877f;
+        --line: rgba(236, 238, 233, 0.10);
+        --accent: #8fbf9f;
+        --accent-hover: #a3cdb1;
+      }
+    }
+    :root[data-theme="dark"] {
+      --paper: #171b19;
+      --stone: #1f2420;
+      --card: #1d2320;
+      --ink: #eceee9;
+      --ink-2: #aab2aa;
+      --ink-3: #7f877f;
+      --line: rgba(236, 238, 233, 0.10);
+      --accent: #8fbf9f;
+      --accent-hover: #a3cdb1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); color: var(--ink); }
+    body {
+      font-family: var(--font-ui);
+      font-size: 16px;
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; }
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    @media (min-width: 960px) { .wrap { padding: 0 32px; } }
+
+    nav.top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+    }
+    .wordmark {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .links { display: none; gap: 32px; font-size: 14px; color: var(--ink-2); }
+    .links a:hover { color: var(--ink); }
+    @media (min-width: 768px) { .links { display: flex; } }
+    .login { font-size: 14px; font-weight: 500; color: var(--ink-2); }
+    .login:hover { color: var(--ink); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 48px;
+      align-items: center;
+      padding: 48px 0 64px;
+      min-height: calc(100vh - 80px);
+    }
+    @media (min-width: 960px) {
+      .hero { grid-template-columns: 5fr 7fr; gap: 64px; padding: 32px 0 48px; }
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 56px;
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+    }
+    @media (min-width: 960px) { h1 { font-size: 64px; } }
+
+    .lede {
+      margin-top: 24px;
+      font-size: 18px;
+      color: var(--ink-2);
+      max-width: 440px;
+    }
+    .actions {
+      margin-top: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: none;
+      color: var(--ink);
+    }
+    .btn-primary { background: var(--accent); color: #ffffff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { border-color: var(--line); }
+    .btn-secondary:hover { background: rgba(29, 36, 32, 0.04); }
+
+    .stores {
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--ink-3);
+    }
+    .stores a {
+      color: var(--ink-2);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--line);
+    }
+    .stores a:hover { color: var(--ink); }
+
+    .stage {
+      position: relative;
+      border-radius: 20px;
+      background: var(--stone);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
+    .plant {
+      width: min(100%, 360px);
+      height: auto;
+      display: block;
+    }
+
+    .card {
+      margin-top: 16px;
+      width: 100%;
+      max-width: 300px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 1px 2px rgba(29, 36, 32, 0.06), 0 12px 32px -12px rgba(29, 36, 32, 0.18);
+    }
+    @media (min-width: 960px) {
+      .stage { align-items: flex-start; }
+      .plant { width: min(100%, 340px); }
+      .card {
+        position: absolute;
+        bottom: 32px;
+        right: 32px;
+        margin-top: 0;
+        width: 280px;
+      }
+    }
+    .card-name { font-size: 15px; font-weight: 500; }
+    .card-meta { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+    .card-rows {
+      margin-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+    .card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+    }
+    .card-row:last-child { border-bottom: none; }
+    .card-row dt { color: var(--ink-3); }
+    .card-row dd {
+      font-size: 14px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="top">
+      <a href="#" class="wordmark">Rootline</a>
+      <div class="links">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Blog</a>
+      </div>
+      <a href="#" class="login">Log in</a>
+    </nav>
+
+    <main class="hero">
+      <div>
+        <h1>Know your houseplants and when to water them</h1>
+        <p class="lede">Snap a photo to identify any houseplant, and get a watering schedule that keeps track for you</p>
+        <div class="actions">
+          <button class="btn btn-primary">Get started free</button>
+          <button class="btn btn-secondary">See how it works</button>
+        </div>
+        <p class="stores">Available on the <a href="#">App Store</a> and <a href="#">Google Play</a></p>
+      </div>
+
+      <div class="stage" aria-label="Rootline plant identification preview">
+        <svg class="plant" viewBox="0 0 400 420" role="img" aria-label="Monstera plant in a clay pot">
+          <defs>
+            <linearGradient id="leafA" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#4f8a68"/>
+              <stop offset="1" stop-color="#2f5b44"/>
+            </linearGradient>
+            <linearGradient id="leafB" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#6a9e6f"/>
+              <stop offset="1" stop-color="#3d6b4c"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="200" cy="410" rx="120" ry="9" fill="#1d2420" fill-opacity="0.14"/>
+          <g transform="translate(200 268) rotate(-58) scale(0.75)">
+            <path d="M0 0 C-58 -34 -72 -120 0 -196 C72 -120 58 -34 0 0Z" fill="url(#leafB)"/>
+            <path d="M0 -6 V-180" stroke="#8fbda3" stroke-opacity="0.55" stroke-width="2" fill="none"/>
+          </g>
+          <g transform="translate(200 268) rotate(-30) scale(0.9)">
+            <path d="M0 0 C-58 -34 -72 -120 0 -196 C72 -120 58 -34 0 0Z" fill="url(#leafA)"/>
+            <path d="M0 -6 V-180" stroke="#8fbda3" stroke-opacity="0.55" stroke-width="2" fill="none"/>
+          </g>
+          <g transform="translate(200 268) rotate(-6)">
+            <path d="M0 0 C-58 -34 -72 -120 0 -196 C72 -120 58 -34 0 0Z" fill="url(#leafA)"/>
+            <path d="M0 -6 V-180" stroke="#8fbda3" stroke-opacity="0.55" stroke-width="2" fill="none"/>
+          </g>
+          <g transform="translate(200 268) rotate(18) scale(0.95)">
+            <path d="M0 0 C-58 -34 -72 -120 0 -196 C72 -120 58 -34 0 0Z" fill="url(#leafB)"/>
+            <path d="M0 -6 V-180" stroke="#8fbda3" stroke-opacity="0.55" stroke-width="2" fill="none"/>
+          </g>
+          <g transform="translate(200 268) rotate(42) scale(0.8)">
+            <path d="M0 0 C-58 -34 -72 -120 0 -196 C72 -120 58 -34 0 0Z" fill="url(#leafA)"/>
+            <path d="M0 -6 V-180" stroke="#8fbda3" stroke-opacity="0.55" stroke-width="2" fill="none"/>
+          </g>
+          <g transform="translate(200 268) rotate(66) scale(0.6)">
+            <path d="M0 0 C-58 -34 -72 -120 0 -196 C72 -120 58 -34 0 0Z" fill="url(#leafB)"/>
+            <path d="M0 -6 V-180" stroke="#8fbda3" stroke-opacity="0.55" stroke-width="2" fill="none"/>
+          </g>
+          <ellipse cx="200" cy="270" rx="76" ry="9" fill="#3a2e25"/>
+          <path d="M130 294 H270 L252 402 Q250 408 242 408 H158 Q150 408 148 402 Z" fill="#a9654a"/>
+          <rect x="118" y="266" width="164" height="26" rx="6" fill="#bf7d5d"/>
+        </svg>
+
+        <div class="card">
+          <div class="card-name">Monstera deliciosa</div>
+          <div class="card-meta">Identified from photo, 96% match</div>
+          <dl class="card-rows">
+            <div class="card-row">
+              <dt>Next watering</dt>
+              <dd><span class="dot"></span>Thursday</dd>
+            </div>
+            <div class="card-row">
+              <dt>Schedule</dt>
+              <dd>Every 7 days</dd>
+            </div>
+            <div class="card-row">
+              <dt>Light</dt>
+              <dd>Bright, indirect</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym Member Dashboard</title>
+<style>
+  :root {
+    --bg: #f3f4f1; --surface: #ffffff; --ink: #16201c; --muted: #5d6a64; --line: #e3e6e1;
+    --brand: #0f6b52; --brand-ink: #ffffff; --brand-soft: #e3f2ec;
+    --warn-bg: #fdf0d3; --warn-ink: #7a4d00; --bad-bg: #fbe1dd; --bad-ink: #9a2316;
+    --ok-bg: #e3f2ec; --ok-ink: #0b5a43; --row-hover: #f7f9f6;
+    --shadow: 0 1px 2px rgba(20,32,28,.06), 0 4px 16px rgba(20,32,28,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1613; --surface: #17211d; --ink: #e8efeb; --muted: #94a39b; --line: #263530;
+      --brand: #3ecf9e; --brand-ink: #06231a; --brand-soft: #1b3a2f;
+      --warn-bg: #3b2e10; --warn-ink: #f4cf7a; --bad-bg: #40201c; --bad-ink: #ffb4a8;
+      --ok-bg: #1b3a2f; --ok-ink: #8fe5c3; --row-hover: #1b2823;
+      --shadow: none;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; background: var(--bg); color: var(--ink); line-height: 1.45; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 56px; }
+  header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+  h1 { font-size: 28px; letter-spacing: -.02em; margin: 0; line-height: 1.15; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--brand); margin-bottom: 6px; }
+  .date { color: var(--muted); font-size: 14px; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; box-shadow: var(--shadow); border-top: 3px solid var(--line); }
+  .stat:nth-child(1) { border-top-color: var(--brand); }
+  .stat:nth-child(2) { border-top-color: #3b82c4; }
+  .stat:nth-child(3) { border-top-color: #d99a1c; }
+  .stat .label { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .stat .value { font-size: 36px; font-weight: 750; letter-spacing: -.03em; line-height: 1.1; margin-top: 4px; font-variant-numeric: tabular-nums; }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); margin-bottom: 24px; overflow: hidden; }
+  .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+  .section-title { font-size: 16px; font-weight: 700; margin: 0; }
+  .section-sub { font-size: 13px; color: var(--muted); font-weight: 400; }
+
+  #expiringList { list-style: none; margin: 0; padding: 4px 0; }
+  #expiringList li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 20px; font-size: 14px; }
+  #expiringList li + li { border-top: 1px solid var(--line); }
+  #expiringList .none { color: var(--muted); }
+  .exp-name { font-weight: 600; }
+  .exp-date { color: var(--muted); font-size: 13px; }
+
+  input[type=search] { font: inherit; font-size: 14px; padding: 9px 12px 9px 34px; width: 280px; max-width: 100%; border: 1px solid var(--line); border-radius: 10px; background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a968f' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat 11px center; color: var(--ink); }
+  input[type=search]::placeholder { color: var(--muted); }
+
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { padding: 12px 16px; text-align: left; white-space: nowrap; }
+  tbody td { border-top: 1px solid var(--line); }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 650; cursor: pointer; user-select: none; background: var(--surface); }
+  th:hover { color: var(--ink); }
+  th[aria-sort]::after { content: " \2191"; color: var(--brand); }
+  th[aria-sort=descending]::after { content: " \2193"; }
+  th:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+  input[type=search]:focus { border-color: var(--brand); }
+  tbody tr:hover { background: var(--row-hover); }
+  td.id { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .member { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--brand-soft); color: var(--brand); display: grid; place-items: center; font-size: 12px; font-weight: 700; flex: none; }
+  td.email { color: var(--muted); }
+
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--brand-soft); color: var(--ok-ink); }
+  .badge { display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+  .badge.warn { background: var(--warn-bg); color: var(--warn-ink); }
+  .badge.bad { background: var(--bad-bg); color: var(--bad-ink); }
+  .badge.ok { background: var(--ok-bg); color: var(--ok-ink); }
+  tr.expiring td:first-child { box-shadow: inset 3px 0 0 #d99a1c; }
+  tr.expired td:first-child { box-shadow: inset 3px 0 0 #d1432f; }
+
+  .checkin-btn { font: inherit; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 8px; border: 0; background: var(--brand); color: var(--brand-ink); cursor: pointer; }
+  .checkin-btn:hover:not(:disabled) { filter: brightness(1.1); }
+  .checkin-btn:disabled { background: transparent; color: var(--ok-ink); cursor: default; padding-left: 0; }
+  .empty { text-align: center; color: var(--muted); padding: 28px; }
+
+  @media (max-width: 760px) {
+    .wrap { padding: 20px 14px 40px; }
+    h1 { font-size: 22px; }
+    .stats { grid-template-columns: 1fr; gap: 10px; }
+    .stat { display: flex; align-items: baseline; justify-content: space-between; padding: 14px 16px; }
+    .stat .value { font-size: 28px; margin: 0; }
+    th:nth-child(1), td.id, th:nth-child(3), td.email { display: none; }
+    th, td { padding: 10px 12px; }
+    input[type=search] { width: 100%; }
+    .card-head { padding: 14px 16px; }
+    #expiringList li { padding: 10px 16px; flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <div class="eyebrow">Front desk</div>
+    <h1>Gym Member Dashboard</h1>
+  </div>
+  <div class="date" id="todayLabel"></div>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="label">Total members</div><div class="value" id="totalMembers">0</div></div>
+  <div class="stat"><div class="label">Check-ins today</div><div class="value" id="checkinsToday">0</div></div>
+  <div class="stat"><div class="label">Expiring within 14 days</div><div class="value" id="expiringCount">0</div></div>
+</div>
+
+<section class="card">
+  <div class="card-head"><h2 class="section-title">Expiring memberships <span class="section-sub">next 14 days</span></h2></div>
+  <ul id="expiringList"></ul>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <h2 class="section-title">Members</h2>
+    <input type="search" id="search" placeholder="Search by name or email" aria-label="Search members by name or email">
+  </div>
+  <div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th data-key="id">ID</th>
+        <th data-key="name">Name</th>
+        <th data-key="email">Email</th>
+        <th data-key="plan">Plan</th>
+        <th data-key="expires">Expires</th>
+        <th data-key="lastCheckin">Last check-in</th>
+        <th>Check in</th>
+      </tr>
+    </thead>
+    <tbody id="membersBody"></tbody>
+  </table>
+  </div>
+</section>
+</div>
+
+<script>
+  // Sample data (replace with real data source later)
+  var members = [
+    { id: 1, name: "Alice Johnson", email: "alice@example.com", plan: "Monthly", expires: "2026-11-20", lastCheckin: "2026-11-10" },
+    { id: 2, name: "Bob Smith", email: "bob@example.com", plan: "Annual", expires: "2027-03-01", lastCheckin: "2026-11-08" },
+    { id: 3, name: "Carol White", email: "carol@example.com", plan: "Monthly", expires: "2026-11-12", lastCheckin: "2026-11-05" },
+    { id: 4, name: "Dan Brown", email: "dan@example.com", plan: "Quarterly", expires: "2026-10-30", lastCheckin: "2026-10-30" },
+    { id: 5, name: "Eve Davis", email: "eve@example.com", plan: "Annual", expires: "2027-06-15", lastCheckin: "2026-11-10" }
+  ];
+
+  var todayStr = new Date().toISOString().slice(0, 10);
+  var checkinsTodaySet = {};
+  members.forEach(function (m) { if (m.lastCheckin === todayStr) checkinsTodaySet[m.id] = true; });
+
+  var sortKey = "name";
+  var sortAsc = true;
+
+  function daysUntil(dateStr) {
+    var today = new Date(todayStr + "T00:00:00");
+    var d = new Date(dateStr + "T00:00:00");
+    return Math.round((d - today) / 86400000);
+  }
+
+  function renderStats() {
+    document.getElementById("totalMembers").textContent = members.length;
+    document.getElementById("checkinsToday").textContent = Object.keys(checkinsTodaySet).length;
+    var expiring = members.filter(function (m) { var n = daysUntil(m.expires); return n >= 0 && n <= 14; });
+    document.getElementById("expiringCount").textContent = expiring.length;
+
+    var list = document.getElementById("expiringList");
+    list.innerHTML = "";
+    if (expiring.length === 0) {
+      list.innerHTML = "<li class=\"none\">No memberships expiring in the next 14 days.</li>";
+    }
+    expiring.forEach(function (m) {
+      var li = document.createElement("li");
+      var n = daysUntil(m.expires);
+      var a = document.createElement("span"); a.className = "exp-name"; a.textContent = m.name;
+      var b = document.createElement("span"); b.className = "exp-date";
+      b.textContent = "expires " + m.expires + " \u00b7 " + (n === 0 ? "today" : n === 1 ? "tomorrow" : "in " + n + " days");
+      li.appendChild(a); li.appendChild(b);
+      list.appendChild(li);
+    });
+  }
+
+  function renderTable() {
+    var q = document.getElementById("search").value.toLowerCase();
+    var rows = members.filter(function (m) {
+      return m.name.toLowerCase().indexOf(q) !== -1 || m.email.toLowerCase().indexOf(q) !== -1;
+    });
+    rows.sort(function (a, b) {
+      var av = a[sortKey], bv = b[sortKey];
+      if (av < bv) return sortAsc ? -1 : 1;
+      if (av > bv) return sortAsc ? 1 : -1;
+      return 0;
+    });
+
+    var tbody = document.getElementById("membersBody");
+    tbody.innerHTML = "";
+    document.querySelectorAll("th[data-key]").forEach(function (th) {
+      if (th.getAttribute("data-key") === sortKey) th.setAttribute("aria-sort", sortAsc ? "ascending" : "descending");
+      else th.removeAttribute("aria-sort");
+    });
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr><td class="empty" colspan="7">No members match your search.</td></tr>';
+      return;
+    }
+    rows.forEach(function (m) {
+      var tr = document.createElement("tr");
+      var n = daysUntil(m.expires);
+      if (n < 0) tr.className = "expired";
+      else if (n <= 14) tr.className = "expiring";
+
+      function cell(cls, build) { var td = document.createElement("td"); if (cls) td.className = cls; build(td); tr.appendChild(td); }
+      cell("id", function (td) { td.textContent = m.id; });
+      cell("", function (td) {
+        var w = document.createElement("div"); w.className = "member";
+        var av = document.createElement("span"); av.className = "avatar";
+        av.textContent = m.name.split(" ").map(function (p) { return p[0]; }).join("").slice(0, 2).toUpperCase();
+        var nm = document.createElement("span"); nm.textContent = m.name;
+        w.appendChild(av); w.appendChild(nm); td.appendChild(w);
+      });
+      cell("email", function (td) { td.textContent = m.email; });
+      cell("", function (td) { var p = document.createElement("span"); p.className = "pill"; p.textContent = m.plan; td.appendChild(p); });
+      cell("", function (td) {
+        td.appendChild(document.createTextNode(m.expires));
+        var bd = document.createElement("span");
+        if (n < 0) { bd.className = "badge bad"; bd.textContent = "Expired"; }
+        else if (n <= 14) { bd.className = "badge warn"; bd.textContent = n === 0 ? "Today" : n + "d left"; }
+        else return;
+        td.appendChild(bd);
+      });
+      cell("", function (td) { td.textContent = m.lastCheckin === todayStr ? "Today" : m.lastCheckin; });
+
+      var btnTd = document.createElement("td");
+      var btn = document.createElement("button");
+      btn.className = "checkin-btn";
+      btn.textContent = checkinsTodaySet[m.id] ? "Checked in" : "Check in";
+      btn.disabled = !!checkinsTodaySet[m.id];
+      btn.addEventListener("click", function () { checkIn(m.id); });
+      btnTd.appendChild(btn);
+      tr.appendChild(btnTd);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function checkIn(id) {
+    var m = members.filter(function (x) { return x.id === id; })[0];
+    if (!m) return;
+    checkinsTodaySet[id] = true;
+    m.lastCheckin = todayStr;
+    renderStats();
+    renderTable();
+  }
+
+  document.querySelectorAll("th[data-key]").forEach(function (th) {
+    th.tabIndex = 0;
+    th.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); th.click(); } });
+    th.addEventListener("click", function () {
+      var key = th.getAttribute("data-key");
+      if (sortKey === key) sortAsc = !sortAsc;
+      else { sortKey = key; sortAsc = true; }
+      renderTable();
+    });
+  });
+
+  document.getElementById("search").addEventListener("input", renderTable);
+
+  document.getElementById("todayLabel").textContent = new Date(todayStr + "T00:00:00").toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  renderStats();
+  renderTable();
+</script>
+</body>
+</html>

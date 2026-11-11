@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shoply Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #161513;
+      --sidebar: #12110f;
+      --card: #1c1a18;
+      --raised: #262421;
+      --hair: rgba(239, 233, 222, 0.08);
+      --text: #efe9de;
+      --text-2: #aaa398;
+      --muted: #8a847a;
+      --accent: #e0a458;
+      --pos: #4cc38a;
+      --neg: #ef6b6f;
+      --bar: #4a443c;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --font: 'Instrument Sans', system-ui, sans-serif;
+      --serif: 'Instrument Serif', Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 20px;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; color: inherit; }
+    h1, h2, p, ol, ul { margin: 0; padding: 0; }
+    ol { list-style: none; }
+
+    .ic {
+      width: 16px;
+      height: 16px;
+      flex: none;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tabular, .figure, .count, td.num, .change { font-variant-numeric: tabular-nums; }
+
+    /* Layout */
+    .app {
+      display: grid;
+      grid-template-columns: 256px 1fr;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--sidebar);
+      border-right: 1px solid var(--hair);
+      padding: 20px 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px;
+      height: 32px;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .nav { margin-top: 32px; }
+    .group + .group { margin-top: 24px; }
+
+    .glabel {
+      padding: 0 12px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--muted);
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 8px;
+      color: var(--text-2);
+      transition: background-color 160ms var(--ease), color 160ms var(--ease);
+    }
+
+    .item + .item { margin-top: 2px; }
+
+    .item .ic { color: var(--muted); }
+
+    .item:hover { background: var(--raised); color: var(--text); }
+
+    .item.is-active {
+      background: var(--raised);
+      color: var(--text);
+      font-weight: 500;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .item.is-active .ic { color: var(--text); }
+
+    .count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Main */
+    .main {
+      padding: 20px 32px 40px;
+      min-width: 0;
+    }
+
+    .main > * {
+      animation: rise 400ms var(--ease) both;
+    }
+    .main > *:nth-child(2) { animation-delay: 40ms; }
+    .main > *:nth-child(3) { animation-delay: 80ms; }
+    .main > *:nth-child(4) { animation-delay: 120ms; }
+    .main > *:nth-child(5) { animation-delay: 160ms; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      height: 48px;
+    }
+
+    .search {
+      position: relative;
+      width: 360px;
+      max-width: 100%;
+    }
+
+    .search .ic {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+    }
+
+    .search input {
+      width: 100%;
+      height: 36px;
+      padding: 0 12px 0 36px;
+      border: 1px solid var(--hair);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--text);
+      outline: none;
+    }
+
+    .search input::placeholder { color: var(--muted); }
+
+    .top-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--hair);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--text-2);
+      cursor: pointer;
+      transition: background-color 160ms var(--ease);
+    }
+
+    .icon-btn:hover { background: var(--raised); }
+
+    .icon-btn .dot {
+      position: absolute;
+      top: 8px;
+      right: 9px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 36px;
+      padding: 0 12px 0 4px;
+      border: 1px solid var(--hair);
+      border-radius: 18px;
+      background: var(--card);
+      font-weight: 500;
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--raised);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .intro { margin-top: 24px; }
+
+    .intro h1 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 36px;
+      line-height: 1.15;
+      color: var(--text);
+    }
+
+    .intro p {
+      margin-top: 4px;
+      color: var(--text-2);
+    }
+
+    /* Panels and stats */
+    .panel,
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 14px;
+    }
+
+    .stats {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .stat { padding: 20px; }
+
+    .label {
+      color: var(--text-2);
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .figure {
+      margin-top: 8px;
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .change {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .pos { color: var(--pos); font-weight: 500; }
+
+    .split {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 16px;
+    }
+
+    .panel { padding: 20px; }
+
+    .phead {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    h2 {
+      font-size: 15px;
+      line-height: 20px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .meta {
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .select {
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 10px;
+      border: 1px solid var(--hair);
+      border-radius: 8px;
+      background: var(--raised);
+      color: var(--text-2);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 160ms var(--ease);
+    }
+
+    .select:hover { color: var(--text); }
+    .select .ic { width: 14px; height: 14px; color: var(--muted); }
+
+    /* The one main chart */
+    .bars {
+      margin-top: 24px;
+      height: 240px;
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      padding: 0 4px;
+      border-bottom: 1px solid var(--hair);
+    }
+
+    .bar-col {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 48px;
+      border-radius: 6px 6px 0 0;
+      background: var(--bar);
+    }
+
+    .bar.is-peak { background: var(--accent); }
+
+    .bar-col span {
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--muted);
+      padding-bottom: 0;
+    }
+
+    /* Top products: a ranked list with thin bars */
+    .products {
+      margin-top: 20px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .product {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 6px 12px;
+      align-items: baseline;
+    }
+
+    .product .name { color: var(--text); font-weight: 400; }
+
+    .product .value {
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .track {
+      grid-column: 1 / -1;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--raised);
+      overflow: hidden;
+    }
+
+    .track i {
+      display: block;
+      height: 100%;
+      border-radius: 2px;
+      background: var(--bar);
+    }
+
+    .track i.is-top { background: var(--accent); }
+
+    /* Table */
+    .panel.orders { margin-top: 16px; }
+
+    .table-wrap {
+      margin-top: 12px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 640px;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      padding: 0 0 8px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    td {
+      height: 44px;
+      border-top: 1px solid var(--hair);
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    th, td { padding-right: 32px; }
+    th:last-child, td:last-child { padding-right: 0; }
+    td.id { color: var(--text-2); }
+    td.date, td.cust { color: var(--text); }
+    td.num, th.num { text-align: right; }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+
+    .status.is-paid::before { background: var(--pos); }
+    .status.is-shipped::before { background: var(--text-2); }
+    .status.is-refunded { color: var(--neg); }
+    .status.is-refunded::before { background: var(--neg); }
+
+    /* Focus */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Narrow screens */
+    @media (max-width: 1100px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--hair);
+        padding: 16px;
+      }
+      .nav { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 16px 24px; }
+      .group + .group { margin-top: 0; }
+      .group { display: flex; flex-direction: column; min-width: 160px; }
+      .glabel { margin-top: 8px; }
+      .split { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      .main { padding: 16px; }
+      .topbar { flex-wrap: wrap; height: auto; }
+      .search { width: 100%; order: 3; }
+      .intro h1 { font-size: 32px; }
+      .stats { grid-template-columns: 1fr; }
+      .figure { font-size: 26px; }
+      .user span:last-child { display: none; }
+      .user { padding-right: 4px; }
+      .bars { gap: 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .main > * { animation: none; }
+      .item, .icon-btn, .select { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" fill="#e0a458" />
+          <path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17" fill="none" stroke="#e0a458" stroke-width="2" />
+        </svg>
+        Shoply
+      </div>
+
+      <nav class="nav" aria-label="Main">
+        <div class="group">
+          <p class="glabel">Main</p>
+          <a href="#" class="item is-active" aria-current="page">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Dashboard
+          </a>
+          <a href="#" class="item">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+            Orders
+            <span class="count">12</span>
+          </a>
+          <a href="#" class="item">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            Analytics
+          </a>
+        </div>
+
+        <div class="group">
+          <p class="glabel">Catalog</p>
+          <a href="#" class="item">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+            Products
+          </a>
+          <a href="#" class="item">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r="1"/></svg>
+            Discounts
+          </a>
+        </div>
+
+        <div class="group">
+          <p class="glabel">People</p>
+          <a href="#" class="item">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Customers
+          </a>
+          <a href="#" class="item">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            Settings
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <label class="search">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" placeholder="Search" aria-label="Search" />
+        </label>
+        <div class="top-right">
+          <button class="icon-btn" aria-label="Notifications">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            <span class="dot"></span>
+          </button>
+          <div class="user">
+            <span class="avatar">AL</span>
+            <span>Alex Morgan</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="intro">
+        <h1>Dashboard</h1>
+        <p>What is happening at your coffee store today</p>
+      </section>
+
+      <section class="stats" aria-label="Key figures">
+        <div class="stat">
+          <p class="label">Total revenue</p>
+          <p class="figure">$48,210.00</p>
+          <p class="change"><span class="pos">+12%</span> vs prior period</p>
+        </div>
+        <div class="stat">
+          <p class="label">Total orders</p>
+          <p class="figure">1,204</p>
+          <p class="change"><span class="pos">+8.5%</span> vs prior period</p>
+        </div>
+        <div class="stat">
+          <p class="label">Avg order value</p>
+          <p class="figure">$1,204.50</p>
+          <p class="change"><span class="pos">+3%</span> vs prior period</p>
+        </div>
+        <div class="stat">
+          <p class="label">Returning customers</p>
+          <p class="figure">7</p>
+          <p class="change"><span class="pos">+21%</span> vs prior period</p>
+        </div>
+      </section>
+
+      <section class="split">
+        <div class="panel">
+          <div class="phead">
+            <div>
+              <h2>Weekly sales</h2>
+              <p class="meta">Busiest day: Saturday</p>
+            </div>
+            <button class="select" type="button">
+              This week
+              <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="bars" role="img" aria-label="Weekly sales bar chart, busiest on Saturday">
+            <div class="bar-col"><div class="bar" style="height:46%"></div><span>Mon</span></div>
+            <div class="bar-col"><div class="bar" style="height:29%"></div><span>Tue</span></div>
+            <div class="bar-col"><div class="bar" style="height:54%"></div><span>Wed</span></div>
+            <div class="bar-col"><div class="bar" style="height:40%"></div><span>Thu</span></div>
+            <div class="bar-col"><div class="bar" style="height:63%"></div><span>Fri</span></div>
+            <div class="bar-col"><div class="bar is-peak" style="height:67%"></div><span>Sat</span></div>
+            <div class="bar-col"><div class="bar" style="height:35%"></div><span>Sun</span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Top products</h2>
+          <ol class="products">
+            <li class="product">
+              <span class="name">Breville Barista Pro</span>
+              <span class="value">$2,430.00</span>
+              <div class="track"><i class="is-top" style="width:86%"></i></div>
+            </li>
+            <li class="product">
+              <span class="name">Hario V60 Starter Kit</span>
+              <span class="value">$980.00</span>
+              <div class="track"><i style="width:64%"></i></div>
+            </li>
+            <li class="product">
+              <span class="name">Fellow Ode Grinder</span>
+              <span class="value">$1,120.00</span>
+              <div class="track"><i style="width:72%"></i></div>
+            </li>
+            <li class="product">
+              <span class="name">Moka Pot Classic</span>
+              <span class="value">$410.00</span>
+              <div class="track"><i style="width:41%"></i></div>
+            </li>
+            <li class="product">
+              <span class="name">Acaia Pearl Scale</span>
+              <span class="value">$675.50</span>
+              <div class="track"><i style="width:55%"></i></div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="panel orders">
+        <h2>Recent orders</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Order</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Date</th>
+                <th scope="col" class="num">Total</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="id">#SH-1048</td><td class="cust">Maya Chen</td><td class="date">Nov 9, 2026</td><td class="num">$129.00</td><td><span class="status is-paid">Paid</span></td></tr>
+              <tr><td class="id">#SH-1047</td><td class="cust">Jonas Weber</td><td class="date">Nov 9, 2026</td><td class="num">$1,204.50</td><td><span class="status is-shipped">Shipped</span></td></tr>
+              <tr><td class="id">#SH-1046</td><td class="cust">Priya Nair</td><td class="date">Nov 9, 2026</td><td class="num">$84.00</td><td><span class="status">Pending</span></td></tr>
+              <tr><td class="id">#SH-1045</td><td class="cust">Tom Becker</td><td class="date">Nov 8, 2026</td><td class="num">$349.99</td><td><span class="status is-paid">Paid</span></td></tr>
+              <tr><td class="id">#SH-1044</td><td class="cust">Lena Ross</td><td class="date">Nov 8, 2026</td><td class="num">$42.00</td><td><span class="status is-refunded">Refunded</span></td></tr>
+              <tr><td class="id">#SH-1043</td><td class="cust">Omar Haddad</td><td class="date">Nov 7, 2026</td><td class="num">$620.00</td><td><span class="status is-shipped">Shipped</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

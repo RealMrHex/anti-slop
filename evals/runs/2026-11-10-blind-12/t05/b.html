@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weather – Lisbon</title>
+<style>
+:root{
+  --sky-top:#2b3a7a; --sky-mid:#6a5aa8; --sky-low:#e98a7b;
+  --ink:#fff; --ink-2:rgba(255,255,255,.82); --ink-3:rgba(255,255,255,.7);
+  --glass:rgba(24,22,64,.38); --glass-edge:rgba(255,255,255,.16);
+  --sun:#ffc766; --rain:#8fd3ff;
+  --r-lg:24px; --r-md:16px; --r-sm:10px;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+  --font:ui-rounded,"SF Pro Rounded","Avenir Next","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:var(--font);color:var(--ink);background:#14183a;min-height:100vh;display:flex;justify-content:center;-webkit-font-smoothing:antialiased}
+.app{width:100%;max-width:430px;min-height:100vh;position:relative;padding:var(--s5) var(--s4) 104px;
+  background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-mid) 42%,var(--sky-low) 100%);overflow:hidden}
+.app::before{content:"";position:absolute;right:-70px;top:-60px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,199,102,.55),rgba(255,199,102,0) 68%);pointer-events:none}
+.app>*{position:relative}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:3px solid #fff;outline-offset:2px;border-radius:8px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.loc{display:flex;align-items:center;gap:var(--s2);padding:10px 14px 10px 10px;border-radius:999px;font-weight:600;font-size:17px;min-height:44px}
+.loc:hover,.icon-btn:hover{background:rgba(255,255,255,.14)}
+.loc:active,.icon-btn:active{background:rgba(255,255,255,.22)}
+.icon-btn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center}
+svg{display:block}
+.hero{text-align:center;padding:var(--s5) 0 var(--s4)}
+.when{font-size:14px;color:var(--ink-2);letter-spacing:.02em}
+.temp{font-size:112px;font-weight:300;line-height:1;letter-spacing:-.04em;margin:var(--s2) 0 var(--s1);padding-left:.18em}
+.temp sup{font-size:.4em;vertical-align:top;position:relative;top:.2em;margin-left:2px;font-weight:400}
+.cond{font-size:22px;font-weight:600}
+.range{color:var(--ink-2);font-size:16px;margin-top:var(--s1)}
+.summary{margin:var(--s4) auto 0;max-width:30ch;color:var(--ink-2);font-size:15px;line-height:1.45}
+.card{background:var(--glass);border:1px solid var(--glass-edge);border-radius:var(--r-lg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:var(--s4);margin-top:var(--s3)}
+.card h2{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:6px;margin-bottom:var(--s3)}
+/* curve */
+.curve svg{width:100%;height:auto;overflow:visible}
+.curve .lbl{font-size:11px;fill:var(--ink-3);font-family:var(--font)}
+.curve .big{font-size:13px;font-weight:600;fill:#fff;font-family:var(--font)}
+/* hourly */
+.hours{display:flex;gap:var(--s2);overflow-x:auto;margin:0 calc(var(--s4)*-1);padding:0 var(--s4) var(--s1);list-style:none;scrollbar-width:none}
+.hours::-webkit-scrollbar{display:none}
+.hours li{flex:0 0 auto;min-width:58px;display:flex;flex-direction:column;align-items:center;gap:var(--s2);padding:var(--s3) var(--s2);border-radius:var(--r-md);font-size:15px;font-weight:600}
+.hours li.now{background:rgba(255,255,255,.2)}
+.hours time{font-size:13px;font-weight:500;color:var(--ink-2)}
+.hours .pop{font-size:12px;color:var(--rain);font-weight:600;min-height:14px}
+/* daily */
+.days{list-style:none;padding:0}
+.days li{display:grid;grid-template-columns:52px 28px 36px 1fr 36px;align-items:center;gap:var(--s3);padding:10px 0;font-size:16px;font-weight:600;border-top:1px solid rgba(255,255,255,.12)}
+.days li:first-child{border-top:0}
+.days .lo{color:var(--ink-3);text-align:right;font-weight:500}
+.days .p{font-size:12px;color:var(--rain);text-align:left}
+.bar{height:6px;border-radius:3px;background:rgba(255,255,255,.18);position:relative}
+.bar i{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#8fd3ff,#ffc766)}
+/* details */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin-top:var(--s3)}
+.grid .card{margin:0;min-height:132px;display:flex;flex-direction:column}
+.val{font-size:32px;font-weight:500;letter-spacing:-.02em;margin-top:auto}
+.val small{font-size:15px;font-weight:500;color:var(--ink-2);letter-spacing:0;margin-left:2px}
+.note{font-size:13px;color:var(--ink-2);margin-top:var(--s1);line-height:1.35}
+.uvbar{height:6px;border-radius:3px;margin-top:var(--s3);background:linear-gradient(90deg,#7ee0a1,#ffe066,#ff9a62,#ff6b8a);position:relative}
+.uvbar i{position:absolute;top:-3px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px rgba(20,24,58,.6);transform:translateX(-50%)}
+/* tab bar */
+.tabs{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:min(406px,calc(100% - 24px));display:flex;justify-content:space-around;padding:6px;border-radius:999px;background:rgba(22,20,58,.78);border:1px solid var(--glass-edge);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:5}
+.tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border-radius:999px;font-size:11px;font-weight:600;color:var(--ink-2);min-height:52px}
+.tabs button[aria-current=page]{background:rgba(255,255,255,.18);color:#fff}
+.tabs button:hover{color:#fff}
+@media (prefers-reduced-motion:no-preference){
+  .loc,.icon-btn,.tabs button{transition:background .15s}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" fill="#ffc766"/><g stroke="#ffc766" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></g></symbol>
+    <symbol id="part" viewBox="0 0 24 24"><circle cx="9" cy="9" r="3.6" fill="#ffc766"/><g stroke="#ffc766" stroke-width="1.8" stroke-linecap="round"><path d="M9 2v1.4M2 9h1.4M4 4l1 1M14 4l-1 1"/></g><path d="M8 20a4 4 0 0 1 .6-7.95A5 5 0 0 1 18.3 13 3.5 3.5 0 0 1 18 20z" fill="#fff"/></symbol>
+    <symbol id="cloud" viewBox="0 0 24 24"><path d="M7 19a4.5 4.5 0 0 1 .5-8.97A6 6 0 0 1 19 12.5 3.3 3.3 0 0 1 18.5 19z" fill="#e9ecfa"/></symbol>
+    <symbol id="rain" viewBox="0 0 24 24"><path d="M7 15a4.5 4.5 0 0 1 .5-8.97A6 6 0 0 1 19 8.5 3.3 3.3 0 0 1 18.5 15z" fill="#d5dcf3"/><g stroke="#8fd3ff" stroke-width="2" stroke-linecap="round"><path d="M8 18l-1 3M13 18l-1 3M18 18l-1 3"/></g></symbol>
+    <symbol id="moon" viewBox="0 0 24 24"><path d="M19 14.5A8 8 0 0 1 9.5 5a8 8 0 1 0 9.5 9.5z" fill="#ffe9b0"/></symbol>
+  </defs>
+</svg>
+
+<main class="app">
+  <header class="top">
+    <button class="loc" aria-label="Change location, currently Lisbon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5a7 7 0 0 0-14 0C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+      Lisbon
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <button class="icon-btn" aria-label="Search for a city">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+    </button>
+  </header>
+
+  <section class="hero" aria-label="Current conditions">
+    <p class="when">Tuesday, 10 November · Updated 5:42 PM</p>
+    <p class="temp" aria-label="17 degrees">17<sup>°</sup></p>
+    <p class="cond">Clearing at dusk</p>
+    <p class="range">H 19°  ·  L 11°  ·  Feels like 15°</p>
+    <p class="summary">Showers ease by 7 PM, then a clear, cool night. Take a jacket if you're out late.</p>
+  </section>
+
+  <section class="card curve" aria-labelledby="h-today">
+    <h2 id="h-today">Today's temperature</h2>
+    <svg viewBox="0 0 340 150" role="img" aria-label="Temperature rises from 11 degrees at 6 AM to a high of 19 at 2 PM, and falls to 12 by midnight. Sunset is at 5:21 PM.">
+      <defs>
+        <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc766" stop-opacity=".45"/><stop offset="1" stop-color="#ffc766" stop-opacity="0"/></linearGradient>
+      </defs>
+      <path d="M0 108 C40 104 60 88 95 66 S150 28 178 28 S240 52 270 84 S320 108 340 112 L340 128 L0 128Z" fill="url(#fill)"/>
+      <path d="M0 108 C40 104 60 88 95 66 S150 28 178 28 S240 52 270 84 S320 108 340 112" fill="none" stroke="#ffc766" stroke-width="3" stroke-linecap="round"/>
+      <line x1="214" y1="12" x2="214" y2="128" stroke="rgba(255,255,255,.4)" stroke-dasharray="3 4"/>
+      <circle cx="178" cy="28" r="5" fill="#fff"/>
+      <text class="big" x="178" y="16" text-anchor="middle">19° high</text>
+      <circle cx="214" cy="45" r="7" fill="#fff" stroke="#ffc766" stroke-width="3"/>
+      <text class="lbl" x="222" y="18">Sunset 5:21</text>
+      <text class="lbl" x="0" y="146">6 AM</text>
+      <text class="lbl" x="113" y="146">12 PM</text>
+      <text class="lbl" x="228" y="146" text-anchor="middle">6 PM</text>
+      <text class="lbl" x="340" y="146" text-anchor="end">12 AM</text>
+    </svg>
+  </section>
+
+  <section class="card" aria-labelledby="h-hourly">
+    <h2 id="h-hourly">Hourly</h2>
+    <ul class="hours">
+      <li class="now"><time>Now</time><svg width="30" height="30" aria-hidden="true"><use href="#rain"/></svg><span>17°</span><span class="pop">40%</span></li>
+      <li><time>6 PM</time><svg width="30" height="30" aria-hidden="true"><use href="#rain"/></svg><span>16°</span><span class="pop">30%</span></li>
+      <li><time>7 PM</time><svg width="30" height="30" aria-hidden="true"><use href="#cloud"/></svg><span>15°</span><span class="pop">10%</span></li>
+      <li><time>8 PM</time><svg width="30" height="30" aria-hidden="true"><use href="#moon"/></svg><span>14°</span><span class="pop"></span></li>
+      <li><time>9 PM</time><svg width="30" height="30" aria-hidden="true"><use href="#moon"/></svg><span>13°</span><span class="pop"></span></li>
+      <li><time>10 PM</time><svg width="30" height="30" aria-hidden="true"><use href="#moon"/></svg><span>13°</span><span class="pop"></span></li>
+      <li><time>11 PM</time><svg width="30" height="30" aria-hidden="true"><use href="#moon"/></svg><span>12°</span><span class="pop"></span></li>
+    </ul>
+  </section>
+
+  <section class="card" aria-labelledby="h-week">
+    <h2 id="h-week">7-day forecast</h2>
+    <ul class="days">
+      <li><span>Today</span><svg width="28" height="28" aria-hidden="true"><use href="#rain"/></svg><span class="p">40%</span><span class="bar"><i style="left:20%;right:12%"></i></span><span class="lo">11°</span></li>
+      <li><span>Wed</span><svg width="28" height="28" aria-hidden="true"><use href="#sun"/></svg><span class="p"></span><span class="bar"><i style="left:28%;right:4%"></i></span><span class="lo">12°</span></li>
+      <li><span>Thu</span><svg width="28" height="28" aria-hidden="true"><use href="#part"/></svg><span class="p"></span><span class="bar"><i style="left:32%;right:0%"></i></span><span class="lo">13°</span></li>
+      <li><span>Fri</span><svg width="28" height="28" aria-hidden="true"><use href="#cloud"/></svg><span class="p">20%</span><span class="bar"><i style="left:24%;right:20%"></i></span><span class="lo">12°</span></li>
+      <li><span>Sat</span><svg width="28" height="28" aria-hidden="true"><use href="#rain"/></svg><span class="p">70%</span><span class="bar"><i style="left:12%;right:30%"></i></span><span class="lo">10°</span></li>
+      <li><span>Sun</span><svg width="28" height="28" aria-hidden="true"><use href="#rain"/></svg><span class="p">50%</span><span class="bar"><i style="left:4%;right:36%"></i></span><span class="lo">9°</span></li>
+      <li><span>Mon</span><svg width="28" height="28" aria-hidden="true"><use href="#part"/></svg><span class="p"></span><span class="bar"><i style="left:8%;right:28%"></i></span><span class="lo">10°</span></li>
+    </ul>
+  </section>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="h-wind"><h2 id="h-wind">Wind</h2>
+      <p class="val">14<small>km/h</small></p><p class="note">Gusts to 26 from the west</p></section>
+    <section class="card" aria-labelledby="h-uv"><h2 id="h-uv">UV index</h2>
+      <p class="val">1<small>Low</small></p><div class="uvbar" aria-hidden="true"><i style="left:9%"></i></div></section>
+    <section class="card" aria-labelledby="h-hum"><h2 id="h-hum">Humidity</h2>
+      <p class="val">78<small>%</small></p><p class="note">Dew point 13°</p></section>
+    <section class="card" aria-labelledby="h-sun"><h2 id="h-sun">Sunrise</h2>
+      <p class="val">7:02<small>AM</small></p><p class="note">Sunset 5:21 PM</p></section>
+  </div>
+</main>
+
+<nav class="tabs" aria-label="Main">
+  <button aria-current="page">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/></svg>Today</button>
+  <button>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>Radar</button>
+  <button>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4z"/><path d="M10 21h4"/></svg>Alerts</button>
+  <button>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Settings</button>
+</nav>
+</body>
+</html>

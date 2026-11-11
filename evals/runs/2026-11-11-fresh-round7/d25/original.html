@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pantry - Meal Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #fde68a 0%, #fbcfe8 100%); min-height: 100vh; }
+    .glow { box-shadow: 0 0 24px rgba(244, 114, 182, 0.55), 0 0 48px rgba(250, 204, 21, 0.35); }
+    .pulse-btn { animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+    .float { animation: floaty 3s ease-in-out infinite; }
+    @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  </style>
+</head>
+<body class="text-slate-800">
+<div class="flex min-h-screen w-[1280px] max-w-none">
+
+  <!-- Sidebar -->
+  <aside class="w-[248px] bg-white/70 backdrop-blur-md p-[22px] border-r border-pink-200 flex flex-col gap-[18px]">
+    <div class="flex items-center gap-2 text-2xl font-black">
+      <span class="float">🍳</span>
+      <span class="bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent">Pantry!</span>
+    </div>
+    <nav class="flex flex-col gap-2 text-[15px] font-extrabold">
+      <a href="#" class="rounded-2xl bg-gradient-to-r from-pink-400 to-yellow-300 text-white px-4 py-[10px] glow">🏠 Home</a>
+      <a href="#" class="rounded-2xl px-4 py-[10px] hover:bg-yellow-100">📅 Meal Plan</a>
+      <a href="#" class="rounded-2xl px-4 py-[10px] hover:bg-yellow-100">🛒 Shopping List</a>
+      <a href="#" class="rounded-2xl px-4 py-[10px] hover:bg-yellow-100 flex items-center justify-between">📖 My Recipes <span class="text-[10px] bg-fuchsia-500 text-white rounded-full px-2 py-[2px]">PRO</span></a>
+      <a href="#" class="rounded-2xl px-4 py-[10px] hover:bg-yellow-100">🌱 In Season</a>
+    </nav>
+    <div class="mt-auto rounded-3xl bg-gradient-to-br from-yellow-200 to-pink-300 p-[18px] text-center">
+      <p class="text-xs uppercase tracking-[0.2em] font-black">Go Premium!!</p>
+      <p class="text-sm font-bold mt-[6px]">Join 2M+ home cooks, the #1 rated planner!</p>
+      <button class="pulse-btn mt-3 w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white font-black py-2 glow hover:scale-110 transition">Upgrade ✨</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 p-[30px] flex flex-col gap-[26px]">
+
+    <header class="flex items-center justify-between">
+      <div>
+        <p class="text-xs uppercase tracking-[0.25em] font-black text-pink-600">Wednesday, 11/11/2026</p>
+        <h1 class="text-[40px] font-black leading-tight mt-1">Hey there, foodie! 👋🎉</h1>
+        <p class="font-bold text-slate-600 mt-[2px]">Let's make this week DELICIOUS!!</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="rounded-full bg-gradient-to-r from-lime-300 to-emerald-400 px-3 py-1 text-xs font-black uppercase tracking-widest">NEW</span>
+        <div class="h-[52px] w-[52px] rounded-full bg-gradient-to-br from-pink-400 via-fuchsia-500 to-violet-500 glow flex items-center justify-center text-white font-black">AM</div>
+      </div>
+    </header>
+
+    <!-- This week -->
+    <section class="rounded-[28px] bg-white/80 p-[24px] shadow-xl">
+      <div class="flex items-center justify-between mb-[16px]">
+        <h2 class="text-2xl font-black">📅 This Week's Dinners</h2>
+        <button class="rounded-full bg-gradient-to-r from-yellow-300 to-orange-400 px-5 py-2 font-black glow hover:scale-110 transition">+ Add Meal 🍽️</button>
+      </div>
+      <div class="grid grid-cols-7 gap-[10px]">
+        <div class="rounded-2xl bg-gradient-to-b from-rose-100 to-pink-200 p-3 hover:scale-105 transition">
+          <p class="text-[11px] uppercase tracking-widest font-black">Mon 11/09</p>
+          <p class="text-3xl mt-1">🍝</p>
+          <p class="font-extrabold text-sm mt-1">Pesto Pasta!</p>
+        </div>
+        <div class="rounded-2xl bg-gradient-to-b from-sky-100 to-indigo-200 p-3 hover:scale-105 transition">
+          <p class="text-[11px] uppercase tracking-widest font-black">Tue 11/10</p>
+          <p class="text-3xl mt-1">🌮</p>
+          <p class="font-extrabold text-sm mt-1">Fish Tacos!</p>
+        </div>
+        <div class="rounded-2xl bg-gradient-to-b from-amber-100 to-yellow-200 p-3 hover:scale-105 transition">
+          <p class="text-[11px] uppercase tracking-widest font-black">Wed 11/11</p>
+          <p class="text-3xl mt-1">🍛</p>
+          <p class="font-extrabold text-sm mt-1">Chicken Curry</p>
+        </div>
+        <div class="rounded-2xl bg-gradient-to-b from-emerald-100 to-teal-200 p-3 hover:scale-105 transition">
+          <p class="text-[11px] uppercase tracking-widest font-black">Thu 11/12</p>
+          <p class="text-3xl mt-1">🥗</p>
+          <p class="font-extrabold text-sm mt-1">Greek Salad</p>
+        </div>
+        <div class="rounded-2xl bg-gradient-to-b from-fuchsia-100 to-purple-200 p-3 hover:scale-105 transition">
+          <p class="text-[11px] uppercase tracking-widest font-black">Fri 11/13</p>
+          <p class="text-3xl mt-1">🍔</p>
+          <p class="font-extrabold text-sm mt-1">Smash Burgers</p>
+        </div>
+        <div class="rounded-2xl bg-gradient-to-b from-orange-100 to-red-200 p-3 hover:scale-105 transition">
+          <p class="text-[11px] uppercase tracking-widest font-black">Sat 11/14</p>
+          <p class="text-3xl mt-1">🍕</p>
+          <p class="font-extrabold text-sm mt-1">Pizza Night!!</p>
+        </div>
+        <div class="rounded-2xl bg-gradient-to-b from-green-100 to-lime-200 p-3 hover:scale-105 transition">
+          <p class="text-[11px] uppercase tracking-widest font-black">Sun 11/15</p>
+          <p class="text-3xl mt-1">🥘</p>
+          <p class="font-extrabold text-sm mt-1">Paella 🎉</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid grid-cols-[1fr_340px] gap-[26px]">
+
+      <!-- Shopping list -->
+      <section class="rounded-[28px] bg-white/80 p-[24px] shadow-xl">
+        <div class="flex items-center justify-between mb-[14px]">
+          <h2 class="text-2xl font-black">🛒 Shopping List</h2>
+          <span class="rounded-full bg-pink-500 text-white text-xs font-black px-3 py-1">10 ITEMS!</span>
+        </div>
+        <div class="grid grid-cols-2 gap-[18px]">
+          <div>
+            <p class="text-xs uppercase tracking-[0.2em] font-black text-pink-600 mb-2">🥬 Produce</p>
+            <label class="flex items-center gap-2 font-semibold py-[5px]"><input type="checkbox" class="accent-pink-500 w-4 h-4" /> Basil, 1 bunch</label>
+            <label class="flex items-center gap-2 font-semibold py-[5px]"><input type="checkbox" class="accent-pink-500 w-4 h-4" /> Limes (6)</label>
+            <label class="flex items-center gap-2 font-semibold py-[5px]"><input type="checkbox" class="accent-pink-500 w-4 h-4" /> Red onion x2</label>
+          </div>
+          <div>
+            <p class="text-xs uppercase tracking-[0.2em] font-black text-orange-600 mb-2">🥩 Meat &amp; Fish</p>
+            <label class="flex items-center gap-2 font-semibold py-[5px]"><input type="checkbox" class="accent-orange-500 w-4 h-4" /> Chicken thighs 2lb</label>
+            <label class="flex items-center gap-2 font-semibold py-[5px]"><input type="checkbox" class="accent-orange-500 w-4 h-4" /> Cod fillets</label>
+            <label class="flex items-center gap-2 font-semibold py-[5px]"><input type="checkbox" class="accent-orange-500 w-4 h-4" /> Ground beef 1.5 lbs</label>
+          </div>
+          <div>
+            <p class="text-xs uppercase tracking-[0.2em] font-black text-sky-600 mb-2">🧀 Dairy</p>
+            <label class="flex items-center gap-2 font-semibold py-[5px]"><input type="checkbox" class="accent-sky-500 w-4 h-4" /> Parmesan</label>
+            <label class="flex items-center gap-2 font-semibold py-[5px]"><input type="checkbox" class="accent-sky-500 w-4 h-4" /> Greek yogurt</label>
+          </div>
+          <div>
+            <p class="text-xs uppercase tracking-[0.2em] font-black text-emerald-600 mb-2">🥫 Pantry Staples</p>
+            <label class="flex items-center gap-2 font-semibold py-[5px]"><input type="checkbox" class="accent-emerald-500 w-4 h-4" /> Coconut milk ×2</label>
+            <label class="flex items-center gap-2 font-semibold py-[5px]"><input type="checkbox" class="accent-emerald-500 w-4 h-4" /> Curry paste</label>
+            <label class="flex items-center gap-2 font-semibold py-[5px]"><input type="checkbox" class="accent-emerald-500 w-4 h-4" /> Rice (2 kg)</label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Season card -->
+      <section class="rounded-[28px] bg-gradient-to-br from-lime-300 via-yellow-200 to-pink-300 p-[24px] shadow-xl relative overflow-hidden">
+        <p class="text-xs uppercase tracking-[0.25em] font-black">What's in Season</p>
+        <h2 class="text-3xl font-black mt-1">Autumn Harvest 🍂</h2>
+        <p class="font-bold mt-2">Pears, squash, kale &amp; figs are SUPER fresh right now!!</p>
+        <ul class="mt-4 space-y-2 font-extrabold text-sm">
+          <li>🍐 Pears — peak Oct–Dec</li>
+          <li>🎃 Butternut squash — 1,200 kcal/lb? yum!</li>
+          <li>🥬 Kale — 11/03 harvest</li>
+        </ul>
+        <button class="pulse-btn mt-5 rounded-full bg-gradient-to-r from-fuchsia-600 to-rose-500 text-white font-black px-5 py-2 glow hover:scale-110 transition">See Recipes 🔥</button>
+        <span class="float absolute -right-3 -bottom-3 text-7xl opacity-80">🌟</span>
+      </section>
+    </div>
+
+    <!-- Saved recipes -->
+    <section>
+      <div class="flex items-center justify-between mb-[14px]">
+        <h2 class="text-2xl font-black">📖 Saved Recipes</h2>
+        <a href="#" class="font-extrabold text-fuchsia-600 hover:underline">View all →</a>
+      </div>
+      <div class="grid grid-cols-3 gap-[20px]">
+
+        <article class="rounded-3xl bg-gradient-to-br from-rose-200 via-pink-200 to-fuchsia-200 p-[20px] glow hover:scale-105 transition">
+          <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-pink-500 to-yellow-300 flex items-center justify-center font-black text-white">P</div>
+            <h3 class="text-xl font-black">Pesto Pasta! 🍝</h3>
+          </div>
+          <p class="font-bold mt-3">⏱ 25 min &nbsp;•&nbsp; 🍽 4 servings</p>
+          <div class="flex gap-2 mt-3">
+            <span class="rounded-full bg-pink-500 text-white text-xs font-black px-3 py-1">QUICK!</span>
+            <span class="rounded-full bg-yellow-400 text-slate-900 text-xs font-black px-3 py-1">VEGGIE</span>
+          </div>
+        </article>
+
+        <article class="rounded-3xl bg-gradient-to-br from-sky-200 via-cyan-200 to-violet-200 p-[20px] glow hover:scale-105 transition">
+          <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-sky-500 to-violet-400 flex items-center justify-center font-black text-white">F</div>
+            <h3 class="text-xl font-black">Fish Tacos 🌮</h3>
+          </div>
+          <p class="font-bold mt-3">⏱ 30 min &nbsp;•&nbsp; 🍽 2 servings</p>
+          <div class="flex gap-2 mt-3">
+            <span class="rounded-full bg-sky-500 text-white text-xs font-black px-3 py-1">SEAFOOD</span>
+            <span class="rounded-full bg-lime-400 text-slate-900 text-xs font-black px-3 py-1">FAN FAV</span>
+          </div>
+        </article>
+
+        <article class="rounded-3xl bg-gradient-to-br from-amber-200 via-orange-200 to-rose-200 p-[20px] glow hover:scale-105 transition">
+          <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-amber-400 to-red-400 flex items-center justify-center font-black text-white">C</div>
+            <h3 class="text-xl font-black">Chicken Curry 🍛</h3>
+          </div>
+          <p class="font-bold mt-3">⏱ 45 mins &nbsp;•&nbsp; 🍽 6 servings</p>
+          <div class="flex gap-2 mt-3">
+            <span class="rounded-full bg-orange-500 text-white text-xs font-black px-3 py-1">SPICY 🌶️</span>
+            <span class="rounded-full bg-fuchsia-400 text-white text-xs font-black px-3 py-1">BATCH!</span>
+          </div>
+        </article>
+
+        <article class="rounded-3xl bg-gradient-to-br from-emerald-200 via-teal-200 to-cyan-200 p-[20px] glow hover:scale-105 transition">
+          <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-300 flex items-center justify-center font-black text-white">G</div>
+            <h3 class="text-xl font-black">Greek Salad 🥗</h3>
+          </div>
+          <p class="font-bold mt-3">⏱ 10 min &nbsp;•&nbsp; 🍽 2 servings</p>
+          <div class="flex gap-2 mt-3">
+            <span class="rounded-full bg-emerald-500 text-white text-xs font-black px-3 py-1">NO COOK</span>
+            <span class="rounded-full bg-yellow-300 text-slate-900 text-xs font-black px-3 py-1">LIGHT</span>
+          </div>
+        </article>
+
+        <article class="rounded-3xl bg-gradient-to-br from-fuchsia-200 via-purple-200 to-indigo-200 p-[20px] glow hover:scale-105 transition">
+          <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-fuchsia-500 to-indigo-400 flex items-center justify-center font-black text-white">S</div>
+            <h3 class="text-xl font-black">Smash Burgers 🍔</h3>
+          </div>
+          <p class="font-bold mt-3">⏱ 1 hr 5 min &nbsp;•&nbsp; 🍽 4 servings</p>
+          <div class="flex gap-2 mt-3">
+            <span class="rounded-full bg-fuchsia-600 text-white text-xs font-black px-3 py-1">CROWD PLEASER!</span>
+            <span class="rounded-full bg-rose-400 text-white text-xs font-black px-3 py-1">PRO TIP</span>
+          </div>
+        </article>
+
+        <article class="rounded-3xl bg-gradient-to-br from-orange-200 via-yellow-200 to-lime-200 p-[20px] glow hover:scale-105 transition">
+          <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-orange-500 to-lime-300 flex items-center justify-center font-black text-white">P</div>
+            <h3 class="text-xl font-black">Pizza Night 🍕</h3>
+          </div>
+          <p class="font-bold mt-3">⏱ 2h &nbsp;•&nbsp; 🍽 3 servings</p>
+          <div class="flex gap-2 mt-3">
+            <span class="rounded-full bg-red-500 text-white text-xs font-black px-3 py-1">FAMILY!!</span>
+            <span class="rounded-full bg-violet-500 text-white text-xs font-black px-3 py-1">WEEKEND</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <footer class="text-center text-sm font-bold text-slate-600 pb-[12px]">
+      Made with 💖 by the Pantry team &middot; Trusted by 2M+ cooks!! &middot; v2.0 NEW
+    </footer>
+  </main>
+</div>
+</body>
+</html>

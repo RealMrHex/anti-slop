@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shoply Admin</title>
+  <style>
+    :root {
+      --bg: #f6f4f1;
+      --surface: #ffffff;
+      --sunken: #faf8f5;
+      --line: #e7e2db;
+      --line-soft: #efebe5;
+      --text: #221d19;
+      --text-2: #4f4841;
+      --text-3: #766d65;
+      --ink: #2a231e;
+      --on-ink: #fbf9f6;
+      --accent: #b4531f;
+      --hover: #f1ede8;
+      --bar: #d8d0c6;
+      --good: #3b6b3a;
+      --info: #2f5b78;
+      --warn: #7d5610;
+      --bad: #8a3b3b;
+      --r-control: 8px;
+      --r-card: 12px;
+      --font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    svg { display: block; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+
+    /* Shell */
+    .app { display: grid; grid-template-columns: 232px 1fr; height: 100vh; }
+
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--line);
+      padding: 20px 16px;
+      overflow-y: auto;
+    }
+    .brand { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; padding: 0 8px; }
+
+    .nav-group { margin-top: 24px; }
+    .nav-label { margin: 0 0 6px; padding: 0 8px; font-size: 12px; color: var(--text-3); }
+    .nav { display: flex; flex-direction: column; gap: 2px; }
+    .nav a {
+      display: flex; align-items: center; gap: 10px;
+      height: 34px; padding: 0 8px;
+      border-radius: var(--r-control);
+      color: var(--text-2); text-decoration: none; font-weight: 500;
+      transition: background-color 150ms ease, color 150ms ease;
+    }
+    .nav a:hover { background: var(--hover); color: var(--text); }
+    .nav a[aria-current="page"] { background: var(--hover); color: var(--text); }
+    .nav svg { width: 16px; height: 16px; flex: none; }
+    .nav .count { margin-left: auto; font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+    main { padding: 20px 32px 40px; overflow-y: auto; min-width: 0; }
+
+    /* Top bar */
+    .topbar { display: flex; align-items: center; gap: 16px; }
+    .search { position: relative; width: 360px; max-width: 100%; }
+    .search svg {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      width: 16px; height: 16px; color: var(--text-3); pointer-events: none;
+    }
+    .search input {
+      width: 100%; height: 36px;
+      padding: 0 12px 0 36px;
+      border: 1px solid var(--line); border-radius: var(--r-control);
+      background: var(--surface); color: var(--text);
+    }
+    .search input::placeholder { color: var(--text-3); }
+    .top-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .icon-btn {
+      position: relative; width: 36px; height: 36px;
+      display: grid; place-items: center;
+      border: 1px solid var(--line); border-radius: var(--r-control);
+      background: var(--surface); color: var(--text-2); cursor: pointer;
+    }
+    .icon-btn:hover { background: var(--hover); }
+    .icon-btn svg { width: 18px; height: 18px; }
+    .icon-btn .dot {
+      position: absolute; top: 7px; right: 8px;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 0 2px var(--surface);
+    }
+    .user { display: flex; align-items: center; gap: 10px; font-weight: 500; }
+    .avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: var(--line); color: var(--text-2);
+      font-size: 12px; font-weight: 600;
+    }
+
+    /* Page head */
+    .page-head { margin-top: 28px; }
+    h1 {
+      margin: 0; font-size: 28px; line-height: 1.2; font-weight: 600;
+      letter-spacing: -0.01em; color: var(--text);
+    }
+    .page-head p { margin: 4px 0 0; color: var(--text-2); }
+
+    /* Stat cards */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--r-card);
+      padding: 20px;
+      min-width: 0;
+    }
+    .stat-label { font-size: 13px; color: var(--text-2); }
+    .stat-value {
+      margin-top: 8px; font-size: 28px; line-height: 1.1; font-weight: 600;
+      letter-spacing: -0.01em; font-variant-numeric: tabular-nums; color: var(--text);
+    }
+    .stat-delta { margin-top: 8px; font-size: 13px; color: var(--text-3); }
+    .stat-delta .up { color: var(--good); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+    /* Main row */
+    .row { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; margin-top: 16px; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    h2 { margin: 0; font-size: 15px; font-weight: 600; color: var(--text); }
+    .select-btn {
+      height: 30px; padding: 0 10px;
+      display: inline-flex; align-items: center; gap: 6px;
+      border: 1px solid var(--line); border-radius: var(--r-control);
+      background: var(--surface); color: var(--text-2); cursor: pointer;
+    }
+    .select-btn:hover { background: var(--hover); }
+    .select-btn svg { width: 14px; height: 14px; }
+
+    /* Chart */
+    .chart { margin-top: 24px; }
+    .plot {
+      height: 200px;
+      display: flex; align-items: flex-end; gap: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+    .plot > div { flex: 1; height: 100%; display: flex; align-items: flex-end; justify-content: center; }
+    .bar {
+      width: 100%; max-width: 40px;
+      border-radius: 4px 4px 0 0;
+      background: var(--bar);
+    }
+    .bar.peak { background: var(--accent); }
+    .x-labels { display: flex; gap: 12px; margin-top: 8px; }
+    .x-labels span { flex: 1; text-align: center; font-size: 12px; color: var(--text-3); }
+
+    /* Top products */
+    .products { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 18px; }
+    .product { display: flex; align-items: center; gap: 16px; }
+    .p-main { flex: 1; min-width: 0; }
+    .p-name { display: flex; align-items: baseline; gap: 8px; font-weight: 500; color: var(--text); }
+    .p-name .tag { font-size: 12px; font-weight: 400; color: var(--text-3); }
+    .track { margin-top: 8px; height: 4px; border-radius: 2px; background: var(--line-soft); overflow: hidden; }
+    .track i { display: block; height: 100%; border-radius: 2px; background: var(--text-2); }
+    .p-total { font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    /* Table */
+    .table-wrap { margin-top: 16px; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      padding: 8px 16px 8px 0; text-align: left;
+      font-size: 13px; font-weight: 500; color: var(--text-3);
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    td {
+      padding: 12px 16px 12px 0;
+      border-bottom: 1px solid var(--line-soft);
+      white-space: nowrap; color: var(--text);
+    }
+    tbody tr:hover { background: var(--sunken); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; padding-right: 40px; }
+    .order-id { font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+    .status {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--text-2);
+    }
+    .status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .status.paid { color: var(--good); }
+    .status.shipped { color: var(--info); }
+    .status.pending { color: var(--warn); }
+    .status.refunded { color: var(--bad); }
+    .orders-panel { margin-top: 16px; }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .app { grid-template-columns: 1fr; height: auto; min-height: 100vh; }
+      .sidebar { border-right: 0; border-bottom: 1px solid var(--line); padding: 12px 16px; overflow: visible; }
+      .nav-group { margin-top: 0; display: contents; }
+      .nav-label { display: none; }
+      .nav { flex-direction: row; overflow-x: auto; }
+      .nav a { white-space: nowrap; }
+      main { overflow: visible; padding: 20px 16px 32px; }
+      .search { width: 100%; }
+    }
+    @media (max-width: 560px) {
+      .stats { grid-template-columns: 1fr; }
+      .user span { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .nav a { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">Shoply</div>
+      <nav aria-label="Main">
+        <div class="nav-group">
+          <p class="nav-label">Main</p>
+          <div class="nav">
+            <a href="#" aria-current="page">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+              Dashboard
+            </a>
+            <a href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/></svg>
+              Orders
+              <span class="count">12</span>
+            </a>
+            <a href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18"/><path d="M6 16v-5M11 16V7M16 16v-3M21 16V9"/></svg>
+              Analytics
+            </a>
+          </div>
+        </div>
+        <div class="nav-group">
+          <p class="nav-label">Catalog</p>
+          <div class="nav">
+            <a href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/></svg>
+              Products
+            </a>
+            <a href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="7.5" cy="7.5" r="1.25"/></svg>
+              Discounts
+            </a>
+          </div>
+        </div>
+        <div class="nav-group">
+          <p class="nav-label">People</p>
+          <div class="nav">
+            <a href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>
+              Customers
+            </a>
+            <a href="#">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>
+              Settings
+            </a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+          <input type="search" placeholder="Search" aria-label="Search" />
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>
+            <span class="dot" aria-hidden="true"></span>
+          </button>
+          <div class="user">
+            <div class="avatar" aria-hidden="true">AL</div>
+            <span>Alex Morgan</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="page-head">
+        <h1>Dashboard</h1>
+        <p>Coffee store overview, November 2026</p>
+      </section>
+
+      <section class="stats" aria-label="Key figures">
+        <div class="panel">
+          <p class="stat-label">Total revenue</p>
+          <p class="stat-value">$48,210.00</p>
+          <p class="stat-delta"><span class="up">+12%</span> vs previous period</p>
+        </div>
+        <div class="panel">
+          <p class="stat-label">Total orders</p>
+          <p class="stat-value">1,204</p>
+          <p class="stat-delta"><span class="up">+8.5%</span> vs previous period</p>
+        </div>
+        <div class="panel">
+          <p class="stat-label">Average order value</p>
+          <p class="stat-value">$1,204.50</p>
+          <p class="stat-delta"><span class="up">+3%</span> vs previous period</p>
+        </div>
+        <div class="panel">
+          <p class="stat-label">Returning customers</p>
+          <p class="stat-value">7</p>
+          <p class="stat-delta"><span class="up">+21%</span> vs previous period</p>
+        </div>
+      </section>
+
+      <section class="row">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Weekly sales</h2>
+            <button class="select-btn" type="button">
+              This week
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="chart">
+            <div class="plot" role="img" aria-label="Bar chart of weekly sales, Monday to Sunday. Saturday is the highest day and Tuesday the lowest.">
+              <div><div class="bar" style="height:110px"></div></div>
+              <div><div class="bar" style="height:70px"></div></div>
+              <div><div class="bar" style="height:130px"></div></div>
+              <div><div class="bar" style="height:95px"></div></div>
+              <div><div class="bar" style="height:150px"></div></div>
+              <div><div class="bar peak" style="height:160px"></div></div>
+              <div><div class="bar" style="height:85px"></div></div>
+            </div>
+            <div class="x-labels" aria-hidden="true">
+              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Top products</h2>
+          <ul class="products">
+            <li class="product">
+              <div class="p-main">
+                <div class="p-name">Breville Barista Pro <span class="tag">New</span></div>
+                <div class="track"><i style="width:86%"></i></div>
+              </div>
+              <span class="p-total">$2,430.00</span>
+            </li>
+            <li class="product">
+              <div class="p-main">
+                <div class="p-name">Hario V60 Starter Kit</div>
+                <div class="track"><i style="width:64%"></i></div>
+              </div>
+              <span class="p-total">$980.00</span>
+            </li>
+            <li class="product">
+              <div class="p-main">
+                <div class="p-name">Fellow Ode Grinder</div>
+                <div class="track"><i style="width:72%"></i></div>
+              </div>
+              <span class="p-total">$1,120.00</span>
+            </li>
+            <li class="product">
+              <div class="p-main">
+                <div class="p-name">Moka Pot Classic</div>
+                <div class="track"><i style="width:41%"></i></div>
+              </div>
+              <span class="p-total">$410.00</span>
+            </li>
+            <li class="product">
+              <div class="p-main">
+                <div class="p-name">Acaia Pearl Scale</div>
+                <div class="track"><i style="width:55%"></i></div>
+              </div>
+              <span class="p-total">$675.50</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="panel orders-panel">
+        <h2>Recent orders</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Order</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Date</th>
+                <th scope="col" class="num">Total</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="order-id">#SH-1048</td><td>Maya Chen</td><td>9 Nov 2026</td><td class="num">$129.00</td><td><span class="status paid">Paid</span></td></tr>
+              <tr><td class="order-id">#SH-1047</td><td>Jonas Weber</td><td>9 Nov 2026</td><td class="num">$1,204.50</td><td><span class="status shipped">Shipped</span></td></tr>
+              <tr><td class="order-id">#SH-1046</td><td>Priya Nair</td><td>9 Nov 2026</td><td class="num">$84.00</td><td><span class="status pending">Pending</span></td></tr>
+              <tr><td class="order-id">#SH-1045</td><td>Tom Becker</td><td>8 Nov 2026</td><td class="num">$349.99</td><td><span class="status paid">Paid</span></td></tr>
+              <tr><td class="order-id">#SH-1044</td><td>Lena Ross</td><td>8 Nov 2026</td><td class="num">$42.00</td><td><span class="status refunded">Refunded</span></td></tr>
+              <tr><td class="order-id">#SH-1043</td><td>Omar Haddad</td><td>7 Nov 2026</td><td class="num">$620.00</td><td><span class="status shipped">Shipped</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

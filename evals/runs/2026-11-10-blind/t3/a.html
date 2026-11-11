@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Larder Roasters – Fresh coffee beans by subscription</title>
+<meta name="description" content="Small-batch coffee beans, roasted to order and posted to your door on your schedule. Pause or cancel any time.">
+<style>
+:root{
+  --cream:#f6efe4; --paper:#fbf7f0; --ink:#2a1a12; --ink-2:#5a443a; --roast:#3b2318;
+  --clay:#c2552d; --clay-d:#9c3f1d; --gold:#e3a94b; --line:#e2d6c4; --sage:#6f7d5a;
+  --r-s:10px; --r-m:18px; --r-l:28px;
+  --sh-1:0 1px 2px rgba(42,26,18,.08),0 6px 18px rgba(42,26,18,.08);
+  --sh-2:0 2px 4px rgba(42,26,18,.1),0 24px 48px rgba(42,26,18,.2);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+  --s1:8px;--s2:16px;--s3:24px;--s4:40px;--s5:72px;--s6:112px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.08;margin:0;letter-spacing:-.015em}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+:focus-visible{outline:3px solid var(--clay);outline-offset:3px;border-radius:6px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:#fff;padding:8px 14px;border-radius:8px;z-index:10}
+.skip:focus{left:8px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 28px;border-radius:999px;font:600 16px var(--sans);text-decoration:none;border:2px solid transparent;cursor:pointer;transition:transform .15s,background .15s,box-shadow .15s}
+.btn-primary{background:var(--clay);color:#fff;box-shadow:0 6px 16px rgba(194,85,45,.35)}
+.btn-primary:hover{background:var(--clay-d);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(1px);box-shadow:none}
+.btn-ghost{border-color:var(--ink);color:var(--ink);background:transparent}
+.btn-ghost:hover{background:var(--ink);color:var(--cream)}
+
+/* header */
+header{padding:20px 0}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font:700 22px var(--serif);text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo svg{width:28px;height:28px}
+.nav ul{display:flex;gap:32px;list-style:none;margin:0;padding:0}
+.nav ul a{text-decoration:none;font-weight:500;color:var(--ink-2);padding:8px 0}
+.nav ul a:hover{color:var(--clay)}
+.nav .btn{min-height:42px;padding:0 20px;font-size:15px}
+
+/* hero */
+.hero{padding:var(--s4) 0 var(--s5);overflow:hidden}
+.hero-grid>*{min-width:0}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:var(--s4);align-items:center}
+.eyebrow{font:600 13px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--clay-d);margin-bottom:var(--s2)}
+.hero h1{font-size:clamp(46px,6.4vw,84px);margin-bottom:var(--s3)}
+.hero h1 em{font-style:italic;color:var(--clay)}
+.lede{font-size:20px;color:var(--ink-2);max-width:30em;margin-bottom:var(--s3)}
+.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.fine{margin-top:var(--s2);font-size:14px;color:var(--ink-2)}
+.stage{position:relative;display:grid;place-items:center;min-height:520px}
+.stage::before{content:"";position:absolute;width:min(440px,90%);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f0c46f,var(--gold) 55%,#d28f2e);}
+.bag{position:relative;width:min(300px,70%);margin-right:60px;filter:drop-shadow(0 30px 30px rgba(42,26,18,.3));transform:rotate(-4deg);transition:transform .4s}
+.stage:hover .bag{transform:rotate(-1deg) translateY(-6px)}
+.tag{position:absolute;right:0;bottom:2%;background:var(--paper);border-radius:var(--r-m);padding:14px 18px;box-shadow:var(--sh-2);font-size:14px;line-height:1.4;max-width:210px}
+.tag b{display:block;font:600 16px var(--serif)}
+.tag span{color:var(--ink-2)}
+
+/* sections */
+section{padding:var(--s5) 0}
+.head{max-width:640px;margin-bottom:var(--s4)}
+.head h2{font-size:clamp(34px,4.4vw,52px);margin-bottom:var(--s2)}
+.head p{color:var(--ink-2);font-size:19px}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);counter-reset:s;list-style:none;margin:0;padding:0}
+.steps li{counter-increment:s;background:var(--paper);border-radius:var(--r-l);padding:var(--s4) var(--s3) var(--s3);box-shadow:var(--sh-1);position:relative}
+.steps li::before{content:counter(s);font:italic 600 64px/1 var(--serif);color:var(--gold);display:block;margin-bottom:var(--s2)}
+.steps h3{font-size:24px;margin-bottom:8px}
+.steps p{color:var(--ink-2)}
+
+/* dark roast band */
+.band{background:var(--roast);color:var(--cream);border-radius:var(--r-l) var(--r-l) 0 0;padding:var(--s5) 0}
+.band .head p{color:#d8c6b3}
+.band .eyebrow{color:var(--gold)}
+.roasts{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3)}
+.roast{background:#4a2e20;border:1px solid #6a4837;border-radius:var(--r-m);padding:var(--s3);display:flex;flex-direction:column;gap:12px}
+.roast .dots{display:flex;gap:5px}
+.roast .dots i{width:14px;height:14px;border-radius:50%;background:#6a4837}
+.roast .dots i.on{background:var(--gold)}
+.roast h3{font-size:26px}
+.roast .origin{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.roast p{color:#d8c6b3;font-size:16px}
+.roast .notes{margin-top:auto;padding-top:12px;border-top:1px solid #6a4837;font-size:15px;color:var(--cream)}
+.roast .lvl{font-size:13px;color:#d8c6b3}
+.band-foot{margin-top:var(--s3);color:#d8c6b3;font-size:15px}
+
+/* plans */
+.plans-wrap{background:var(--roast);padding-bottom:var(--s6);margin-top:-1px}
+.plans-wrap .wrap{padding-top:0}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);align-items:stretch}
+.plan{background:var(--paper);color:var(--ink);border-radius:var(--r-l);padding:var(--s4) var(--s3) var(--s3);display:flex;flex-direction:column;gap:var(--s2);position:relative}
+.plan.pop{background:var(--gold);box-shadow:var(--sh-2)}
+.plan .flag{position:absolute;top:-14px;left:24px;background:var(--clay);color:#fff;font:600 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;border-radius:999px}
+.plan h3{font-size:28px}
+.plan .size{color:var(--ink-2);font-size:15px}
+.plan.pop .size{color:#4a3320}
+.price{font:600 46px/1 var(--serif)}
+.price small{font:500 15px var(--sans);color:var(--ink-2)}
+.plan.pop .price small{color:#4a3320}
+.plan ul{list-style:none;margin:0 0 var(--s2);padding:0;display:grid;gap:10px;font-size:16px}
+.plan li{display:flex;gap:10px}
+.plan li::before{content:"";flex:none;width:18px;height:18px;margin-top:4px;border-radius:50%;background:var(--sage) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.5l2.7 2.7L13 6.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.plan .btn{margin-top:auto;width:100%}
+.plan.pop .btn-primary{background:var(--ink);box-shadow:none}
+.plan.pop .btn-primary:hover{background:#000}
+.note{margin-top:var(--s3);color:#d8c6b3;font-size:14px}
+
+/* promises */
+.promises{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s4)}
+.promises h3{font-size:22px;margin-bottom:8px}
+.promises p{color:var(--ink-2)}
+.promises svg{width:40px;height:40px;margin-bottom:var(--s2);color:var(--clay)}
+
+/* faq */
+.faq{max-width:760px}
+details{border-bottom:1px solid var(--line);padding:4px 0}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;align-items:center;font:600 21px var(--serif);padding:18px 0;min-height:48px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:400 28px/1 var(--sans);color:var(--clay);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--ink-2);padding:0 40px 20px 0}
+
+/* final */
+.final{background:var(--clay);color:#fff;border-radius:var(--r-l);padding:var(--s5) var(--s3);text-align:center;margin-bottom:var(--s5)}
+.final h2{font-size:clamp(34px,5vw,58px);margin-bottom:var(--s2)}
+.final p{max-width:32em;margin:0 auto var(--s3);font-size:19px}
+.final .btn{background:var(--cream);color:var(--ink)}
+.final .btn:hover{background:#fff}
+.final :focus-visible{outline-color:#fff}
+footer{padding:0 0 var(--s4);color:var(--ink-2);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid var(--line);padding-top:var(--s3)}
+
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr}
+  .stage{min-height:440px}
+  .steps,.roasts,.plans,.promises{grid-template-columns:1fr}
+  .nav ul{display:none}
+  .plans{gap:32px}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  .wrap{padding:0 20px}
+  section{padding:var(--s4) 0}
+  .hero{padding-bottom:var(--s5)}
+  .tag{right:0;bottom:4%}
+  .cta .btn{width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#">
+      <svg viewBox="0 0 28 28" aria-hidden="true"><ellipse cx="14" cy="14" rx="9" ry="12" transform="rotate(30 14 14)" fill="#3b2318"/><path d="M9 6c4 4 6 12 10 16" stroke="#f6efe4" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      Larder Roasters
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#roasts">The roasts</a></li>
+        <li><a href="#plans">Plans</a></li>
+        <li><a href="#faq">Questions</a></li>
+      </ul>
+    </nav>
+    <a class="btn btn-ghost" href="#plans">Start a subscription</a>
+  </div>
+</header>
+
+<main id="main">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Roasted to order · Posted within 48 hours</p>
+        <h1>Coffee that arrives <em>while it’s still good.</em></h1>
+        <p class="lede">We roast small batches only after you order, then post them on your schedule. Pick a roast, pick a rhythm, and never run out on a Monday.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#plans">Choose your beans</a>
+          <a class="btn btn-ghost" href="#how">See how it works</a>
+        </div>
+        <p class="fine">Skip, pause or cancel any time. No contract.</p>
+      </div>
+
+      <div class="stage">
+        <svg class="bag" viewBox="0 0 300 400" role="img" aria-label="A bag of Larder Roasters coffee beans with a label reading Morning Light, Washed Ethiopian, roasted on the day of dispatch">
+          <path d="M40 40 L260 40 L276 372 Q276 388 260 388 L40 388 Q24 388 24 372 Z" fill="#3b2318"/>
+          <path d="M40 40 L260 40 L262 74 L38 74 Z" fill="#2a1a12"/>
+          <path d="M40 52 H260" stroke="#4a2e20" stroke-width="3" stroke-dasharray="3 6"/>
+          <path d="M40 40 L38 372" stroke="#fff" stroke-opacity=".08" stroke-width="14"/>
+          <rect x="52" y="108" width="196" height="238" rx="12" fill="#f6efe4"/>
+          <g transform="translate(150 150)">
+            <ellipse rx="22" ry="29" transform="rotate(28)" fill="#3b2318"/>
+            <path d="M-8 -22c10 12 14 30 20 44" stroke="#f6efe4" stroke-width="3.5" fill="none" stroke-linecap="round" transform="rotate(0)"/>
+          </g>
+          <text x="150" y="214" text-anchor="middle" font-family="Iowan Old Style, Palatino, Georgia, serif" font-size="13" letter-spacing="3" fill="#9c3f1d" font-weight="600">LARDER ROASTERS</text>
+          <text x="150" y="250" text-anchor="middle" font-family="Iowan Old Style, Palatino, Georgia, serif" font-size="27" font-style="italic" font-weight="600" fill="#2a1a12">Morning Light</text>
+          <line x1="90" y1="268" x2="210" y2="268" stroke="#c2552d" stroke-width="2"/>
+          <text x="150" y="292" text-anchor="middle" font-family="Avenir Next, system-ui, sans-serif" font-size="13" fill="#5a443a">Washed Ethiopian · Light roast</text>
+          <text x="150" y="314" text-anchor="middle" font-family="Avenir Next, system-ui, sans-serif" font-size="12" fill="#5a443a">Jasmine · Peach · Honey</text>
+          <rect x="108" y="326" width="84" height="0" fill="none"/>
+        </svg>
+        <div class="tag"><b>Roasted on the day it ships</b><span>Every bag carries its roast date, so you always know how fresh it is.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="how">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">How it works</p>
+        <h2>Three choices, then it runs itself.</h2>
+        <p>Set it up in a couple of minutes. Change it whenever your coffee habits do.</p>
+      </div>
+      <ol class="steps">
+        <li><h3>Pick your roast</h3><p>Light and fruity, balanced and chocolatey, or dark and bold. Not sure? Take the discovery bag and we’ll rotate.</p></li>
+        <li><h3>Set your rhythm</h3><p>Every week, every two weeks or every month. Tell us whether you grind at home, and we’ll grind for you if you don’t.</p></li>
+        <li><h3>Open the box</h3><p>Beans are roasted after you order and arrive in a letterbox-friendly bag. Skip a delivery or pause from your account.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="band" id="roasts">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">The roasts</p>
+        <h2>Three coffees to start with.</h2>
+        <p>A small, steady line-up, and a guest origin that changes with the harvest.</p>
+      </div>
+      <div class="roasts">
+        <article class="roast">
+          <div class="dots" role="img" aria-label="Roast level: 1 of 3"><i class="on"></i><i></i><i></i></div>
+          <p class="origin">Ethiopia · Washed</p>
+          <h3>Morning Light</h3>
+          <p>Bright and tea-like, the one to drink black while the kettle is still ticking.</p>
+          <p class="notes">Jasmine, peach, honey <span class="lvl">· Light roast</span></p>
+        </article>
+        <article class="roast">
+          <div class="dots" role="img" aria-label="Roast level: 2 of 3"><i class="on"></i><i class="on"></i><i></i></div>
+          <p class="origin">Colombia · Natural</p>
+          <h3>Everyday Cup</h3>
+          <p>Round, sweet and easy. Works as filter, French press or a milky flat white.</p>
+          <p class="notes">Cocoa, red apple, caramel <span class="lvl">· Medium roast</span></p>
+        </article>
+        <article class="roast">
+          <div class="dots" role="img" aria-label="Roast level: 3 of 3"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+          <p class="origin">Brazil · Sumatra blend</p>
+          <h3>Late Shift</h3>
+          <p>Deep, syrupy and low in acidity. Built for espresso and stubborn mornings.</p>
+          <p class="notes">Dark chocolate, toasted nut, molasses <span class="lvl">· Dark roast</span></p>
+        </article>
+      </div>
+      <p class="band-foot">Tasting notes are our descriptions of the intended profile. Your palate gets the final say.</p>
+    </div>
+  </div>
+
+  <div class="plans-wrap" id="plans">
+    <div class="wrap" style="padding-top:var(--s4)">
+      <div class="head" style="color:var(--cream)">
+        <p class="eyebrow" style="color:var(--gold)">Plans</p>
+        <h2>Pick the bag size that matches your mug count.</h2>
+        <p style="color:#d8c6b3">Free postage on every plan. Prices shown are examples.</p>
+      </div>
+      <div class="plans">
+        <div class="plan">
+          <h3>Solo</h3>
+          <p class="size">250 g bag · about 15 cups</p>
+          <p class="price">$14 <small>/ delivery</small></p>
+          <ul><li>One roast of your choice</li><li>Weekly, fortnightly or monthly</li><li>Whole bean or ground</li></ul>
+          <a class="btn btn-ghost" href="#">Start with Solo</a>
+        </div>
+        <div class="plan pop">
+          <span class="flag">Most chosen</span>
+          <h3>Household</h3>
+          <p class="size">2 × 250 g bags · about 30 cups</p>
+          <p class="price">$26 <small>/ delivery</small></p>
+          <ul><li>Mix any two roasts</li><li>Weekly, fortnightly or monthly</li><li>Free guest-origin swap each season</li></ul>
+          <a class="btn btn-primary" href="#">Start with Household</a>
+        </div>
+        <div class="plan">
+          <h3>Office</h3>
+          <p class="size">1 kg bag · about 60 cups</p>
+          <p class="price">$48 <small>/ delivery</small></p>
+          <ul><li>One roast, in bulk</li><li>Weekly or fortnightly</li><li>Sealed with a one-way valve</li></ul>
+          <a class="btn btn-ghost" href="#">Start with Office</a>
+        </div>
+      </div>
+      <p class="note">Placeholder pricing for this design. Final prices to be confirmed.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="head"><h2>The small print, kept small.</h2></div>
+      <div class="promises">
+        <div>
+          <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="20" cy="20" r="14"/><path d="M20 11v9l6 4"/></svg>
+          <h3>Fresh, not just “new”</h3>
+          <p>We roast once your order is in. The roast date is printed on every bag.</p>
+        </div>
+        <div>
+          <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="6" width="24" height="28" rx="4"/><path d="M14 16h12M14 22h12M14 28h6"/></svg>
+          <h3>Flexible by default</h3>
+          <p>Skip a week, move a date, swap a roast or pause. It takes a couple of taps.</p>
+        </div>
+        <div>
+          <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 20h22M22 12l8 8-8 8"/><path d="M6 10h10M6 30h10"/></svg>
+          <h3>Leave whenever</h3>
+          <p>Cancel from your account in one step. No notice period, no questions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="head"><p class="eyebrow">Questions</p><h2>Things people ask first.</h2></div>
+      <div class="faq">
+        <details><summary>How fresh will my beans be?</summary><p>Roasted after you order and posted within 48 hours. Beans taste their best in the first few weeks after roasting, and we print the date on each bag so you can tell.</p></details>
+        <details><summary>Can I change roast or size later?</summary><p>Yes. Update your next delivery any time before it’s roasted, and the change carries forward.</p></details>
+        <details><summary>I don’t own a grinder. Can you grind it?</summary><p>Yes. Choose espresso, filter or French press grind at sign-up and we’ll set it up for you.</p></details>
+        <details><summary>What if I’m going away?</summary><p>Pause your subscription from your account and restart when you’re home.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="final">
+      <h2>Your next cup could be your best one.</h2>
+      <p>Choose a roast and we’ll have it in the post within two days.</p>
+      <a class="btn" href="#plans">Start my subscription</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© Larder Roasters. Demo page with sample content.</span>
+    <span>Roasted in small batches.</span>
+  </div>
+</footer>
+</body>
+</html>

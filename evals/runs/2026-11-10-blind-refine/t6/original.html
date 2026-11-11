@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Send Money</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f4f4f6;
+    color: #111;
+  }
+  .screen {
+    max-width: 420px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: #fff;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  h1 { font-size: 22px; margin: 8px 0 16px; }
+  label { display: block; font-size: 13px; color: #555; margin: 14px 0 6px; }
+  select, input, textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 16px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fff;
+  }
+  textarea { resize: none; height: 72px; }
+  .amount-wrap { position: relative; }
+  .amount-wrap span {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: #555;
+  }
+  .amount-wrap input { padding-left: 28px; }
+  .error { color: #c00; font-size: 13px; min-height: 18px; margin-top: 4px; }
+  .balance { font-size: 12px; color: #777; margin-top: 4px; }
+  .spacer { flex: 1; }
+  button {
+    width: 100%;
+    font: inherit;
+    font-size: 17px;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: #1a5fd6;
+    color: #fff;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  button:disabled { background: #9db9ea; cursor: default; }
+  #review-panel { display: none; margin-top: 16px; border-top: 1px solid #eee; padding-top: 12px; }
+  #review-panel p { margin: 6px 0; font-size: 15px; }
+  .row { display: flex; justify-content: space-between; }
+  .actions { display: flex; gap: 8px; }
+  .actions button { background: #eee; color: #111; }
+  .actions button.primary { background: #1a5fd6; color: #fff; }
+</style>
+</head>
+<body>
+<div class="screen">
+  <h1>Send Money</h1>
+
+  <form id="transfer-form" novalidate>
+    <label for="from">From</label>
+    <select id="from">
+      <option value="checking" data-balance="2450.00">Checking ••4421</option>
+      <option value="savings" data-balance="10120.55">Savings ••9087</option>
+    </select>
+    <div class="balance" id="balance"></div>
+
+    <label for="recipient">Recipient</label>
+    <input id="recipient" type="text" placeholder="Name, email, or phone">
+
+    <label for="amount">Amount</label>
+    <div class="amount-wrap">
+      <span>$</span>
+      <input id="amount" type="text" inputmode="decimal" placeholder="0.00">
+    </div>
+    <div class="error" id="amount-error"></div>
+
+    <label for="note">Note (optional)</label>
+    <textarea id="note" maxlength="140" placeholder="What's this for?"></textarea>
+
+    <button type="button" id="review-btn">Review</button>
+  </form>
+
+  <div id="review-panel">
+    <div class="row"><span>From</span><span id="r-from"></span></div>
+    <div class="row"><span>To</span><span id="r-to"></span></div>
+    <div class="row"><span>Amount</span><span id="r-amount"></span></div>
+    <div class="row"><span>Note</span><span id="r-note"></span></div>
+    <div class="actions">
+      <button type="button" id="edit-btn">Edit</button>
+      <button type="button" id="send-btn" class="primary">Send</button>
+    </div>
+    <div id="sent-msg" style="margin-top:12px;color:#070;"></div>
+  </div>
+
+  <div class="spacer"></div>
+</div>
+
+<script>
+  (function () {
+    var form = document.getElementById('transfer-form');
+    var fromSel = document.getElementById('from');
+    var balanceEl = document.getElementById('balance');
+    var recipient = document.getElementById('recipient');
+    var amount = document.getElementById('amount');
+    var amountErr = document.getElementById('amount-error');
+    var note = document.getElementById('note');
+    var reviewBtn = document.getElementById('review-btn');
+    var panel = document.getElementById('review-panel');
+
+    function selectedBalance() {
+      var opt = fromSel.options[fromSel.selectedIndex];
+      return parseFloat(opt.getAttribute('data-balance'));
+    }
+
+    function showBalance() {
+      balanceEl.textContent = 'Available: $' + selectedBalance().toFixed(2);
+    }
+
+    function validate() {
+      var ok = true;
+      amountErr.textContent = '';
+      var raw = amount.value.trim();
+      var val = parseFloat(raw);
+      if (!recipient.value.trim()) { ok = false; }
+      if (!/^\d+(\.\d{1,2})?$/.test(raw) || !(val > 0)) {
+        amountErr.textContent = 'Enter a valid amount greater than 0.';
+        ok = false;
+      } else if (val > selectedBalance()) {
+        amountErr.textContent = 'Amount exceeds available balance.';
+        ok = false;
+      }
+      return ok;
+    }
+
+    function fmt(n) { return '$' + Number(n).toFixed(2); }
+
+    fromSel.addEventListener('change', showBalance);
+
+    reviewBtn.addEventListener('click', function () {
+      if (!recipient.value.trim()) {
+        alert('Please enter a recipient.');
+        return;
+      }
+      if (!validate()) return;
+      document.getElementById('r-from').textContent = fromSel.options[fromSel.selectedIndex].text;
+      document.getElementById('r-to').textContent = recipient.value.trim();
+      document.getElementById('r-amount').textContent = fmt(parseFloat(amount.value));
+      document.getElementById('r-note').textContent = note.value.trim() || '-';
+      document.getElementById('sent-msg').textContent = '';
+      panel.style.display = 'block';
+      reviewBtn.disabled = true;
+    });
+
+    document.getElementById('edit-btn').addEventListener('click', function () {
+      panel.style.display = 'none';
+      reviewBtn.disabled = false;
+    });
+
+    document.getElementById('send-btn').addEventListener('click', function () {
+      document.getElementById('sent-msg').textContent = 'Transfer of ' +
+        document.getElementById('r-amount').textContent + ' submitted (demo only).';
+    });
+
+    showBalance();
+  })();
+</script>
+</body>
+</html>

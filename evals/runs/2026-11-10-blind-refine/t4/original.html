@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym Member Dashboard</title>
+<style>
+  body { font-family: sans-serif; margin: 16px; background: #fff; color: #111; }
+  h1 { font-size: 20px; margin: 0 0 12px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+  .stat { border: 1px solid #ccc; padding: 10px; min-width: 150px; }
+  .stat .label { font-size: 12px; color: #555; }
+  .stat .value { font-size: 22px; font-weight: bold; }
+  .controls { margin-bottom: 8px; }
+  input[type=search] { padding: 4px; width: 240px; max-width: 100%; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+  th { background: #f0f0f0; cursor: pointer; }
+  .expiring { background: #fff3cd; }
+  .expired { background: #f8d7da; }
+  .checkin-btn { padding: 2px 8px; }
+  .section-title { font-size: 16px; margin: 16px 0 6px; }
+  #expiringList li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<h1>Gym Member Dashboard</h1>
+
+<div class="stats">
+  <div class="stat"><div class="label">Total members</div><div class="value" id="totalMembers">0</div></div>
+  <div class="stat"><div class="label">Check-ins today</div><div class="value" id="checkinsToday">0</div></div>
+  <div class="stat"><div class="label">Expiring within 14 days</div><div class="value" id="expiringCount">0</div></div>
+</div>
+
+<div class="section-title">Expiring memberships (next 14 days)</div>
+<ul id="expiringList"></ul>
+
+<div class="section-title">Members</div>
+<div class="controls">
+  <input type="search" id="search" placeholder="Search by name or email">
+</div>
+<table>
+  <thead>
+    <tr>
+      <th data-key="id">ID</th>
+      <th data-key="name">Name</th>
+      <th data-key="email">Email</th>
+      <th data-key="plan">Plan</th>
+      <th data-key="expires">Expires</th>
+      <th data-key="lastCheckin">Last check-in</th>
+      <th>Check in</th>
+    </tr>
+  </thead>
+  <tbody id="membersBody"></tbody>
+</table>
+
+<script>
+  // Sample data (replace with real data source later)
+  var members = [
+    { id: 1, name: "Alice Johnson", email: "alice@example.com", plan: "Monthly", expires: "2026-11-20", lastCheckin: "2026-11-10" },
+    { id: 2, name: "Bob Smith", email: "bob@example.com", plan: "Annual", expires: "2027-03-01", lastCheckin: "2026-11-08" },
+    { id: 3, name: "Carol White", email: "carol@example.com", plan: "Monthly", expires: "2026-11-12", lastCheckin: "2026-11-05" },
+    { id: 4, name: "Dan Brown", email: "dan@example.com", plan: "Quarterly", expires: "2026-10-30", lastCheckin: "2026-10-30" },
+    { id: 5, name: "Eve Davis", email: "eve@example.com", plan: "Annual", expires: "2027-06-15", lastCheckin: "2026-11-10" }
+  ];
+
+  var todayStr = new Date().toISOString().slice(0, 10);
+  var checkinsTodaySet = {};
+  members.forEach(function (m) { if (m.lastCheckin === todayStr) checkinsTodaySet[m.id] = true; });
+
+  var sortKey = "name";
+  var sortAsc = true;
+
+  function daysUntil(dateStr) {
+    var today = new Date(todayStr + "T00:00:00");
+    var d = new Date(dateStr + "T00:00:00");
+    return Math.round((d - today) / 86400000);
+  }
+
+  function renderStats() {
+    document.getElementById("totalMembers").textContent = members.length;
+    document.getElementById("checkinsToday").textContent = Object.keys(checkinsTodaySet).length;
+    var expiring = members.filter(function (m) { var n = daysUntil(m.expires); return n >= 0 && n <= 14; });
+    document.getElementById("expiringCount").textContent = expiring.length;
+
+    var list = document.getElementById("expiringList");
+    list.innerHTML = "";
+    if (expiring.length === 0) {
+      list.innerHTML = "<li>None</li>";
+    }
+    expiring.forEach(function (m) {
+      var li = document.createElement("li");
+      li.textContent = m.name + " - expires " + m.expires + " (" + daysUntil(m.expires) + " days)";
+      list.appendChild(li);
+    });
+  }
+
+  function renderTable() {
+    var q = document.getElementById("search").value.toLowerCase();
+    var rows = members.filter(function (m) {
+      return m.name.toLowerCase().indexOf(q) !== -1 || m.email.toLowerCase().indexOf(q) !== -1;
+    });
+    rows.sort(function (a, b) {
+      var av = a[sortKey], bv = b[sortKey];
+      if (av < bv) return sortAsc ? -1 : 1;
+      if (av > bv) return sortAsc ? 1 : -1;
+      return 0;
+    });
+
+    var tbody = document.getElementById("membersBody");
+    tbody.innerHTML = "";
+    rows.forEach(function (m) {
+      var tr = document.createElement("tr");
+      var n = daysUntil(m.expires);
+      if (n < 0) tr.className = "expired";
+      else if (n <= 14) tr.className = "expiring";
+
+      var cells = [m.id, m.name, m.email, m.plan, m.expires, m.lastCheckin];
+      cells.forEach(function (c) {
+        var td = document.createElement("td");
+        td.textContent = c;
+        tr.appendChild(td);
+      });
+
+      var btnTd = document.createElement("td");
+      var btn = document.createElement("button");
+      btn.className = "checkin-btn";
+      btn.textContent = checkinsTodaySet[m.id] ? "Checked in" : "Check in";
+      btn.disabled = !!checkinsTodaySet[m.id];
+      btn.addEventListener("click", function () { checkIn(m.id); });
+      btnTd.appendChild(btn);
+      tr.appendChild(btnTd);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function checkIn(id) {
+    var m = members.filter(function (x) { return x.id === id; })[0];
+    if (!m) return;
+    checkinsTodaySet[id] = true;
+    m.lastCheckin = todayStr;
+    renderStats();
+    renderTable();
+  }
+
+  document.querySelectorAll("th[data-key]").forEach(function (th) {
+    th.addEventListener("click", function () {
+      var key = th.getAttribute("data-key");
+      if (sortKey === key) sortAsc = !sortAsc;
+      else { sortKey = key; sortAsc = true; }
+      renderTable();
+    });
+  });
+
+  document.getElementById("search").addEventListener("input", renderTable);
+
+  renderStats();
+  renderTable();
+</script>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Postbox Content Calendar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ee;
+    --surface: #fdfbf7;
+    --raised: #efe9df;
+    --hair: rgba(31, 27, 22, 0.08);
+    --hair-strong: rgba(31, 27, 22, 0.14);
+    --text: #1f1b16;
+    --text-2: #5e554a;
+    --muted: #7b7266;
+    --accent: #9a4420;
+    --accent-ink: #ffffff;
+    --pos: #15803d;
+    --warn: #92400e;
+    --ink-dot: #4b5565;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--text);
+    background: var(--bg);
+    min-height: 100vh;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button, select, a { font: inherit; color: inherit; }
+  a { text-decoration: none; cursor: pointer; }
+
+  .app { display: flex; height: 900px; width: 1280px; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--hair);
+    padding: 20px 12px;
+    display: flex;
+    flex-direction: column;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 8px;
+    height: 32px;
+    margin-bottom: 24px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .brand-mark {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    background: var(--accent);
+    display: inline-block;
+  }
+  .group-label {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--muted);
+    padding: 0 8px;
+    margin-bottom: 8px;
+  }
+  .group-label.gap { margin-top: 24px; }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 36px;
+    padding: 0 8px;
+    border-radius: 8px;
+    color: var(--text-2);
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .nav a svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--muted); stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .nav a:hover { background: var(--raised); color: var(--text); }
+  .nav a.active {
+    background: var(--raised);
+    color: var(--text);
+    font-weight: 500;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 0 0 1px var(--hair);
+  }
+  .nav a.active svg { color: var(--text); }
+
+  /* Main */
+  .main {
+    flex: 1;
+    min-width: 0;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .eyebrow { font-size: 13px; line-height: 16px; color: var(--muted); }
+  .title {
+    font-size: 28px;
+    line-height: 1.15;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin-top: 4px;
+  }
+  .controls { display: flex; align-items: center; gap: 8px; }
+  .select {
+    height: 36px;
+    padding: 0 32px 0 12px;
+    border: 1px solid var(--hair-strong);
+    border-radius: 8px;
+    background: var(--surface);
+    font-size: 14px;
+    color: var(--text);
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+    background-position: calc(100% - 16px) 16px, calc(100% - 11px) 16px;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    transition: border-color 150ms var(--ease);
+  }
+  .select:hover { border-color: var(--muted); }
+  .select:focus-visible, .btn:focus-visible, .nav a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .btn {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    border: 0;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 150ms var(--ease);
+  }
+  .btn:hover { background: #843a1b; }
+  .btn:active { transform: scale(0.98); }
+
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .stat-label { font-size: 13px; line-height: 16px; color: var(--text-2); }
+  .stat-value { font-size: 32px; line-height: 1; font-weight: 500; margin-top: 12px; }
+
+  /* Calendar */
+  .calendar {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+  }
+  .day { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .day-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0 4px 8px;
+    border-bottom: 1px solid var(--hair);
+    margin-bottom: 4px;
+  }
+  .day-name { font-size: 14px; font-weight: 500; }
+  .day-meta { font-size: 12px; line-height: 16px; color: var(--muted); }
+  .day-name.today { color: var(--accent); }
+
+  .post {
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 10px;
+    padding: 12px;
+    transition: border-color 150ms var(--ease), background-color 150ms var(--ease);
+  }
+  .post:hover { border-color: var(--hair-strong); }
+  .post-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--muted);
+  }
+  .chan { display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); }
+  .chan::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--c);
+  }
+  .post-text {
+    font-size: 13px;
+    line-height: 19px;
+    font-weight: 500;
+    margin-top: 8px;
+  }
+  .post-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+  }
+  .avatar {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--raised);
+    color: var(--text-2);
+    font-size: 11px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; color: var(--text-2); }
+  .status::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--s);
+  }
+
+  /* Channel and status colors, each one means something */
+  .ig { --c: #b83f6a; }
+  .li { --c: #2b5fa8; }
+  .tt { --c: #1f7a72; }
+  .x  { --c: #1f1b16; }
+  .fb { --c: #8a6a1f; }
+
+  .approved  { --s: var(--pos); }
+  .review    { --s: #b7791f; }
+  .draft     { --s: var(--muted); }
+  .scheduled { --s: var(--ink-dot); }
+  .published { --s: var(--text); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span>Postbox</div>
+
+    <div class="group-label">Workspace</div>
+    <nav class="nav">
+      <a class="active" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 3v3M16 3v3"/></svg>Calendar</a>
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>Drafts</a>
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Analytics</a>
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Channels</a>
+    </nav>
+
+    <div class="group-label gap">Team</div>
+    <nav class="nav">
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14.5a6.5 6.5 0 0 1 3 5.5"/></svg>Members</a>
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>Settings</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <header class="header">
+      <div>
+        <p class="eyebrow">Content calendar</p>
+        <h1 class="title">Week of Nov 9 to 15</h1>
+      </div>
+      <div class="controls">
+        <select class="select" aria-label="Channel">
+          <option>All channels</option>
+          <option>Instagram</option>
+          <option>LinkedIn</option>
+        </select>
+        <select class="select" aria-label="Author">
+          <option>All authors</option>
+          <option>Mia</option>
+          <option>Jordan</option>
+        </select>
+        <button class="btn" type="button">New post</button>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Summary">
+      <div class="stat">
+        <p class="stat-label">Scheduled</p>
+        <p class="stat-value">14</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Drafts</p>
+        <p class="stat-value">7</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Published</p>
+        <p class="stat-value">23</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Needs approval</p>
+        <p class="stat-value">5</p>
+      </div>
+    </section>
+
+    <section class="calendar">
+
+      <div class="day">
+        <div class="day-head"><span class="day-name">Mon, Nov 9</span><span class="day-meta">2 posts</span></div>
+        <article class="post">
+          <div class="post-top"><span class="chan ig">Instagram</span><span>10:00 am</span></div>
+          <p class="post-text">Our new feature is here</p>
+          <div class="post-foot"><span class="avatar">MK</span><span class="status approved">Approved</span></div>
+        </article>
+        <article class="post">
+          <div class="post-top"><span class="chan li">LinkedIn</span><span>2:00 pm</span></div>
+          <p class="post-text">Insights on what held attention this quarter</p>
+          <div class="post-foot"><span class="avatar">JD</span><span class="status draft">Draft</span></div>
+        </article>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-name">Tue, Nov 10</span><span class="day-meta">2 posts</span></div>
+        <article class="post">
+          <div class="post-top"><span class="chan tt">TikTok</span><span>9:30 am</span></div>
+          <p class="post-text">Quick tips for better hooks</p>
+          <div class="post-foot"><span class="avatar">AS</span><span class="status review">Review</span></div>
+        </article>
+        <article class="post">
+          <div class="post-top"><span class="chan x">X</span><span>4:15 pm</span></div>
+          <p class="post-text">Why we rebuilt the onboarding flow</p>
+          <div class="post-foot"><span class="avatar">MK</span><span class="status scheduled">Scheduled</span></div>
+        </article>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-name today">Wed, Nov 11</span><span class="day-meta">3 posts</span></div>
+        <article class="post">
+          <div class="post-top"><span class="chan fb">Facebook</span><span>11:00 am</span></div>
+          <p class="post-text">Join our creator community</p>
+          <div class="post-foot"><span class="avatar">JD</span><span class="status approved">Approved</span></div>
+        </article>
+        <article class="post">
+          <div class="post-top"><span class="chan ig">Instagram</span><span>5:45 pm</span></div>
+          <p class="post-text">A closer look at the template creators use most</p>
+          <div class="post-foot"><span class="avatar">AS</span><span class="status review">Review</span></div>
+        </article>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-name">Thu, Nov 12</span><span class="day-meta">2 posts</span></div>
+        <article class="post">
+          <div class="post-top"><span class="chan li">LinkedIn</span><span>8:00 am</span></div>
+          <p class="post-text">Announcing our new partnership</p>
+          <div class="post-foot"><span class="avatar">JD</span><span class="status published">Published</span></div>
+        </article>
+        <article class="post">
+          <div class="post-top"><span class="chan tt">TikTok</span><span>3:00 pm</span></div>
+          <p class="post-text">A quick workflow for scheduling a week</p>
+          <div class="post-foot"><span class="avatar">MK</span><span class="status draft">Draft</span></div>
+        </article>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-name">Fri, Nov 13</span><span class="day-meta">3 posts</span></div>
+        <article class="post">
+          <div class="post-top"><span class="chan x">X</span><span>9:00 am</span></div>
+          <p class="post-text">Weekend plans, in a few posts</p>
+          <div class="post-foot"><span class="avatar">AS</span><span class="status approved">Approved</span></div>
+        </article>
+        <article class="post">
+          <div class="post-top"><span class="chan ig">Instagram</span><span>6:30 pm</span></div>
+          <p class="post-text">Our strongest campaign yet</p>
+          <div class="post-foot"><span class="avatar">JD</span><span class="status scheduled">Scheduled</span></div>
+        </article>
+        <article class="post">
+          <div class="post-top"><span class="chan fb">Facebook</span><span>4:00 pm</span></div>
+          <p class="post-text">Limited time offer through Sunday</p>
+          <div class="post-foot"><span class="avatar">MK</span><span class="status review">Review</span></div>
+        </article>
+      </div>
+
+    </section>
+  </main>
+</div>
+</body>
+</html>

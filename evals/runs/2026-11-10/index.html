@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anti-Slob before/after, 10 Nov 2026</title>
+<style>
+  :root { color-scheme: light dark; --bg: #f5f5f4; --fg: #1c1917; --muted: #57534e; --line: #a8a29e; --panel: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #171717; --fg: #f5f5f4; --muted: #a8a29e; --line: #57534e; --panel: #0a0a0a; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; background: var(--bg); color: var(--fg); font: 15px/1.5 system-ui, sans-serif; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 17px; margin: 40px 0 4px; }
+  p { margin: 0 0 12px; color: var(--muted); max-width: 80ch; }
+  .row { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+  figure { margin: 0; }
+  figcaption { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; font-weight: 600; }
+  figcaption a { font-weight: 400; color: inherit; }
+  iframe { width: 100%; height: 620px; border: 1px solid var(--line); background: var(--panel); }
+  .phone iframe { max-width: 400px; height: 760px; }
+  :focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+</style>
+</head>
+<body>
+  <h1>Anti-Slob: before and after</h1>
+  <p>Five tasks, each run once by the same agent (Claude Sonnet) without the skill and with it. One run per arm, so differences may be chance. Prompts and judging notes are in <a href="../../RESULTS.md">evals/RESULTS.md</a>.</p>
+
+  <h2>1. Refine a deliberately poor landing page</h2>
+  <p>"Refine this. Tallyo is an invoicing tool for freelancers: it sends invoices and chases late payments automatically."</p>
+  <div class="row">
+    <figure><figcaption>Original <a href="refine-landing/before.html">open</a></figcaption><iframe src="refine-landing/before.html" title="Landing page, original"></iframe></figure>
+    <figure><figcaption>Without skill <a href="refine-landing/without.html">open</a></figcaption><iframe src="refine-landing/without.html" title="Landing page, without skill"></iframe></figure>
+    <figure><figcaption>With Anti-Slob 0.2.0 <a href="refine-landing/with.html">open</a></figcaption><iframe src="refine-landing/with.html" title="Landing page, with skill 0.2.0"></iframe></figure>
+  </div>
+  <p>Earlier skill versions on the same task, kept for the record: <a href="refine-landing/with-v0.1.0.html">0.1.0</a> preserved the placeholder copy and gradient; <a href="refine-landing/with-v0.1.1.html">0.1.1</a> removed them and left a bland page. 0.2.0 added creative direction.</p>
+
+  <h2>2. Refine an accessible but unstructured form</h2>
+  <p>"Refine this. It works fine but looks thrown together."</p>
+  <div class="row">
+    <figure><figcaption>Original <a href="refine-form/before.html">open</a></figcaption><iframe src="refine-form/before.html" title="Form, original"></iframe></figure>
+    <figure><figcaption>Without skill <a href="refine-form/without.html">open</a></figcaption><iframe src="refine-form/without.html" title="Form, without skill"></iframe></figure>
+    <figure><figcaption>With Anti-Slob 0.2.0 <a href="refine-form/with.html">open</a></figcaption><iframe src="refine-form/with.html" title="Form, with skill"></iframe></figure>
+  </div>
+
+  <p>Earlier version: <a href="refine-form/with-v0.1.1.html">0.1.1</a> changed spacing and hierarchy only.</p>
+
+  <h2>3. Create a usage dashboard for a developer API</h2>
+  <p>"Requests, error rate, latency by endpoint, quota." Built with skill 0.1.0; not rerun.</p>
+  <div class="row">
+    <figure><figcaption>Without skill <a href="create-api-dashboard/without.html">open</a></figcaption><iframe src="create-api-dashboard/without.html" title="API dashboard, without skill"></iframe></figure>
+    <figure><figcaption>With Anti-Slob <a href="create-api-dashboard/with.html">open</a></figcaption><iframe src="create-api-dashboard/with.html" title="API dashboard, with skill"></iframe></figure>
+  </div>
+
+  <h2>4. Create an article page for an architecture quarterly</h2>
+  <div class="row">
+    <figure><figcaption>Without skill <a href="create-article/without.html">open</a></figcaption><iframe src="create-article/without.html" title="Article, without skill"></iframe></figure>
+    <figure><figcaption>With Anti-Slob 0.2.0 <a href="create-article/with.html">open</a></figcaption><iframe src="create-article/with.html" title="Article, with skill"></iframe></figure>
+  </div>
+
+  <p>Earlier version: <a href="create-article/with-v0.1.0.html">0.1.0</a> was close to the baseline.</p>
+
+  <h2>5. Create the home screen of a habit tracker for teenagers</h2>
+  <p>Built with skill 0.1.0; not rerun.</p>
+  <div class="row phone">
+    <figure><figcaption>Without skill <a href="create-habit-tracker/without.html">open</a></figcaption><iframe src="create-habit-tracker/without.html" title="Habit tracker, without skill"></iframe></figure>
+    <figure><figcaption>With Anti-Slob <a href="create-habit-tracker/with.html">open</a></figcaption><iframe src="create-habit-tracker/with.html" title="Habit tracker, with skill"></iframe></figure>
+  </div>
+</body>
+</html>

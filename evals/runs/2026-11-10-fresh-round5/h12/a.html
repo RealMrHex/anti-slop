@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notewell | Meeting notes with an owner for every task</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --hair: rgba(31, 27, 22, .08);
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --muted: #7b7266;
+      --accent: #a84f0a;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    color-scheme: light;
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; transition: color 150ms var(--ease), background-color 150ms var(--ease); }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    header { padding-top: 28px; }
+    .header-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
+    .brand svg { width: 24px; height: 24px; display: block; }
+    nav { display: flex; gap: 32px; font-size: 15px; color: var(--text-2); }
+    nav a:hover { color: var(--text); }
+    .header-actions { display: flex; align-items: center; gap: 16px; }
+    .login { font-size: 15px; color: var(--text-2); padding: 8px 4px; }
+    .login:hover { color: var(--text); }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 500; border-radius: 10px;
+      height: 44px; padding: 0 20px;
+      transition: background-color 150ms var(--ease), color 150ms var(--ease), border-color 150ms var(--ease);
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #8f4208; }
+    .btn-secondary { background: var(--raised); color: var(--text); box-shadow: inset 0 0 0 1px var(--hair); }
+    .btn-secondary:hover { background: var(--card); }
+    .btn-small { height: 36px; padding: 0 16px; font-size: 14px; border-radius: 8px; }
+    .btn:active { transform: scale(0.98); }
+    .btn:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: 64px;
+      align-items: center;
+      padding: 96px 0 80px;
+    }
+    .eyebrow { font-size: 14px; color: var(--muted); }
+    h1 {
+      margin-top: 20px;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-size: 64px;
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+    }
+    .lede {
+      margin-top: 24px;
+      max-width: 34rem;
+      font-size: 19px;
+      line-height: 1.5;
+      color: var(--text-2);
+    }
+    .actions { margin-top: 36px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .fine { margin-top: 20px; font-size: 13px; color: var(--muted); }
+
+    /* Product moment */
+    .notes {
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: inset 0 0 0 1px var(--hair), 0 8px 24px rgba(31, 27, 22, .06);
+      overflow: hidden;
+    }
+    .notes-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--hair);
+    }
+    .notes-title { font-size: 16px; font-weight: 500; }
+    .notes-meta { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .timecode {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 13px; color: var(--text-2);
+      font-variant-numeric: tabular-nums;
+    }
+    .timecode i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: block; }
+    .notes-body { padding: 20px; }
+    .label { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+    .summary { font-size: 15px; line-height: 1.6; color: var(--text-2); }
+    .section + .section { margin-top: 24px; }
+    .task {
+      display: grid;
+      grid-template-columns: 18px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      height: 44px;
+      border-bottom: 1px solid var(--hair);
+      font-size: 15px;
+    }
+    .task:last-child { border-bottom: 0; }
+    .check {
+      width: 18px; height: 18px; border-radius: 5px;
+      box-shadow: inset 0 0 0 1.5px var(--muted);
+    }
+    .owner { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-2); }
+    .avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--raised);
+      color: var(--text-2);
+      font-size: 11px; font-weight: 500;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .due { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .task-text { color: var(--text); }
+
+    /* Features */
+    .features {
+      margin-top: 0;
+      padding: 48px 0 96px;
+      border-top: 1px solid var(--hair);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 48px;
+    }
+    .feature svg { width: 18px; height: 18px; stroke: var(--muted); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .feature h3 { margin-top: 12px; font-size: 16px; font-weight: 500; }
+    .feature p { margin-top: 6px; font-size: 15px; color: var(--text-2); line-height: 1.5; }
+
+    @media (max-width: 960px) {
+      nav { display: none; }
+      .hero { grid-template-columns: 1fr; gap: 56px; padding: 64px 0 56px; }
+      h1 { font-size: 52px; }
+      .features { grid-template-columns: 1fr; gap: 32px; padding-bottom: 72px; }
+    }
+    @media (max-width: 520px) {
+      h1 { font-size: 40px; }
+      .lede { font-size: 17px; }
+      .actions { flex-direction: column; align-items: stretch; }
+      .actions .btn { width: 100%; }
+      .header-actions .btn-small { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <header>
+      <div class="header-row">
+        <a href="#" class="brand" aria-label="Notewell home">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="0" y="0" width="24" height="24" rx="6" fill="#a84f0a"/>
+            <rect x="6" y="7" width="12" height="2" rx="1" fill="#f7f4ee"/>
+            <rect x="6" y="11" width="12" height="2" rx="1" fill="#f7f4ee"/>
+            <rect x="6" y="15" width="7" height="2" rx="1" fill="#f7f4ee"/>
+          </svg>
+          <span>Notewell</span>
+        </a>
+        <nav aria-label="Primary">
+          <a href="#">Features</a>
+          <a href="#">Pricing</a>
+          <a href="#">Customers</a>
+          <a href="#">Blog</a>
+        </nav>
+        <div class="header-actions">
+          <a href="#" class="login">Log in</a>
+          <a href="#" class="btn btn-primary btn-small">Start free</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Meeting notes for teams</p>
+          <h1>Every call summarized, every action item owned.</h1>
+          <p class="lede">Notewell records your calls, writes a crisp summary, and lists every action item with its owner.</p>
+          <div class="actions">
+            <a href="#" class="btn btn-primary">Try it free</a>
+            <a href="#" class="btn btn-secondary">Watch demo</a>
+          </div>
+          <p class="fine">v2.0 launched October 2, 2026</p>
+        </div>
+
+        <div class="notes" role="img" aria-label="Example meeting notes from Notewell">
+          <div class="notes-head">
+            <div>
+              <div class="notes-title">Weekly product sync</div>
+              <div class="notes-meta">Mon, 9 Nov · 42 min · 6 attendees</div>
+            </div>
+            <span class="timecode"><i aria-hidden="true"></i>42:10</span>
+          </div>
+          <div class="notes-body">
+            <div class="section">
+              <div class="label">Summary</div>
+              <p class="summary">The launch date holds for 2 December. Pricing page copy needs one more pass before review. Support asked for a shared inbox for enterprise leads.</p>
+            </div>
+            <div class="section">
+              <div class="label">Action items</div>
+              <div class="task">
+                <span class="check" aria-hidden="true"></span>
+                <span class="task-text">Confirm launch checklist with QA</span>
+                <span class="owner"><span class="avatar">AK</span>Ana K.</span>
+              </div>
+              <div class="task">
+                <span class="check" aria-hidden="true"></span>
+                <span class="task-text">Draft revised pricing page copy</span>
+                <span class="owner"><span class="avatar">JM</span>Jordan M.</span>
+              </div>
+              <div class="task">
+                <span class="check" aria-hidden="true"></span>
+                <span class="task-text">Set up shared inbox for enterprise leads</span>
+                <span class="owner"><span class="avatar">SR</span>Sam R.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="features" aria-label="Highlights">
+        <div class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+          <h3>Summaries in seconds</h3>
+          <p>Every call ends with a summary, ready before the next meeting starts.</p>
+        </div>
+        <div class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <h3>Owners on every task</h3>
+          <p>AI that understands your team's context, so each action item has a name next to it.</p>
+        </div>
+        <div class="feature">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <h3>Calls are encrypted</h3>
+          <p>Recordings and transcripts stay encrypted.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+</body>
+</html>

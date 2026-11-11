@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pingly, uptime monitoring for APIs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0d14;
+    --surface: #11141c;
+    --raised: #1a1e28;
+    --hair: rgba(238, 240, 245, 0.08);
+    --text: #eef0f5;
+    --text-2: #a3a9b8;
+    --text-3: #7a8296;
+    --accent: #7dd3fc;
+    --up: #4cc38a;
+    --down: #e5484d;
+    --sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+    --mono: 'Geist Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); }
+  body {
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .muted { color: var(--text-3); }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* Nav */
+  .nav {
+    height: 64px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .nav .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 500; letter-spacing: -0.01em; }
+  .brand svg { width: 18px; height: 18px; color: var(--accent); }
+  .nav-links { display: flex; gap: 28px; font-size: 14px; color: var(--text-2); }
+  .nav-links a:hover, .login:hover { color: var(--text); }
+  .nav-actions { display: flex; align-items: center; gap: 20px; font-size: 14px; }
+  .login { color: var(--text-2); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 44px; padding: 0 20px; border-radius: 10px;
+    font-size: 15px; font-weight: 500; font-family: var(--sans);
+    transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+    white-space: nowrap;
+  }
+  .btn-sm { height: 36px; padding: 0 16px; font-size: 14px; }
+  .btn-primary { background: var(--text); color: var(--bg); }
+  .btn-primary:hover { background: #d7dbe6; }
+  .btn-ghost { border: 1px solid var(--hair); color: var(--text); background: transparent; }
+  .btn-ghost:hover { background: var(--raised); border-color: rgba(238, 240, 245, 0.14); }
+
+  /* Hero */
+  .hero { min-height: calc(100vh - 64px); display: flex; align-items: center; }
+  .hero .wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    width: 100%;
+  }
+
+  .eyebrow { font-family: var(--mono); font-size: 13px; color: var(--text-3); }
+  h1 {
+    margin-top: 20px;
+    font-size: 52px;
+    line-height: 1.05;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+  .sub {
+    margin-top: 24px;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--text-2);
+    max-width: 30rem;
+  }
+  .actions { margin-top: 32px; display: flex; gap: 12px; }
+
+  .facts {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: start;
+    gap: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--hair);
+  }
+  .fact-value { font-size: 28px; font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .fact-label { margin-top: 8px; font-size: 14px; color: var(--text-3); }
+
+  .term {
+    margin-top: 40px;
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .term-head {
+    display: flex; align-items: center; gap: 6px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--hair);
+    font-family: var(--mono); font-size: 12px; color: var(--text-3);
+  }
+  .term-head i { width: 8px; height: 8px; border-radius: 50%; background: var(--raised); display: inline-block; }
+  .term-head span { margin-left: 8px; }
+  .term pre {
+    padding: 16px 20px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--text-2);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .term pre b { font-weight: 400; color: var(--text); }
+  .term pre em { font-style: normal; color: var(--up); }
+
+  /* Product preview */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 536px;
+    justify-self: end;
+    width: 100%;
+  }
+  .panel-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .panel-kicker { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+  .panel-name { margin-top: 8px; font-family: var(--mono); font-size: 15px; color: var(--text); }
+  .status {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 28px; padding: 0 10px;
+    border: 1px solid var(--hair);
+    border-radius: 8px;
+    background: var(--raised);
+    font-size: 13px; color: var(--text-2);
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--up); box-shadow: 0 0 0 3px rgba(76, 195, 138, 0.16); }
+
+  .stat { padding: 24px 0 20px; }
+  .figure { font-size: 44px; font-weight: 500; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .stat-label { margin-top: 10px; font-size: 14px; color: var(--text-2); }
+  .stat-change { margin-top: 4px; font-size: 13px; color: var(--text-3); }
+
+  .strip { display: flex; align-items: stretch; gap: 3px; height: 40px; }
+  .strip span { flex: 1 1 0; border-radius: 2px; background: rgba(76, 195, 138, 0.55); min-width: 0; }
+  .strip span.bad { background: var(--down); }
+  .strip-axis {
+    margin-top: 8px;
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 12px; color: var(--text-3);
+  }
+
+  .regions { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--hair); }
+  .regions-title { font-size: 13px; color: var(--text-3); margin-bottom: 12px; }
+  .region {
+    display: grid;
+    grid-template-columns: 84px 1fr 64px;
+    align-items: center;
+    gap: 12px;
+    height: 32px;
+    font-size: 14px;
+  }
+  .region-track { height: 6px; border-radius: 3px; background: var(--raised); overflow: hidden; }
+  .region-track span { display: block; height: 100%; border-radius: 3px; background: #3a4151; }
+  .region-ms { text-align: right; font-family: var(--mono); font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .region-name { font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+
+  /* Narrow screens */
+  @media (max-width: 920px) {
+    .nav-links { display: none; }
+    .hero { min-height: 0; padding: 48px 0 64px; }
+    .hero .wrap { grid-template-columns: 1fr; gap: 48px; }
+    h1 { font-size: 40px; }
+    .panel { justify-self: stretch; max-width: none; }
+    .facts { gap: 32px; }
+  }
+  @media (max-width: 520px) {
+    .wrap { padding: 0 16px; }
+    .actions { flex-direction: column; }
+    .btn { width: 100%; }
+    .login { display: none; }
+    .facts { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .fact-value { font-size: 24px; }
+    .term pre { font-size: 12px; overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="#" class="brand" aria-label="Pingly home">
+      <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="1,10 5,10 7,4 10,14 12,10 17,10" />
+      </svg>
+      Pingly
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#">Features</a>
+      <a href="#">Status pages</a>
+      <a href="#">Integrations</a>
+      <a href="#">Pricing</a>
+      <a href="#">Docs</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="#" class="login">Log in</a>
+      <a href="#" class="btn btn-primary btn-sm">Start free</a>
+    </div>
+  </div>
+</header>
+
+<main class="hero">
+  <div class="wrap">
+
+    <section>
+      <div class="eyebrow">v2.0 is live</div>
+      <h1>Know your API is down before your users do</h1>
+      <p class="sub">Checks every 30 seconds from 12 regions. Alerts go to Slack and PagerDuty, and public status pages keep your users informed.</p>
+      <div class="actions">
+        <a href="#" class="btn btn-primary">Start monitoring free</a>
+        <a href="#" class="btn btn-ghost">Watch demo</a>
+      </div>
+
+      <div class="facts">
+        <div>
+          <div class="fact-value">30s</div>
+          <div class="fact-label">Between checks</div>
+        </div>
+        <div>
+          <div class="fact-value">12</div>
+          <div class="fact-label">Check regions</div>
+        </div>
+        <div>
+          <div class="fact-value">2</div>
+          <div class="fact-label">Alert channels</div>
+        </div>
+      </div>
+
+      <div class="term">
+        <div class="term-head">
+          <i></i><i></i><i></i><span>pingly-cli, zsh</span>
+        </div>
+<pre><b>$ pingly monitor add api.acme.dev --interval 30s</b>
+  <em>Monitor created</em>
+<b>$ pingly regions --list</b>
+  us-east  eu-west  ap-south  +9 more
+<b>$ pingly alerts --route slack,pagerduty</b>
+  <em>Alerts routed to 2 channels</em></pre>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="Example monitor">
+      <div class="panel-head">
+        <div>
+          <div class="panel-kicker">HTTP check, every 30s</div>
+          <div class="panel-name">api.acme.dev</div>
+        </div>
+        <div class="status"><span class="dot"></span>Operational</div>
+      </div>
+
+      <div class="stat">
+        <div class="figure">99.98%</div>
+        <div class="stat-label">Uptime, last 90 days</div>
+        <div class="stat-change">+0.04 pts vs previous 90 days</div>
+      </div>
+
+      <div class="strip" id="strip" aria-label="Daily status for the last 90 days, one incident"></div>
+      <div class="strip-axis"><span>90 days ago</span><span>Today</span></div>
+
+      <div class="regions">
+        <div class="regions-title">Response time by region</div>
+        <div class="region">
+          <span class="region-name">ap-south</span>
+          <div class="region-track"><span style="width:100%"></span></div>
+          <span class="region-ms">231 ms</span>
+        </div>
+        <div class="region">
+          <span class="region-name">sa-east</span>
+          <div class="region-track"><span style="width:81%"></span></div>
+          <span class="region-ms">187 ms</span>
+        </div>
+        <div class="region">
+          <span class="region-name">us-east</span>
+          <div class="region-track"><span style="width:61%"></span></div>
+          <span class="region-ms">142 ms</span>
+        </div>
+        <div class="region">
+          <span class="region-name">eu-west</span>
+          <div class="region-track"><span style="width:51%"></span></div>
+          <span class="region-ms">118 ms</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+  (function () {
+    var strip = document.getElementById('strip');
+    if (!strip) return;
+    for (var i = 0; i < 90; i++) {
+      var s = document.createElement('span');
+      if (i === 71) s.className = 'bad';
+      s.title = 'Day ' + (90 - i);
+      strip.appendChild(s);
+    }
+  })();
+</script>
+</body>
+</html>

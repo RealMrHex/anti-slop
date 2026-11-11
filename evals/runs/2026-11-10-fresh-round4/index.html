@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fresh screens blind test</title>
+<style>
+  :root { color-scheme: light dark; --bg:#f4f4f2; --fg:#1a1a1a; --muted:#555; --line:#9a9a96; --panel:#fff; --pick:#1d4ed8; --pick-fg:#fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#161616; --fg:#f2f2f0; --muted:#b0b0ac; --line:#666; --panel:#0c0c0c; --pick:#93b4ff; --pick-fg:#0b1020; } }
+  * { box-sizing: border-box; } body { margin:0; padding:24px; background:var(--bg); color:var(--fg); font:15px/1.5 system-ui,sans-serif; }
+  h1 { font-size:22px; margin:0 0 6px; } h2 { font-size:17px; margin:44px 0 10px; } h2 a { font-weight:400; font-size:13px; color:inherit; margin-left:8px; } p { margin:0 0 10px; color:var(--muted); max-width:78ch; }
+  .pair { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(420px,1fr)); }
+  figure { margin:0; } figcaption { display:flex; justify-content:space-between; padding:4px 0; font-weight:700; font-size:16px; } figcaption a { font-weight:400; font-size:13px; color:inherit; }
+  iframe { width:100%; height:680px; border:1px solid var(--line); background:var(--panel); }
+  .vote { display:flex; gap:8px; align-items:center; justify-content:center; margin-top:10px; } .vote span { color:var(--muted); }
+  button { font:inherit; font-weight:600; min-height:40px; min-width:64px; padding:0 18px; border:1.5px solid var(--line); border-radius:8px; background:var(--panel); color:var(--fg); cursor:pointer; }
+  button[aria-pressed="true"] { background:var(--pick); border-color:var(--pick); color:var(--pick-fg); } button:disabled { opacity:.5; cursor:not-allowed; }
+  :focus-visible { outline:3px solid var(--pick); outline-offset:2px; }
+  #end { margin-top:56px; padding-top:20px; border-top:1px solid var(--line); } #out { white-space:pre-wrap; font:13px/1.5 ui-monospace,Menlo,monospace; background:var(--panel); border:1px solid var(--line); padding:12px; margin-top:12px; }
+</style></head><body>
+  <h1>Fresh screens blind test</h1>
+  <p>Ten AI-looking screens neither skill has seen. Each was fixed twice by the same small model: once with Anti-Slob, once with the other skill. The order is random and hidden. Pick the better fix for each (or Same), then press Reveal. Open pages full size if the frames are cramped.</p>
+
+  <section class="task" data-task="h1">
+    <h2>1. PayNest hero <a href="h1/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="h1/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h1/a.html" title="PayNest hero, option A"></iframe></figure>
+      <figure><figcaption>B <a href="h1/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h1/b.html" title="PayNest hero, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 1"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="h2">
+    <h2>2. Wavecast hero <a href="h2/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="h2/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h2/a.html" title="Wavecast hero, option A"></iframe></figure>
+      <figure><figcaption>B <a href="h2/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h2/b.html" title="Wavecast hero, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 2"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="h3">
+    <h2>3. Pingly hero <a href="h3/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="h3/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h3/a.html" title="Pingly hero, option A"></iframe></figure>
+      <figure><figcaption>B <a href="h3/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h3/b.html" title="Pingly hero, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 3"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="h4">
+    <h2>4. Rootline hero <a href="h4/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="h4/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h4/a.html" title="Rootline hero, option A"></iframe></figure>
+      <figure><figcaption>B <a href="h4/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h4/b.html" title="Rootline hero, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 4"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="h5">
+    <h2>5. Keystone hero <a href="h5/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="h5/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h5/a.html" title="Keystone hero, option A"></iframe></figure>
+      <figure><figcaption>B <a href="h5/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="h5/b.html" title="Keystone hero, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 5"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="d1">
+    <h2>6. Shoply dashboard <a href="d1/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="d1/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d1/a.html" title="Shoply dashboard, option A"></iframe></figure>
+      <figure><figcaption>B <a href="d1/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d1/b.html" title="Shoply dashboard, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 6"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="d2">
+    <h2>7. Sprintly board <a href="d2/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="d2/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d2/a.html" title="Sprintly board, option A"></iframe></figure>
+      <figure><figcaption>B <a href="d2/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d2/b.html" title="Sprintly board, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 7"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="d3">
+    <h2>8. Pennywise overview <a href="d3/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="d3/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d3/a.html" title="Pennywise overview, option A"></iframe></figure>
+      <figure><figcaption>B <a href="d3/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d3/b.html" title="Pennywise overview, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 8"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="d4">
+    <h2>9. Stackhost billing <a href="d4/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="d4/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d4/a.html" title="Stackhost billing, option A"></iframe></figure>
+      <figure><figcaption>B <a href="d4/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d4/b.html" title="Stackhost billing, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 9"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+
+  <section class="task" data-task="d5">
+    <h2>10. Deskwise inbox <a href="d5/original.html" target="_blank" rel="noopener">see the original</a></h2>
+    <div class="pair">
+      <figure><figcaption>A <a href="d5/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d5/a.html" title="Deskwise inbox, option A"></iframe></figure>
+      <figure><figcaption>B <a href="d5/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe loading="lazy" src="d5/b.html" title="Deskwise inbox, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Pick for task 10"><span>Better:</span>
+      <button type="button" data-pick="A">A</button><button type="button" data-pick="same">Same</button><button type="button" data-pick="B">B</button></div>
+  </section>
+  <div id="end"><button type="button" id="reveal" disabled>Reveal which was which</button> <span id="progress" role="status"></span>
+    <div id="out" hidden></div><p id="hint" hidden>Copy the text above and paste it back to Claude.</p></div>
+<script>
+  const K="fX0ibGxpa3MgcmVodG8gZWh0IiA6IkIiICwiYm9sUy1pdG5BIiA6IkEieyA6IjVkIiAsfSJsbGlrcyByZWh0byBlaHQiIDoiQiIgLCJib2xTLWl0bkEiIDoiQSJ7IDoiNGQiICx9ImJvbFMtaXRuQSIgOiJCIiAsImxsaWtzIHJlaHRvIGVodCIgOiJBInsgOiIzZCIgLH0iYm9sUy1pdG5BIiA6IkIiICwibGxpa3MgcmVodG8gZWh0IiA6IkEieyA6IjJkIiAsfSJsbGlrcyByZWh0byBlaHQiIDoiQiIgLCJib2xTLWl0bkEiIDoiQSJ7IDoiMWQiICx9ImJvbFMtaXRuQSIgOiJCIiAsImxsaWtzIHJlaHRvIGVodCIgOiJBInsgOiI1aCIgLH0ibGxpa3MgcmVodG8gZWh0IiA6IkIiICwiYm9sUy1pdG5BIiA6IkEieyA6IjRoIiAsfSJsbGlrcyByZWh0byBlaHQiIDoiQiIgLCJib2xTLWl0bkEiIDoiQSJ7IDoiM2giICx9ImJvbFMtaXRuQSIgOiJCIiAsImxsaWtzIHJlaHRvIGVodCIgOiJBInsgOiIyaCIgLH0iYm9sUy1pdG5BIiA6IkIiICwibGxpa3MgcmVodG8gZWh0IiA6IkEieyA6IjFoIns=", META={"h1": "PayNest hero", "h2": "Wavecast hero", "h3": "Pingly hero", "h4": "Rootline hero", "h5": "Keystone hero", "d1": "Shoply dashboard", "d2": "Sprintly board", "d3": "Pennywise overview", "d4": "Stackhost billing", "d5": "Deskwise inbox"}, picks={};
+  const store={get(){try{return JSON.parse(localStorage.getItem("antislob-fresh-4")||"{}")}catch(e){return {}}},set(v){try{localStorage.setItem("antislob-fresh-4",JSON.stringify(v))}catch(e){}}};
+  Object.assign(picks, store.get());
+  const need=Object.keys(META).length, reveal=document.getElementById("reveal"), progress=document.getElementById("progress");
+  function paint(){ document.querySelectorAll(".task").forEach(s=>s.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(picks[s.dataset.task]===b.dataset.pick))));
+    const n=Object.keys(picks).length; reveal.disabled=n<need; progress.textContent=n+" of "+need+" picks made"; }
+  document.querySelectorAll(".task button").forEach(b=>b.addEventListener("click",()=>{ picks[b.closest(".task").dataset.task]=b.dataset.pick; store.set(picks); paint(); }));
+  reveal.addEventListener("click",()=>{ const key=JSON.parse(atob(K).split("").reverse().join("")); const lines=[]; const tally={};
+    Object.keys(META).forEach((t,i)=>{ const p=picks[t]; const who=p==="same"?"same":key[t][p]; tally[who]=(tally[who]||0)+1;
+      lines.push((i+1)+". "+META[t]+": "+(p==="same"?"same":p+" = "+who)+" (A = "+key[t].A+", B = "+key[t].B+")"); });
+    const out=document.getElementById("out"); out.textContent="Fresh screens blind test, round 4\n\n"+lines.join("\n")+"\n\nTotals: "+Object.entries(tally).map(([k,v])=>k+" "+v).join(", "); out.hidden=false; document.getElementById("hint").hidden=false; });
+  paint();
+</script></body></html>

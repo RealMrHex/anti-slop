@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trattoria Verde Menu</title>
+<style>
+:root{
+  --bg:#faf7f2; --surface:#fff; --ink:#1f2a24; --muted:#6b7570; --line:#e8e2d8;
+  --accent:#2f6b4f; --accent-ink:#fff; --warm:#c8552b; --chip:#efe9dd;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#141a17; --surface:#1d2521; --ink:#eef1ee; --muted:#9aa59e; --line:#2c3732; --accent:#6fc79b; --accent-ink:#0d1a13; --warm:#ff8a5c; --chip:#26312b;}
+}
+*{box-sizing:border-box;margin:0}
+body{font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:96px;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.app{max-width:480px;margin:0 auto;background:var(--bg);min-height:100vh}
+.hero{height:150px;position:relative;background:
+  radial-gradient(circle at 20% 30%,#e9b44c 0 40px,transparent 41px),
+  radial-gradient(circle at 75% 60%,#c8552b 0 55px,transparent 56px),
+  linear-gradient(135deg,#2f6b4f,#1d4a36)}
+.topbar{position:absolute;inset:12px 16px auto;display:flex;justify-content:space-between}
+.round{width:40px;height:40px;border-radius:50%;background:var(--surface);display:grid;place-items:center;box-shadow:0 1px 4px #0003}
+.round svg{width:20px;height:20px;stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.info{padding:16px 16px 12px}
+h1{font-size:24px;line-height:1.2;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:14px;margin-top:2px}
+.meta{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.meta span{background:var(--chip);border-radius:999px;padding:5px 10px;font-size:13px;font-weight:600}
+.tabs{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:4px;overflow-x:auto;padding:0 12px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{padding:12px 10px;font-weight:600;font-size:15px;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;min-height:44px}
+.tabs button[aria-current=true]{color:var(--ink);border-color:var(--accent)}
+section{padding:20px 16px 4px;scroll-margin-top:50px}
+h2{font-size:19px;margin-bottom:4px}
+.item{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.txt{flex:1;min-width:0}
+.name{font-weight:650}
+.desc{color:var(--muted);font-size:14px;margin-top:3px}
+.price{margin-top:8px;font-weight:600;font-size:15px}
+.tag{display:inline-block;font-size:11px;font-weight:700;color:var(--warm);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.pic{position:relative;width:96px;height:96px;flex:none;border-radius:14px}
+.add{position:absolute;right:-6px;bottom:-8px;min-width:44px;height:36px;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:0 2px 6px #0002;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);padding:0 4px;gap:2px}
+.add.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.add b{min-width:30px;height:36px;display:grid;place-items:center;font-size:18px}
+.add span{min-width:16px;text-align:center}
+.add svg{width:18px;height:18px;stroke:currentColor;stroke-width:2.5;fill:none;stroke-linecap:round}
+.cart{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(transparent,var(--bg) 30%);pointer-events:none}
+.cart button{pointer-events:auto;display:flex;width:100%;max-width:448px;margin:0 auto;justify-content:space-between;align-items:center;background:var(--accent);color:var(--accent-ink);border-radius:14px;padding:15px 18px;font-weight:700;box-shadow:0 6px 18px #0003;transition:transform .2s,opacity .2s}
+.cart.empty button{opacity:.0;transform:translateY(20px);pointer-events:none}
+.cart i{font-style:normal;background:#ffffff33;border-radius:8px;padding:1px 9px;margin-right:10px}
+button:focus-visible{outline:3px solid var(--warm);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero">
+    <div class="topbar">
+      <button class="round" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="round" aria-label="Favorite"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 10c0 5.500-7 10-7 10z"/></svg></button>
+    </div>
+  </div>
+  <div class="info">
+    <h1>Trattoria Verde</h1>
+    <p class="sub">Italian · Pizza · Pasta · $$</p>
+    <div class="meta"><span>4.7 ★ (1.2k)</span><span>25–35 min</span><span>Delivery $1.99</span></div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+  <main id="menu"></main>
+</div>
+<div class="cart empty" id="cart"><button><span><i id="cnt">0</i>View cart</span><span id="tot">$0.00</span></button></div>
+<script>
+const data=[
+ ["Popular",[
+  ["Margherita Pizza","San Marzano tomato, fior di latte, basil",13.5,"Bestseller","#c8552b"],
+  ["Spaghetti Carbonara","Guanciale, pecorino, egg yolk, black pepper",16,"","#e9b44c"],
+  ["Burrata Salad","Burrata, heirloom tomato, basil oil",12,"","#6fa37f"]]],
+ ["Starters",[
+  ["Garlic Focaccia","Rosemary, sea salt, olive oil",7,"","#d9a441"],
+  ["Arancini","Crispy risotto balls, mozzarella, arrabbiata dip",9,"","#b8642f"],
+  ["Caprese","Tomato, mozzarella, basil, balsamic",10.5,"","#a33b2b"]]],
+ ["Pizza",[
+  ["Diavola","Spicy salami, chili oil, mozzarella",15.5,"Spicy","#a8322a"],
+  ["Quattro Formaggi","Mozzarella, gorgonzola, parmesan, fontina",16,"","#e2c06b"],
+  ["Funghi e Tartufo","Wild mushrooms, truffle cream, thyme",17.5,"","#8a6a4a"]]],
+ ["Pasta",[
+  ["Tagliatelle al Ragù","Slow-cooked beef and pork ragù",17,"","#b5532b"],
+  ["Pesto Genovese","Trofie, basil pesto, green beans, potato",15,"Vegetarian","#4f8a5b"]]],
+ ["Desserts",[
+  ["Tiramisu","Mascarpone, espresso, cocoa",8,"","#7a5638"],
+  ["Panna Cotta","Vanilla cream, berry compote",7.5,"","#c97b8b"]]]
+];
+const qty={};const money=n=>"$"+n.toFixed(2);
+const menu=document.getElementById("menu"),tabs=document.getElementById("tabs");
+data.forEach(([c,items],ci)=>{
+  const id="c"+ci;
+  tabs.insertAdjacentHTML("beforeend",`<button data-t="${id}" ${ci?"":'aria-current="true"'}>${c}</button>`);
+  menu.insertAdjacentHTML("beforeend",`<section id="${id}"><h2>${c}</h2>${items.map((it,i)=>{const k=ci+"-"+i;return `<div class="item"><div class="txt">${it[3]?`<div class="tag">${it[3]}</div>`:""}<div class="name">${it[0]}</div><p class="desc">${it[1]}</p><div class="price">${money(it[2])}</div></div><div class="pic" style="background:radial-gradient(circle at 35% 35%,${it[4]}ee,${it[4]}99 60%,${it[4]}66)"><div class="add" data-k="${k}"></div></div></div>`}).join("")}</section>`);
+});
+function render(){
+  let n=0,t=0;
+  document.querySelectorAll(".add").forEach(a=>{
+    const k=a.dataset.k,[ci,i]=k.split("-"),q=qty[k]||0;
+    if(q){a.className="add on";a.innerHTML=`<b data-d="-1" role="button" aria-label="Remove one">&minus;</b><span>${q}</span><b data-d="1" role="button" aria-label="Add one">+</b>`}
+    else{a.className="add";a.innerHTML=`<b data-d="1" role="button" aria-label="Add to cart"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></b>`}
+    n+=q;t+=q*data[ci][1][i][2];
+  });
+  document.getElementById("cnt").textContent=n;document.getElementById("tot").textContent=money(t);
+  document.getElementById("cart").classList.toggle("empty",!n);
+}
+menu.addEventListener("click",e=>{const d=e.target.closest("[data-d]");if(!d)return;const k=d.closest(".add").dataset.k;qty[k]=Math.max(0,(qty[k]||0)+ +d.dataset.d);render()});
+tabs.addEventListener("click",e=>{const b=e.target.closest("button");if(b)document.getElementById(b.dataset.t).scrollIntoView({behavior:"smooth"})});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)tabs.querySelectorAll("button").forEach(b=>{const on=b.dataset.t===e.target.id;b.setAttribute("aria-current",on);if(on)b.scrollIntoView({inline:"center",block:"nearest"})})}),{rootMargin:"-20% 0px -75% 0px"});
+menu.querySelectorAll("section").forEach(s=>io.observe(s));
+qty["0-0"]=1;qty["1-1"]=2;render();
+</script>
+</body>
+</html>

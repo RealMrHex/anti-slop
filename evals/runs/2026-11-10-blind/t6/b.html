@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home – Ledgerly</title>
+<style>
+:root{
+  --bg:#f4f1ea; --surface:#fffdf8; --ink:#1d2623; --muted:#5f6b66; --line:#e6e1d6;
+  --hero:#173f37; --hero-2:#215248; --hero-ink:#f4f1ea; --hero-muted:#a9c4bb;
+  --accent:#2f8f6b; --warn:#b4541f; --warn-bg:#f9e6d8; --in:#1f7a55;
+  --r-s:10px; --r-m:16px; --r-l:24px;
+  --sh:0 1px 2px rgba(29,38,35,.06),0 6px 18px rgba(29,38,35,.06);
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;
+  --font:ui-rounded,"SF Pro Rounded","Avenir Next",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#101815;--surface:#18221f;--ink:#eee9de;--muted:#9fada7;--line:#26332f;--hero:#1f5a4d;--hero-2:#2a6e5e;--warn:#f0a070;--warn-bg:#3a2519;--in:#6fd1a4;--accent:#5fc59a;--sh:none}
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;padding:var(--s4) var(--s4) 104px}
+.num{font-variant-numeric:tabular-nums}
+header{display:flex;align-items:center;justify-content:space-between;padding:var(--s2) 2px var(--s4)}
+header p{color:var(--muted);font-size:13px}
+header h1{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;border:0;font-family:inherit;font-size:15px}
+button,a{font-family:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.hero{background:linear-gradient(160deg,var(--hero-2),var(--hero));color:var(--hero-ink);border-radius:var(--r-l);padding:var(--s5) var(--s5) var(--s4);box-shadow:var(--sh);overflow:hidden}
+.hero .label{font-size:13px;color:var(--hero-muted);display:flex;justify-content:space-between}
+.hero .bal{font-size:44px;font-weight:700;letter-spacing:-.03em;line-height:1.1;margin:var(--s2) 0 var(--s1)}
+.hero .bal small{font-size:24px;font-weight:600;color:var(--hero-muted)}
+.delta{display:inline-flex;gap:6px;align-items:center;font-size:13px;background:rgba(255,255,255,.12);padding:4px 10px;border-radius:99px}
+.spark{margin:var(--s4) calc(var(--s5)*-1) 0;display:block;width:calc(100% + var(--s5)*2);height:64px}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2);margin:var(--s4) 0 var(--s2)}
+.actions button{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:var(--r-m);min-height:56px;padding:var(--s2);font-size:13px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;transition:transform .12s,background .12s}
+.actions button:hover{background:var(--line)}
+.actions button:active{transform:scale(.97)}
+.actions svg{width:20px;height:20px;stroke:var(--accent)}
+
+section{margin-top:var(--s5)}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--s3);padding:0 2px}
+h2{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.sec-h a{font-size:14px;color:var(--accent);font-weight:600;text-decoration:none;padding:6px 0}
+.sec-h a:hover{text-decoration:underline}
+.sec-h span{font-size:13px;color:var(--muted)}
+.card{background:var(--surface);border-radius:var(--r-l);box-shadow:var(--sh);border:1px solid var(--line)}
+
+.budget{padding:var(--s5)}
+.b-top{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s3)}
+.b-left{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.b-left small{display:block;font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0;margin-top:2px}
+.pill{font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;background:#dff1e8;color:#14553c;white-space:nowrap}
+@media (prefers-color-scheme:dark){.pill{background:#1d3a2e;color:#8fe0b9}}
+.track{position:relative;height:12px;border-radius:99px;background:var(--line);margin:var(--s4) 0 var(--s2)}
+.track i{position:absolute;inset:0 auto 0 0;border-radius:99px;background:var(--accent)}
+.track b{position:absolute;top:-5px;bottom:-5px;width:3px;border-radius:2px;background:var(--ink)}
+.b-note{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.cats{list-style:none;padding:0;margin-top:var(--s5);display:grid;gap:var(--s4)}
+.cats li{display:grid;grid-template-columns:1fr auto;gap:6px var(--s3);font-size:14px}
+.cats .n{font-weight:600}
+.cats .v{color:var(--muted)}
+.cats .v em{font-style:normal;color:var(--ink);font-weight:600}
+.cats .bar{grid-column:1/-1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.cats .bar i{display:block;height:100%;border-radius:99px;background:var(--c)}
+.cats .over .v em{color:var(--warn)}
+.flag{grid-column:1/-1;font-size:12px;font-weight:600;color:var(--warn);background:var(--warn-bg);padding:3px 10px;border-radius:99px;justify-self:start}
+
+.tx-group{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:var(--s3) var(--s4) var(--s1)}
+.tx{list-style:none;padding:0}
+.tx li{display:flex;align-items:center;gap:var(--s3);padding:var(--s3) var(--s4);min-height:64px}
+.tx li+li{border-top:1px solid var(--line)}
+.tx .group+li,.tx li.first{border-top:0}
+.ic{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:19px;flex:none;background:var(--t)}
+.tx .m{flex:1;min-width:0}
+.tx .m b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx .m span{font-size:13px;color:var(--muted)}
+.amt{font-weight:600}
+.amt.in{color:var(--in)}
+.tx-wrap{padding-bottom:var(--s2)}
+
+nav{position:fixed;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:var(--s2) var(--s4) calc(var(--s2) + env(safe-area-inset-bottom))}
+nav ul{list-style:none;padding:0;display:grid;grid-template-columns:repeat(4,1fr);max-width:480px;margin:0 auto}
+nav a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px;min-height:52px;color:var(--muted);font-size:12px;font-weight:600;text-decoration:none;border-radius:var(--r-s)}
+nav a svg{width:24px;height:24px}
+nav a[aria-current]{color:var(--accent)}
+nav a:hover{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header>
+    <div><p>Tuesday, 10 November</p><h1>Good morning, Maya</h1></div>
+    <button class="avatar" aria-label="Open profile">MR</button>
+  </header>
+
+  <div class="hero">
+    <div class="label"><span>Total balance</span><span>2 accounts</span></div>
+    <div class="bal num">$4,826<small>.40</small></div>
+    <span class="delta num"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10V2M2.5 5.5 6 2l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>$312.80 up in 30 days</span>
+    <svg class="spark" viewBox="0 0 360 64" preserveAspectRatio="none" role="img" aria-label="Balance over the last 30 days, trending up with a dip mid-month">
+      <defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+      <path d="M0 40 L24 36 L48 42 L72 30 L96 34 L120 24 L144 46 L168 52 L192 44 L216 38 L240 30 L264 34 L288 22 L312 18 L336 14 L360 12 L360 64 L0 64Z" fill="url(#g)"/>
+      <path d="M0 40 L24 36 L48 42 L72 30 L96 34 L120 24 L144 46 L168 52 L192 44 L216 38 L240 30 L264 34 L288 22 L312 18 L336 14 L360 12" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+    </svg>
+  </div>
+
+  <div class="actions">
+    <button><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add expense</button>
+    <button><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 9h14l-4-4M19 15H5l4 4"/></svg>Transfer</button>
+    <button><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>Scan receipt</button>
+  </div>
+
+  <section aria-labelledby="bh">
+    <div class="sec-h"><h2 id="bh">November budget</h2><span>Day 10 of 30</span></div>
+    <div class="card budget">
+      <div class="b-top">
+        <div class="b-left num">$1,462<small>left of $2,400</small></div>
+        <span class="pill">On track</span>
+      </div>
+      <div class="track" role="img" aria-label="$938 of $2,400 spent, 39 percent. Month is 33 percent through.">
+        <i style="width:39%"></i><b style="left:33%" title="Where you'd be at an even pace"></b>
+      </div>
+      <div class="b-note num"><span>$938 spent</span><span>Marker: even pace</span></div>
+      <ul class="cats">
+        <li style="--c:#2f8f6b"><span class="n">Groceries</span><span class="v num"><em>$286</em> / $500</span><div class="bar"><i style="width:57%"></i></div></li>
+        <li style="--c:#d9893a"><span class="n">Eating out</span><span class="v num"><em>$214</em> / $200</span><div class="bar"><i style="width:100%"></i></div><span class="flag">Over by $14</span></li>
+        <li style="--c:#4b7fb5"><span class="n">Transport</span><span class="v num"><em>$96</em> / $220</span><div class="bar"><i style="width:44%"></i></div></li>
+        <li style="--c:#8a6bb8"><span class="n">Fun</span><span class="v num"><em>$62</em> / $150</span><div class="bar"><i style="width:41%"></i></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="th">
+    <div class="sec-h"><h2 id="th">Recent transactions</h2><a href="#all">See all</a></div>
+    <div class="card tx-wrap">
+      <p class="tx-group">Today</p>
+      <ul class="tx">
+        <li class="first"><span class="ic" style="--t:#e4f2ea" aria-hidden="true">🛒</span><div class="m"><b>Green Basket Market</b><span>Groceries · Checking</span></div><span class="amt num">−$42.18</span></li>
+        <li><span class="ic" style="--t:#fbebd6" aria-hidden="true">☕</span><div class="m"><b>Oat &amp; Bean Coffee</b><span>Eating out · Card</span></div><span class="amt num">−$5.40</span></li>
+      </ul>
+      <p class="tx-group">Yesterday</p>
+      <ul class="tx">
+        <li class="first"><span class="ic" style="--t:#e3ecf6" aria-hidden="true">🚇</span><div class="m"><b>Metro transit pass</b><span>Transport · Card</span></div><span class="amt num">−$33.00</span></li>
+        <li><span class="ic" style="--t:#dff1e8" aria-hidden="true">💼</span><div class="m"><b>Northfield Studio</b><span>Paycheck · Checking</span></div><span class="amt in num">+$2,150.00</span></li>
+        <li><span class="ic" style="--t:#ece4f5" aria-hidden="true">🎬</span><div class="m"><b>Roxy Cinema</b><span>Fun · Card</span></div><span class="amt num">−$24.50</span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<nav aria-label="Main">
+  <ul>
+    <li><a href="#home" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</a></li>
+    <li><a href="#tx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>Activity</a></li>
+    <li><a href="#budget"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.4 6.4"/></svg>Budget</a></li>
+    <li><a href="#more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>More</a></li>
+  </ul>
+</nav>
+</body>
+</html>

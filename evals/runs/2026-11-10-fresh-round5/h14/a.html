@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loaf | Order bread for pickup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --hairline: rgba(31, 27, 22, 0.08);
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --text-3: #736a5d;
+      --accent: #a94e2a;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+      --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #161513;
+        --card: #1c1a18;
+        --raised: #262421;
+        --hairline: rgba(239, 233, 222, 0.08);
+        --text: #efe9de;
+        --text-2: #aaa398;
+        --text-3: #8a847a;
+        --accent: #e0875c;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #161513;
+      --card: #1c1a18;
+      --raised: #262421;
+      --hairline: rgba(239, 233, 222, 0.08);
+      --text: #efe9de;
+      --text-2: #aaa398;
+      --text-3: #8a847a;
+      --accent: #e0875c;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.4;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+    /* Navigation */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
+    .brand svg { display: block; }
+    .nav-links { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; font-size: 14px; color: var(--text-2); }
+    .nav-links a { transition: color 150ms var(--ease); }
+    .nav-links a:hover { color: var(--text); }
+    .cart {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 10px;
+      border: 1px solid var(--hairline);
+      background: var(--card);
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 150ms var(--ease), transform 150ms var(--ease);
+    }
+    .cart:hover { background: var(--raised); }
+    .cart:active { transform: scale(0.98); }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 56px;
+      align-items: center;
+      padding-top: 56px;
+    }
+    .eyebrow { margin: 0 0 16px; font-size: 13px; color: var(--text-3); }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 64px;
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      margin: 0;
+      max-width: 14ch;
+    }
+    .lede { margin: 20px 0 0; font-size: 18px; line-height: 28px; color: var(--text-2); max-width: 36rem; }
+    .actions { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+    .btn {
+      height: 48px;
+      padding: 0 22px;
+      border-radius: 10px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background-color 150ms var(--ease), transform 150ms var(--ease);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { filter: brightness(0.94); }
+    .btn-secondary { background: var(--card); color: var(--text); border-color: var(--hairline); }
+    .btn-secondary:hover { background: var(--raised); }
+
+    /* Bake panel: the one rich moment */
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--hairline);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.06);
+    }
+    .panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+    .panel-head h2 { margin: 0; font-size: 14px; font-weight: 500; color: var(--text-2); }
+    .panel-head time { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+    .stage {
+      margin-top: 16px;
+      background: var(--raised);
+      border-radius: 14px;
+      height: 320px;
+      display: grid;
+      place-items: center;
+    }
+    .stage svg { width: 100%; max-width: 340px; height: auto; display: block; }
+
+    /* Figures row */
+    .figures {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--hairline);
+    }
+    .figure { padding: 24px 24px 0 0; }
+    .figure + .figure { padding-left: 24px; border-left: 1px solid var(--hairline); }
+    .figure dt { font-size: 13px; color: var(--text-3); }
+    .figure dd { margin: 8px 0 0; font-family: var(--mono); font-size: 28px; font-weight: 500; font-variant-numeric: tabular-nums; }
+    .pickup { margin: 24px 0 0; font-size: 13px; color: var(--text-3); }
+
+    /* Entrance: one short fade and rise, off for reduced motion */
+    .rise { animation: rise 420ms var(--ease) both; }
+    .rise.d1 { animation-delay: 60ms; }
+    .rise.d2 { animation-delay: 120ms; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rise { animation: none; }
+      * { transition-duration: 0ms !important; }
+    }
+
+    /* Phone width */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 40px; padding-top: 40px; }
+      h1 { font-size: 44px; }
+      .figures { margin-top: 40px; }
+    }
+    @media (max-width: 640px) {
+      .wrap { padding: 0 16px; }
+      .nav-links { gap: 16px; }
+      .figures { grid-template-columns: 1fr; }
+      .figure, .figure + .figure { padding: 16px 0; border-left: 0; }
+      .figure + .figure { border-top: 1px solid var(--hairline); }
+      .stage { height: 240px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <a class="brand" href="#" aria-label="Loaf home">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+          <circle cx="11" cy="11" r="10" fill="var(--accent)"/>
+          <path d="M5.5 13.5 Q11 7.5 16.5 10.5" stroke="#fdfbf7" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        </svg>
+        Loaf
+      </a>
+      <ul class="nav-links">
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#">Subscribe</a></li>
+        <li><a href="#visit">Visit us</a></li>
+      </ul>
+      <button class="cart" type="button">Cart (0)</button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="rise">
+          <p class="eyebrow">Bakery, order for pickup</p>
+          <h1>Order today's bread and pick it up today</h1>
+          <p class="lede">Sourdough and pastries for same-day pickup. Order online and collect them at the bakery.</p>
+          <div class="actions">
+            <button class="btn btn-primary" type="button">Order now</button>
+            <button class="btn btn-secondary" type="button">Weekly subscription</button>
+          </div>
+        </div>
+
+        <figure class="panel rise d1" style="margin: 0;">
+          <div class="panel-head">
+            <h2>Today's bake list</h2>
+            <time datetime="2026-11-10">10 Nov 2026</time>
+          </div>
+          <div class="stage">
+            <svg viewBox="0 0 340 260" role="img" aria-label="Scored sourdough loaf">
+              <defs>
+                <radialGradient id="crust" cx="42%" cy="34%" r="70%">
+                  <stop offset="0%" stop-color="#dca468"/>
+                  <stop offset="55%" stop-color="#b56c33"/>
+                  <stop offset="100%" stop-color="#6e3b1a"/>
+                </radialGradient>
+                <linearGradient id="score" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#f3d7a6" stop-opacity="0.2"/>
+                  <stop offset="50%" stop-color="#f3d7a6" stop-opacity="0.95"/>
+                  <stop offset="100%" stop-color="#f3d7a6" stop-opacity="0.2"/>
+                </linearGradient>
+              </defs>
+              <ellipse cx="170" cy="222" rx="128" ry="14" fill="#3b2a1c" opacity="0.16"/>
+              <path d="M44 160 C44 92 104 50 170 50 C240 50 298 96 298 160 C298 204 246 216 170 216 C94 216 44 204 44 160 Z" fill="url(#crust)"/>
+              <ellipse cx="140" cy="88" rx="62" ry="16" fill="#fff6e6" opacity="0.14"/>
+              <path d="M96 136 Q170 88 246 124" stroke="url(#score)" stroke-width="10" stroke-linecap="round" fill="none"/>
+              <path d="M104 150 Q170 112 236 142" stroke="#5a2f14" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.45"/>
+              <g fill="#f6e7cf" opacity="0.35">
+                <circle cx="82" cy="120" r="2.2"/>
+                <circle cx="120" cy="174" r="1.6"/>
+                <circle cx="206" cy="78" r="2"/>
+                <circle cx="262" cy="150" r="2.4"/>
+                <circle cx="232" cy="186" r="1.5"/>
+                <circle cx="150" cy="70" r="1.8"/>
+                <circle cx="68" cy="176" r="1.6"/>
+                <circle cx="284" cy="108" r="1.8"/>
+              </g>
+            </svg>
+          </div>
+        </figure>
+      </section>
+
+      <dl class="figures rise d2" id="menu">
+        <div class="figure">
+          <dt>Sourdough left</dt>
+          <dd>12</dd>
+        </div>
+        <div class="figure">
+          <dt>Croissants baked</dt>
+          <dd>48</dd>
+        </div>
+        <div class="figure">
+          <dt>Next bake</dt>
+          <dd>Nov 11, 2026</dd>
+        </div>
+      </dl>
+
+      <p class="pickup" id="visit">Pickup open 7:00 am to 7:00 pm</p>
+    </main>
+  </div>
+</body>
+</html>

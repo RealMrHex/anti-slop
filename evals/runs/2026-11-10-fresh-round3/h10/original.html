@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brightside | Maths Tutoring That Works!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .glass { background: rgba(255,255,255,0.18); backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.35); }
+    .blob { position: absolute; border-radius: 9999px; filter: blur(70px); opacity: 0.85; }
+    .float { animation: float 4s ease-in-out infinite; }
+    .pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
+    @keyframes pulseGlow { 0%,100% { box-shadow: 0 0 18px rgba(255,120,200,0.6); } 50% { box-shadow: 0 0 42px rgba(255,160,60,0.9); } }
+    .dot { position: absolute; width: 10px; height: 10px; border-radius: 9999px; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-orange-400 via-pink-500 to-fuchsia-600 text-white overflow-hidden relative">
+
+  <div class="blob bg-yellow-300 w-[340px] h-[340px] -top-[60px] -left-[80px]"></div>
+  <div class="blob bg-pink-300 w-[420px] h-[420px] top-[120px] -right-[120px]"></div>
+  <div class="blob bg-orange-200 w-[260px] h-[260px] bottom-[-40px] left-[38%]"></div>
+
+  <span class="dot bg-yellow-200" style="top:140px;left:12%"></span>
+  <span class="dot bg-cyan-300" style="top:210px;left:82%"></span>
+  <span class="dot bg-lime-300" style="top:330px;left:6%"></span>
+  <span class="dot bg-sky-300" style="top:420px;left:91%"></span>
+  <span class="dot bg-violet-300" style="top:520px;left:22%"></span>
+  <span class="dot bg-green-300" style="top:610px;left:74%"></span>
+  <span class="dot bg-rose-200" style="top:700px;left:14%"></span>
+  <span class="dot bg-amber-200" style="top:180px;left:58%"></span>
+  <span class="dot bg-teal-200" style="top:760px;left:87%"></span>
+  <span class="dot bg-fuchsia-200" style="top:86px;left:44%"></span>
+
+  <nav class="relative z-10 flex items-center justify-between px-[43px] pt-[22px]">
+    <div class="flex items-center gap-2 text-2xl font-black tracking-tight">
+      <span>🌟</span> Brightside
+      <span class="ml-1 rounded-full bg-yellow-300 px-2 py-[2px] text-[10px] font-black text-pink-700">NEW!</span>
+    </div>
+    <div class="flex items-center gap-7 text-sm font-semibold">
+      <a href="#" class="hover:opacity-80">🏠 Home</a>
+      <a href="#" class="hover:opacity-80">📚 How It Works</a>
+      <a href="#" class="hover:opacity-80">💬 Homework Help</a>
+      <a href="#" class="hover:opacity-80">💎 PRO Plans</a>
+      <a href="#" class="rounded-full bg-white px-5 py-[9px] font-extrabold text-pink-600 shadow-lg hover:scale-105 transition">Log In 👋</a>
+    </div>
+  </nav>
+
+  <main class="relative z-10 flex flex-col items-center text-center px-6 mt-[37px]">
+    <p class="text-xs font-black uppercase tracking-[0.35em] text-yellow-200">🎉 Online Maths Tutoring · Ages 11–16 🎉</p>
+
+    <h1 class="mt-[18px] text-7xl font-black leading-[1.05] bg-gradient-to-r from-white via-pink-100 to-white bg-clip-text text-transparent drop-shadow-[0_4px_30px_rgba(255,255,255,0.6)]" style="-webkit-text-stroke: 1.5px #ffffff;">
+      Maths Made Magical! ✨
+    </h1>
+
+    <p class="mt-[22px] max-w-[640px] text-lg font-semibold text-white/95">
+      Weekly 1-to-1 video lessons, instant homework help chat and progress reports for parents!!
+      Your child will LOVE maths 🚀🔥
+    </p>
+
+    <div class="mt-[26px] inline-flex items-center gap-3 rounded-2xl bg-white/20 px-6 py-3 text-xl font-black shadow-2xl pulse-glow">
+      🏆 Grades improve 3x!*
+    </div>
+
+    <div class="mt-[30px] flex items-center gap-5">
+      <a href="#" class="rounded-full bg-gradient-to-r from-yellow-300 via-orange-400 to-pink-500 px-9 py-4 text-lg font-black text-white shadow-[0_0_30px_rgba(255,200,80,0.9)] transition duration-300 hover:scale-110 hover:shadow-[0_0_50px_rgba(255,120,180,1)]">
+        🚀 Start Your FREE Trial!
+      </a>
+      <a href="#" class="rounded-full border-2 border-white/70 px-7 py-[15px] text-lg font-extrabold transition duration-300 hover:scale-105 hover:bg-white/20">
+        ▶️ Watch Demo
+      </a>
+    </div>
+
+    <p class="mt-[14px] text-sm font-bold text-white/90">⭐⭐⭐⭐⭐ Loved by 12,000+ families! Since 03/2019 🎓</p>
+
+    <div class="glass float mt-[34px] w-[560px] rounded-[32px] px-10 py-[26px] shadow-[0_25px_80px_rgba(120,0,80,0.45)]">
+      <div class="text-[92px] leading-none tracking-[18px]">📚✏️🧮</div>
+      <div class="mt-[10px] text-[64px] leading-none">🏆🎯💡🌈</div>
+      <div class="mt-[8px] text-[40px] leading-none">🤩 🎉 🚀 ⭐ 💖</div>
+    </div>
+
+    <p class="mt-[22px] text-[11px] font-semibold text-white/80">*Results may vary. Based on 2026 internal data (4,312 students). Est. 14th Feb 2019 · Trusted by 900+ schools!</p>
+  </main>
+
+</body>
+</html>

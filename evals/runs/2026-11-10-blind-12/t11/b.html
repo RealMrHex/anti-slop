@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fornace Pizzeria – Menu</title>
+<style>
+:root{
+  --bg:#f8f0e3; --surface:#fffaf2; --ink:#2b1d14; --muted:#6b5849; --line:#e8dac6;
+  --accent:#b8400f; --accent-ink:#fff; --accent-soft:#f6dcc8; --green:#2f6b3f; --green-soft:#dcebd9;
+  --r-s:10px; --r-m:16px; --r-l:24px;
+  --shadow:0 1px 2px rgba(60,30,10,.08),0 6px 18px rgba(60,30,10,.08);
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+  --serif:"Iowan Old Style",Palatino,"Palatino Linotype",Georgia,serif;
+  --sans:ui-rounded,"SF Pro Rounded","Avenir Next",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:68px}
+body{background:#eadfce;color:var(--ink);font:16px/1.45 var(--sans);-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;background:var(--bg);min-height:100vh;position:relative;padding-bottom:110px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px;border-radius:6px}
+
+/* hero */
+.hero{position:relative;height:210px;background:linear-gradient(160deg,#c9531a,#8f2c0a);overflow:hidden;color:#fff}
+.hero svg{position:absolute;right:-70px;top:-30px;width:330px;height:330px}
+.topbar{position:absolute;inset:var(--s4) var(--s4) auto;display:flex;justify-content:space-between;z-index:2}
+.icon-btn{width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,250,242,.95);color:var(--ink);display:grid;place-items:center;box-shadow:var(--shadow);transition:transform .15s}
+.icon-btn:active{transform:scale(.94)}
+.icon-btn svg{position:static;width:22px;height:22px}
+
+/* info card */
+.info{margin:-56px var(--s4) 0;position:relative;z-index:3;background:var(--surface);border-radius:var(--r-l);padding:var(--s5) var(--s4) var(--s4);box-shadow:var(--shadow)}
+.cuisine{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+h1{font:700 30px/1.1 var(--serif);margin:var(--s1) 0 var(--s2)}
+.meta{display:flex;flex-wrap:wrap;gap:var(--s1) var(--s3);color:var(--muted);font-size:14px}
+.meta b{color:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--line);text-align:center}
+.stats div+div{border-left:1px solid var(--line)}
+.stats strong{display:block;font-size:17px}
+.stats span{font-size:13px;color:var(--muted)}
+.offer{margin-top:var(--s4);display:flex;gap:var(--s3);align-items:center;background:var(--green-soft);color:#1f4a2b;border-radius:var(--r-m);padding:var(--s3) var(--s4);font-size:14px}
+.offer b{font-weight:700}
+
+/* tabs */
+.tabs{position:sticky;top:0;z-index:10;background:var(--bg);margin-top:var(--s4);border-bottom:1px solid var(--line)}
+.tabs ul{list-style:none;padding:var(--s3) var(--s4);display:flex;gap:var(--s2);overflow-x:auto;scrollbar-width:none}
+.tabs ul::-webkit-scrollbar{display:none}
+.tab{white-space:nowrap;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:0 var(--s4);min-height:44px;font-weight:600;font-size:15px;color:var(--muted);transition:background .15s,color .15s}
+.tab:hover{border-color:var(--accent);color:var(--ink)}
+.tab[aria-current="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+/* sections */
+section{padding:var(--s5) var(--s4) 0}
+h2{font:700 22px/1.2 var(--serif)}
+.sub{color:var(--muted);font-size:14px;margin:var(--s1) 0 var(--s4)}
+
+/* featured */
+.feature{background:var(--surface);border-radius:var(--r-l);box-shadow:var(--shadow);overflow:hidden}
+.feature .art{height:150px;display:grid;place-items:center;background:radial-gradient(circle at 50% 60%,#f4c99a,#e7a066)}
+.feature .art svg{width:140px;height:140px;filter:drop-shadow(0 8px 10px rgba(80,30,0,.25))}
+.feature .body{padding:var(--s4)}
+.badge{display:inline-block;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 10px;border-radius:999px;margin-bottom:var(--s2)}
+
+/* items */
+.items{list-style:none;padding:0;background:var(--surface);border-radius:var(--r-l);box-shadow:var(--shadow);margin-top:var(--s4)}
+.feature+.items{margin-top:var(--s4)}
+.item{display:grid;grid-template-columns:1fr 88px;gap:var(--s4);padding:var(--s4);position:relative}
+.item+.item{border-top:1px solid var(--line)}
+.item h3{font-size:17px;font-weight:700;line-height:1.25}
+.item p{color:var(--muted);font-size:14px;margin-top:var(--s1)}
+.price{font-weight:700;margin-top:var(--s2);display:flex;gap:var(--s2);align-items:center;flex-wrap:wrap}
+.tag{font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--green-soft);color:#1f4a2b}
+.tag.hot{background:var(--accent-soft);color:#8a2f08}
+.thumb{position:relative;width:88px;height:88px;border-radius:var(--r-m);display:grid;place-items:center;font-size:44px;background:var(--accent-soft)}
+.thumb.g{background:var(--green-soft)} .thumb.y{background:#f7e6b0} .thumb.r{background:#f3cdc4}
+.add{position:absolute;right:-6px;bottom:-10px;min-width:44px;height:36px;padding:0 var(--s3);border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--accent);font-weight:800;font-size:18px;box-shadow:var(--shadow);display:inline-flex;align-items:center;justify-content:center;gap:var(--s2);transition:background .15s,transform .15s}
+.add:hover{background:var(--accent-soft)}
+.add:active{transform:scale(.95)}
+.add.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-size:15px}
+.add.on:hover{background:#9a3309}
+.add[disabled]{opacity:.5;cursor:not-allowed}
+.item.sold .thumb{filter:grayscale(1);opacity:.6}
+.sold-note{font-size:13px;font-weight:600;color:var(--muted);margin-top:var(--s2)}
+
+/* cart */
+.cartbar{position:fixed;left:50%;bottom:var(--s4);transform:translate(-50%,140%);width:calc(min(480px,100%) - 32px);z-index:20;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.cartbar.show{transform:translate(-50%,0)}
+.cartbar button{width:100%;min-height:56px;border:0;border-radius:var(--r-m);background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:space-between;padding:0 var(--s4);font-weight:700;font-size:16px;box-shadow:0 8px 24px rgba(120,40,5,.4)}
+.cartbar button:hover{background:#9a3309}
+.cartbar .count{background:rgba(255,255,255,.22);border-radius:8px;padding:2px 10px;margin-right:var(--s3)}
+.foot{padding:var(--s5) var(--s4) 0;color:var(--muted);font-size:13px;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="hero">
+    <div class="topbar">
+      <button class="icon-btn" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="icon-btn" aria-label="Save to favourites"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.600-7 10-7 10z"/></svg></button>
+    </div>
+    <!-- drawn pizza, cropped by the hero edge -->
+    <svg viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="100" cy="100" r="96" fill="#e2a15f"/>
+      <circle cx="100" cy="100" r="84" fill="#d4472a"/>
+      <circle cx="100" cy="100" r="80" fill="#f5e6c4" opacity=".92"/>
+      <g fill="#c13a20"><circle cx="70" cy="70" r="11"/><circle cx="120" cy="62" r="11"/><circle cx="145" cy="105" r="11"/><circle cx="105" cy="130" r="11"/><circle cx="62" cy="115" r="11"/><circle cx="100" cy="95" r="9"/></g>
+      <g fill="#3f7d3c"><ellipse cx="88" cy="48" rx="9" ry="5" transform="rotate(30 88 48)"/><ellipse cx="135" cy="140" rx="9" ry="5" transform="rotate(-40 135 140)"/><ellipse cx="50" cy="90" rx="9" ry="5" transform="rotate(70 50 90)"/><ellipse cx="128" cy="85" rx="9" ry="5" transform="rotate(10 128 85)"/></g>
+    </svg>
+  </header>
+
+  <div class="info">
+    <div class="cuisine">Neapolitan pizza · Wood-fired</div>
+    <h1>Fornace Pizzeria</h1>
+    <div class="meta"><span><b>4.8</b> ★ (1.2k ratings)</span><span>·</span><span>$$</span><span>·</span><span>Open until 11 pm</span></div>
+    <div class="stats">
+      <div><strong>25–35 min</strong><span>Delivery</span></div>
+      <div><strong>$1.99</strong><span>Fee</span></div>
+      <div><strong>1.4 mi</strong><span>Away</span></div>
+    </div>
+    <div class="offer"><span aria-hidden="true">🎟️</span><span><b>Free delivery</b> on orders over $30</span></div>
+  </div>
+
+  <nav class="tabs" aria-label="Menu categories">
+    <ul>
+      <li><button class="tab" data-target="popular" aria-current="true">Popular</button></li>
+      <li><button class="tab" data-target="pizza">Pizza</button></li>
+      <li><button class="tab" data-target="starters">Starters</button></li>
+      <li><button class="tab" data-target="sides">Salads</button></li>
+      <li><button class="tab" data-target="dessert">Dessert</button></li>
+      <li><button class="tab" data-target="drinks">Drinks</button></li>
+    </ul>
+  </nav>
+
+  <section id="popular" aria-labelledby="h-popular">
+    <h2 id="h-popular">Most ordered</h2>
+    <p class="sub">What the neighbourhood keeps coming back for</p>
+    <article class="feature" data-name="Margherita Classica" data-price="14.50">
+      <div class="art" aria-hidden="true">
+        <svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#e2a15f"/><circle cx="100" cy="100" r="82" fill="#d4472a"/><g fill="#fbf3e0"><circle cx="70" cy="72" r="20"/><circle cx="125" cy="66" r="17"/><circle cx="138" cy="118" r="21"/><circle cx="85" cy="130" r="18"/><circle cx="102" cy="98" r="14"/></g><g fill="#3f7d3c"><ellipse cx="72" cy="72" rx="9" ry="5" transform="rotate(30 72 72)"/><ellipse cx="138" cy="118" rx="9" ry="5" transform="rotate(-40 138 118)"/><ellipse cx="85" cy="130" rx="8" ry="4" transform="rotate(60 85 130)"/></g></svg>
+      </div>
+      <div class="body">
+        <span class="badge">Chef's pick</span>
+        <h3 style="font:700 20px/1.2 var(--serif)">Margherita Classica</h3>
+        <p style="color:var(--muted);font-size:14px;margin-top:4px">San Marzano tomato, fior di latte, basil, a drizzle of olive oil. 12-inch, 72-hour dough.</p>
+        <div class="price" style="justify-content:space-between;margin-top:12px">
+          <span style="font-size:18px">$14.50</span>
+          <button class="add" style="position:static" aria-label="Add Margherita Classica">+</button>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section id="pizza" aria-labelledby="h-pizza">
+    <h2 id="h-pizza">Pizza</h2>
+    <p class="sub">12-inch, baked in 90 seconds at 450°C</p>
+    <ul class="items">
+      <li class="item" data-name="Diavola" data-price="16.00">
+        <div><h3>Diavola</h3><p>Spicy salami, chilli oil, fior di latte, tomato.</p><div class="price">$16.00 <span class="tag hot">Spicy</span></div></div>
+        <div class="thumb r" aria-hidden="true">🌶️<button class="add" tabindex="-1" aria-hidden="true">+</button></div>
+      </li>
+      <li class="item" data-name="Funghi e Tartufo" data-price="18.50">
+        <div><h3>Funghi e Tartufo</h3><p>Roasted mushrooms, truffle cream, thyme, parmigiano.</p><div class="price">$18.50 <span class="tag">Vegetarian</span></div></div>
+        <div class="thumb y" aria-hidden="true">🍄<button class="add" tabindex="-1" aria-hidden="true">+</button></div>
+      </li>
+      <li class="item" data-name="Quattro Formaggi" data-price="17.00">
+        <div><h3>Quattro Formaggi</h3><p>Mozzarella, gorgonzola, pecorino, taleggio, honey.</p><div class="price">$17.00 <span class="tag">Vegetarian</span></div></div>
+        <div class="thumb" aria-hidden="true">🧀<button class="add" tabindex="-1" aria-hidden="true">+</button></div>
+      </li>
+      <li class="item sold" data-name="Salsiccia e Friarielli" data-price="17.50" data-sold="1">
+        <div><h3>Salsiccia e Friarielli</h3><p>Fennel sausage, broccoli rabe, smoked provola.</p><div class="price">$17.50</div><div class="sold-note">Sold out today</div></div>
+        <div class="thumb" aria-hidden="true">🍕<button class="add" disabled tabindex="-1" aria-hidden="true">+</button></div>
+      </li>
+    </ul>
+  </section>
+
+  <section id="starters" aria-labelledby="h-starters">
+    <h2 id="h-starters">Starters</h2>
+    <p class="sub">Good to share</p>
+    <ul class="items">
+      <li class="item" data-name="Burrata e Pomodorini" data-price="12.00">
+        <div><h3>Burrata e Pomodorini</h3><p>Creamy burrata, roasted cherry tomatoes, grilled sourdough.</p><div class="price">$12.00 <span class="tag">Vegetarian</span></div></div>
+        <div class="thumb" aria-hidden="true">🍅<button class="add" tabindex="-1" aria-hidden="true">+</button></div>
+      </li>
+      <li class="item" data-name="Garlic Knots" data-price="6.50">
+        <div><h3>Garlic Knots</h3><p>Six pizza-dough knots, garlic butter, parsley, marinara to dip.</p><div class="price">$6.50 <span class="tag">Vegetarian</span></div></div>
+        <div class="thumb y" aria-hidden="true">🥖<button class="add" tabindex="-1" aria-hidden="true">+</button></div>
+      </li>
+    </ul>
+  </section>
+
+  <section id="sides" aria-labelledby="h-sides">
+    <h2 id="h-sides">Salads</h2>
+    <p class="sub">Crisp and dressed to order</p>
+    <ul class="items">
+      <li class="item" data-name="Rucola e Parmigiano" data-price="9.50">
+        <div><h3>Rucola e Parmigiano</h3><p>Wild rocket, shaved parmigiano, lemon, olive oil.</p><div class="price">$9.50 <span class="tag">Vegetarian</span></div></div>
+        <div class="thumb g" aria-hidden="true">🥗<button class="add" tabindex="-1" aria-hidden="true">+</button></div>
+      </li>
+    </ul>
+  </section>
+
+  <section id="dessert" aria-labelledby="h-dessert">
+    <h2 id="h-dessert">Dessert</h2>
+    <p class="sub">Made in the kitchen each morning</p>
+    <ul class="items">
+      <li class="item" data-name="Tiramisù" data-price="8.00">
+        <div><h3>Tiramisù</h3><p>Espresso-soaked savoiardi, mascarpone, cocoa.</p><div class="price">$8.00 <span class="tag">Vegetarian</span></div></div>
+        <div class="thumb y" aria-hidden="true">🍰<button class="add" tabindex="-1" aria-hidden="true">+</button></div>
+      </li>
+      <li class="item" data-name="Nutella Calzone" data-price="9.00">
+        <div><h3>Nutella Calzone</h3><p>Warm folded dough, hazelnut spread, icing sugar.</p><div class="price">$9.00 <span class="tag">Vegetarian</span></div></div>
+        <div class="thumb r" aria-hidden="true">🌰<button class="add" tabindex="-1" aria-hidden="true">+</button></div>
+      </li>
+    </ul>
+  </section>
+
+  <section id="drinks" aria-labelledby="h-drinks">
+    <h2 id="h-drinks">Drinks</h2>
+    <p class="sub">Cold from the fridge</p>
+    <ul class="items">
+      <li class="item" data-name="Limonata Siciliana" data-price="4.50">
+        <div><h3>Limonata Siciliana</h3><p>Sparkling lemon soda, 330 ml.</p><div class="price">$4.50</div></div>
+        <div class="thumb y" aria-hidden="true">🍋<button class="add" tabindex="-1" aria-hidden="true">+</button></div>
+      </li>
+      <li class="item" data-name="Chinotto" data-price="4.50">
+        <div><h3>Chinotto</h3><p>Bittersweet Italian citrus cola, 330 ml.</p><div class="price">$4.50</div></div>
+        <div class="thumb" aria-hidden="true">🥤<button class="add" tabindex="-1" aria-hidden="true">+</button></div>
+      </li>
+    </ul>
+  </section>
+
+  <p class="foot">Menu items and prices are sample content.<br>Tell us about allergies at checkout.</p>
+
+  <div class="cartbar" id="cartbar">
+    <button type="button" id="cartbtn" aria-label="View cart">
+      <span><span class="count" id="count">0</span>View cart</span>
+      <span id="total">$0.00</span>
+    </button>
+  </div>
+</main>
+
+<script>
+(function(){
+  var cart={}, bar=document.getElementById('cartbar');
+  function money(n){return '$'+n.toFixed(2)}
+  function render(){
+    var n=0,t=0;
+    Object.keys(cart).forEach(function(k){n+=cart[k].q;t+=cart[k].q*cart[k].p});
+    document.getElementById('count').textContent=n;
+    document.getElementById('total').textContent=money(t);
+    document.getElementById('cartbtn').setAttribute('aria-label','View cart, '+n+' items, '+money(t));
+    bar.classList.toggle('show',n>0);
+    document.querySelectorAll('[data-name]').forEach(function(el){
+      var b=el.querySelector('.add'); if(!b||el.dataset.sold) return;
+      var q=cart[el.dataset.name]?cart[el.dataset.name].q:0;
+      b.classList.toggle('on',q>0);
+      b.textContent=q>0?q:'+';
+      b.setAttribute('aria-label',(q>0?'In cart: '+q+'. Add another ':'Add ')+el.dataset.name);
+    });
+  }
+  document.querySelectorAll('[data-name]').forEach(function(el){
+    if(el.dataset.sold) return;
+    var b=el.querySelector('.add');
+    b.removeAttribute('aria-hidden'); b.removeAttribute('tabindex');
+    var open=function(){var c=cart[el.dataset.name]||(cart[el.dataset.name]={q:0,p:parseFloat(el.dataset.price)});c.q++;render()};
+    b.addEventListener('click',function(e){e.stopPropagation();open()});
+    b.addEventListener('contextmenu',function(e){e.preventDefault();var c=cart[el.dataset.name];if(c){c.q--;if(c.q<1)delete cart[el.dataset.name];render()}});
+  });
+  var tabs=document.querySelectorAll('.tab');
+  tabs.forEach(function(t){t.addEventListener('click',function(){document.getElementById(t.dataset.target).scrollIntoView()})});
+  var secs=[].slice.call(document.querySelectorAll('section'));
+  function spy(){
+    var cur=secs[0];
+    secs.forEach(function(s){if(s.getBoundingClientRect().top<120)cur=s});
+    tabs.forEach(function(t){
+      var on=t.dataset.target===cur.id;
+      t.setAttribute('aria-current',on);
+      if(on){var ul=t.closest('ul');ul.scrollLeft=t.offsetLeft-16}
+    });
+  }
+  window.addEventListener('scroll',spy,{passive:true});
+  render();
+})();
+</script>
+</body>
+</html>

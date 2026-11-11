@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trailhead Maps: Offline Hiking Maps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0e1311;
+      --surface: #151c19;
+      --raised: #1c2420;
+      --line: rgba(232, 236, 233, 0.08);
+      --text: #e8ece9;
+      --text-2: #a3ada7;
+      --text-3: #86908a;
+      --accent: #f0772f;
+      --accent-ink: #1a1008;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    nav.top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px 24px;
+      padding: 24px 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .blaze { width: 8px; height: 18px; border-radius: 2px; background: var(--accent); }
+    .links { display: flex; flex-wrap: wrap; gap: 8px 28px; font-size: 15px; }
+    .links a { color: var(--text-2); text-decoration: none; }
+    .links a:hover { color: var(--text); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      gap: 64px;
+      align-items: center;
+      min-height: calc(100vh - 88px);
+      padding: 40px 0 56px;
+    }
+    h1 {
+      margin: 0;
+      max-width: 12ch;
+      font-size: 56px;
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+    .sub {
+      max-width: 34em;
+      margin: 24px 0 0;
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--text-2);
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+    .btn {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 210px;
+      padding: 12px 20px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      text-decoration: none;
+      transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .btn .k { font-size: 12px; color: var(--text-3); }
+    .btn .n { font-size: 16px; font-weight: 600; }
+    .btn:hover { border-color: var(--text-3); }
+    .btn-primary { background: var(--accent); border-color: transparent; color: var(--accent-ink); }
+    .btn-primary .k { color: var(--accent-ink); opacity: 0.8; }
+    .btn-primary:hover { background: color-mix(in srgb, var(--accent) 88%, #000); border-color: transparent; }
+
+    .preview {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface);
+    }
+    .ph {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 8px 8px 12px;
+    }
+    .ph h2 { margin: 0; font-size: 17px; font-weight: 600; }
+    .ph p {
+      margin: 0;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 13px;
+      color: var(--text-3);
+      font-variant-numeric: tabular-nums;
+    }
+    .map, .elev { display: block; width: 100%; height: auto; }
+    .map { border-radius: 8px; background: var(--raised); }
+    .elev { margin-top: 12px; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 0;
+      padding: 16px 8px 8px;
+      border-top: 1px solid var(--line);
+      margin-top: 12px;
+    }
+    .stats dt { font-size: 12px; color: var(--text-3); }
+    .stats dd {
+      margin: 4px 0 0;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 20px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 32px;
+      margin: 0;
+      padding: 32px 0 96px;
+      border-top: 1px solid var(--line);
+      list-style: none;
+    }
+    .feature svg { width: 18px; height: 18px; color: var(--text-3); }
+    .feature h3 { margin: 14px 0 4px; font-size: 16px; font-weight: 600; }
+    .feature p { margin: 0; font-size: 15px; color: var(--text-2); }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 40px; min-height: 0; padding-top: 24px; }
+      h1 { font-size: 40px; }
+      .features { grid-template-columns: 1fr; gap: 24px; }
+    }
+    @media (max-width: 480px) {
+      .wrap { padding: 0 16px; }
+      .btn { min-width: 0; width: 100%; }
+      .actions { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="top">
+      <a class="brand" href="#"><span class="blaze" aria-hidden="true"></span>Trailhead Maps</a>
+      <div class="links">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Community</a>
+      </div>
+    </nav>
+
+    <main>
+      <section class="hero" aria-labelledby="headline">
+        <div>
+          <h1 id="headline">Trail maps for the places with no signal</h1>
+          <p class="sub">Download trail maps, record your hike with GPS, check the elevation profile, and share routes with friends in one tap.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#">
+              <span class="k">Download on the</span>
+              <span class="n">App Store</span>
+            </a>
+            <a class="btn" href="#">
+              <span class="k">Get it on</span>
+              <span class="n">Google Play</span>
+            </a>
+          </div>
+        </div>
+
+        <figure class="preview" style="margin:0">
+          <div class="ph">
+            <h2>Ridge loop</h2>
+            <p>11.2 km</p>
+          </div>
+          <svg class="map" viewBox="0 0 640 380" role="img" aria-label="Topographic map of a ridge loop with the route traced in orange">
+            <rect width="640" height="380" fill="#1c2420"/>
+            <g fill="none" stroke="#e8ece9" stroke-width="1.2">
+              <path stroke-opacity=".14" d="M30 190 C50 80 210 40 330 46 C450 52 600 90 610 200 C620 310 500 352 360 346 C220 340 20 320 30 190 Z"/>
+              <path stroke-opacity=".18" d="M90 200 C110 130 210 100 330 104 C440 108 530 140 540 205 C550 268 470 292 360 288 C240 284 74 276 90 200 Z"/>
+              <path stroke-opacity=".24" d="M150 200 C165 160 240 146 330 150 C420 154 480 176 486 208 C492 244 430 254 360 250 C280 246 138 244 150 200 Z"/>
+              <path stroke-opacity=".3" d="M205 198 C220 176 280 170 330 172 C380 174 420 186 424 206 C428 226 390 230 340 228 C290 226 190 222 205 198 Z"/>
+              <path stroke-opacity=".36" d="M262 196 C272 186 300 182 330 184 C360 186 384 192 386 204 C388 216 360 218 330 217 C300 216 252 210 262 196 Z"/>
+            </g>
+            <path d="M110 300 C160 280 190 240 240 236 S330 262 360 220 S430 150 470 160 S540 130 560 110" fill="none" stroke="#f0772f" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M338 152 L344 162 L332 162 Z" fill="#a3ada7"/>
+            <text x="352" y="166" font-family="IBM Plex Mono, monospace" font-size="12" fill="#a3ada7">1,880 m</text>
+            <circle cx="110" cy="300" r="6" fill="#e8ece9"/>
+            <circle cx="560" cy="110" r="12" fill="none" stroke="#f0772f" stroke-opacity=".4"/>
+            <circle cx="560" cy="110" r="6" fill="#f0772f"/>
+          </svg>
+          <svg class="elev" viewBox="0 0 640 96" preserveAspectRatio="none" role="img" aria-label="Elevation profile of the route, climbing to a peak in the middle and descending to the end">
+            <path d="M0 80 L60 72 L110 62 L160 54 L200 44 L240 40 L280 48 L320 26 L360 18 L400 26 L440 12 L480 22 L520 40 L560 50 L600 70 L640 78 L640 96 L0 96 Z" fill="#f0772f" fill-opacity=".12"/>
+            <path d="M0 80 L60 72 L110 62 L160 54 L200 44 L240 40 L280 48 L320 26 L360 18 L400 26 L440 12 L480 22 L520 40 L560 50 L600 70 L640 78" fill="none" stroke="#f0772f" stroke-width="2" vector-effect="non-scaling-stroke"/>
+          </svg>
+          <dl class="stats">
+            <div><dt>Distance</dt><dd>11.2 km</dd></div>
+            <div><dt>Ascent</dt><dd>640 m</dd></div>
+            <div><dt>Time</dt><dd>3h 40m</dd></div>
+          </dl>
+        </figure>
+      </section>
+
+      <ul class="features">
+        <li class="feature">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+          <h3>Offline maps</h3>
+          <p>Save any region in one tap.</p>
+        </li>
+        <li class="feature">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+          <h3>GPS tracking</h3>
+          <p>Record every step of the route.</p>
+        </li>
+        <li class="feature">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19l6-9 4 5 3-4 5 8"/></svg>
+          <h3>Elevation</h3>
+          <p>See the climb before you set out.</p>
+        </li>
+      </ul>
+    </main>
+  </div>
+</body>
+</html>

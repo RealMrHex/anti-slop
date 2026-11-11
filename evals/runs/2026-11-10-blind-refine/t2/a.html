@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>To-Do</title>
+<style>
+  :root {
+    --bg: #f6f0e6;
+    --bg2: #efe4d3;
+    --card: #fffdf8;
+    --text: #2b2420;
+    --muted: #7a6c61;
+    --accent: #c2461f;
+    --accent-ink: #ffffff;
+    --accent-soft: #f6dccf;
+    --border: #e6dccd;
+    --track: #e4d8c6;
+    --shadow: 0 1px 2px rgba(80,50,20,.06), 0 6px 16px -6px rgba(80,50,20,.14);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1613; --bg2: #241c17; --card: #28211c; --text: #f5ece2; --muted: #a99a8c;
+      --accent: #ff8f62; --accent-ink: #2a140a; --accent-soft: #4a2c1f; --border: #3a2f28; --track: #3d312a;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 16px -6px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1b1613; --bg2: #241c17; --card: #28211c; --text: #f5ece2; --muted: #a99a8c;
+    --accent: #ff8f62; --accent-ink: #2a140a; --accent-soft: #4a2c1f; --border: #3a2f28; --track: #3d312a;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 16px -6px rgba(0,0,0,.5);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: linear-gradient(180deg, var(--bg2) 0, var(--bg) 280px) var(--bg);
+    background-repeat: no-repeat;
+    color: var(--text);
+    font-family: ui-rounded, "SF Pro Rounded", "Avenir Next", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+  }
+  .screen { max-width: 480px; margin: 0 auto; padding: 28px 20px 40px; }
+  header {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-bottom: 24px;
+  }
+  header h1 {
+    font-size: 44px; line-height: 1; letter-spacing: -0.03em; font-weight: 800;
+    margin: 0 0 8px;
+  }
+  header p { margin: 0; color: var(--muted); font-size: 15px; font-weight: 500; }
+  .ring { position: relative; width: 84px; height: 84px; flex: none; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); display: block; }
+  .ring circle { fill: none; stroke-width: 9; }
+  .ring .track { stroke: var(--track); }
+  .ring .bar {
+    stroke: var(--accent); stroke-linecap: round;
+    stroke-dasharray: 220; stroke-dashoffset: 220;
+    transition: stroke-dashoffset .5s cubic-bezier(.3,.7,.2,1);
+  }
+  .ring b {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
+  }
+  form.add {
+    display: flex; gap: 8px; margin-bottom: 22px; padding: 6px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; box-shadow: var(--shadow);
+  }
+  form.add input[type="text"] {
+    flex: 1; min-width: 0; padding: 12px 12px 12px 14px; font: inherit; font-size: 16px;
+    border: none; background: transparent; color: var(--text); border-radius: 12px;
+  }
+  form.add input::placeholder { color: var(--muted); }
+  form.add input:focus-visible { outline: none; }
+  form.add:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow); }
+  form.add button {
+    padding: 0 22px; min-height: 46px; font: inherit; font-size: 16px; font-weight: 700;
+    border: none; border-radius: 13px; background: var(--accent); color: var(--accent-ink);
+    cursor: pointer; transition: transform .12s, filter .12s;
+  }
+  form.add button:hover { filter: brightness(1.08); }
+  form.add button:active { transform: scale(.96); }
+  button:focus-visible, input[type="checkbox"]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li {
+    display: flex; align-items: center; gap: 4px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; box-shadow: var(--shadow);
+    padding: 4px 4px 4px 6px; margin-bottom: 10px;
+    transition: background .2s, opacity .2s;
+  }
+  li label {
+    flex: 1; font-size: 17px; font-weight: 600; cursor: pointer; word-break: break-word;
+    padding: 14px 6px 14px 4px; line-height: 1.3;
+  }
+  li.done { background: transparent; box-shadow: none; }
+  li.done label { text-decoration: line-through; text-decoration-color: var(--muted); color: var(--muted); font-weight: 500; }
+  li input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none; flex: none; margin: 0 6px 0 8px;
+    width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
+    border: 2px solid var(--muted); background: transparent;
+    display: grid; place-items: center; transition: background .15s, border-color .15s;
+  }
+  li input[type="checkbox"]::after {
+    content: ""; width: 6px; height: 12px; margin-top: -2px;
+    border: solid var(--accent-ink); border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg) scale(0); transition: transform .18s cubic-bezier(.3,1.6,.5,1);
+  }
+  li input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
+  li input[type="checkbox"]:checked::after { transform: rotate(45deg) scale(1); }
+  li button.del {
+    background: none; border: none; color: var(--muted); font-size: 24px; line-height: 1;
+    cursor: pointer; width: 44px; height: 44px; border-radius: 12px; flex: none;
+  }
+  li button.del:hover { background: var(--accent-soft); color: var(--accent); }
+  .empty {
+    text-align: center; color: var(--muted); font-weight: 600; padding: 36px 0;
+    border: 2px dashed var(--border); border-radius: 16px;
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="screen">
+  <header>
+    <div>
+      <h1>Today</h1>
+      <p id="count"></p>
+    </div>
+    <div class="ring" aria-hidden="true">
+      <svg viewBox="0 0 84 84"><circle class="track" cx="42" cy="42" r="35"/><circle class="bar" id="bar" cx="42" cy="42" r="35"/></svg>
+      <b id="pct"></b>
+    </div>
+  </header>
+
+  <form class="add" id="addForm">
+    <input type="text" id="newTask" placeholder="Add a task" aria-label="New task" autocomplete="off">
+    <button type="submit">Add</button>
+  </form>
+
+  <ul id="list"></ul>
+  <div class="empty" id="empty" hidden>No tasks yet.</div>
+</div>
+
+<script>
+  var tasks = [
+    { id: 1, text: "Buy groceries", done: false },
+    { id: 2, text: "Reply to Sam's email", done: false },
+    { id: 3, text: "Book dentist appointment", done: true }
+  ];
+  var nextId = 4;
+
+  var list = document.getElementById("list");
+  var countEl = document.getElementById("count");
+  var emptyEl = document.getElementById("empty");
+  var form = document.getElementById("addForm");
+  var input = document.getElementById("newTask");
+
+  function render() {
+    list.innerHTML = "";
+    tasks.forEach(function (t) {
+      var li = document.createElement("li");
+      if (t.done) li.className = "done";
+
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = t.done;
+      cb.id = "t" + t.id;
+      cb.addEventListener("change", function () {
+        t.done = cb.checked;
+        render();
+      });
+
+      var label = document.createElement("label");
+      label.htmlFor = "t" + t.id;
+      label.textContent = t.text;
+
+      var del = document.createElement("button");
+      del.className = "del";
+      del.setAttribute("aria-label", "Delete task");
+      del.textContent = "×";
+      del.addEventListener("click", function () {
+        tasks = tasks.filter(function (x) { return x.id !== t.id; });
+        render();
+      });
+
+      li.appendChild(cb);
+      li.appendChild(label);
+      li.appendChild(del);
+      list.appendChild(li);
+    });
+
+    var remaining = tasks.filter(function (t) { return !t.done; }).length;
+    countEl.textContent = remaining + " of " + tasks.length + " remaining";
+    emptyEl.hidden = tasks.length > 0;
+    var doneN = tasks.length - remaining;
+    document.getElementById("bar").style.strokeDashoffset = 220 - (tasks.length ? 220 * doneN / tasks.length : 0);
+    document.getElementById("pct").textContent = doneN + "/" + tasks.length;
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var text = input.value.trim();
+    if (!text) return;
+    tasks.unshift({ id: nextId++, text: text, done: false });
+    input.value = "";
+    render();
+    input.focus();
+  });
+
+  render();
+</script>
+</body>
+</html>

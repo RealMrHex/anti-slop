@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MetricFlow · Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Geist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          mono: ['"Geist Mono"', 'ui-monospace', 'monospace'],
+        },
+        colors: {
+          page: '#fafafa',
+          card: '#ffffff',
+          raised: '#f4f4f5',
+          ink: { 1: '#171717', 2: '#525252', 3: '#737373' },
+          tide: { DEFAULT: '#0f766e', ink: '#0d5f59', soft: '#e6f2f0' },
+          up: '#15803d',
+          down: '#c2410c',
+        },
+        transitionTimingFunction: { flow: 'cubic-bezier(0.22, 1, 0.36, 1)' },
+      }
+    }
+  }
+</script>
+<style>
+  :root { --hair: rgba(23,23,23,0.08); --ease: cubic-bezier(0.22, 1, 0.36, 1); }
+  html { -webkit-font-smoothing: antialiased; }
+  body { background: #fafafa; color: #171717; }
+  .hair { border-color: var(--hair); }
+  .num { font-variant-numeric: tabular-nums; }
+  .card { background: #fff; border: 1px solid var(--hair); border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+  :focus-visible { outline: 2px solid #0f766e; outline-offset: 2px; border-radius: 8px; }
+  .nav-item[aria-current="page"] { background: #fff; color: #171717; box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0 0 0 1px var(--hair); }
+  .nav-item[aria-current="page"] svg { color: #0f766e; }
+  .pop { opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity 180ms var(--ease), transform 180ms var(--ease); }
+  .pop.open { opacity: 1; transform: none; pointer-events: auto; }
+  .enter { opacity: 0; transform: translateY(8px); animation: rise 400ms var(--ease) forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .enter { animation: none; opacity: 1; transform: none; } .pop { transition: none; } }
+  .seg button[aria-pressed="true"] { background: #fff; color: #171717; box-shadow: 0 1px 2px rgba(0,0,0,0.06), inset 0 0 0 1px var(--hair); }
+  #drawer-scrim { transition: opacity 220ms var(--ease); }
+  #sidebar { transition: transform 300ms var(--ease); }
+  tbody tr { transition: background-color 140ms var(--ease); }
+  [data-lucide] { width: 16px; height: 16px; stroke-width: 1.5; }
+</style>
+</head>
+<body class="font-sans text-[14px] leading-5">
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-card focus:px-3 focus:py-2">Skip to content</a>
+
+<div class="min-h-screen lg:flex">
+  <!-- Sidebar -->
+  <div id="drawer-scrim" class="fixed inset-0 z-30 bg-black/20 opacity-0 pointer-events-none lg:hidden" aria-hidden="true"></div>
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-[256px] -translate-x-full bg-raised border-r hair flex flex-col lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 lg:shrink-0" aria-label="Primary">
+    <div class="h-16 px-5 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2 text-[16px] font-medium text-ink-1" aria-label="MetricFlow home">
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect width="20" height="20" rx="5" fill="#171717"/><path d="M4 13c2.2 0 2.2-6 4.4-6s2.2 6 4.4 6 2.2-6 3.2-6" fill="none" stroke="#fafafa" stroke-width="1.6" stroke-linecap="round"/></svg>
+        MetricFlow
+      </a>
+      <button id="close-nav" class="lg:hidden h-8 w-8 grid place-items-center rounded-lg text-ink-3 hover:bg-card transition-colors" aria-label="Close navigation"><i data-lucide="x"></i></button>
+    </div>
+
+    <nav class="px-3 pt-2 flex-1" aria-label="Main">
+      <p class="px-3 pb-2 text-[12px] text-ink-3">Workspace</p>
+      <ul class="flex flex-col gap-1" id="nav-list">
+        <li><a href="#" class="nav-item h-9 px-3 flex items-center gap-[10px] rounded-lg text-ink-2 hover:bg-card hover:text-ink-1 transition-colors" aria-current="page"><i data-lucide="layout-grid"></i>Overview</a></li>
+        <li><a href="#" class="nav-item h-9 px-3 flex items-center gap-[10px] rounded-lg text-ink-2 hover:bg-card hover:text-ink-1 transition-colors"><i data-lucide="line-chart"></i>Analytics</a></li>
+        <li><a href="#" class="nav-item h-9 px-3 flex items-center gap-[10px] rounded-lg text-ink-2 hover:bg-card hover:text-ink-1 transition-colors"><i data-lucide="users"></i>Customers<span class="ml-auto font-mono text-[12px] text-ink-3 num">2,184</span></a></li>
+        <li><a href="#" class="nav-item h-9 px-3 flex items-center gap-[10px] rounded-lg text-ink-2 hover:bg-card hover:text-ink-1 transition-colors"><i data-lucide="file-text"></i>Reports</a></li>
+        <li><a href="#" class="nav-item h-9 px-3 flex items-center gap-[10px] rounded-lg text-ink-2 hover:bg-card hover:text-ink-1 transition-colors"><i data-lucide="settings"></i>Settings</a></li>
+      </ul>
+    </nav>
+
+    <div class="m-3 p-4 rounded-xl bg-card border hair">
+      <p class="text-[13px] text-ink-1 font-medium">Data sources</p>
+      <ul class="mt-3 flex flex-col gap-2 text-[13px] text-ink-2">
+        <li class="flex items-center justify-between"><span>Stripe</span><span class="font-mono text-[12px] text-ink-3">synced 09:42</span></li>
+        <li class="flex items-center justify-between"><span>Site analytics</span><span class="font-mono text-[12px] text-ink-3">synced 09:40</span></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main column -->
+  <div class="flex-1 min-w-0">
+    <header class="sticky top-0 z-20 h-16 bg-page/90 backdrop-blur border-b hair">
+      <div class="h-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-3">
+        <button id="open-nav" class="lg:hidden h-9 w-9 -ml-1 grid place-items-center rounded-lg text-ink-2 hover:bg-raised transition-colors" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false"><i data-lucide="menu"></i></button>
+        <h1 class="text-[15px] font-medium text-ink-1">Overview</h1>
+
+        <div class="ml-auto flex items-center gap-2">
+          <!-- Range -->
+          <div class="relative">
+            <button id="range-btn" class="h-9 pl-3 pr-2 flex items-center gap-2 rounded-lg bg-card border hair text-ink-1 hover:bg-raised transition-colors" aria-haspopup="listbox" aria-expanded="false" aria-controls="range-menu">
+              <i data-lucide="calendar" class="text-ink-3"></i>
+              <span id="range-label" class="hidden sm:inline">Last 12 months</span>
+              <span id="range-label-short" class="sm:hidden font-mono text-[12px]">12M</span>
+              <i data-lucide="chevron-down" class="text-ink-3"></i>
+            </button>
+            <ul id="range-menu" role="listbox" aria-label="Date range" class="pop absolute right-0 mt-2 w-52 p-1 rounded-xl bg-card border hair shadow-[0_8px_24px_rgba(0,0,0,0.08)] z-30">
+              <li role="option" tabindex="0" data-range="12" data-short="12M" aria-selected="true" class="h-9 px-3 flex items-center justify-between rounded-lg cursor-pointer hover:bg-raised">Last 12 months <i data-lucide="check" class="text-tide"></i></li>
+              <li role="option" tabindex="0" data-range="6" data-short="6M" aria-selected="false" class="h-9 px-3 flex items-center justify-between rounded-lg cursor-pointer hover:bg-raised">Last 6 months <i data-lucide="check" class="text-tide invisible"></i></li>
+              <li role="option" tabindex="0" data-range="3" data-short="3M" aria-selected="false" class="h-9 px-3 flex items-center justify-between rounded-lg cursor-pointer hover:bg-raised">Last quarter <i data-lucide="check" class="text-tide invisible"></i></li>
+            </ul>
+          </div>
+
+          <!-- Notifications -->
+          <div class="relative">
+            <button id="notif-btn" class="relative h-9 w-9 grid place-items-center rounded-lg text-ink-2 hover:bg-raised transition-colors" aria-label="Notifications, 3 unread" aria-haspopup="true" aria-expanded="false" aria-controls="notif-menu">
+              <i data-lucide="bell"></i>
+              <span id="notif-dot" class="absolute top-2 right-2 h-2 w-2 rounded-full bg-tide ring-2 ring-page"></span>
+            </button>
+            <div id="notif-menu" class="pop absolute right-0 mt-2 w-[300px] max-w-[calc(100vw-32px)] rounded-xl bg-card border hair shadow-[0_8px_24px_rgba(0,0,0,0.08)] z-30" role="region" aria-label="Notifications">
+              <div class="px-4 h-12 flex items-center justify-between border-b hair">
+                <p class="font-medium">Notifications</p>
+                <button id="mark-read" class="text-[13px] text-tide-ink hover:underline">Mark all read</button>
+              </div>
+              <ul class="p-2 flex flex-col gap-1 text-[13px]" id="notif-list">
+                <li class="p-2 rounded-lg hover:bg-raised"><p class="text-ink-1">Payout of $12,480 sent to your bank</p><p class="font-mono text-[12px] text-ink-3 mt-1">Today, 08:15</p></li>
+                <li class="p-2 rounded-lg hover:bg-raised"><p class="text-ink-1">Refund requested by Halden Studio</p><p class="font-mono text-[12px] text-ink-3 mt-1">Yesterday, 17:02</p></li>
+                <li class="p-2 rounded-lg hover:bg-raised"><p class="text-ink-1">October report is ready</p><p class="font-mono text-[12px] text-ink-3 mt-1">Nov 1, 07:00</p></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Profile -->
+          <div class="relative">
+            <button id="profile-btn" class="h-9 pl-1 pr-2 flex items-center gap-2 rounded-lg hover:bg-raised transition-colors" aria-haspopup="menu" aria-expanded="false" aria-controls="profile-menu" aria-label="Account menu for Maya Ortiz">
+              <img src="https://i.pravatar.cc/64?img=47" alt="" class="h-7 w-7 rounded-md object-cover bg-raised" width="28" height="28">
+              <span class="hidden md:block text-ink-1">Maya Ortiz</span>
+              <i data-lucide="chevron-down" class="hidden md:block text-ink-3"></i>
+            </button>
+            <ul id="profile-menu" role="menu" class="pop absolute right-0 mt-2 w-56 p-1 rounded-xl bg-card border hair shadow-[0_8px_24px_rgba(0,0,0,0.08)] z-30">
+              <li class="px-3 py-2 border-b hair mb-1" role="none"><p class="text-ink-1">Maya Ortiz</p><p class="text-[13px] text-ink-3">Owner · Northfield Supply</p></li>
+              <li role="none"><a role="menuitem" href="#" class="h-9 px-3 flex items-center gap-[10px] rounded-lg text-ink-2 hover:bg-raised hover:text-ink-1"><i data-lucide="user"></i>Profile</a></li>
+              <li role="none"><a role="menuitem" href="#" class="h-9 px-3 flex items-center gap-[10px] rounded-lg text-ink-2 hover:bg-raised hover:text-ink-1"><i data-lucide="credit-card"></i>Billing</a></li>
+              <li role="none"><a role="menuitem" href="#" class="h-9 px-3 flex items-center gap-[10px] rounded-lg text-ink-2 hover:bg-raised hover:text-ink-1"><i data-lucide="log-out"></i>Sign out</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16">
+      <div class="enter flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h2 class="text-[32px] leading-[1.15] font-medium tracking-[-0.01em]">October <span class="text-ink-3">2026</span></h2>
+          <p class="mt-2 text-ink-2">Revenue, traffic and orders for Northfield Supply, compared with September</p>
+        </div>
+        <button id="export-btn" class="h-9 px-4 flex items-center gap-2 rounded-lg bg-ink-1 text-white hover:bg-[#2a2a2a] active:scale-[0.98] transition-[background-color,transform]"><i data-lucide="download"></i>Export report</button>
+      </div>
+
+      <!-- KPIs -->
+      <section aria-label="Key figures" class="enter mt-8 grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4" style="animation-delay:50ms">
+        <article class="card p-4 sm:p-5">
+          <h3 class="text-ink-2">Total revenue</h3>
+          <p class="mt-3 text-[24px] sm:text-[30px] leading-none font-medium num">$48,290</p>
+          <p class="mt-3 font-mono text-[12px] text-ink-3"><span class="text-up">+12.8%</span> vs September</p>
+        </article>
+        <article class="card p-4 sm:p-5">
+          <h3 class="text-ink-2">Active users</h3>
+          <p class="mt-3 text-[24px] sm:text-[30px] leading-none font-medium num">12,840</p>
+          <p class="mt-3 font-mono text-[12px] text-ink-3"><span class="text-up">+8.2%</span> vs September</p>
+        </article>
+        <article class="card p-4 sm:p-5">
+          <h3 class="text-ink-2">Conversion rate</h3>
+          <p class="mt-3 text-[24px] sm:text-[30px] leading-none font-medium num">3.24%</p>
+          <p class="mt-3 font-mono text-[12px] text-ink-3"><span class="text-up">+1.4%</span> vs September</p>
+        </article>
+        <article class="card p-4 sm:p-5">
+          <h3 class="text-ink-2">Average order value</h3>
+          <p class="mt-3 text-[24px] sm:text-[30px] leading-none font-medium num">$86.50</p>
+          <p class="mt-3 font-mono text-[12px] text-ink-3"><span class="text-down">−2.1%</span> vs September</p>
+        </article>
+      </section>
+
+      <!-- Chart + traffic -->
+      <div class="enter mt-4 grid grid-cols-1 xl:grid-cols-3 gap-4" style="animation-delay:100ms">
+        <section class="card xl:col-span-2 p-5 sm:p-6" aria-labelledby="rev-title">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h3 id="rev-title" class="text-ink-2">Revenue</h3>
+              <p class="mt-2 text-[24px] leading-none font-medium num" id="rev-total">$450,580</p>
+              <p class="mt-2 font-mono text-[12px] text-ink-3" id="rev-caption"><span class="text-up">+31.6%</span> vs the 12 months before</p>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="hidden sm:flex items-center gap-4 text-[12px] text-ink-3 font-mono" aria-hidden="true">
+                <span class="flex items-center gap-2"><span class="h-[2px] w-4 rounded bg-tide"></span>This year</span>
+                <span id="legend-prev" class="flex items-center gap-2"><span class="h-0 w-4 border-t-2 border-dashed border-[#a3a3a3]"></span>Last year</span>
+              </div>
+              <label class="flex items-center gap-2 text-[13px] text-ink-2 cursor-pointer select-none">
+                <input id="compare" type="checkbox" checked class="h-4 w-4 rounded accent-[#0f766e]">
+                Compare
+              </label>
+            </div>
+          </div>
+          <div class="relative mt-6" id="chart-wrap">
+            <svg id="chart" class="block w-full h-[280px] sm:h-[320px]" role="img" aria-labelledby="chart-desc"></svg>
+            <p id="chart-desc" class="sr-only"></p>
+            <div id="tip" class="pop absolute top-0 left-0 px-3 py-2 rounded-lg bg-ink-1 text-white text-[12px] font-mono num whitespace-nowrap pointer-events-none"></div>
+          </div>
+        </section>
+
+        <section class="card p-5 sm:p-6 flex flex-col" aria-labelledby="traffic-title">
+          <h3 id="traffic-title" class="text-ink-2">Traffic sources</h3>
+          <p class="mt-2 text-[24px] leading-none font-medium num">96,410 <span class="text-[14px] text-ink-3 font-normal">visits</span></p>
+          <div class="mt-6 flex h-3 rounded-[4px] overflow-hidden gap-[2px]" role="img" aria-label="Organic 42%, Direct 28%, Social 18%, Referral 12%">
+            <span class="bg-tide" style="width:42%"></span>
+            <span class="bg-[#5fa49c]" style="width:28%"></span>
+            <span class="bg-[#a7cdc8]" style="width:18%"></span>
+            <span class="bg-[#d4d4d4]" style="width:12%"></span>
+          </div>
+          <ul class="mt-6 flex flex-col gap-4" id="sources"></ul>
+          <p class="mt-auto pt-6 text-[13px] text-ink-3">Organic search grew from 37% of visits in September</p>
+        </section>
+      </div>
+
+      <!-- Transactions + activity -->
+      <div class="enter mt-4 grid grid-cols-1 xl:grid-cols-3 gap-4" style="animation-delay:150ms">
+        <section class="card xl:col-span-2 overflow-hidden" aria-labelledby="tx-title">
+          <div class="px-5 sm:px-6 pt-5 sm:pt-6 pb-4 flex flex-wrap items-center justify-between gap-3">
+            <h3 id="tx-title" class="text-ink-2">Recent transactions</h3>
+            <div class="seg flex p-1 gap-1 rounded-lg bg-raised text-[13px]" role="group" aria-label="Filter by status">
+              <button class="h-7 px-3 rounded-md text-ink-2 hover:text-ink-1 transition-colors" aria-pressed="true" data-filter="all">All</button>
+              <button class="h-7 px-3 rounded-md text-ink-2 hover:text-ink-1 transition-colors" aria-pressed="false" data-filter="Paid">Paid</button>
+              <button class="h-7 px-3 rounded-md text-ink-2 hover:text-ink-1 transition-colors" aria-pressed="false" data-filter="Pending">Pending</button>
+              <button class="h-7 px-3 rounded-md text-ink-2 hover:text-ink-1 transition-colors" aria-pressed="false" data-filter="Refunded">Refunded</button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead class="text-[12px] text-ink-3 border-y hair bg-page">
+                <tr>
+                  <th scope="col" class="h-9 pl-5 sm:pl-6 pr-3 font-normal">Customer</th>
+                  <th scope="col" class="h-9 px-3 font-normal hidden md:table-cell">Order</th>
+                  <th scope="col" class="h-9 px-3 font-normal hidden sm:table-cell">Date</th>
+                  <th scope="col" class="h-9 px-3 font-normal">Status</th>
+                  <th scope="col" class="h-9 pl-3 pr-5 sm:pr-6 font-normal text-right">
+                    <button id="sort-amount" class="inline-flex items-center gap-1 hover:text-ink-1 transition-colors" aria-label="Sort by amount">Amount <i data-lucide="arrow-up-down" style="width:12px;height:12px"></i></button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="tx-body"></tbody>
+            </table>
+          </div>
+          <p id="tx-empty" class="hidden px-6 py-8 text-ink-3 text-center">No transactions with this status this week</p>
+        </section>
+
+        <section class="card p-5 sm:p-6" aria-labelledby="act-title">
+          <h3 id="act-title" class="text-ink-2">Worth a look</h3>
+          <ol class="mt-4 flex flex-col">
+            <li class="py-4 border-b hair first:pt-0">
+              <p class="text-ink-1">Revenue hit a 12 month high</p>
+              <p class="mt-1 text-[13px] text-ink-2">October closed at $48,290, $5,480 above September. Most of the gain came from repeat orders.</p>
+            </li>
+            <li class="py-4 border-b hair">
+              <p class="text-ink-1">Order value is slipping</p>
+              <p class="mt-1 text-[13px] text-ink-2">Average order fell to $86.50 as more first orders used the 15% welcome code.</p>
+            </li>
+            <li class="py-4 last:pb-0">
+              <p class="text-ink-1">Halden Studio asked for a refund</p>
+              <p class="mt-1 text-[13px] text-ink-2">$1,240 on order #4817, waiting for your review.</p>
+              <a href="#tx-title" class="mt-2 inline-flex items-center gap-1 text-[13px] text-tide-ink hover:underline">Review order <i data-lucide="arrow-right" style="width:14px;height:14px"></i></a>
+            </li>
+          </ol>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite" class="pop fixed bottom-6 inset-x-0 mx-auto w-fit px-4 h-10 flex items-center rounded-lg bg-ink-1 text-white text-[13px] z-50"></div>
+
+<script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+<script>
+(function () {
+  if (window.lucide) lucide.createIcons();
+
+  /* ---------- Data ---------- */
+  const months = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'];
+  const years  = [2025,2025,2026,2026,2026,2026,2026,2026,2026,2026,2026,2026];
+  const rev  = [31420,33980,29860,32150,35470,37920,36610,39840,41270,40960,42810,48290];
+  const prev = [24180,27650,22410,23970,26340,27810,27290,29460,30120,29880,31640,32950];
+
+  const fmt = n => '$' + n.toLocaleString('en-US');
+  const sum = a => a.reduce((x, y) => x + y, 0);
+
+  /* ---------- Chart ---------- */
+  const svg = document.getElementById('chart');
+  const tip = document.getElementById('tip');
+  const wrap = document.getElementById('chart-wrap');
+  const compare = document.getElementById('compare');
+  let range = 12;
+  const NS = 'http://www.w3.org/2000/svg';
+
+  function smooth(pts) {
+    if (pts.length < 2) return '';
+    let d = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+      const c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
+      const c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
+      d += ` C${c1x},${c1y} ${c2x},${c2y} ${p2[0]},${p2[1]}`;
+    }
+    return d;
+  }
+  function el(tag, attrs, parent) {
+    const n = document.createElementNS(NS, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    (parent || svg).appendChild(n);
+    return n;
+  }
+
+  function draw() {
+    const W = svg.clientWidth, H = svg.clientHeight;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.innerHTML = '';
+    const start = 12 - range;
+    const r = rev.slice(start), p = prev.slice(start), m = months.slice(start);
+    const showPrev = compare.checked;
+    const padL = 44, padR = 12, padT = 12, padB = 28;
+    const max = 50000, ticks = [0, 10000, 20000, 30000, 40000, 50000];
+    const iw = W - padL - padR, ih = H - padT - padB;
+    const x = i => padL + (r.length === 1 ? iw / 2 : (i * iw) / (r.length - 1));
+    const y = v => padT + ih - (v / max) * ih;
+
+    ticks.forEach(t => {
+      el('line', { x1: padL, x2: W - padR, y1: y(t), y2: y(t), stroke: 'rgba(23,23,23,0.07)', 'stroke-width': 1 });
+      const tx = el('text', { x: padL - 10, y: y(t) + 4, 'text-anchor': 'end', fill: '#737373', 'font-size': 11, 'font-family': 'Geist Mono, monospace' });
+      tx.textContent = t === 0 ? '0' : (t / 1000) + 'k';
+    });
+    const step = W < 520 && range === 12 ? 2 : 1;
+    m.forEach((mm, i) => {
+      if ((r.length - 1 - i) % step) return;
+      const tx = el('text', { x: x(i), y: H - 6, 'text-anchor': 'middle', fill: i === r.length - 1 ? '#171717' : '#737373', 'font-size': 11, 'font-family': 'Geist Mono, monospace' });
+      tx.textContent = mm;
+    });
+
+    const pts = r.map((v, i) => [x(i), y(v)]);
+    const defs = el('defs', {});
+    const g = el('linearGradient', { id: 'area', x1: 0, x2: 0, y1: 0, y2: 1 }, defs);
+    el('stop', { offset: '0%', 'stop-color': '#0f766e', 'stop-opacity': 0.14 }, g);
+    el('stop', { offset: '100%', 'stop-color': '#0f766e', 'stop-opacity': 0 }, g);
+
+    // Current-month needle (signature)
+    const lx = x(r.length - 1);
+    el('line', { x1: lx, x2: lx, y1: padT, y2: padT + ih, stroke: '#0f766e', 'stroke-width': 1, 'stroke-opacity': 0.35 });
+
+    el('path', { d: smooth(pts) + ` L${x(r.length - 1)},${y(0)} L${x(0)},${y(0)} Z`, fill: 'url(#area)' });
+    if (showPrev) el('path', { d: smooth(p.map((v, i) => [x(i), y(v)])), fill: 'none', stroke: '#a3a3a3', 'stroke-width': 1.5, 'stroke-dasharray': '4 4' });
+    el('path', { d: smooth(pts), fill: 'none', stroke: '#0f766e', 'stroke-width': 2, 'stroke-linecap': 'round' });
+    el('circle', { cx: lx, cy: y(r[r.length - 1]), r: 4, fill: '#fff', stroke: '#0f766e', 'stroke-width': 2 });
+
+    const hoverLine = el('line', { y1: padT, y2: padT + ih, stroke: 'rgba(23,23,23,0.25)', 'stroke-width': 1, opacity: 0 });
+    const hoverDot = el('circle', { r: 4, fill: '#0f766e', opacity: 0 });
+    const hit = el('rect', { x: padL, y: padT, width: iw, height: ih, fill: 'transparent', tabindex: 0, 'aria-label': 'Revenue by month, use arrow keys' });
+    let idx = r.length - 1;
+
+    function show(i) {
+      idx = Math.max(0, Math.min(r.length - 1, i));
+      const cx = x(idx), cy = y(r[idx]);
+      hoverLine.setAttribute('x1', cx); hoverLine.setAttribute('x2', cx); hoverLine.setAttribute('opacity', 1);
+      hoverDot.setAttribute('cx', cx); hoverDot.setAttribute('cy', cy); hoverDot.setAttribute('opacity', 1);
+      const yoy = ((r[idx] - p[idx]) / p[idx] * 100).toFixed(1);
+      tip.innerHTML = `<div class="text-white/70">${m[idx]} ${years[start + idx]}</div><div class="text-[13px] mt-1">${fmt(r[idx])}</div>` +
+        (showPrev ? `<div class="text-white/70 mt-1">${fmt(p[idx])} last year · +${yoy}%</div>` : '');
+      tip.classList.add('open');
+      const tw = tip.offsetWidth;
+      let left = cx + 12; if (left + tw > W) left = cx - tw - 12;
+      tip.style.transform = `translate(${left}px, ${Math.max(0, cy - 64)}px)`;
+    }
+    function hide() { hoverLine.setAttribute('opacity', 0); hoverDot.setAttribute('opacity', 0); tip.classList.remove('open'); }
+    hit.addEventListener('pointermove', e => {
+      const bx = e.clientX - svg.getBoundingClientRect().left;
+      show(Math.round(((bx - padL) / iw) * (r.length - 1)));
+    });
+    hit.addEventListener('pointerleave', hide);
+    hit.addEventListener('focus', () => show(idx));
+    hit.addEventListener('blur', hide);
+    hit.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') { show(idx + 1); e.preventDefault(); }
+      if (e.key === 'ArrowLeft') { show(idx - 1); e.preventDefault(); }
+    });
+
+    const total = sum(r), totalPrev = sum(p);
+    const pct = ((total - totalPrev) / totalPrev * 100).toFixed(1);
+    const lbl = { 12: 'the 12 months before', 6: 'the same 6 months last year', 3: 'the same quarter last year' }[range];
+    document.getElementById('rev-total').textContent = fmt(total);
+    document.getElementById('rev-caption').innerHTML = `<span class="text-up">+${pct}%</span> vs ${lbl}`;
+    document.getElementById('legend-prev').style.opacity = showPrev ? 1 : 0.4;
+    document.getElementById('chart-desc').textContent =
+      'Monthly revenue, ' + m.map((mm, i) => `${mm} ${fmt(r[i])}`).join(', ');
+  }
+  compare.addEventListener('change', draw);
+  new ResizeObserver(draw).observe(wrap);
+
+  /* ---------- Traffic sources ---------- */
+  const sources = [
+    ['Organic search', 42, 40490, '#0f766e'],
+    ['Direct', 28, 26995, '#5fa49c'],
+    ['Social', 18, 17354, '#a7cdc8'],
+    ['Referral', 12, 11569, '#d4d4d4'],
+  ];
+  document.getElementById('sources').innerHTML = sources.map(([n, pc, v, c]) => `
+    <li class="grid grid-cols-[auto_1fr_auto] items-center gap-x-3">
+      <span class="h-2 w-2 rounded-full" style="background:${c}"></span>
+      <span class="text-ink-1">${n}</span>
+      <span class="font-mono text-[13px] num text-ink-1 text-right">${pc}%</span>
+      <span></span>
+      <span class="font-mono text-[12px] text-ink-3 num">${v.toLocaleString('en-US')} visits</span>
+    </li>`).join('');
+
+  /* ---------- Transactions ---------- */
+  const tx = [
+    { name: 'Lena Brauer', email: 'lena@brauer-ceramics.de', order: '#4823', date: 'Nov 10, 09:31', status: 'Paid', amount: 214.00, img: 32 },
+    { name: 'Corbin & Hale', email: 'orders@corbinhale.com', order: '#4822', date: 'Nov 10, 08:12', status: 'Pending', amount: 1860.00, img: 12 },
+    { name: 'Priya Natarajan', email: 'priya.n@fastmail.com', order: '#4821', date: 'Nov 9, 19:47', status: 'Paid', amount: 72.50, img: 45 },
+    { name: 'Tomás Ferreira', email: 'tomas@ferreira.pt', order: '#4820', date: 'Nov 9, 15:05', status: 'Paid', amount: 128.90, img: 13 },
+    { name: 'Halden Studio', email: 'hello@halden.studio', order: '#4817', date: 'Nov 8, 11:22', status: 'Refunded', amount: 1240.00, img: 5 },
+    { name: 'Grace Okafor', email: 'grace.okafor@gmail.com', order: '#4816', date: 'Nov 8, 09:58', status: 'Paid', amount: 96.40, img: 44 },
+    { name: 'Wren Coffee Co.', email: 'buying@wrencoffee.co', order: '#4815', date: 'Nov 7, 16:40', status: 'Pending', amount: 545.00, img: 60 },
+  ];
+  const statusStyle = {
+    Paid: 'text-up', Pending: 'text-[#a16207]', Refunded: 'text-ink-3'
+  };
+  const statusDot = { Paid: '#15803d', Pending: '#ca8a04', Refunded: '#a3a3a3' };
+  let filter = 'all', sortDir = 0;
+  const body = document.getElementById('tx-body');
+  function renderTx() {
+    let rows = tx.filter(t => filter === 'all' || t.status === filter);
+    if (sortDir) rows = rows.slice().sort((a, b) => (a.amount - b.amount) * sortDir);
+    body.innerHTML = rows.map(t => `
+      <tr class="border-b hair last:border-0 hover:bg-page">
+        <td class="h-14 pl-5 sm:pl-6 pr-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <img src="https://i.pravatar.cc/64?img=${t.img}" alt="" width="28" height="28" class="h-7 w-7 rounded-md object-cover bg-raised shrink-0" loading="lazy">
+            <div class="min-w-0"><p class="text-ink-1 truncate">${t.name}</p><p class="text-[12px] text-ink-3 truncate hidden sm:block">${t.email}</p></div>
+          </div>
+        </td>
+        <td class="px-3 font-mono text-[13px] text-ink-2 hidden md:table-cell">${t.order}</td>
+        <td class="px-3 font-mono text-[13px] text-ink-2 whitespace-nowrap hidden sm:table-cell">${t.date}</td>
+        <td class="px-3"><span class="inline-flex items-center gap-2 text-[13px] ${statusStyle[t.status]}"><span class="h-[6px] w-[6px] rounded-full" style="background:${statusDot[t.status]}"></span>${t.status}</span></td>
+        <td class="pl-3 pr-5 sm:pr-6 text-right num whitespace-nowrap ${t.status === 'Refunded' ? 'text-ink-3 line-through' : 'text-ink-1'}">$${t.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+      </tr>`).join('');
+    document.getElementById('tx-empty').classList.toggle('hidden', rows.length > 0);
+  }
+  document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.seg button').forEach(o => o.setAttribute('aria-pressed', o === b));
+    filter = b.dataset.filter; renderTx();
+  }));
+  const sortBtn = document.getElementById('sort-amount');
+  sortBtn.addEventListener('click', () => {
+    sortDir = sortDir === -1 ? 1 : -1;
+    sortBtn.closest('th').setAttribute('aria-sort', sortDir === -1 ? 'descending' : 'ascending');
+    renderTx();
+  });
+  renderTx();
+
+  /* ---------- Popovers ---------- */
+  const pops = [['range-btn', 'range-menu'], ['notif-btn', 'notif-menu'], ['profile-btn', 'profile-menu']];
+  function closeAll(except) {
+    pops.forEach(([b, m]) => { if (m !== except) { document.getElementById(m).classList.remove('open'); document.getElementById(b).setAttribute('aria-expanded', 'false'); } });
+  }
+  pops.forEach(([b, m]) => {
+    const btn = document.getElementById(b), menu = document.getElementById(m);
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = !menu.classList.contains('open');
+      closeAll(m);
+      menu.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open);
+      if (open) { const f = menu.querySelector('[tabindex="0"], a, button'); f && f.focus({ preventScroll: true }); }
+    });
+    menu.addEventListener('click', e => e.stopPropagation());
+  });
+  document.addEventListener('click', () => closeAll());
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAll(); closeNav(); } });
+
+  document.querySelectorAll('#range-menu [role="option"]').forEach(o => {
+    const pick = () => {
+      range = +o.dataset.range;
+      document.querySelectorAll('#range-menu [role="option"]').forEach(x => {
+        const on = x === o; x.setAttribute('aria-selected', on);
+        x.querySelector('svg').classList.toggle('invisible', !on);
+      });
+      document.getElementById('range-label').textContent = o.firstChild.textContent.trim();
+      document.getElementById('range-label-short').textContent = o.dataset.short;
+      closeAll(); document.getElementById('range-btn').focus(); draw();
+    };
+    o.addEventListener('click', pick);
+    o.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); }
+      if (e.key === 'ArrowDown') { e.preventDefault(); (o.nextElementSibling || o).focus(); }
+      if (e.key === 'ArrowUp') { e.preventDefault(); (o.previousElementSibling || o).focus(); }
+    });
+  });
+
+  document.getElementById('mark-read').addEventListener('click', () => {
+    document.getElementById('notif-dot').remove();
+    document.getElementById('notif-btn').setAttribute('aria-label', 'Notifications, none unread');
+    document.querySelectorAll('#notif-list p:first-child').forEach(p => p.classList.replace('text-ink-1', 'text-ink-2'));
+  });
+
+  /* ---------- Nav + drawer ---------- */
+  const sidebar = document.getElementById('sidebar'), scrim = document.getElementById('drawer-scrim'), openBtn = document.getElementById('open-nav');
+  function openNav() { sidebar.classList.remove('-translate-x-full'); scrim.classList.remove('opacity-0', 'pointer-events-none'); openBtn.setAttribute('aria-expanded', 'true'); document.getElementById('close-nav').focus(); }
+  function closeNav() { if (window.innerWidth >= 1024) return; sidebar.classList.add('-translate-x-full'); scrim.classList.add('opacity-0', 'pointer-events-none'); openBtn.setAttribute('aria-expanded', 'false'); }
+  openBtn.addEventListener('click', openNav);
+  document.getElementById('close-nav').addEventListener('click', () => { closeNav(); openBtn.focus(); });
+  scrim.addEventListener('click', closeNav);
+  document.querySelectorAll('#nav-list a').forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('#nav-list a').forEach(x => x.removeAttribute('aria-current'));
+    a.setAttribute('aria-current', 'page');
+    document.querySelector('header h1').textContent = a.childNodes[1].textContent.trim();
+    closeNav();
+  }));
+
+  /* ---------- Toast ---------- */
+  const toast = document.getElementById('toast'); let tt;
+  document.getElementById('export-btn').addEventListener('click', () => {
+    toast.textContent = 'October report is being prepared as a PDF';
+    toast.classList.add('open'); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove('open'), 2400);
+  });
+})();
+</script>
+</body>
+</html>

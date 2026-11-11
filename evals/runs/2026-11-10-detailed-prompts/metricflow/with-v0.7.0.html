@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MetricFlow – Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+      },
+      colors: {
+        ink: { 950: '#0c1a21', 900: '#12252e', 800: '#1b3540', 700: '#2a4a57' },
+        canvas: '#f3f6f6',
+        line: '#e1e8e9',
+        mute: '#5b6e75',
+        flow: { 50: '#e8f6f3', 100: '#c9ebe4', 500: '#14a38b', 600: '#0d8671', 700: '#0b6b5b' }
+      },
+      boxShadow: {
+        card: '0 1px 2px rgba(12,26,33,.04), 0 4px 16px -6px rgba(12,26,33,.08)',
+        pop: '0 12px 32px -8px rgba(12,26,33,.22), 0 2px 6px rgba(12,26,33,.08)'
+      }
+    }
+  }
+}
+</script>
+<style>
+  :root { --flow:#14a38b; --indigo:#5b5bd6; --amber:#e8a13a; --slate:#8da0a8; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; background:#f3f6f6; color:#12252e; }
+  .num { font-variant-numeric: tabular-nums; }
+  :focus-visible { outline: 2px solid #0d8671; outline-offset: 2px; border-radius: 6px; }
+  .side :focus-visible { outline-color: #7be0cc; }
+  .ico { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .card { background:#fff; border:1px solid #e1e8e9; border-radius:16px; box-shadow: 0 1px 2px rgba(12,26,33,.04), 0 4px 16px -6px rgba(12,26,33,.08); }
+  .btn-ghost { transition: background .15s, color .15s; }
+  .seg button[aria-pressed="true"] { background:#fff; color:#12252e; box-shadow:0 1px 2px rgba(12,26,33,.12); }
+  .rise { animation: rise .5s ease both; }
+  @keyframes rise { from { opacity:0; transform: translateY(6px);} to {opacity:1; transform:none;} }
+  .draw { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); animation: draw 1.1s .1s ease forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .rise, .draw { animation: none !important; stroke-dashoffset: 0; }
+    * { transition: none !important; }
+  }
+  .skip { position:absolute; left:-999px; top:8px; background:#fff; padding:8px 12px; border-radius:8px; z-index:100; }
+  .skip:focus { left:8px; }
+</style>
+</head>
+<body class="font-sans antialiased">
+<a href="#main" class="skip">Skip to content</a>
+
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 15l3.5-4 3 2.5L19 8"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 20c.4-3.5 3-5.5 6.5-5.5s6.1 2 6.5 5.5"/><path d="M16 5.2a3.4 3.4 0 010 6.6"/><path d="M18 14.8c2 .6 3.3 2.3 3.5 5.2"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></symbol>
+  <symbol id="i-cog" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1112 0c0 7 3 8.5 3 8.5H3S6 15 6 8z"/><path d="M10 20.5a2 2 0 004 0"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M7 7l10 10M17 9v8H9"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 17v4M17 19h4"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24"><path d="M3 4h2.5l2 11h10l2-8H7"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></symbol>
+  <symbol id="i-dollar" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M16.5 7.5c-.6-1.4-2.4-2.3-4.5-2.3-2.5 0-4.2 1.3-4.2 3.1 0 4.2 9 2 9 6.4 0 1.8-1.8 3.1-4.3 3.1-2.2 0-4.1-1-4.7-2.6"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4M10 16l-4-4 4-4M6 12h10"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+</svg>
+
+<div class="min-h-screen lg:flex">
+
+  <!-- overlay for mobile nav -->
+  <div id="scrim" class="fixed inset-0 z-30 bg-ink-950/50 hidden lg:hidden" aria-hidden="true"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" aria-label="Primary" class="side fixed inset-y-0 left-0 z-40 w-[264px] -translate-x-full transition-transform duration-200 lg:translate-x-0 lg:sticky lg:top-0 lg:h-screen lg:z-10 bg-ink-950 text-white flex flex-col">
+    <div class="flex items-center justify-between h-[72px] px-5">
+      <a href="#main" class="flex items-center gap-2.5 font-display font-extrabold text-[19px] tracking-tight">
+        <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#14a38b"/><path d="M6 20c3.5 0 4-8 8-8s4.5 8 8 8 2.5-5 4-5" fill="none" stroke="#0c1a21" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        MetricFlow
+      </a>
+      <button id="closeNav" class="lg:hidden grid place-items-center w-10 h-10 rounded-lg text-white/70 hover:bg-white/10" aria-label="Close navigation"><svg class="ico"><use href="#i-x"/></svg></button>
+    </div>
+
+    <nav class="px-3 pt-3 flex-1" aria-label="Main">
+      <ul class="space-y-1" id="navList">
+        <li><a href="#overview" aria-current="page" class="nav flex items-center gap-3 h-11 px-3 rounded-xl text-[15px] font-medium"><svg class="ico"><use href="#i-grid"/></svg>Overview</a></li>
+        <li><a href="#analytics" class="nav flex items-center gap-3 h-11 px-3 rounded-xl text-[15px] font-medium"><svg class="ico"><use href="#i-chart"/></svg>Analytics</a></li>
+        <li><a href="#customers" class="nav flex items-center gap-3 h-11 px-3 rounded-xl text-[15px] font-medium"><svg class="ico"><use href="#i-users"/></svg>Customers</a></li>
+        <li><a href="#reports" class="nav flex items-center gap-3 h-11 px-3 rounded-xl text-[15px] font-medium"><svg class="ico"><use href="#i-file"/></svg>Reports</a></li>
+        <li><a href="#settings" class="nav flex items-center gap-3 h-11 px-3 rounded-xl text-[15px] font-medium"><svg class="ico"><use href="#i-cog"/></svg>Settings</a></li>
+      </ul>
+    </nav>
+
+    <div class="m-3 p-4 rounded-2xl bg-ink-800/70 border border-white/5">
+      <p class="text-[13px] font-semibold">Monthly goal</p>
+      <p class="mt-1 text-[13px] text-white/70 num">$48,290 of $55,000</p>
+      <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden" role="progressbar" aria-label="Monthly revenue goal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="88">
+        <div class="h-full rounded-full bg-flow-500" style="width:88%"></div>
+      </div>
+      <p class="mt-2 text-xs text-white/70">88% there, 20 days left</p>
+    </div>
+  </aside>
+  <style>
+    .nav { color: rgba(255,255,255,.72); transition: background .15s, color .15s; }
+    .nav:hover { background: rgba(255,255,255,.07); color:#fff; }
+    .nav[aria-current="page"] { background: rgba(20,163,139,.18); color:#fff; box-shadow: inset 3px 0 0 #14a38b; }
+    .nav[aria-current="page"] svg { color:#5fe0c8; }
+  </style>
+
+  <div class="flex-1 min-w-0 flex flex-col">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-20 bg-canvas/90 backdrop-blur border-b border-line">
+      <div class="flex items-center gap-3 h-[72px] px-4 sm:px-6 lg:px-8">
+        <button id="openNav" class="lg:hidden grid place-items-center w-11 h-11 -ml-2 rounded-xl hover:bg-ink-900/5" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false"><svg class="ico"><use href="#i-menu"/></svg></button>
+        <div class="min-w-0">
+          <h1 class="font-display font-extrabold text-xl sm:text-2xl tracking-tight leading-none truncate" id="pageTitle">Overview</h1>
+          <p class="hidden sm:block mt-1.5 text-[13px] text-mute">Good morning, Priya. Here's how Northwind Goods is doing.</p>
+        </div>
+
+        <div class="ml-auto flex items-center gap-1.5 sm:gap-2.5">
+          <!-- Date range -->
+          <div class="relative">
+            <button id="rangeBtn" class="flex items-center gap-2 h-11 px-3 sm:px-3.5 rounded-xl bg-white border border-line text-sm font-medium hover:border-[#c5d2d4] shadow-card" aria-haspopup="listbox" aria-expanded="false" aria-controls="rangeMenu">
+              <svg class="ico text-mute"><use href="#i-cal"/></svg>
+              <span id="rangeLabel" class="hidden sm:inline">Last 30 days</span>
+              <span class="sr-only sm:hidden">Date range</span>
+              <svg class="ico !w-4 !h-4 text-mute"><use href="#i-chev"/></svg>
+            </button>
+            <ul id="rangeMenu" role="listbox" aria-label="Date range" class="hidden absolute right-0 mt-2 w-56 p-1.5 card !shadow-pop">
+            </ul>
+          </div>
+
+          <!-- Notifications -->
+          <div class="relative">
+            <button id="bellBtn" class="relative grid place-items-center w-11 h-11 rounded-xl bg-white border border-line hover:border-[#c5d2d4] shadow-card" aria-label="Notifications, 3 unread" aria-haspopup="true" aria-expanded="false" aria-controls="bellMenu">
+              <svg class="ico"><use href="#i-bell"/></svg>
+              <span id="bellDot" class="absolute top-2.5 right-2.5 w-2.5 h-2.5 rounded-full bg-[#e5484d] ring-2 ring-white"></span>
+            </button>
+            <div id="bellMenu" class="hidden absolute right-[-52px] sm:right-0 mt-2 w-[min(340px,calc(100vw-32px))] card !shadow-pop overflow-hidden">
+              <div class="flex items-center justify-between px-4 py-3 border-b border-line">
+                <h2 class="font-display font-bold text-[15px]">Notifications</h2>
+                <button id="markRead" class="text-[13px] font-medium text-flow-700 hover:underline">Mark all read</button>
+              </div>
+              <ul class="divide-y divide-line text-sm" id="notifList">
+                <li class="flex gap-3 px-4 py-3" data-unread><span class="mt-1.5 w-2 h-2 rounded-full bg-flow-500 flex-none unread-dot"></span><div><p class="font-medium">Revenue passed $48K this month</p><p class="text-xs text-mute mt-0.5">12 minutes ago</p></div></li>
+                <li class="flex gap-3 px-4 py-3" data-unread><span class="mt-1.5 w-2 h-2 rounded-full bg-flow-500 flex-none unread-dot"></span><div><p class="font-medium">Payment failed for Order #10482</p><p class="text-xs text-mute mt-0.5">1 hour ago</p></div></li>
+                <li class="flex gap-3 px-4 py-3" data-unread><span class="mt-1.5 w-2 h-2 rounded-full bg-flow-500 flex-none unread-dot"></span><div><p class="font-medium">Weekly report is ready to download</p><p class="text-xs text-mute mt-0.5">Today, 7:00 AM</p></div></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Profile -->
+          <div class="relative">
+            <button id="userBtn" class="flex items-center gap-2.5 h-11 pl-1.5 pr-2 sm:pr-3 rounded-xl hover:bg-ink-900/5" aria-haspopup="true" aria-expanded="false" aria-controls="userMenu">
+              <span class="grid place-items-center w-9 h-9 rounded-full bg-gradient-to-br from-[#5b5bd6] to-[#14a38b] text-white text-sm font-bold font-display" aria-hidden="true">PR</span>
+              <span class="hidden md:block text-left leading-tight"><span class="block text-sm font-semibold">Priya Raman</span><span class="block text-xs text-mute">Admin</span></span>
+              <span class="sr-only md:hidden">Account menu</span>
+              <svg class="ico !w-4 !h-4 text-mute hidden sm:block"><use href="#i-chev"/></svg>
+            </button>
+            <div id="userMenu" class="hidden absolute right-0 mt-2 w-56 p-1.5 card !shadow-pop text-sm">
+              <p class="px-3 py-2 text-xs text-mute">priya@northwindgoods.co</p>
+              <a href="#settings" class="flex items-center gap-2.5 px-3 h-10 rounded-lg hover:bg-canvas"><svg class="ico !w-[18px] !h-[18px]"><use href="#i-cog"/></svg>Account settings</a>
+              <button class="w-full flex items-center gap-2.5 px-3 h-10 rounded-lg hover:bg-canvas text-left"><svg class="ico !w-[18px] !h-[18px]"><use href="#i-logout"/></svg>Sign out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-6 max-w-[1440px] w-full mx-auto">
+
+      <!-- KPIs -->
+      <section aria-labelledby="kpiH">
+        <h2 id="kpiH" class="sr-only">Key metrics</h2>
+        <div id="kpis" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 [&>*]:min-w-0"></div>
+      </section>
+
+      <!-- Revenue + traffic -->
+      <div class="grid gap-6 xl:grid-cols-3 [&>*]:min-w-0">
+        <section aria-labelledby="revH" class="card p-5 sm:p-6 xl:col-span-2 flex flex-col">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h2 id="revH" class="font-display font-bold text-lg">Revenue</h2>
+              <p class="mt-1 text-sm text-mute">Monthly revenue compared with the same months last year</p>
+            </div>
+            <div class="seg inline-flex p-1 rounded-xl bg-canvas border border-line" role="group" aria-label="Chart period">
+              <button class="h-9 px-3.5 rounded-lg text-sm font-medium text-mute" data-n="6" aria-pressed="false">6 months</button>
+              <button class="h-9 px-3.5 rounded-lg text-sm font-medium text-mute" data-n="12" aria-pressed="true">12 months</button>
+            </div>
+          </div>
+
+          <div class="mt-5 flex flex-wrap items-end gap-x-8 gap-y-3">
+            <div>
+              <p class="text-xs font-medium text-mute uppercase tracking-wider">Total for period</p>
+              <p class="font-display font-extrabold text-3xl sm:text-4xl tracking-tight num" id="revBig">$385,060</p>
+            </div>
+            <div class="flex items-center gap-5 pb-1.5 text-sm text-mute">
+              <span class="inline-flex items-center gap-2"><span class="w-5 h-[3px] rounded bg-flow-500"></span>This year</span>
+              <span class="inline-flex items-center gap-2"><svg width="20" height="4" aria-hidden="true"><line x1="0" y1="2" x2="20" y2="2" stroke="#8da0a8" stroke-width="2" stroke-dasharray="4 3"/></svg>Last year</span>
+            </div>
+          </div>
+
+          <div id="chartWrap" class="relative mt-4 flex-1 min-h-[260px] sm:min-h-[300px]">
+            <svg id="chart" class="absolute inset-0 w-full h-full" role="img" aria-labelledby="chartDesc"></svg>
+            <p id="chartDesc" class="sr-only"></p>
+            <div id="tip" class="hidden pointer-events-none absolute z-10 px-3 py-2 rounded-xl bg-ink-950 text-white text-xs shadow-pop whitespace-nowrap" role="status"></div>
+          </div>
+        </section>
+
+        <section aria-labelledby="trafH" class="card p-5 sm:p-6">
+          <h2 id="trafH" class="font-display font-bold text-lg">Traffic sources</h2>
+          <p class="mt-1 text-sm text-mute">Where your 84,200 visits came from</p>
+
+          <div class="mt-5 grid place-items-center">
+            <div class="relative w-[190px] h-[190px]">
+              <svg id="donut" viewBox="0 0 120 120" class="w-full h-full -rotate-90" aria-hidden="true"></svg>
+              <div class="absolute inset-0 grid place-items-center text-center pointer-events-none">
+                <div><p class="font-display font-extrabold text-3xl num" id="donutVal">42%</p><p class="text-xs text-mute" id="donutLbl">Organic</p></div>
+              </div>
+            </div>
+          </div>
+
+          <ul id="sources" class="mt-5 space-y-1"></ul>
+        </section>
+      </div>
+
+      <!-- Transactions + insights -->
+      <div class="grid gap-6 xl:grid-cols-3 [&>*]:min-w-0">
+        <section aria-labelledby="txH" class="card xl:col-span-2 overflow-hidden">
+          <div class="flex flex-wrap items-center justify-between gap-3 p-5 sm:p-6 pb-4">
+            <div>
+              <h2 id="txH" class="font-display font-bold text-lg">Recent transactions</h2>
+              <p class="mt-1 text-sm text-mute" id="txCount"></p>
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <div class="relative flex-1 sm:flex-none">
+                <label for="txSearch" class="sr-only">Search transactions</label>
+                <svg class="ico !w-[18px] !h-[18px] absolute left-3 top-1/2 -translate-y-1/2 text-mute pointer-events-none"><use href="#i-search"/></svg>
+                <input id="txSearch" type="search" placeholder="Search orders" class="h-11 w-full sm:w-52 pl-10 pr-3 rounded-xl border border-line bg-canvas text-sm placeholder:text-mute focus:bg-white focus:border-flow-600 focus:outline-none focus:ring-2 focus:ring-flow-600/25">
+              </div>
+              <label for="txStatus" class="sr-only">Filter by status</label>
+              <select id="txStatus" class="h-11 px-3 rounded-xl border border-line bg-canvas text-sm font-medium focus:bg-white focus:border-flow-600 focus:outline-none focus:ring-2 focus:ring-flow-600/25">
+                <option value="all">All statuses</option><option>Paid</option><option>Pending</option><option>Refunded</option><option>Failed</option>
+              </select>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm min-w-[520px]">
+              <caption class="sr-only">Recent transactions</caption>
+              <thead>
+                <tr class="text-left text-xs uppercase tracking-wider text-mute border-y border-line bg-canvas/60">
+                  <th scope="col" class="font-semibold py-3 pl-5 sm:pl-6 pr-3">Customer</th>
+                  <th scope="col" class="font-semibold py-3 px-3 hidden md:table-cell">Order</th>
+                  <th scope="col" class="font-semibold py-3 px-3 hidden sm:table-cell">Date</th>
+                  <th scope="col" class="font-semibold py-3 px-3">Status</th>
+                  <th scope="col" class="font-semibold py-3 pl-3 pr-5 sm:pr-6 text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="txBody" class="divide-y divide-line"></tbody>
+            </table>
+          </div>
+          <p id="txEmpty" class="hidden px-6 py-10 text-center text-sm text-mute">No transactions match your filters.</p>
+        </section>
+
+        <section aria-labelledby="insH" class="card p-5 sm:p-6">
+          <div class="flex items-center gap-2">
+            <svg class="ico text-flow-600"><use href="#i-spark"/></svg>
+            <h2 id="insH" class="font-display font-bold text-lg">Insights</h2>
+          </div>
+          <p class="mt-1 text-sm text-mute">What changed this week</p>
+          <ul class="mt-4 space-y-3">
+            <li class="flex gap-3 p-3.5 rounded-xl bg-flow-50">
+              <span class="grid place-items-center w-9 h-9 rounded-lg bg-white text-flow-700 flex-none"><svg class="ico !w-[18px] !h-[18px]"><use href="#i-up"/></svg></span>
+              <div><p class="text-sm font-semibold">Organic search is your fastest channel</p><p class="mt-0.5 text-sm text-mute">Up 19% since the 14 Oct blog launch. It now brings 42% of visits.</p></div>
+            </li>
+            <li class="flex gap-3 p-3.5 rounded-xl bg-[#fff5e4]">
+              <span class="grid place-items-center w-9 h-9 rounded-lg bg-white text-[#a8650c] flex-none"><svg class="ico !w-[18px] !h-[18px]"><use href="#i-cart"/></svg></span>
+              <div><p class="text-sm font-semibold">Average order value is slipping</p><p class="mt-0.5 text-sm text-mute">Down 2.1% as more small orders arrive from the new $19 starter bundle.</p></div>
+            </li>
+            <li class="flex gap-3 p-3.5 rounded-xl bg-[#eeeefc]">
+              <span class="grid place-items-center w-9 h-9 rounded-lg bg-white text-[#4747b5] flex-none"><svg class="ico !w-[18px] !h-[18px]"><use href="#i-target"/></svg></span>
+              <div><p class="text-sm font-semibold">Checkout conversion hit a 6-month high</p><p class="mt-0.5 text-sm text-mute">3.24% overall. Mobile checkout improved the most after the one-page redesign.</p></div>
+            </li>
+          </ul>
+          <a href="#reports" class="mt-4 inline-flex items-center h-10 text-sm font-semibold text-flow-700 hover:underline">View full weekly report</a>
+        </section>
+      </div>
+
+      <footer class="pt-2 pb-4 text-xs text-mute flex flex-wrap justify-between gap-2">
+        <p>MetricFlow · Sample data for Northwind Goods</p>
+        <p>Last synced <span id="sync"></span></p>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const fmt$ = n => '$' + n.toLocaleString('en-US');
+  const icon = id => `<svg class="ico !w-[18px] !h-[18px]" aria-hidden="true"><use href="#${id}"/></svg>`;
+
+  /* ---------- Date ranges / KPIs ---------- */
+  const ranges = [
+    { id: '7',  label: 'Last 7 days',   rev: [11240, 9.4],  usr: [4980, 5.1],  cr: [3.11, 0.6],  aov: [84.9, -0.8] },
+    { id: '30', label: 'Last 30 days',  rev: [48290, 12.8], usr: [12840, 8.2], cr: [3.24, 1.4],  aov: [86.5, -2.1] },
+    { id: '90', label: 'Last 90 days',  rev: [125700, 21.3], usr: [31260, 14.6], cr: [3.02, 0.9], aov: [88.1, 1.7] },
+    { id: 'ytd', label: 'Year to date', rev: [385060, 34.5], usr: [58930, 22.0], cr: [2.96, 0.4], aov: [87.2, 3.3] }
+  ];
+  let range = ranges[1];
+
+  const kpiDefs = [
+    { key: 'rev', label: 'Total Revenue', ico: 'i-dollar', tone: '#e8f6f3', fg: '#0b6b5b', f: v => fmt$(v), spark: [30, 34, 33, 38, 41, 40, 46, 52, 55, 60, 66, 74] },
+    { key: 'usr', label: 'Active Users', ico: 'i-users', tone: '#eeeefc', fg: '#4747b5', f: v => v.toLocaleString('en-US'), spark: [40, 42, 41, 46, 45, 50, 53, 52, 58, 62, 63, 70] },
+    { key: 'cr',  label: 'Conversion Rate', ico: 'i-target', tone: '#fff5e4', fg: '#a8650c', f: v => v.toFixed(2) + '%', spark: [48, 46, 50, 49, 53, 52, 55, 57, 56, 61, 63, 66] },
+    { key: 'aov', label: 'Average Order Value', ico: 'i-cart', tone: '#f0f3f4', fg: '#3d525a', f: v => '$' + v.toFixed(2), spark: [62, 64, 63, 66, 65, 64, 63, 62, 63, 61, 60, 58] }
+  ];
+
+  function sparkPath(d, w = 96, h = 36) {
+    const mn = Math.min(...d), mx = Math.max(...d);
+    return d.map((v, i) => `${i ? 'L' : 'M'}${(i / (d.length - 1) * w).toFixed(1)},${(h - 3 - (v - mn) / (mx - mn || 1) * (h - 6)).toFixed(1)}`).join('');
+  }
+
+  function renderKpis(animate) {
+    $('#kpis').innerHTML = kpiDefs.map((k, i) => {
+      const [val, pct] = range[k.key];
+      const up = pct >= 0;
+      const col = up ? '#0b6b5b' : '#b42318';
+      const stroke = up ? '#14a38b' : '#e5484d';
+      return `<article class="card p-5 ${animate ? 'rise' : ''}" style="animation-delay:${i * 60}ms">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-medium text-mute">${k.label}</h3>
+          <span class="grid place-items-center w-9 h-9 rounded-xl" style="background:${k.tone};color:${k.fg}">${icon(k.ico)}</span>
+        </div>
+        <p class="mt-3 font-display font-extrabold text-[30px] leading-none tracking-tight num">${k.f(val)}</p>
+        <div class="mt-4 flex items-end justify-between gap-3">
+          <p class="text-sm flex items-center gap-1.5 whitespace-nowrap">
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-semibold num" style="color:${col};background:${up ? '#e8f6f3' : '#fdecea'}">
+              ${icon(up ? 'i-up' : 'i-down').replace('!w-[18px] !h-[18px]', '!w-3.5 !h-3.5')}<span class="sr-only">${up ? 'Up' : 'Down'}</span>${up ? '+' : '−'}${Math.abs(pct).toFixed(1)}%
+            </span>
+            <span class="text-mute">vs last period</span>
+          </p>
+          <svg width="96" height="36" viewBox="0 0 96 36" class="flex-none hidden sm:block" aria-hidden="true"><path d="${sparkPath(k.spark)}" fill="none" stroke="${stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </article>`;
+    }).join('');
+  }
+
+  /* ---------- Popover menus ---------- */
+  const menus = [
+    { btn: '#rangeBtn', menu: '#rangeMenu' },
+    { btn: '#bellBtn', menu: '#bellMenu' },
+    { btn: '#userBtn', menu: '#userMenu' }
+  ].map(m => ({ btn: $(m.btn), menu: $(m.menu) }));
+
+  function closeAll(except) {
+    menus.forEach(m => { if (m !== except) { m.menu.classList.add('hidden'); m.btn.setAttribute('aria-expanded', 'false'); } });
+  }
+  menus.forEach(m => {
+    m.btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = m.menu.classList.contains('hidden');
+      closeAll(m);
+      m.menu.classList.toggle('hidden', !open);
+      m.btn.setAttribute('aria-expanded', String(open));
+    });
+    m.menu.addEventListener('click', e => e.stopPropagation());
+  });
+  document.addEventListener('click', () => closeAll());
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const open = menus.find(m => !m.menu.classList.contains('hidden'));
+      closeAll();
+      if (open) open.btn.focus();
+      closeNav();
+    }
+  });
+
+  // range menu
+  function renderRangeMenu() {
+    $('#rangeMenu').innerHTML = ranges.map(r => `
+      <li role="option" aria-selected="${r === range}">
+        <button type="button" data-id="${r.id}" class="w-full flex items-center justify-between h-10 px-3 rounded-lg text-sm hover:bg-canvas ${r === range ? 'font-semibold' : ''}">
+          ${r.label}${r === range ? `<span class="text-flow-600">${icon('i-check')}</span>` : ''}
+        </button>
+      </li>`).join('');
+  }
+  $('#rangeMenu').addEventListener('click', e => {
+    const b = e.target.closest('button[data-id]');
+    if (!b) return;
+    range = ranges.find(r => r.id === b.dataset.id);
+    $('#rangeLabel').textContent = range.label;
+    renderRangeMenu(); renderKpis(true);
+    closeAll(); $('#rangeBtn').focus();
+  });
+
+  // notifications
+  $('#markRead').addEventListener('click', () => {
+    $$('#notifList [data-unread]').forEach(li => { li.removeAttribute('data-unread'); $('.unread-dot', li).style.visibility = 'hidden'; });
+    $('#bellDot').classList.add('hidden');
+    $('#bellBtn').setAttribute('aria-label', 'Notifications, none unread');
+  });
+
+  /* ---------- Mobile nav ---------- */
+  const sidebar = $('#sidebar'), scrim = $('#scrim'), openBtn = $('#openNav');
+  function openNav() { sidebar.classList.remove('-translate-x-full'); scrim.classList.remove('hidden'); openBtn.setAttribute('aria-expanded', 'true'); $('#closeNav').focus(); }
+  function closeNav() { if (scrim.classList.contains('hidden')) return; sidebar.classList.add('-translate-x-full'); scrim.classList.add('hidden'); openBtn.setAttribute('aria-expanded', 'false'); openBtn.focus(); }
+  openBtn.addEventListener('click', openNav);
+  $('#closeNav').addEventListener('click', closeNav);
+  scrim.addEventListener('click', closeNav);
+
+  $('#navList').addEventListener('click', e => {
+    const a = e.target.closest('a'); if (!a) return;
+    e.preventDefault();
+    $$('#navList a').forEach(x => x.removeAttribute('aria-current'));
+    a.setAttribute('aria-current', 'page');
+    $('#pageTitle').textContent = a.textContent.trim();
+    if (window.innerWidth < 1024) closeNav();
+  });
+
+  /* ---------- Revenue chart ---------- */
+  const months = ['Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov'];
+  const cur  = [21480, 23120, 22640, 26910, 29830, 28460, 32740, 35920, 34210, 38650, 42810, 48290];
+  const prev = [15200, 16480, 17050, 18900, 20320, 21640, 22100, 24380, 25010, 26720, 28900, 30650];
+  let span = 12, hover = -1;
+  const chart = $('#chart'), wrap = $('#chartWrap'), tip = $('#tip');
+  const NS = 'http://www.w3.org/2000/svg';
+  let geom = null;
+
+  function smooth(pts) {
+    let d = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2, t = 0.18;
+      d += `C${p1[0] + (p2[0] - p0[0]) * t},${p1[1] + (p2[1] - p0[1]) * t} ${p2[0] - (p3[0] - p1[0]) * t},${p2[1] - (p3[1] - p1[1]) * t} ${p2[0]},${p2[1]}`;
+    }
+    return d;
+  }
+
+  function drawChart(animate) {
+    const W = wrap.clientWidth, H = wrap.clientHeight;
+    if (!W || !H) return;
+    const small = W < 520;
+    const m = { t: 14, r: small ? 10 : 18, b: 30, l: small ? 40 : 52 };
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const c = cur.slice(12 - span), p = prev.slice(12 - span), lb = months.slice(12 - span);
+    const max = 50000, y = v => m.t + ih - v / max * ih;
+    const x = i => m.l + (span === 1 ? iw / 2 : i / (span - 1) * iw);
+    const pc = c.map((v, i) => [x(i), y(v)]), pp = p.map((v, i) => [x(i), y(v)]);
+    const line = smooth(pc), area = line + `L${x(span - 1)},${m.t + ih}L${x(0)},${m.t + ih}Z`;
+    let s = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14a38b" stop-opacity=".28"/><stop offset="1" stop-color="#14a38b" stop-opacity="0"/></linearGradient></defs>`;
+    for (let v = 0; v <= max; v += 10000) {
+      s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="#e1e8e9" ${v ? 'stroke-dasharray="0"' : ''}/>`;
+      s += `<text x="${m.l - 10}" y="${y(v) + 4}" text-anchor="end" font-size="12" fill="#5b6e75" class="num">${v ? '$' + v / 1000 + 'k' : '$0'}</text>`;
+    }
+    lb.forEach((l, i) => {
+      if (small && (span - 1 - i) % 2 === 1) return;
+      s += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle" font-size="12" fill="${i === span - 1 ? '#12252e' : '#5b6e75'}" font-weight="${i === span - 1 ? 600 : 400}">${l}</text>`;
+    });
+    s += `<path d="${smooth(pp)}" fill="none" stroke="#8da0a8" stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round"/>`;
+    s += `<path d="${area}" fill="url(#g)"/>`;
+    s += `<path id="curLine" d="${line}" fill="none" stroke="#14a38b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+    if (hover >= 0) {
+      s += `<line x1="${x(hover)}" x2="${x(hover)}" y1="${m.t}" y2="${m.t + ih}" stroke="#12252e" stroke-opacity=".18"/>`;
+      s += `<circle cx="${x(hover)}" cy="${y(p[hover])}" r="4" fill="#fff" stroke="#8da0a8" stroke-width="2"/>`;
+      s += `<circle cx="${x(hover)}" cy="${y(c[hover])}" r="6" fill="#14a38b" stroke="#fff" stroke-width="3"/>`;
+    } else {
+      const last = span - 1;
+      s += `<circle cx="${x(last)}" cy="${y(c[last])}" r="6" fill="#14a38b" stroke="#fff" stroke-width="3"/>`;
+    }
+    chart.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    chart.innerHTML = s;
+    if (animate) {
+      const ln = $('#curLine'), len = ln.getTotalLength();
+      ln.style.setProperty('--len', len); ln.classList.add('draw');
+    }
+    geom = { x, y, c, p, lb, m, W, H, iw };
+
+    const total = c.reduce((a, b) => a + b, 0);
+    $('#revBig').textContent = fmt$(total);
+    $('#chartDesc').textContent = 'Line chart of monthly revenue. ' + lb.map((l, i) => `${l}: ${fmt$(c[i])}`).join(', ') + '.';
+  }
+
+  function showTip(i) {
+    hover = i; drawChart(false);
+    const { x, y, c, p, lb } = geom;
+    const g = ((c[i] - p[i]) / p[i] * 100).toFixed(0);
+    tip.innerHTML = `<p class="font-semibold">${lb[i]}</p><p class="mt-1 num"><span class="inline-block w-2 h-2 rounded-full bg-flow-500 mr-1.5"></span>${fmt$(c[i])} <span class="text-[#7be0cc]">+${g}%</span></p><p class="num text-white/70"><span class="inline-block w-2 h-2 rounded-full bg-[#8da0a8] mr-1.5"></span>${fmt$(p[i])} last year</p>`;
+    tip.classList.remove('hidden');
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    let left = x(i) - tw / 2; left = Math.max(0, Math.min(geom.W - tw, left));
+    tip.style.left = left + 'px';
+    tip.style.top = Math.max(0, y(c[i]) - th - 16) + 'px';
+  }
+  function hideTip() { hover = -1; tip.classList.add('hidden'); if (geom) drawChart(false); }
+
+  chart.addEventListener('pointermove', e => {
+    if (!geom) return;
+    const r = chart.getBoundingClientRect(), px = e.clientX - r.left;
+    let best = 0, bd = 1e9;
+    for (let i = 0; i < span; i++) { const d = Math.abs(geom.x(i) - px); if (d < bd) { bd = d; best = i; } }
+    if (best !== hover) showTip(best);
+  });
+  chart.addEventListener('pointerleave', hideTip);
+
+  $$('.seg button').forEach(b => b.addEventListener('click', () => {
+    span = +b.dataset.n; hover = -1;
+    $$('.seg button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    tip.classList.add('hidden'); drawChart(true);
+  }));
+  new ResizeObserver(() => drawChart(false)).observe(wrap);
+
+  /* ---------- Traffic ---------- */
+  const sources = [
+    { n: 'Organic', v: 42, c: '#14a38b', visits: 35364 },
+    { n: 'Direct',  v: 28, c: '#5b5bd6', visits: 23576 },
+    { n: 'Social',  v: 18, c: '#e8a13a', visits: 15156 },
+    { n: 'Referral', v: 12, c: '#8da0a8', visits: 10104 }
+  ];
+  (function traffic() {
+    const R = 48, C = 2 * Math.PI * R, gap = 2.2;
+    let off = 0, s = `<circle cx="60" cy="60" r="${R}" fill="none" stroke="#eef2f3" stroke-width="16"/>`;
+    sources.forEach((o, i) => {
+      const len = o.v / 100 * C;
+      s += `<circle class="seg-arc" data-i="${i}" cx="60" cy="60" r="${R}" fill="none" stroke="${o.c}" stroke-width="16" stroke-dasharray="${len - gap} ${C - len + gap}" stroke-dashoffset="${-off}" style="transition:stroke-width .15s"/>`;
+      off += len;
+    });
+    $('#donut').innerHTML = s;
+    $('#sources').innerHTML = sources.map((o, i) => `
+      <li><button type="button" data-i="${i}" class="src w-full text-left p-2.5 -mx-1 rounded-xl hover:bg-canvas focus-visible:bg-canvas">
+        <span class="flex items-center justify-between text-sm"><span class="flex items-center gap-2.5 font-medium"><span class="w-3 h-3 rounded-[4px]" style="background:${o.c}"></span>${o.n}</span><span class="num"><span class="text-mute mr-3">${o.visits.toLocaleString('en-US')}</span><span class="font-semibold">${o.v}%</span></span></span>
+        <span class="mt-2 block h-1.5 rounded-full bg-[#eef2f3] overflow-hidden"><span class="block h-full rounded-full" style="width:${o.v / 42 * 100}%;background:${o.c}"></span></span>
+      </button></li>`).join('');
+    const focus = i => {
+      $('#donutVal').textContent = sources[i].v + '%'; $('#donutLbl').textContent = sources[i].n;
+      $$('.seg-arc').forEach(a => a.setAttribute('stroke-width', a.dataset.i == i ? 19 : 16));
+    };
+    $$('.src').forEach(b => { ['mouseenter', 'focus'].forEach(ev => b.addEventListener(ev, () => focus(+b.dataset.i))); });
+    $$('.seg-arc').forEach(a => a.addEventListener('mouseenter', () => focus(+a.dataset.i)));
+  })();
+
+  /* ---------- Transactions ---------- */
+  const tx = [
+    { n: 'Elena Vasquez', e: 'elena.v@brightpath.io', id: '#10487', d: 'Nov 10, 2026', s: 'Paid', a: 214.0, c: '#5b5bd6' },
+    { n: 'Marcus Oyelaran', e: 'marcus@oyelaran.studio', id: '#10486', d: 'Nov 10, 2026', s: 'Paid', a: 86.5, c: '#14a38b' },
+    { n: 'Hannah Lindqvist', e: 'h.lindqvist@fjord.se', id: '#10485', d: 'Nov 9, 2026', s: 'Pending', a: 129.0, c: '#e8a13a' },
+    { n: 'Tomás Herrera', e: 'tomas@herrerafoods.com', id: '#10484', d: 'Nov 9, 2026', s: 'Paid', a: 342.75, c: '#d6409f' },
+    { n: 'Aisha Rahman', e: 'aisha.rahman@loomly.co', id: '#10483', d: 'Nov 8, 2026', s: 'Refunded', a: 59.0, c: '#3e8fd1' },
+    { n: 'Daniel Kowalski', e: 'dkowalski@pinecrest.dev', id: '#10482', d: 'Nov 8, 2026', s: 'Failed', a: 98.2, c: '#8a6bd1' },
+    { n: 'Sofia Marchetti', e: 'sofia@marchetti-design.it', id: '#10481', d: 'Nov 7, 2026', s: 'Paid', a: 176.4, c: '#14a38b' },
+    { n: 'Kenji Watanabe', e: 'kenji.w@sakuraworks.jp', id: '#10480', d: 'Nov 7, 2026', s: 'Paid', a: 64.9, c: '#e5784d' }
+  ];
+  const badge = {
+    Paid: ['#e8f6f3', '#0b6b5b', '#14a38b'],
+    Pending: ['#fff5e4', '#8a5208', '#e8a13a'],
+    Refunded: ['#eef2f3', '#3d525a', '#8da0a8'],
+    Failed: ['#fdecea', '#b42318', '#e5484d']
+  };
+  function renderTx() {
+    const q = $('#txSearch').value.trim().toLowerCase(), st = $('#txStatus').value;
+    const rows = tx.filter(t => (st === 'all' || t.s === st) && (!q || (t.n + t.e + t.id).toLowerCase().includes(q)));
+    $('#txBody').innerHTML = rows.map(t => {
+      const [bg, fg, dot] = badge[t.s];
+      const ini = t.n.split(' ').map(w => w[0]).join('');
+      return `<tr class="hover:bg-canvas/70 transition-colors">
+        <th scope="row" class="font-normal text-left py-3.5 pl-5 sm:pl-6 pr-3">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="grid place-items-center w-9 h-9 rounded-full text-white text-xs font-bold flex-none font-display" style="background:${t.c}" aria-hidden="true">${ini}</span>
+            <span class="min-w-0"><span class="block font-semibold truncate">${t.n}</span><span class="block text-xs text-mute truncate">${t.e}</span></span>
+          </div>
+        </th>
+        <td class="py-3.5 px-3 text-mute num hidden md:table-cell">${t.id}</td>
+        <td class="py-3.5 px-3 text-mute hidden sm:table-cell whitespace-nowrap">${t.d}</td>
+        <td class="py-3.5 px-3"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold" style="background:${bg};color:${fg}"><span class="w-1.5 h-1.5 rounded-full" style="background:${dot}"></span>${t.s}</span></td>
+        <td class="py-3.5 pl-3 pr-5 sm:pr-6 text-right font-semibold num whitespace-nowrap ${t.s === 'Refunded' || t.s === 'Failed' ? 'text-mute line-through decoration-1' : ''}">${fmt$(0).slice(0,1)}${t.a.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+      </tr>`;
+    }).join('');
+    $('#txEmpty').classList.toggle('hidden', rows.length > 0);
+    $('#txCount').textContent = `Showing ${rows.length} of ${tx.length} orders from the last 4 days`;
+  }
+  $('#txSearch').addEventListener('input', renderTx);
+  $('#txStatus').addEventListener('change', renderTx);
+
+  /* ---------- init ---------- */
+  $('#sync').textContent = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  renderRangeMenu(); renderKpis(true); renderTx(); drawChart(true);
+})();
+</script>
+</body>
+</html>

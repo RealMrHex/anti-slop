@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vetline | Appointments</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #d9fbe8 0%, #e9dcff 100%); min-height: 100vh; font-weight: 900; }
+  .glow-card { box-shadow: 0 0 28px rgba(167, 139, 250, 0.45); }
+  .glow-mint { box-shadow: 0 0 22px rgba(52, 211, 153, 0.55); }
+  .btn-glow { background: linear-gradient(90deg, #34d399, #a78bfa); box-shadow: 0 0 24px rgba(168, 85, 247, 0.6); transition: transform .2s; }
+  .btn-glow:hover { transform: scale(1.08); }
+  .row-hover { transition: transform .25s ease; }
+  .row-hover:hover { transform: scale(1.03); }
+  .row-selected { background: linear-gradient(90deg, #6ee7b7, #c4b5fd); box-shadow: 0 0 30px rgba(110, 231, 183, 0.8); }
+  .avatar { background: linear-gradient(135deg, #f472b6, #818cf8); }
+  .float { animation: float 3s ease-in-out infinite; }
+  .pulse-dot { animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .4; transform: scale(1.4); } }
+  .label { text-transform: uppercase; letter-spacing: 0.21em; font-size: 10.5px; font-weight: 900; }
+</style>
+</head>
+<body class="text-slate-800">
+<div class="flex min-h-screen">
+
+  <aside class="w-[238px] m-4 rounded-[26px] bg-white/80 backdrop-blur glow-card p-5 flex flex-col gap-6">
+    <div class="flex items-center gap-3 px-1">
+      <div class="avatar w-11 h-11 rounded-2xl flex items-center justify-center text-xl float">🐾</div>
+      <div>
+        <p class="text-lg font-black tracking-tight">Vetline ✨</p>
+        <p class="label text-violet-500">Clinic OS v2.0</p>
+      </div>
+    </div>
+    <nav class="flex flex-col gap-2 text-[14.5px] font-extrabold">
+      <a class="row-hover rounded-2xl px-4 py-3 bg-gradient-to-r from-emerald-300 to-violet-300 glow-mint">📅 Appointments</a>
+      <a class="row-hover rounded-2xl px-4 py-3 hover:bg-violet-50">🐶 Patients</a>
+      <a class="row-hover rounded-2xl px-4 py-3 hover:bg-violet-50">💊 Pharmacy <span class="ml-1 text-[10px] bg-pink-400 text-white rounded-full px-2 py-0.5">NEW!</span></a>
+      <a class="row-hover rounded-2xl px-4 py-3 hover:bg-violet-50">🧾 Billing</a>
+      <a class="row-hover rounded-2xl px-4 py-3 hover:bg-violet-50">⚙️ Settings</a>
+    </nav>
+    <div class="mt-auto rounded-2xl p-4 bg-gradient-to-br from-violet-400 to-fuchsia-400 text-white glow-card">
+      <p class="label">PRO PLAN 👑</p>
+      <p class="text-[15px] font-black mt-1">#1 Rated Clinic Software!!</p>
+      <p class="text-xs mt-1 font-bold opacity-90">Trusted by 10,000+ vets worldwide 🌍</p>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-4 pl-0 flex flex-col gap-5">
+    <header class="flex items-end justify-between px-2 pt-3">
+      <div>
+        <p class="label text-emerald-600">Tuesday, 10 Nov 2026 📆</p>
+        <h1 class="text-[34px] font-black leading-tight mt-1">Good morning, Dr. Sam!! 🌈✨</h1>
+      </div>
+      <div class="flex gap-3">
+        <button class="btn-glow text-white rounded-full px-6 py-3 text-sm font-black">➕ NEW APPOINTMENT</button>
+        <button class="rounded-full px-5 py-3 text-sm font-black bg-white glow-card">🔔 3 alerts</button>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-4 gap-4 px-2">
+      <div class="float bg-white rounded-3xl p-5 glow-card">
+        <p class="label text-violet-500">Today 📋</p>
+        <p class="text-[40px] font-black mt-1">14</p>
+        <p class="text-xs font-bold text-emerald-600">+3 vs yesterday 🚀</p>
+      </div>
+      <div class="bg-white rounded-3xl p-5 glow-mint">
+        <p class="label text-emerald-600">Checked in ✅</p>
+        <p class="text-[40px] font-black mt-1">6</p>
+        <p class="text-xs font-bold text-slate-500">Great job, team!</p>
+      </div>
+      <div class="bg-white rounded-3xl p-5 glow-card" style="margin-top: 7px">
+        <p class="label text-pink-500">Waiting ⏳</p>
+        <p class="text-[40px] font-black mt-1">2</p>
+        <p class="text-xs font-bold text-slate-500">Avg wait: 12 min!</p>
+      </div>
+      <div class="bg-white rounded-3xl p-5 glow-mint" style="margin-top: 3px">
+        <p class="label text-sky-500">Completed 🎉</p>
+        <p class="text-[40px] font-black mt-1">3</p>
+        <p class="text-xs font-bold text-slate-500">98.7% happy pets 🐶</p>
+      </div>
+    </section>
+
+    <div class="flex gap-5 px-2 pb-4">
+      <section class="flex-1 bg-white/90 rounded-[28px] p-5 glow-card">
+        <div class="flex justify-between items-center mb-4 px-2">
+          <h2 class="text-lg font-black">Today's Schedule 🗓️</h2>
+          <span class="label text-violet-500">Sorted by time ⏰</span>
+        </div>
+        <div class="flex flex-col gap-2.5">
+          <div id="r1" onclick="pick('r1')" class="row-hover cursor-pointer grid grid-cols-[88px_1.4fr_1.2fr_1.4fr_1fr_128px] items-center gap-3 rounded-2xl px-4 py-3 bg-white"><span class="font-black">8:30 AM</span><span>🐕 Biscuit <span class="text-xs text-slate-400">· Dog</span></span><span class="text-sm">Maria Lopez</span><span class="text-sm">Annual vaccines!</span><span class="text-sm">Dr. Sam</span><span class="text-[11px] font-black rounded-full px-3 py-1 bg-emerald-400 text-white text-center">CHECKED IN</span></div>
+          <div id="r2" onclick="pick('r2')" class="row-hover cursor-pointer grid grid-cols-[88px_1.4fr_1.2fr_1.4fr_1fr_128px] items-center gap-3 rounded-2xl px-4 py-3 bg-white"><span class="font-black">9:00 AM</span><span>🐈 Mochi <span class="text-xs text-slate-400">· Cat</span></span><span class="text-sm">J. Park</span><span class="text-sm">Limping, urgent!!</span><span class="text-sm">Dr. Lee</span><span class="text-[11px] font-black rounded-full px-3 py-1 bg-pink-400 text-white text-center">WAITING</span></div>
+          <div id="r3" onclick="pick('r3')" class="row-hover cursor-pointer grid grid-cols-[88px_1.4fr_1.2fr_1.4fr_1fr_128px] items-center gap-3 rounded-2xl px-4 py-3 bg-white"><span class="font-black">9:30 AM</span><span>🦜 Kiwi <span class="text-xs text-slate-400">· Bird</span></span><span class="text-sm">A. Chen</span><span class="text-sm">Feather plucking</span><span class="text-sm">Dr. Sam</span><span class="text-[11px] font-black rounded-full px-3 py-1 bg-sky-400 text-white text-center">SCHEDULED</span></div>
+          <div id="r4" onclick="pick('r4')" class="row-hover cursor-pointer grid grid-cols-[88px_1.4fr_1.2fr_1.4fr_1fr_128px] items-center gap-3 rounded-2xl px-4 py-3 bg-white"><span class="font-black">10:15 AM</span><span>🐇 Clover <span class="text-xs text-slate-400">· Rabbit</span></span><span class="text-sm">T. Okafor</span><span class="text-sm">Dental check!</span><span class="text-sm">Dr. Lee</span><span class="text-[11px] font-black rounded-full px-3 py-1 bg-amber-400 text-white text-center">IN SURGERY</span></div>
+          <div id="r5" onclick="pick('r5')" class="row-hover cursor-pointer grid grid-cols-[88px_1.4fr_1.2fr_1.4fr_1fr_128px] items-center gap-3 rounded-2xl px-4 py-3 bg-white"><span class="font-black">10:45 AM</span><span>🐕 Rex <span class="text-xs text-slate-400">· Dog</span></span><span class="text-sm">D. Novak</span><span class="text-sm">Post-op follow-up</span><span class="text-sm">Dr. Sam</span><span class="text-[11px] font-black rounded-full px-3 py-1 bg-fuchsia-500 text-white text-center">COMPLETED</span></div>
+          <div id="r6" onclick="pick('r6')" class="row-hover cursor-pointer grid grid-cols-[88px_1.4fr_1.2fr_1.4fr_1fr_128px] items-center gap-3 rounded-2xl px-4 py-3 bg-white"><span class="font-black">11:00 AM</span><span>🐹 Nugget <span class="text-xs text-slate-400">· Hamster</span></span><span class="text-sm">L. Brandt</span><span class="text-sm">Weight check 🎯</span><span class="text-sm">Dr. Lee</span><span class="text-[11px] font-black rounded-full px-3 py-1 bg-orange-400 text-white text-center">NO-SHOW</span></div>
+          <div id="r7" onclick="pick('r7')" class="row-hover cursor-pointer grid grid-cols-[88px_1.4fr_1.2fr_1.4fr_1fr_128px] items-center gap-3 rounded-2xl px-4 py-3 bg-white"><span class="font-black">11:30 AM</span><span>🐈 Luna <span class="text-xs text-slate-400">· Cat</span></span><span class="text-sm">S. Rivera</span><span class="text-sm">Grooming, yay!</span><span class="text-sm">Dr. Sam</span><span class="text-[11px] font-black rounded-full px-3 py-1 bg-lime-400 text-white text-center">ON HOLD</span></div>
+          <div id="r8" onclick="pick('r8')" class="row-hover cursor-pointer grid grid-cols-[88px_1.4fr_1.2fr_1.4fr_1fr_128px] items-center gap-3 rounded-2xl px-4 py-3 bg-white"><span class="font-black">1:00 PM</span><span>🐢 Shelly <span class="text-xs text-slate-400">· Turtle</span></span><span class="text-sm">K. Müller</span><span class="text-sm">Shell check 🐢</span><span class="text-sm">Dr. Lee</span><span class="text-[11px] font-black rounded-full px-3 py-1 bg-violet-500 text-white text-center">CONFIRMED</span></div>
+        </div>
+      </section>
+
+      <aside class="w-[330px] bg-white rounded-[28px] p-6 glow-mint flex flex-col gap-4">
+        <div class="flex items-center gap-4">
+          <div class="avatar w-16 h-16 rounded-full flex items-center justify-center text-3xl text-white glow-card float">🐕</div>
+          <div>
+            <p class="label text-emerald-600">Selected patient</p>
+            <h3 class="text-2xl font-black">Biscuit!!</h3>
+          </div>
+        </div>
+        <dl class="grid grid-cols-2 gap-x-3 gap-y-3 text-sm">
+          <div><dt class="label text-violet-500">Species</dt><dd class="font-black">Dog 🐶</dd></div>
+          <div><dt class="label text-violet-500">Age</dt><dd class="font-black">4 yrs</dd></div>
+          <div><dt class="label text-violet-500">Owner</dt><dd class="font-black">Maria Lopez</dd></div>
+          <div><dt class="label text-violet-500">Weight</dt><dd class="font-black">23.4kg</dd></div>
+          <div class="col-span-2"><dt class="label text-violet-500">Last visit</dt><dd class="font-black">03/22/2026</dd></div>
+        </dl>
+        <div class="rounded-2xl p-4 bg-gradient-to-br from-emerald-100 to-violet-100" style="margin-top: 5px">
+          <p class="label text-violet-600 mb-2">Clinical notes 📝</p>
+          <p class="text-sm font-bold leading-relaxed">Very good boy!! 🐾 Loves treats. Vaccines due, owner prefers morning slots. Vet-approved by 47 global clinics 🏆</p>
+        </div>
+        <div class="flex gap-2 mt-auto">
+          <button class="btn-glow flex-1 text-white rounded-full py-3 text-sm font-black">🩺 START VISIT</button>
+          <button class="flex-1 rounded-full py-3 text-sm font-black bg-white glow-card">📨 Message</button>
+        </div>
+        <p class="text-center text-[11px] font-black text-pink-500 pulse-dot">● LIVE SYNC ACTIVE!!</p>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+  function pick(id) {
+    document.querySelectorAll('[id^="r"]').forEach(function (el) {
+      if (/^r\d+$/.test(el.id)) {
+        el.classList.remove('row-selected');
+        el.classList.add('bg-white');
+      }
+    });
+    var row = document.getElementById(id);
+    row.classList.remove('bg-white');
+    row.classList.add('row-selected');
+  }
+  pick('r1');
+</script>
+</body>
+</html>

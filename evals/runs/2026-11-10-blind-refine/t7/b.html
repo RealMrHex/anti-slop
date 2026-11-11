@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travel Blog</title>
+<style>
+  :root {
+    --paper: #faf5ec;
+    --ink: #2a2420;
+    --muted: #6b5f55;
+    --rule: #e3d8c6;
+    --accent: #a8431f;
+    --accent-dark: #863315;
+    --tint: #f1e6d3;
+    --serif: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+    --sans: "Avenir Next", "Gill Sans", "Segoe UI", system-ui, sans-serif;
+  }
+  body {
+    margin: 0;
+    font-family: var(--serif);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:hover { color: var(--accent-dark); }
+  a:focus-visible, input:focus-visible, button:focus-visible {
+    outline: 3px solid var(--accent); outline-offset: 2px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+  header { padding: 40px 0 0; }
+  header h1 {
+    margin: 0 0 12px;
+    font-size: clamp(2.2rem, 7vw, 3.4rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  nav {
+    display: flex; flex-wrap: wrap; gap: 4px 24px;
+    font-family: var(--sans); font-size: 0.95rem;
+    padding: 12px 0;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+  }
+  nav a { color: var(--ink); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
+  nav a:first-child { border-bottom-color: var(--accent); }
+  nav a:hover { border-bottom-color: var(--accent); color: var(--ink); }
+  .intro { padding: 36px 0 28px; }
+  .intro p {
+    margin: 0;
+    font-size: clamp(1.15rem, 3.2vw, 1.4rem);
+    line-height: 1.55;
+    max-width: 34em;
+  }
+  main > h2 {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 4px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .post { padding: 24px 0; border-bottom: 1px solid var(--rule); }
+  .post h2 { margin: 0 0 6px; font-size: clamp(1.35rem, 4vw, 1.7rem); line-height: 1.2; }
+  .post h2 a { color: var(--ink); text-decoration: none; background: linear-gradient(var(--accent), var(--accent)) 0 100% / 0 2px no-repeat; transition: background-size .2s; }
+  .post h2 a:hover { background-size: 100% 2px; }
+  .post p { margin: 0; color: #453d36; max-width: 36em; }
+  .date {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .signup {
+    margin: 48px 0;
+    padding: 28px;
+    background: var(--tint);
+    border-radius: 10px;
+  }
+  .signup h3 { margin: 0 0 6px; font-size: 1.4rem; }
+  .signup p { margin: 0 0 16px; }
+  .signup label { font-family: var(--sans); font-size: 0.9rem; font-weight: 600; }
+  .signup form { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+  .signup form > br { display: none; }
+  .signup label { flex-basis: 100%; }
+  .signup input[type="email"] {
+    flex: 1 1 220px;
+    max-width: 340px;
+    padding: 11px 12px;
+    font: inherit;
+    font-size: 1rem;
+    box-sizing: border-box;
+    border: 1px solid #b9a98f;
+    border-radius: 6px;
+    background: #fffdf8;
+    color: var(--ink);
+  }
+  .signup button {
+    padding: 11px 22px;
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #fff;
+    background: var(--accent);
+    border: 0;
+    border-radius: 6px;
+  }
+  .signup button:hover { background: var(--accent-dark); }
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 20px 0 32px;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>[Writer Name] Travels</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Posts</a>
+      <a href="#">Destinations</a>
+      <a href="#">About</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <p>
+      Notes, road stories and honest recommendations from years of slow travel,
+      cheap trains, and getting lost on purpose. I write about the places I actually
+      stayed, the meals I actually ate, and the mistakes I would like you to skip.
+    </p>
+  </section>
+
+  <main>
+    <h2>Recent posts</h2>
+
+    <article class="post">
+      <div class="date">November 4, 2026</div>
+      <h2><a href="#">Three Days on the Night Train to Lisbon</a></h2>
+      <p>Sleeper berths, a broken air vent, and the best pastry I have had all year at a station kiosk before dawn.</p>
+    </article>
+
+    <article class="post">
+      <div class="date">October 22, 2026</div>
+      <h2><a href="#">Hill Towns Without a Car</a></h2>
+      <p>How to string together buses, shared taxis and long walks through the mountain villages of central Italy.</p>
+    </article>
+
+    <article class="post">
+      <div class="date">October 8, 2026</div>
+      <h2><a href="#">What I Packed for Six Weeks in One Bag</a></h2>
+      <p>A full list, what I wore every day, and the two items I would never bring again.</p>
+    </article>
+
+    <article class="post">
+      <div class="date">September 19, 2026</div>
+      <h2><a href="#">A Quiet Week on the Coast of Vietnam</a></h2>
+      <p>Off-season fishing towns, family guesthouses, and why I stopped checking the weather app.</p>
+    </article>
+
+    <article class="post">
+      <div class="date">September 2, 2026</div>
+      <h2><a href="#">Booking Hostels Without Regret</a></h2>
+      <p>Questions to ask before you click reserve, and the signs that a bunk room will be a bad idea.</p>
+    </article>
+  </main>
+
+  <section class="signup">
+    <h3>Get new posts by email</h3>
+    <p>One letter a month. No ads, no spam, unsubscribe any time.</p>
+    <form action="#" method="post" onsubmit="event.preventDefault(); alert('Sign-up not connected yet.');">
+      <label for="email">Email address</label><br>
+      <input type="email" id="email" name="email" required placeholder="you@example.com"><br>
+      <button type="submit">Subscribe</button>
+    </form>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    &copy; 2026 [Writer Name]. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

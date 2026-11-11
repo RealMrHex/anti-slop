@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MetricFlow · Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    fontFamily: { display: ['"Bricolage Grotesque"','ui-sans-serif','system-ui','sans-serif'], sans: ['Figtree','ui-sans-serif','system-ui','sans-serif'] },
+    colors: {
+      ink: { 950:'#0b1814', 900:'#10231d', 800:'#17332a', 700:'#1f4438' },
+      sage: { 50:'#f3f6f3', 100:'#e8eee9', 200:'#d6dfd8', 400:'#8a9b90', 600:'#566a5e', 800:'#2b3d34' },
+      lime: { 300:'#c8f169', 400:'#b4e23c' },
+      rust: { 600:'#b4432b', 100:'#fbe6df' },
+      leaf: { 700:'#1d6b42', 100:'#dcf3e4' }
+    }
+  } }
+}
+</script>
+<style>
+  :root { --focus:#1d6b42; }
+  body { background:#f3f6f3; color:#10231d; font-feature-settings:"tnum" 1; }
+  .num { font-variant-numeric: tabular-nums; }
+  :focus-visible { outline:2px solid var(--focus); outline-offset:2px; border-radius:6px; }
+  .on-dark :focus-visible, aside :focus-visible { outline-color:#c8f169; }
+  .card { background:#fff; border:1px solid #dfe7e1; border-radius:16px; }
+  .nav-link[aria-current="page"] { background:#1f4438; color:#fff; }
+  .nav-link[aria-current="page"] svg { color:#c8f169; }
+  .seg[aria-pressed="true"] { background:#c8f169; color:#0b1814; }
+  .bar-seg { transition: flex-grow .5s cubic-bezier(.2,.8,.2,1), opacity .2s; }
+  tbody tr { transition: background .15s; }
+  tbody tr:hover { background:#f3f6f3; }
+  @keyframes rise { from { opacity:0; transform:translateY(6px) } to { opacity:1; transform:none } }
+  .rise { animation: rise .5s both cubic-bezier(.2,.8,.2,1); }
+  @media (prefers-reduced-motion: reduce) { .rise { animation:none } .bar-seg, tbody tr { transition:none } html { scroll-behavior:auto } }
+  #chart-wrap svg { display:block; width:100%; }
+  .sr-only-live { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+</style>
+</head>
+<body class="font-sans antialiased">
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:bg-white focus:px-3 focus:py-2 focus:rounded-lg">Skip to content</a>
+
+<!-- Scrim for mobile nav -->
+<div id="scrim" class="fixed inset-0 z-30 bg-ink-950/50 hidden lg:hidden" aria-hidden="true"></div>
+
+<!-- Sidebar -->
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 -translate-x-full lg:translate-x-0 transition-transform duration-200 bg-ink-950 text-sage-200 flex flex-col px-4 py-5" aria-label="Sidebar">
+  <div class="flex items-center justify-between px-2 mb-8">
+    <a href="#main" class="flex items-center gap-2.5 text-white font-display font-semibold text-xl tracking-tight">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="8" fill="#c8f169"/><path d="M5 18c3 0 3-8 6-8s3 8 6 8 3-5 6-5" fill="none" stroke="#0b1814" stroke-width="2.4" stroke-linecap="round"/></svg>
+      MetricFlow
+    </a>
+    <button id="closeNav" class="lg:hidden p-2 -mr-2 text-sage-200 hover:text-white" aria-label="Close navigation">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <nav aria-label="Primary">
+    <ul id="navList" class="space-y-1">
+      <li><a href="#overview" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] font-medium hover:bg-ink-800 hover:text-white transition-colors" aria-current="page" data-title="Overview"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Overview</a></li>
+      <li><a href="#analytics" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] font-medium hover:bg-ink-800 hover:text-white transition-colors" data-title="Analytics"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18M6 16V10M11 16V5M16 16v-4M21 16V8"/></svg>Analytics</a></li>
+      <li><a href="#customers" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] font-medium hover:bg-ink-800 hover:text-white transition-colors" data-title="Customers"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.7a3.5 3.5 0 010 6.6M18 14.8c1.9.7 3.2 2.4 3.5 5.2"/></svg>Customers</a></li>
+      <li><a href="#reports" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] font-medium hover:bg-ink-800 hover:text-white transition-colors" data-title="Reports"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/></svg>Reports</a></li>
+      <li><a href="#settings" class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-[15px] font-medium hover:bg-ink-800 hover:text-white transition-colors" data-title="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>Settings</a></li>
+    </ul>
+  </nav>
+  <div class="mt-auto rounded-2xl bg-ink-900 border border-ink-700 p-4">
+    <p class="font-display font-semibold text-white text-[15px]">Q4 target: $150k</p>
+    <p class="text-sm text-sage-400 mt-0.5 num"><span class="text-lime-300 font-semibold">$131,400</span> booked · 88%</p>
+    <div class="mt-3 h-1.5 rounded-full bg-ink-700" role="progressbar" aria-label="Q4 revenue target" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100"><div class="h-full rounded-full bg-lime-300" style="width:88%"></div></div>
+  </div>
+</aside>
+
+<div class="lg:pl-64 min-h-screen">
+  <!-- Header -->
+  <header class="sticky top-0 z-20 bg-sage-50/90 backdrop-blur border-b border-sage-200">
+    <div class="flex items-center gap-3 px-4 sm:px-6 lg:px-8 h-16">
+      <button id="openNav" class="lg:hidden -ml-2 p-2 rounded-lg hover:bg-sage-100" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      </button>
+      <h1 id="pageTitle" class="font-display font-semibold text-xl sm:text-2xl tracking-tight">Overview</h1>
+
+      <div class="ml-auto flex items-center gap-2 sm:gap-3">
+        <div class="relative">
+          <label for="range" class="sr-only">Date range</label>
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-sage-600" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <select id="range" class="appearance-none bg-white border border-sage-200 rounded-xl pl-9 pr-8 h-10 text-sm font-medium hover:border-sage-400 cursor-pointer">
+            <option value="3">Last 3 months</option>
+            <option value="6">Last 6 months</option>
+            <option value="12" selected>Last 12 months</option>
+          </select>
+          <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-sage-600" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+
+        <div class="relative">
+          <button id="notifBtn" class="relative h-10 w-10 grid place-items-center rounded-xl bg-white border border-sage-200 hover:border-sage-400" aria-label="Notifications, 3 unread" aria-haspopup="true" aria-expanded="false" aria-controls="notifMenu">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1112 0v5l1.5 2h-15z"/><path d="M10 21h4"/></svg>
+            <span id="notifDot" class="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-rust-600 ring-2 ring-white"></span>
+          </button>
+          <div id="notifMenu" class="hidden absolute right-0 mt-2 w-[min(20rem,calc(100vw-2rem))] card shadow-xl shadow-ink-950/10 p-2" role="region" aria-label="Notifications">
+            <div class="flex items-center justify-between px-3 py-2">
+              <p class="font-display font-semibold">Notifications</p>
+              <button id="markRead" class="text-sm font-medium text-leaf-700 hover:underline">Mark all read</button>
+            </div>
+            <ul class="text-sm">
+              <li class="notif px-3 py-2.5 rounded-lg hover:bg-sage-50"><p class="font-medium">Revenue passed $48k</p><p class="text-sage-600">Best 30 days on record · 2h ago</p></li>
+              <li class="notif px-3 py-2.5 rounded-lg hover:bg-sage-50"><p class="font-medium">Refund spike on Starter plan</p><p class="text-sage-600">4 refunds in the last day · 5h ago</p></li>
+              <li class="notif px-3 py-2.5 rounded-lg hover:bg-sage-50"><p class="font-medium">Weekly report is ready</p><p class="text-sage-600">Sent to 6 teammates · Yesterday</p></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="relative">
+          <button id="userBtn" class="flex items-center gap-2.5 h-10 pl-1 pr-1 sm:pr-3 rounded-xl hover:bg-sage-100" aria-haspopup="true" aria-expanded="false" aria-controls="userMenu">
+            <span class="h-8 w-8 rounded-lg bg-ink-800 text-lime-300 grid place-items-center font-display font-semibold text-sm" aria-hidden="true">DC</span>
+            <span class="hidden sm:block text-left leading-tight"><span class="block text-sm font-semibold">Dana Cole</span><span class="block text-xs text-sage-600">Finance lead</span></span>
+            <span class="sr-only sm:hidden">Account menu for Dana Cole</span>
+          </button>
+          <div id="userMenu" class="hidden absolute right-0 mt-2 w-52 card shadow-xl shadow-ink-950/10 p-1.5 text-sm">
+            <a href="#settings" class="block px-3 py-2 rounded-lg hover:bg-sage-50">Profile</a>
+            <a href="#settings" class="block px-3 py-2 rounded-lg hover:bg-sage-50">Billing</a>
+            <a href="#overview" class="block px-3 py-2 rounded-lg hover:bg-sage-50">Sign out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="px-4 sm:px-6 lg:px-8 py-6 lg:py-8 max-w-[1320px] mx-auto space-y-6">
+
+    <!-- Hero: revenue -->
+    <section aria-labelledby="rev-h" class="on-dark rise rounded-3xl bg-ink-950 text-white overflow-hidden">
+      <div class="p-5 sm:p-7 lg:p-8 pb-0">
+        <div class="flex flex-wrap items-start justify-between gap-x-8 gap-y-4">
+          <div>
+            <h2 id="rev-h" class="text-sage-400 text-sm font-medium">Total revenue · last 30 days</h2>
+            <p class="mt-2 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              <span class="num font-display font-semibold text-5xl sm:text-6xl tracking-tight leading-none">$48,290</span>
+              <span class="inline-flex items-center gap-1 rounded-full bg-lime-300 text-ink-950 text-sm font-semibold px-2.5 py-1 num"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10V2M2.5 5.5L6 2l3.5 3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>+12.8%<span class="sr-only"> versus the previous 30 days</span></span>
+            </p>
+            <p class="mt-2 text-sm text-sage-400">vs. $42,810 in the previous 30 days</p>
+          </div>
+          <div class="flex items-center gap-1 rounded-xl bg-ink-900 p-1" role="group" aria-label="Chart metric view">
+            <button class="seg px-3.5 h-9 rounded-lg text-sm font-medium text-sage-200 hover:text-white" data-mode="month" aria-pressed="true">Monthly</button>
+            <button class="seg px-3.5 h-9 rounded-lg text-sm font-medium text-sage-200 hover:text-white" data-mode="cum" aria-pressed="false">Cumulative</button>
+          </div>
+        </div>
+      </div>
+      <div id="chart-wrap" class="relative mt-4 px-2 sm:px-4 pb-4">
+        <div id="chart" tabindex="0" role="img" aria-label="Revenue by month chart. Use left and right arrow keys to read each month." class="relative"></div>
+        <div id="tip" class="pointer-events-none absolute hidden z-10 rounded-xl bg-white text-ink-900 px-3 py-2 text-sm shadow-xl" role="status"></div>
+        <p id="chartLive" class="sr-only-live" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- Secondary KPIs -->
+    <section aria-label="Key metrics" class="rise card grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-sage-200" style="animation-delay:.08s">
+      <article class="p-5 sm:p-6">
+        <h2 class="text-sm font-medium text-sage-600">Active users</h2>
+        <p class="mt-2 flex items-baseline gap-3 flex-wrap"><span class="num font-display font-semibold text-3xl tracking-tight">12,840</span><span class="inline-flex items-center gap-1 text-sm font-semibold text-leaf-700 num"><svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10V2M2.5 5.5L6 2l3.5 3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>+8.2%</span></p>
+        <svg class="mt-3 w-full h-8" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="#1d6b42" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" points="0,26 12,24 24,25 36,20 48,21 60,16 72,17 84,12 96,13 108,8 120,6"/></svg>
+      </article>
+      <article class="p-5 sm:p-6">
+        <h2 class="text-sm font-medium text-sage-600">Conversion rate</h2>
+        <p class="mt-2 flex items-baseline gap-3 flex-wrap"><span class="num font-display font-semibold text-3xl tracking-tight">3.24%</span><span class="inline-flex items-center gap-1 text-sm font-semibold text-leaf-700 num"><svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10V2M2.5 5.5L6 2l3.5 3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>+1.4%</span></p>
+        <svg class="mt-3 w-full h-8" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="#1d6b42" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" points="0,22 12,24 24,19 36,21 48,17 60,18 72,13 84,15 96,10 108,11 120,7"/></svg>
+      </article>
+      <article class="p-5 sm:p-6">
+        <h2 class="text-sm font-medium text-sage-600">Average order value</h2>
+        <p class="mt-2 flex items-baseline gap-3 flex-wrap"><span class="num font-display font-semibold text-3xl tracking-tight">$86.50</span><span class="inline-flex items-center gap-1 text-sm font-semibold text-rust-600 num"><svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2v8M2.5 6.5L6 10l3.5-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>-2.1%</span></p>
+        <svg class="mt-3 w-full h-8" viewBox="0 0 120 32" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="#b4432b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" points="0,8 12,10 24,7 36,12 48,11 60,15 72,14 84,19 96,18 108,23 120,24"/></svg>
+      </article>
+    </section>
+
+    <div class="grid grid-cols-1 xl:grid-cols-5 gap-6">
+      <!-- Traffic + insights -->
+      <div class="xl:col-span-2 space-y-6">
+        <section aria-labelledby="traffic-h" class="card p-5 sm:p-6 rise" style="animation-delay:.14s">
+          <h2 id="traffic-h" class="font-display font-semibold text-lg">Where visitors come from</h2>
+          <p class="text-sm text-sage-600 mt-0.5">Share of sessions, last 30 days</p>
+          <div id="stack" class="mt-5 flex h-12 gap-1" role="img" aria-label="Traffic sources: Organic 42%, Direct 28%, Social 18%, Referral 12%"></div>
+          <ul id="sources" class="mt-4 divide-y divide-sage-100"></ul>
+        </section>
+
+        <section aria-labelledby="ins-h" class="card p-5 sm:p-6 rise" style="animation-delay:.2s">
+          <h2 id="ins-h" class="font-display font-semibold text-lg">Insights</h2>
+          <ul class="mt-4 space-y-4">
+            <li class="flex gap-3">
+              <span class="mt-0.5 h-8 w-8 shrink-0 rounded-lg bg-leaf-100 text-leaf-700 grid place-items-center" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6 4 4 6-7"/><path d="M15 8h5v5"/></svg></span>
+              <p class="text-[15px] leading-snug"><span class="font-semibold">Organic search is carrying growth.</span> It added 1,120 sessions since last month, more than every other channel combined.</p>
+            </li>
+            <li class="flex gap-3">
+              <span class="mt-0.5 h-8 w-8 shrink-0 rounded-lg bg-rust-100 text-rust-600 grid place-items-center" aria-hidden="true" style="background:#fbe6df"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5M12 16.5v.01"/><path d="M10.3 3.9L2.4 17.5A2 2 0 004.1 20.5h15.8a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></span>
+              <p class="text-[15px] leading-snug"><span class="font-semibold">Order value is slipping.</span> Smaller Starter-plan orders are pulling the average down 2.1% even as volume grows.</p>
+            </li>
+            <li class="flex gap-3">
+              <span class="mt-0.5 h-8 w-8 shrink-0 rounded-lg bg-sage-100 text-ink-700 grid place-items-center" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+              <p class="text-[15px] leading-snug"><span class="font-semibold">Tuesdays convert best.</span> Conversion peaks at 3.9% between 9 and 11am, a good slot for launches and emails.</p>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- Transactions -->
+      <section aria-labelledby="tx-h" class="xl:col-span-3 card p-5 sm:p-6 rise self-start" style="animation-delay:.17s">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 id="tx-h" class="font-display font-semibold text-lg">Recent transactions</h2>
+            <p id="txCount" class="text-sm text-sage-600 mt-0.5" aria-live="polite"></p>
+          </div>
+          <div class="flex items-center gap-1 rounded-xl bg-sage-100 p-1" role="group" aria-label="Filter by status" id="filters">
+            <button class="f px-3 h-8 rounded-lg text-sm font-medium" data-f="all" aria-pressed="true">All</button>
+            <button class="f px-3 h-8 rounded-lg text-sm font-medium" data-f="Paid" aria-pressed="false">Paid</button>
+            <button class="f px-3 h-8 rounded-lg text-sm font-medium" data-f="Pending" aria-pressed="false">Pending</button>
+            <button class="f px-3 h-8 rounded-lg text-sm font-medium" data-f="Refunded" aria-pressed="false">Refunded</button>
+          </div>
+        </div>
+        <div class="mt-4 -mx-5 sm:-mx-6 overflow-x-auto">
+          <table class="w-full text-sm min-w-[560px]">
+            <caption class="sr-only">Most recent transactions, newest first</caption>
+            <thead>
+              <tr class="text-left text-sage-600 border-y border-sage-200 bg-sage-50">
+                <th scope="col" class="font-medium py-2.5 pl-5 sm:pl-6 pr-3">Customer</th>
+                <th scope="col" class="font-medium py-2.5 pr-3">Plan</th>
+                <th scope="col" class="font-medium py-2.5 pr-3">Date</th>
+                <th scope="col" class="font-medium py-2.5 pr-3">Status</th>
+                <th scope="col" class="font-medium py-2.5 pr-5 sm:pr-6 text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="txBody" class="divide-y divide-sage-100"></tbody>
+          </table>
+        </div>
+        <p id="txEmpty" class="hidden py-10 text-center text-sage-600">No transactions with this status.</p>
+      </section>
+    </div>
+
+    <footer class="text-xs text-sage-600 pt-2 pb-6">Sample data for a fictional product. Figures refresh nightly at 02:00 UTC.</footer>
+  </main>
+</div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const fmt = n => '$' + n.toLocaleString('en-US');
+
+  /* ---------- Data ---------- */
+  const months = [
+    ['Dec','2025',31200],['Jan','2026',29800],['Feb','2026',33450],['Mar','2026',35900],
+    ['Apr','2026',34200],['May','2026',37800],['Jun','2026',39600],['Jul','2026',38100],
+    ['Aug','2026',41700],['Sep','2026',43500],['Oct','2026',42810],['Nov','2026',48290]
+  ].map(([m,y,v],i) => ({ label:m, full:`${m} ${y}`, v, last:i===11 }));
+  months[11].full = 'Last 30 days';
+
+  const sources = [
+    ['Organic',42,'#c8f169','#4f7a12'],
+    ['Direct',28,'#3f8f6a','#3f8f6a'],
+    ['Social',18,'#e9a23b','#9a5f06'],
+    ['Referral',12,'#8aa0ff','#4057c7']
+  ];
+
+  const tx = [
+    ['Harbor & Pine Coffee','harborpine.co','Growth','Nov 10','Paid',129.00],
+    ['Lumen Dental Group','lumendental.com','Scale','Nov 10','Paid',349.00],
+    ['Northgate Cycles','northgatecycles.com','Starter','Nov 9','Pending',49.00],
+    ['Ostrander Legal','ostranderlaw.com','Growth','Nov 9','Paid',129.00],
+    ['Fable & Finch Books','fableandfinch.com','Starter','Nov 8','Refunded',49.00],
+    ['Kestrel Outdoor Co.','kestrel-outdoor.com','Scale','Nov 8','Paid',349.00],
+    ['Tidewater Studio','tidewater.studio','Growth','Nov 7','Pending',129.00],
+    ['Marlowe Home Goods','marlowehome.com','Scale','Nov 7','Paid',349.00]
+  ];
+
+  /* ---------- Chart ---------- */
+  let range = 12, mode = 'month', active = null;
+  const chartEl = $('#chart'), tip = $('#tip'), live = $('#chartLive');
+
+  const series = () => {
+    let d = months.slice(12 - range);
+    if (mode === 'cum') { let s = 0; d = d.map(x => ({ ...x, v: (s += x.v), m: x.v })); }
+    else d = d.map(x => ({ ...x, m: x.v }));
+    return d;
+  };
+
+  function niceMax(v) { const step = v > 100000 ? 50000 : 10000; return Math.ceil(v / step) * step; }
+
+  function curve(pts) {
+    let d = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2, t = 0.18;
+      d += ` C${p1[0] + (p2[0] - p0[0]) * t},${p1[1] + (p2[1] - p0[1]) * t} ${p2[0] - (p3[0] - p1[0]) * t},${p2[1] - (p3[1] - p1[1]) * t} ${p2[0]},${p2[1]}`;
+    }
+    return d;
+  }
+
+  function draw() {
+    const data = series();
+    const W = chartEl.clientWidth || 800;
+    const narrow = W < 520;
+    const H = narrow ? 260 : 320;
+    const m = { l: narrow ? 44 : 56, r: narrow ? 16 : 24, t: 28, b: 34 };
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const max = niceMax(Math.max(...data.map(d => d.v)) * 1.02);
+    const min = 0;
+    const x = i => m.l + (data.length === 1 ? iw / 2 : (i * iw) / (data.length - 1));
+    const y = v => m.t + ih - ((v - min) / (max - min)) * ih;
+    const pts = data.map((d, i) => [x(i), y(d.v)]);
+    const ticks = 4;
+    let g = '';
+    for (let i = 0; i <= ticks; i++) {
+      const v = (max / ticks) * i, yy = y(v);
+      g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" stroke="#ffffff" stroke-opacity="${i === 0 ? .25 : .09}"/>`;
+      g += `<text x="${m.l - 10}" y="${yy + 4}" text-anchor="end" fill="#8a9b90" font-size="12">${v >= 1000 ? '$' + Math.round(v / 1000) + 'k' : '$' + v}</text>`;
+    }
+    const every = data.length > 8 ? (narrow ? 2 : 1) : 1;
+    let xl = '';
+    data.forEach((d, i) => {
+      if ((data.length - 1 - i) % every === 0) xl += `<text x="${x(i)}" y="${H - 10}" text-anchor="middle" fill="#8a9b90" font-size="12">${d.label}</text>`;
+    });
+    const line = curve(pts);
+    const area = `${line} L${pts[pts.length - 1][0]},${y(0)} L${pts[0][0]},${y(0)} Z`;
+    const lp = pts[pts.length - 1];
+    chartEl.innerHTML = `
+      <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="Figtree, system-ui, sans-serif" aria-hidden="true">
+        <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8f169" stop-opacity=".32"/><stop offset="1" stop-color="#c8f169" stop-opacity="0"/></linearGradient></defs>
+        ${g}${xl}
+        <path d="${area}" fill="url(#ag)"/>
+        <path d="${line}" fill="none" stroke="#c8f169" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <g id="hv" style="display:none"><line id="hvl" y1="${m.t}" y2="${y(0)}" stroke="#fff" stroke-opacity=".35" stroke-dasharray="3 4"/><circle id="hvc" r="6" fill="#0b1814" stroke="#c8f169" stroke-width="3"/></g>
+        <circle id="endc" cx="${lp[0]}" cy="${lp[1]}" r="5" fill="#c8f169"/>
+        <circle cx="${lp[0]}" cy="${lp[1]}" r="10" fill="#c8f169" fill-opacity=".25"/>
+      </svg>`;
+    chartEl._geo = { data, x, y, pts, W, H, m };
+    if (active !== null && active < data.length) show(active, false);
+    else active = null;
+  }
+
+  function show(i, announce) {
+    const { data, pts, m, H, W } = chartEl._geo;
+    i = Math.max(0, Math.min(data.length - 1, i)); active = i;
+    const [px, py] = pts[i], d = data[i];
+    $('#hv').style.display = '';
+    $('#hvl').setAttribute('x1', px); $('#hvl').setAttribute('x2', px);
+    $('#hvc').setAttribute('cx', px); $('#hvc').setAttribute('cy', py);
+    const prev = i > 0 ? data[i - 1].m : null;
+    const delta = prev ? ((d.m - prev) / prev * 100) : null;
+    tip.innerHTML = `<span class="block text-xs text-sage-600 font-medium">${d.full}</span><span class="block num font-display font-semibold text-lg leading-tight">${fmt(d.v)}</span>` +
+      (mode === 'cum' ? `<span class="block text-xs text-sage-600 num">${fmt(d.m)} that month</span>` : (delta !== null ? `<span class="block text-xs num ${delta >= 0 ? 'text-leaf-700' : 'text-rust-600'} font-semibold">${delta >= 0 ? '+' : ''}${delta.toFixed(1)}% vs prior month</span>` : ''));
+    tip.classList.remove('hidden');
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    let left = px - tw / 2; left = Math.max(8, Math.min(W - tw - 8, left));
+    let top = py - th - 16; if (top < 4) top = py + 18;
+    tip.style.left = left + 'px'; tip.style.top = top + 'px';
+    if (announce) live.textContent = `${d.full}: ${fmt(d.v)}`;
+  }
+  function hide() { active = null; tip.classList.add('hidden'); const h = $('#hv'); if (h) h.style.display = 'none'; }
+
+  chartEl.addEventListener('pointermove', e => {
+    const { data, x } = chartEl._geo, r = chartEl.getBoundingClientRect(), px = e.clientX - r.left;
+    let best = 0, bd = 1e9; data.forEach((_, i) => { const dd = Math.abs(x(i) - px); if (dd < bd) { bd = dd; best = i; } });
+    show(best, false);
+  });
+  chartEl.addEventListener('pointerleave', () => { if (document.activeElement !== chartEl) hide(); });
+  chartEl.addEventListener('blur', hide);
+  chartEl.addEventListener('keydown', e => {
+    const n = chartEl._geo.data.length;
+    if (e.key === 'ArrowRight') { e.preventDefault(); show(active === null ? 0 : Math.min(n - 1, active + 1), true); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); show(active === null ? n - 1 : Math.max(0, active - 1), true); }
+    else if (e.key === 'Escape') hide();
+  });
+  let rt; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(draw, 60); }).observe(chartEl);
+
+  $('#range').addEventListener('change', e => { range = +e.target.value; active = null; draw(); });
+  $$('.seg').forEach(b => b.addEventListener('click', () => {
+    mode = b.dataset.mode; $$('.seg').forEach(s => s.setAttribute('aria-pressed', s === b)); active = null; draw();
+  }));
+
+  /* ---------- Traffic ---------- */
+  const stack = $('#stack'), list = $('#sources');
+  sources.forEach(([n, p, c, tc], i) => {
+    const seg = document.createElement('div');
+    seg.className = 'bar-seg rounded-lg flex items-end p-2 text-sm font-semibold num min-w-0 overflow-hidden';
+    seg.style.cssText = `flex:${p} 1 0;background:${c};color:${i === 0 ? '#0b1814' : '#fff'}`;
+    if (i === 3 || i === 1) seg.style.color = i === 1 ? '#fff' : '#0b1814';
+    if (i === 2) seg.style.color = '#2a1a00';
+    seg.textContent = p + '%'; seg.dataset.i = i;
+    stack.appendChild(seg);
+    const li = document.createElement('li');
+    li.className = 'src flex items-center gap-3 py-3 rounded-lg px-1 -mx-1'; li.dataset.i = i; li.tabIndex = 0;
+    li.innerHTML = `<span class="h-3 w-3 rounded-[4px] shrink-0" style="background:${c}" aria-hidden="true"></span><span class="font-medium">${n}</span><span class="ml-auto text-sage-600 text-sm num">${Math.round(12840 * p / 100 * 3.1).toLocaleString('en-US')} sessions</span><span class="w-10 text-right font-semibold num">${p}%</span>`;
+    list.appendChild(li);
+  });
+  const focusSrc = i => { $$('.bar-seg').forEach(s => s.style.opacity = (i === null || +s.dataset.i === i) ? 1 : .35); };
+  $$('.src').forEach(li => {
+    ['mouseenter', 'focus'].forEach(ev => li.addEventListener(ev, () => focusSrc(+li.dataset.i)));
+    ['mouseleave', 'blur'].forEach(ev => li.addEventListener(ev, () => focusSrc(null)));
+  });
+  $$('.bar-seg').forEach(s => {
+    s.addEventListener('mouseenter', () => focusSrc(+s.dataset.i));
+    s.addEventListener('mouseleave', () => focusSrc(null));
+  });
+
+  /* ---------- Transactions ---------- */
+  const badge = {
+    Paid: ['bg-leaf-100 text-leaf-700', '<path d="M3 6.5l2.2 2.2L9 4.5"/>'],
+    Pending: ['bg-amber-100 text-amber-800', '<circle cx="6" cy="6" r="3.6"/><path d="M6 4.3V6l1.2.8"/>'],
+    Refunded: ['bg-sage-100 text-sage-800', '<path d="M4 3.5L2.5 5 4 6.5M2.7 5h4.3a2.3 2.3 0 010 4.6H5"/>']
+  };
+  let filter = 'all';
+  function renderTx() {
+    const rows = tx.filter(t => filter === 'all' || t[4] === filter);
+    $('#txBody').innerHTML = rows.map(([n, dom, plan, date, st, amt]) => {
+      const ini = n.split(' ').filter(w => /^[A-Za-z]/.test(w)).slice(0, 2).map(w => w[0]).join('');
+      const [cls, ico] = badge[st];
+      return `<tr><td class="py-3 pl-5 sm:pl-6 pr-3"><div class="flex items-center gap-3"><span class="h-9 w-9 rounded-xl bg-ink-800 text-lime-300 grid place-items-center text-xs font-display font-semibold shrink-0" aria-hidden="true">${ini}</span><div class="min-w-0"><div class="font-semibold truncate">${n}</div><div class="text-xs text-sage-600 truncate">${dom}</div></div></div></td>
+      <td class="pr-3">${plan}</td><td class="pr-3 text-sage-600 whitespace-nowrap">${date}</td>
+      <td class="pr-3"><span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${cls}"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ico}</svg>${st}</span></td>
+      <td class="pr-5 sm:pr-6 text-right font-semibold num ${st === 'Refunded' ? 'line-through text-sage-600' : ''}">${st === 'Refunded' ? '' : ''}${fmt(Math.floor(amt))}.${(amt % 1).toFixed(2).slice(2)}</td></tr>`;
+    }).join('');
+    $('#txEmpty').classList.toggle('hidden', rows.length > 0);
+    $('#txCount').textContent = `Showing ${rows.length} of ${tx.length}`;
+  }
+  $$('.f').forEach(b => {
+    b.addEventListener('click', () => { filter = b.dataset.f; $$('.f').forEach(x => x.setAttribute('aria-pressed', x === b)); renderTx(); });
+  });
+  const style = document.createElement('style');
+  style.textContent = `.f{color:#566a5e}.f:hover{color:#10231d}.f[aria-pressed="true"]{background:#fff;color:#10231d;box-shadow:0 1px 2px rgba(11,24,20,.12)}`;
+  document.head.appendChild(style);
+  renderTx();
+
+  /* ---------- Nav + menus ---------- */
+  const side = $('#sidebar'), scrim = $('#scrim'), openB = $('#openNav');
+  function nav(open) {
+    side.classList.toggle('-translate-x-full', !open); scrim.classList.toggle('hidden', !open);
+    openB.setAttribute('aria-expanded', open);
+    if (open) $('#navList a').focus(); else if (!matchMedia('(min-width:1024px)').matches) openB.focus();
+  }
+  openB.addEventListener('click', () => nav(true));
+  $('#closeNav').addEventListener('click', () => nav(false));
+  scrim.addEventListener('click', () => nav(false));
+  $$('#navList a').forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    $$('#navList a').forEach(x => x.removeAttribute('aria-current')); a.setAttribute('aria-current', 'page');
+    $('#pageTitle').textContent = a.dataset.title; document.title = `MetricFlow · ${a.dataset.title}`;
+    if (!matchMedia('(min-width:1024px)').matches) nav(false);
+  }));
+
+  function menu(btn, panel) {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = panel.classList.contains('hidden');
+      closeMenus(); if (open) { panel.classList.remove('hidden'); btn.setAttribute('aria-expanded', true); }
+    });
+    panel.addEventListener('click', e => e.stopPropagation());
+  }
+  function closeMenus() { [['#notifBtn', '#notifMenu'], ['#userBtn', '#userMenu']].forEach(([b, p]) => { $(p).classList.add('hidden'); $(b).setAttribute('aria-expanded', false); }); }
+  menu($('#notifBtn'), $('#notifMenu')); menu($('#userBtn'), $('#userMenu'));
+  document.addEventListener('click', closeMenus);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenus(); if (!side.classList.contains('-translate-x-full') && !matchMedia('(min-width:1024px)').matches) nav(false); } });
+  $('#markRead').addEventListener('click', () => { $('#notifDot').remove(); $('#notifBtn').setAttribute('aria-label', 'Notifications, none unread'); $$('.notif').forEach(n => n.classList.add('opacity-60')); });
+
+  draw();
+  document.fonts && document.fonts.ready.then(draw);
+})();
+</script>
+</body>
+</html>

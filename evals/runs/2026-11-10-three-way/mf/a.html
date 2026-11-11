@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MetricFlow | Overview</title>
+  <meta name="description" content="MetricFlow overview: revenue, traffic, conversion and customer activity.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"IBM Plex Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
+          },
+          colors: {
+            paper: '#F4F2EC',
+            surface: '#FFFDF8',
+            line: '#E3DED1',
+            ink: '#1C2630',
+            muted: '#5B6670',
+            accent: '#0E7C6B',
+            accentHi: '#0A6557',
+            accentInk: '#0A5F52',
+            accentSoft: '#D7EEE8',
+            brick: '#9E3B2B',
+            amber: '#C98A3E',
+            slate2: '#8A9BA8',
+            bar: '#D8D2C2',
+            barHi: '#C9C1AC',
+            side: '#1C2630',
+            sideHi: '#2A3644',
+            sideText: '#C5CED6'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root { color-scheme: light; }
+    html, body { background: #F4F2EC; }
+    body { -webkit-font-smoothing: antialiased; }
+    *:focus-visible { outline: 2px solid #0E7C6B; outline-offset: 2px; border-radius: 6px; }
+    .tabular { font-variant-numeric: tabular-nums; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body class="font-sans text-ink antialiased">
+
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-ink focus:px-4 focus:py-2 focus:text-white">Skip to content</a>
+
+  <div class="min-h-screen lg:flex">
+
+    <!-- Sidebar -->
+    <div id="backdrop" class="fixed inset-0 z-40 hidden bg-ink/40 lg:hidden" aria-hidden="true"></div>
+
+    <aside id="sidebar" aria-label="Primary"
+      class="fixed inset-y-0 left-0 z-50 flex w-64 -translate-x-full flex-col bg-side text-sideText transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:shrink-0 lg:translate-x-0">
+      <div class="flex items-center gap-2.5 px-6 pb-6 pt-7">
+        <svg class="h-7 w-7" viewBox="0 0 28 28" aria-hidden="true">
+          <rect width="28" height="28" rx="8" fill="#0E7C6B"/>
+          <path d="M6 19.5 11.5 13.5 15.5 17 22 9.5" fill="none" stroke="#F4F2EC" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="text-lg font-semibold tracking-tight text-white">MetricFlow</span>
+      </div>
+
+      <nav class="px-3" aria-label="Main">
+        <ul class="space-y-1">
+          <li>
+            <a href="#" aria-current="page" class="flex items-center gap-3 rounded-lg bg-sideHi px-3 py-2.5 text-sm font-medium text-white">
+              <svg class="h-5 w-5 text-[#7FD8C4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+              Overview
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-sideHi hover:text-white">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+              Analytics
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-sideHi hover:text-white">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.2 3.3-5 6.5-5s5.7 1.8 6.5 5"/><path d="M16 4.6a3.5 3.5 0 010 6.8M18.5 15c1.6.6 2.6 2.2 3 5"/></svg>
+              Customers
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-sideHi hover:text-white">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg>
+              Reports
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-sideHi hover:text-white">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+              Settings
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="mt-auto px-6 pb-6 pt-8">
+        <p class="text-xs uppercase tracking-wider text-[#8D9AA6]">Plan</p>
+        <p class="mt-1 text-sm font-medium text-white">Growth</p>
+        <p class="text-xs text-[#8D9AA6]">Renews Dec 1, 2026</p>
+      </div>
+    </aside>
+
+    <!-- Main column -->
+    <div class="min-w-0 flex-1">
+
+      <header class="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur">
+        <div class="flex flex-wrap items-center gap-3 px-4 py-4 sm:px-6 lg:px-8">
+          <button id="menu-toggle" type="button" aria-controls="sidebar" aria-expanded="false"
+            class="-ml-2 inline-flex h-10 w-10 items-center justify-center rounded-lg text-ink hover:bg-line/60 lg:hidden">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            <span class="sr-only">Open navigation</span>
+          </button>
+
+          <div class="mr-auto min-w-0">
+            <h1 class="text-xl font-semibold tracking-tight">Overview</h1>
+            <p class="truncate text-sm text-muted">Revenue, traffic and customer activity</p>
+          </div>
+
+          <label class="sr-only" for="range">Date range</label>
+          <select id="range" class="h-10 cursor-pointer rounded-lg border border-line bg-surface px-3 pr-8 text-sm font-medium text-ink shadow-sm hover:border-[#C9C1AC]">
+            <option value="12" selected>Last 12 months</option>
+            <option value="6">Last 6 months</option>
+            <option value="3">Last 3 months</option>
+          </select>
+
+          <!-- Notifications -->
+          <div class="relative" id="notif-wrap">
+            <button id="notif-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="notif-panel" aria-label="Notifications, 2 unread"
+              class="relative inline-flex h-10 w-10 items-center justify-center rounded-lg border border-line bg-surface text-ink shadow-sm hover:bg-white">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1112 0c0 6 2.5 7.5 2.5 7.5h-17S6 14 6 8z"/><path d="M10 19a2 2 0 004 0"/></svg>
+              <span id="notif-count" class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-brick px-1 text-[11px] font-semibold text-white" aria-hidden="true">2</span>
+            </button>
+            <div id="notif-panel" hidden class="absolute right-0 z-40 mt-2 w-[min(22rem,calc(100vw-2rem))] rounded-2xl border border-line bg-surface p-2 shadow-lg">
+              <div class="flex items-center justify-between px-3 py-2">
+                <h2 class="text-sm font-semibold">Notifications</h2>
+                <button id="notif-clear" type="button" class="rounded-md px-2 py-1 text-xs font-medium text-accentInk hover:bg-accentSoft">Mark all read</button>
+              </div>
+              <ul id="notif-list" class="divide-y divide-line">
+                <li class="px-3 py-3" data-unread>
+                  <p class="text-sm">Payment from Tidewater Outfitters cleared</p>
+                  <p class="mt-0.5 text-xs text-muted">2 hours ago</p>
+                </li>
+                <li class="px-3 py-3" data-unread>
+                  <p class="text-sm">Checkout drop-off above 30% for three days</p>
+                  <p class="mt-0.5 text-xs text-muted">5 hours ago</p>
+                </li>
+                <li class="px-3 py-3">
+                  <p class="text-sm">October report is ready to download</p>
+                  <p class="mt-0.5 text-xs text-muted">Yesterday</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Profile -->
+          <div class="relative" id="profile-wrap">
+            <button id="profile-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="profile-menu"
+              class="inline-flex h-10 items-center gap-2.5 rounded-lg border border-line bg-surface pl-1 pr-3 text-sm font-medium shadow-sm hover:bg-white">
+              <span class="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-semibold text-white" aria-hidden="true">MO</span>
+              <span class="hidden sm:inline">Maya Okafor</span>
+              <svg class="hidden h-4 w-4 text-muted sm:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+              <span class="sr-only">User menu</span>
+            </button>
+            <div id="profile-menu" hidden class="absolute right-0 z-40 mt-2 w-56 rounded-2xl border border-line bg-surface p-1.5 shadow-lg">
+              <div class="px-3 py-2">
+                <p class="text-sm font-semibold">Maya Okafor</p>
+                <p class="text-xs text-muted">Admin, Growth plan</p>
+              </div>
+              <div class="my-1 h-px bg-line"></div>
+              <button type="button" class="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-paper">Your profile</button>
+              <button type="button" class="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-paper">Billing</button>
+              <button type="button" class="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-paper">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main id="main" class="mx-auto max-w-[1400px] space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+
+        <!-- KPIs -->
+        <section aria-labelledby="kpi-heading">
+          <h2 id="kpi-heading" class="sr-only">Key metrics</h2>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+            <article class="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+              <h3 class="text-sm font-medium text-muted">Total Revenue</h3>
+              <div class="mt-3 flex flex-col gap-2">
+                <p class="font-mono text-3xl font-semibold tracking-tight tabular">$48,290</p>
+                <svg class="h-10 w-full text-accent" viewBox="0 0 120 36" preserveAspectRatio="none" data-spark="2410,2890,3120,3560,3205,3980,4310,4075,4460,4745,5190,6345" aria-hidden="true"></svg>
+              </div>
+              <p class="mt-3 flex items-center gap-1.5 text-sm font-medium text-accentInk">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+                +12.8% <span class="font-normal text-muted">vs. prior period</span>
+              </p>
+            </article>
+
+            <article class="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+              <h3 class="text-sm font-medium text-muted">Active Users</h3>
+              <div class="mt-3 flex flex-col gap-2">
+                <p class="font-mono text-3xl font-semibold tracking-tight tabular">12,840</p>
+                <svg class="h-10 w-full text-accent" viewBox="0 0 120 36" preserveAspectRatio="none" data-spark="9900,10250,10100,10880,10620,11210,11480,11330,11900,12100,12420,12840" aria-hidden="true"></svg>
+              </div>
+              <p class="mt-3 flex items-center gap-1.5 text-sm font-medium text-accentInk">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+                +8.2% <span class="font-normal text-muted">vs. prior period</span>
+              </p>
+            </article>
+
+            <article class="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+              <h3 class="text-sm font-medium text-muted">Conversion Rate</h3>
+              <div class="mt-3 flex flex-col gap-2">
+                <p class="font-mono text-3xl font-semibold tracking-tight tabular">3.24%</p>
+                <svg class="h-10 w-full text-accent" viewBox="0 0 120 36" preserveAspectRatio="none" data-spark="2.9,3.0,2.8,3.1,3.0,3.1,3.2,3.0,3.1,3.2,3.1,3.24" aria-hidden="true"></svg>
+              </div>
+              <p class="mt-3 flex items-center gap-1.5 text-sm font-medium text-accentInk">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+                +1.4% <span class="font-normal text-muted">vs. prior period</span>
+              </p>
+            </article>
+
+            <article class="rounded-2xl border border-line bg-surface p-5 shadow-sm">
+              <h3 class="text-sm font-medium text-muted">Average Order Value</h3>
+              <div class="mt-3 flex flex-col gap-2">
+                <p class="font-mono text-3xl font-semibold tracking-tight tabular">$86.50</p>
+                <svg class="h-10 w-full text-brick" viewBox="0 0 120 36" preserveAspectRatio="none" data-spark="88.3,87.9,89.4,88.1,87.2,88.6,88.0,87.5,88.9,87.4,86.8,86.5" aria-hidden="true"></svg>
+              </div>
+              <p class="mt-3 flex items-center gap-1.5 text-sm font-medium text-brick">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+                -2.1% <span class="font-normal text-muted">vs. prior period</span>
+              </p>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- Revenue chart + traffic sources -->
+        <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+
+          <section aria-labelledby="revenue-heading" class="rounded-2xl border border-line bg-surface p-5 shadow-sm sm:p-6 xl:col-span-2">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <h2 id="revenue-heading" class="text-base font-semibold">Revenue analytics</h2>
+                <p id="chart-caption" class="text-sm text-muted">Dec 2025 – Nov 2026</p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs font-medium uppercase tracking-wider text-muted">Total in range</p>
+                <p id="chart-total" class="font-mono text-2xl font-semibold tabular">$48,290</p>
+              </div>
+            </div>
+
+            <div class="relative mt-6 h-64" role="img" aria-describedby="chart-caption">
+              <div id="axis" class="absolute inset-y-0 left-0 w-11"></div>
+              <div id="grid" class="pointer-events-none absolute inset-y-0 left-12 right-0"></div>
+              <ol id="bars" class="absolute inset-y-0 left-12 right-0 flex items-end gap-2 sm:gap-3"></ol>
+            </div>
+            <ol id="bar-labels" class="mt-2 flex gap-2 pl-12 sm:gap-3"></ol>
+          </section>
+
+          <section aria-labelledby="traffic-heading" class="rounded-2xl border border-line bg-surface p-5 shadow-sm sm:p-6">
+            <h2 id="traffic-heading" class="text-base font-semibold">Traffic sources</h2>
+            <p class="text-sm text-muted">Share of sessions in range</p>
+
+            <div class="mt-6 flex h-3 overflow-hidden rounded-full bg-line" aria-hidden="true">
+              <span class="h-full bg-accent" style="width:42%"></span>
+              <span class="h-full bg-ink" style="width:28%"></span>
+              <span class="h-full bg-amber" style="width:18%"></span>
+              <span class="h-full bg-slate2" style="width:12%"></span>
+            </div>
+
+            <ul class="mt-6 space-y-4">
+              <li class="flex items-center justify-between gap-3">
+                <span class="flex items-center gap-3 text-sm"><span class="h-3 w-3 rounded-sm bg-accent" aria-hidden="true"></span>Organic search</span>
+                <span class="font-mono text-sm font-semibold tabular">42%</span>
+              </li>
+              <li class="flex items-center justify-between gap-3">
+                <span class="flex items-center gap-3 text-sm"><span class="h-3 w-3 rounded-sm bg-ink" aria-hidden="true"></span>Direct</span>
+                <span class="font-mono text-sm font-semibold tabular">28%</span>
+              </li>
+              <li class="flex items-center justify-between gap-3">
+                <span class="flex items-center gap-3 text-sm"><span class="h-3 w-3 rounded-sm bg-amber" aria-hidden="true"></span>Social</span>
+                <span class="font-mono text-sm font-semibold tabular">18%</span>
+              </li>
+              <li class="flex items-center justify-between gap-3">
+                <span class="flex items-center gap-3 text-sm"><span class="h-3 w-3 rounded-sm bg-slate2" aria-hidden="true"></span>Referral</span>
+                <span class="font-mono text-sm font-semibold tabular">12%</span>
+              </li>
+            </ul>
+            <p class="mt-6 rounded-xl bg-paper p-4 text-sm leading-relaxed text-muted">Organic and direct visits make up 70% of sessions. Social is up 4 points on the prior period.</p>
+          </section>
+        </div>
+
+        <!-- Transactions + activity -->
+        <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+
+          <section aria-labelledby="tx-heading" class="min-w-0 rounded-2xl border border-line bg-surface shadow-sm xl:col-span-2">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-6">
+              <h2 id="tx-heading" class="text-base font-semibold">Recent transactions</h2>
+              <div class="flex flex-wrap gap-1.5" role="group" aria-label="Filter transactions by status">
+                <button type="button" data-filter="all" aria-pressed="true" class="filter-btn rounded-lg px-3 py-1.5 text-sm font-medium">All</button>
+                <button type="button" data-filter="paid" aria-pressed="false" class="filter-btn rounded-lg px-3 py-1.5 text-sm font-medium">Paid</button>
+                <button type="button" data-filter="pending" aria-pressed="false" class="filter-btn rounded-lg px-3 py-1.5 text-sm font-medium">Pending</button>
+                <button type="button" data-filter="refunded" aria-pressed="false" class="filter-btn rounded-lg px-3 py-1.5 text-sm font-medium">Refunded</button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[32rem] text-sm">
+                <caption class="sr-only">Recent transactions, filterable by status</caption>
+                <thead>
+                  <tr class="text-left text-xs font-medium uppercase tracking-wider text-muted">
+                    <th scope="col" class="px-5 py-3 font-medium sm:px-6">Order</th>
+                    <th scope="col" class="px-3 py-3 font-medium">Customer</th>
+                    <th scope="col" class="hidden px-3 py-3 font-medium sm:table-cell">Date</th>
+                    <th scope="col" class="hidden px-3 py-3 font-medium md:table-cell">Plan</th>
+                    <th scope="col" class="px-3 py-3 text-right font-medium">Amount</th>
+                    <th scope="col" class="px-5 py-3 font-medium sm:px-6">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="tx-body" class="divide-y divide-line">
+                  <tr data-status="paid" class="hover:bg-paper/60">
+                    <td class="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-muted sm:px-6">MF-20481</td>
+                    <th scope="row" class="px-3 py-3.5 text-left font-medium">Harbor &amp; Oak Co.</th>
+                    <td class="hidden whitespace-nowrap px-3 py-3.5 text-muted sm:table-cell">Nov 9, 2026</td>
+                    <td class="hidden px-3 py-3.5 md:table-cell">Growth, monthly</td>
+                    <td class="px-3 py-3.5 text-right font-mono tabular">$1,240.00</td>
+                    <td class="px-5 py-3.5 sm:px-6"><span class="badge badge-paid"><span class="dot" aria-hidden="true"></span>Paid</span></td>
+                  </tr>
+                  <tr data-status="paid" class="hover:bg-paper/60">
+                    <td class="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-muted sm:px-6">MF-20477</td>
+                    <th scope="row" class="px-3 py-3.5 text-left font-medium">Lumen Studio</th>
+                    <td class="hidden whitespace-nowrap px-3 py-3.5 text-muted sm:table-cell">Nov 9, 2026</td>
+                    <td class="hidden px-3 py-3.5 md:table-cell">Starter, monthly</td>
+                    <td class="px-3 py-3.5 text-right font-mono tabular">$89.00</td>
+                    <td class="px-5 py-3.5 sm:px-6"><span class="badge badge-paid"><span class="dot" aria-hidden="true"></span>Paid</span></td>
+                  </tr>
+                  <tr data-status="pending" class="hover:bg-paper/60">
+                    <td class="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-muted sm:px-6">MF-20469</td>
+                    <th scope="row" class="px-3 py-3.5 text-left font-medium">Redwood Dental</th>
+                    <td class="hidden whitespace-nowrap px-3 py-3.5 text-muted sm:table-cell">Nov 8, 2026</td>
+                    <td class="hidden px-3 py-3.5 md:table-cell">Team, annual</td>
+                    <td class="px-3 py-3.5 text-right font-mono tabular">$2,880.00</td>
+                    <td class="px-5 py-3.5 sm:px-6"><span class="badge badge-pending"><span class="dot" aria-hidden="true"></span>Pending</span></td>
+                  </tr>
+                  <tr data-status="paid" class="hover:bg-paper/60">
+                    <td class="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-muted sm:px-6">MF-20462</td>
+                    <th scope="row" class="px-3 py-3.5 text-left font-medium">Kitfox Logistics</th>
+                    <td class="hidden whitespace-nowrap px-3 py-3.5 text-muted sm:table-cell">Nov 7, 2026</td>
+                    <td class="hidden px-3 py-3.5 md:table-cell">Scale, monthly</td>
+                    <td class="px-3 py-3.5 text-right font-mono tabular">$640.00</td>
+                    <td class="px-5 py-3.5 sm:px-6"><span class="badge badge-paid"><span class="dot" aria-hidden="true"></span>Paid</span></td>
+                  </tr>
+                  <tr data-status="refunded" class="hover:bg-paper/60">
+                    <td class="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-muted sm:px-6">MF-20458</td>
+                    <th scope="row" class="px-3 py-3.5 text-left font-medium">Ansel &amp; Pike</th>
+                    <td class="hidden whitespace-nowrap px-3 py-3.5 text-muted sm:table-cell">Nov 6, 2026</td>
+                    <td class="hidden px-3 py-3.5 md:table-cell">Starter, monthly</td>
+                    <td class="px-3 py-3.5 text-right font-mono tabular">$29.00</td>
+                    <td class="px-5 py-3.5 sm:px-6"><span class="badge badge-refunded"><span class="dot" aria-hidden="true"></span>Refunded</span></td>
+                  </tr>
+                  <tr data-status="paid" class="hover:bg-paper/60">
+                    <td class="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-muted sm:px-6">MF-20451</td>
+                    <th scope="row" class="px-3 py-3.5 text-left font-medium">North Fork Bakery</th>
+                    <td class="hidden whitespace-nowrap px-3 py-3.5 text-muted sm:table-cell">Nov 5, 2026</td>
+                    <td class="hidden px-3 py-3.5 md:table-cell">Growth, monthly</td>
+                    <td class="px-3 py-3.5 text-right font-mono tabular">$149.00</td>
+                    <td class="px-5 py-3.5 sm:px-6"><span class="badge badge-paid"><span class="dot" aria-hidden="true"></span>Paid</span></td>
+                  </tr>
+                  <tr data-status="pending" class="hover:bg-paper/60">
+                    <td class="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-muted sm:px-6">MF-20447</td>
+                    <th scope="row" class="px-3 py-3.5 text-left font-medium">Quill Health</th>
+                    <td class="hidden whitespace-nowrap px-3 py-3.5 text-muted sm:table-cell">Nov 4, 2026</td>
+                    <td class="hidden px-3 py-3.5 md:table-cell">Team, monthly</td>
+                    <td class="px-3 py-3.5 text-right font-mono tabular">$420.00</td>
+                    <td class="px-5 py-3.5 sm:px-6"><span class="badge badge-pending"><span class="dot" aria-hidden="true"></span>Pending</span></td>
+                  </tr>
+                  <tr data-status="paid" class="hover:bg-paper/60">
+                    <td class="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-muted sm:px-6">MF-20440</td>
+                    <th scope="row" class="px-3 py-3.5 text-left font-medium">Tidewater Outfitters</th>
+                    <td class="hidden whitespace-nowrap px-3 py-3.5 text-muted sm:table-cell">Nov 3, 2026</td>
+                    <td class="hidden px-3 py-3.5 md:table-cell">Scale, annual</td>
+                    <td class="px-3 py-3.5 text-right font-mono tabular">$5,400.00</td>
+                    <td class="px-5 py-3.5 sm:px-6"><span class="badge badge-paid"><span class="dot" aria-hidden="true"></span>Paid</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <p id="tx-empty" hidden class="px-6 py-8 text-center text-sm text-muted">No transactions match this filter.</p>
+            </div>
+          </section>
+
+          <section aria-labelledby="activity-heading" class="rounded-2xl border border-line bg-surface p-5 shadow-sm sm:p-6">
+            <h2 id="activity-heading" class="text-base font-semibold">Recent activity</h2>
+            <p class="text-sm text-muted">What changed and what to look at</p>
+            <ul class="mt-5 space-y-5">
+              <li class="flex gap-3">
+                <span class="mt-0.5 shrink-0 rounded-md bg-accentSoft px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-accentInk">Win</span>
+                <div>
+                  <p class="text-sm leading-relaxed">Annual plans brought in 61% of new revenue this week.</p>
+                  <p class="mt-1 text-xs text-muted">2 hours ago</p>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <span class="mt-0.5 shrink-0 rounded-md bg-[#F3DDD8] px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#8A2F20]">Alert</span>
+                <div>
+                  <p class="text-sm leading-relaxed">Checkout drop-off at the address step reached 31%.</p>
+                  <p class="mt-1 text-xs text-muted">5 hours ago</p>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <span class="mt-0.5 shrink-0 rounded-md bg-[#F6E7CC] px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#7A4E12]">Note</span>
+                <div>
+                  <p class="text-sm leading-relaxed">Three refund requests are open. Median reply time is 4 hours.</p>
+                  <p class="mt-1 text-xs text-muted">Yesterday</p>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <span class="mt-0.5 shrink-0 rounded-md bg-paper px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-ink ring-1 ring-inset ring-line">Insight</span>
+                <div>
+                  <p class="text-sm leading-relaxed">Referral visitors convert at 4.1%, above the 3.24% average.</p>
+                  <p class="mt-1 text-xs text-muted">Yesterday</p>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <style>
+    .filter-btn { color: #5B6670; border: 1px solid #E3DED1; background: #FFFDF8; }
+    .filter-btn:hover { color: #1C2630; background: #F4F2EC; }
+    .filter-btn[aria-pressed="true"] { color: #FFFFFF; background: #1C2630; border-color: #1C2630; }
+    .badge { display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 9999px; padding: 0.2rem 0.6rem; font-size: 0.75rem; font-weight: 500; white-space: nowrap; }
+    .badge .dot { width: 0.4rem; height: 0.4rem; border-radius: 9999px; background: currentColor; }
+    .badge-paid { background: #D7EEE8; color: #0A5F52; }
+    .badge-pending { background: #F6E7CC; color: #7A4E12; }
+    .badge-refunded { background: #F3DDD8; color: #8A2F20; }
+  </style>
+
+  <script>
+    (function () {
+      // ---------- Sparklines (decorative) ----------
+      function spark(svg, data) {
+        var min = Math.min.apply(null, data), max = Math.max.apply(null, data);
+        var span = (max - min) || 1, step = 120 / (data.length - 1);
+        var pts = data.map(function (v, i) {
+          return (i * step).toFixed(1) + ',' + (34 - ((v - min) / span) * 30).toFixed(1);
+        }).join(' ');
+        svg.innerHTML = '<polyline points="' + pts + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>';
+      }
+      document.querySelectorAll('[data-spark]').forEach(function (svg) {
+        spark(svg, svg.getAttribute('data-spark').split(',').map(Number));
+      });
+
+      // ---------- Revenue chart ----------
+      var MONTHS = ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
+      var REVENUE = [2410, 2890, 3120, 3560, 3205, 3980, 4310, 4075, 4460, 4745, 5190, 6345];
+      var CAPTIONS = {
+        12: 'Dec 2025 – Nov 2026',
+        6: 'Jun – Nov 2026',
+        3: 'Sep – Nov 2026'
+      };
+      var AXIS_MAX = 7000;
+      var money = function (n) { return '$' + n.toLocaleString('en-US'); };
+
+      var axis = document.getElementById('axis');
+      var grid = document.getElementById('grid');
+      [0, 2000, 4000, 6000].forEach(function (v) {
+        var pct = (v / AXIS_MAX * 100).toFixed(2);
+        var label = document.createElement('span');
+        label.className = 'absolute left-0 -translate-y-1/2 font-mono text-xs text-muted tabular';
+        label.style.bottom = pct + '%';
+        label.textContent = v === 0 ? '$0' : '$' + (v / 1000) + 'k';
+        axis.appendChild(label);
+        var line = document.createElement('div');
+        line.className = v === 0 ? 'absolute inset-x-0 bottom-0 h-px bg-line' : 'absolute inset-x-0 h-px bg-line/70';
+        if (v !== 0) line.style.bottom = pct + '%';
+        grid.appendChild(line);
+      });
+
+      var bars = document.getElementById('bars');
+      var barLabels = document.getElementById('bar-labels');
+      var rangeSelect = document.getElementById('range');
+
+      function renderChart(n) {
+        var labels = MONTHS.slice(-n), values = REVENUE.slice(-n);
+        var total = values.reduce(function (a, b) { return a + b; }, 0);
+        document.getElementById('chart-total').textContent = money(total);
+        document.getElementById('chart-caption').textContent = CAPTIONS[n];
+        bars.innerHTML = '';
+        barLabels.innerHTML = '';
+        values.forEach(function (val, i) {
+          var last = i === values.length - 1;
+          var li = document.createElement('li');
+          li.className = 'relative flex h-full flex-1 items-end';
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'group relative w-full rounded-t-md transition-colors ' + (last ? 'bg-accent hover:bg-accentHi' : 'bg-bar hover:bg-barHi');
+          btn.style.height = (val / AXIS_MAX * 100).toFixed(2) + '%';
+          btn.setAttribute('aria-label', labels[i] + ': ' + money(val));
+          var tip = document.createElement('span');
+          tip.setAttribute('aria-hidden', 'true');
+          tip.className = 'pointer-events-none absolute bottom-full left-1/2 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-md bg-ink px-2 py-1 font-mono text-xs text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100';
+          tip.textContent = money(val);
+          btn.appendChild(tip);
+          li.appendChild(btn);
+          bars.appendChild(li);
+
+          var lab = document.createElement('li');
+          lab.className = 'flex-1 text-center text-xs ' + (last ? 'font-semibold text-ink' : 'text-muted');
+          lab.textContent = labels[i];
+          barLabels.appendChild(lab);
+        });
+      }
+
+      rangeSelect.addEventListener('change', function () {
+        renderChart(parseInt(rangeSelect.value, 10));
+      });
+      renderChart(12);
+
+      // ---------- Transactions filter ----------
+      var filterButtons = document.querySelectorAll('.filter-btn');
+      var rows = document.querySelectorAll('#tx-body tr[data-status]');
+      var empty = document.getElementById('tx-empty');
+      filterButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var f = btn.getAttribute('data-filter');
+          var shown = 0;
+          filterButtons.forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+          rows.forEach(function (row) {
+            var match = f === 'all' || row.getAttribute('data-status') === f;
+            row.hidden = !match;
+            if (match) shown++;
+          });
+          empty.hidden = shown !== 0;
+        });
+      });
+
+      // ---------- Sidebar (mobile drawer) ----------
+      var sidebar = document.getElementById('sidebar');
+      var backdrop = document.getElementById('backdrop');
+      var menuToggle = document.getElementById('menu-toggle');
+      function setNav(open) {
+        sidebar.classList.toggle('-translate-x-full', !open);
+        backdrop.classList.toggle('hidden', !open);
+        menuToggle.setAttribute('aria-expanded', String(open));
+        if (open) {
+          var first = sidebar.querySelector('nav a');
+          if (first) first.focus();
+        }
+      }
+      menuToggle.addEventListener('click', function () {
+        setNav(menuToggle.getAttribute('aria-expanded') !== 'true');
+      });
+      backdrop.addEventListener('click', function () { setNav(false); menuToggle.focus(); });
+
+      // ---------- Popovers ----------
+      function wireMenu(btnId, panelId, wrapId) {
+        var btn = document.getElementById(btnId);
+        var panel = document.getElementById(panelId);
+        var wrap = document.getElementById(wrapId);
+        function close() {
+          panel.hidden = true;
+          btn.setAttribute('aria-expanded', 'false');
+        }
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var open = panel.hidden;
+          closeAllMenus(panelId);
+          panel.hidden = !open;
+          btn.setAttribute('aria-expanded', String(open));
+        });
+        wrap.addEventListener('click', function (e) { e.stopPropagation(); });
+        return close;
+      }
+      var menus = {};
+      menus.notif = wireMenu('notif-btn', 'notif-panel', 'notif-wrap');
+      menus.profile = wireMenu('profile-btn', 'profile-menu', 'profile-wrap');
+      function closeAllMenus(except) {
+        if (except !== 'notif-panel') menus.notif();
+        if (except !== 'profile-menu') menus.profile();
+      }
+      document.addEventListener('click', function () { closeAllMenus(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        var notifOpen = !document.getElementById('notif-panel').hidden;
+        var profileOpen = !document.getElementById('profile-menu').hidden;
+        if (notifOpen) { menus.notif(); document.getElementById('notif-btn').focus(); }
+        if (profileOpen) { menus.profile(); document.getElementById('profile-btn').focus(); }
+        if (menuToggle.getAttribute('aria-expanded') === 'true' && window.innerWidth < 1024) {
+          setNav(false); menuToggle.focus();
+        }
+      });
+
+      document.getElementById('notif-clear').addEventListener('click', function () {
+        document.querySelectorAll('#notif-list [data-unread]').forEach(function (li) { li.removeAttribute('data-unread'); });
+        var count = document.getElementById('notif-count');
+        count.style.display = 'none';
+        document.getElementById('notif-btn').setAttribute('aria-label', 'Notifications, none unread');
+      });
+    })();
+  </script>
+</body>
+</html>

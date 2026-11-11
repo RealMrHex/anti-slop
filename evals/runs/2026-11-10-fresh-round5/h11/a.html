@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parcelry, shipping labels for small online shops</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --hair: rgba(31, 27, 22, 0.08);
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --text-3: #6f665a;
+      --accent: #b4480f;
+      --accent-hover: #97400d;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+    /* Navigation */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      font-size: 18px;
+    }
+    .logo svg { width: 20px; height: 20px; }
+    .links {
+      display: flex;
+      gap: 32px;
+      font-size: 15px;
+      color: var(--text-2);
+    }
+    .links a { transition: color 160ms cubic-bezier(0.22, 1, 0.36, 1); }
+    .links a:hover { color: var(--text); }
+    .actions { display: flex; align-items: center; gap: 16px; }
+    .login {
+      font-size: 15px;
+      color: var(--text-2);
+      padding: 8px 4px;
+      transition: color 160ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .login:hover { color: var(--text); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background-color 160ms cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 160ms cubic-bezier(0.22, 1, 0.36, 1),
+                  color 160ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-sm { height: 36px; padding: 0 16px; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      border: 1px solid rgba(31, 27, 22, 0.14);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: var(--raised); }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: 64px;
+      align-items: center;
+      padding: 48px 0 56px;
+    }
+    h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(44px, 5vw, 64px);
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+    }
+    .sub {
+      margin-top: 24px;
+      max-width: 34rem;
+      font-size: 19px;
+      line-height: 1.5;
+      color: var(--text-2);
+    }
+    .ctas { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .features {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--hair);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px 24px;
+      max-width: 34rem;
+      font-size: 15px;
+      color: var(--text-2);
+    }
+    .features li { display: flex; align-items: center; gap: 10px; }
+    .features svg {
+      width: 18px;
+      height: 18px;
+      flex: none;
+      stroke: var(--text-3);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Product moment */
+    .visual {
+      position: relative;
+      height: 660px;
+    }
+    .rates {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 400px;
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.06);
+    }
+    .rates-head { padding: 0 4px 16px; }
+    .rates-title { font-size: 16px; font-weight: 500; }
+    .rates-meta { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+    .rate-list {
+      display: grid;
+      gap: 4px;
+      padding: 8px;
+      border-radius: 12px;
+      background: var(--bg);
+    }
+    .rate {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 6px 12px;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--card);
+    }
+    .rate-name { font-size: 15px; }
+    .rate-time { font-size: 13px; color: var(--text-3); }
+    .rate-price {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      align-self: center;
+    }
+    .rate-bar {
+      grid-column: 1 / -1;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--raised);
+      overflow: hidden;
+    }
+    .rate-bar i { display: block; height: 100%; border-radius: 2px; background: #a79d8e; }
+    .rate.best .rate-bar i { background: var(--accent); }
+    .rate.best .rate-price { color: var(--accent); font-weight: 500; }
+
+    .label {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 320px;
+      z-index: 2;
+      background: #fff;
+      border: 1px solid var(--hair);
+      border-radius: 6px;
+      padding: 20px;
+      transform: rotate(-2deg);
+      transform-origin: left bottom;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.10);
+    }
+    .label-top,
+    .stops {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-3);
+    }
+    .label-top strong { font-weight: 500; color: var(--text); }
+    .label-lbl { margin-top: 16px; font-size: 13px; color: var(--text-3); }
+    .addr { margin-top: 4px; font-size: 17px; line-height: 1.4; }
+    .route { display: block; width: 100%; height: 24px; margin-top: 16px; }
+    .stops { margin-top: 0; }
+    .barcode { display: block; width: 100%; height: 56px; margin-top: 12px; fill: var(--text); }
+    .mono {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    .track { margin-top: 8px; font-size: 12px; color: var(--text-2); }
+
+    /* Entrance: one short fade and rise */
+    .rise {
+      animation: rise 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .rise-2 { animation-delay: 80ms; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rise, .rise-2 { animation: none; }
+    }
+
+    /* Tablet and phones */
+    @media (max-width: 960px) {
+      .hero { gap: 48px; }
+      .rates { width: 360px; }
+      .label { width: 296px; }
+    }
+    @media (max-width: 800px) {
+      .links { display: none; }
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+        min-height: 0;
+        padding: 32px 0 48px;
+        gap: 48px;
+      }
+      .visual { height: auto; display: grid; gap: 16px; padding-bottom: 8px; }
+      .rates { position: static; width: 100%; }
+      .label { position: relative; width: min(320px, 88%); left: auto; bottom: auto; margin-left: auto; margin-top: -24px; transform: rotate(-1.5deg); }
+    }
+    @media (max-width: 480px) {
+      .wrap { padding: 0 16px; }
+      .actions .login { display: none; }
+      .features { grid-template-columns: minmax(0, 1fr); }
+      .ctas .btn { flex: 1 1 auto; }
+      .rates { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <a class="logo" href="#" aria-label="Parcelry home">
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <rect x="2" y="3" width="16" height="14" rx="2.5" fill="none" stroke="#1f1b16" stroke-width="1.5"/>
+          <path d="M2 8h16" stroke="#1f1b16" stroke-width="1.5"/>
+          <rect x="8" y="8" width="4" height="9" fill="#b4480f"/>
+        </svg>
+        <span>Parcelry</span>
+      </a>
+      <ul class="links">
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Integrations</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+      <div class="actions">
+        <a class="login" href="#">Log in</a>
+        <a class="btn btn-primary btn-sm" href="#">Start free</a>
+      </div>
+    </header>
+
+    <main class="hero">
+      <section>
+        <h1 class="rise">Print shipping labels in seconds</h1>
+        <p class="sub rise rise-2">Parcelry compares courier rates instantly and sends your customers automated tracking emails. Built for small online shops.</p>
+        <div class="ctas rise rise-2">
+          <a class="btn btn-primary" href="#">Start free</a>
+          <a class="btn btn-secondary" href="#">Watch demo</a>
+        </div>
+
+        <ul class="features rise rise-2">
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5"/></svg>
+            Labels
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+            Rate comparison
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Tracking emails
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+            Global shipping
+          </li>
+        </ul>
+      </section>
+
+      <section class="visual rise rise-2" aria-label="Example of a shipment with its rate comparison">
+        <div class="rates">
+          <div class="rates-head">
+            <div class="rates-title">Compare rates</div>
+            <div class="rates-meta">2.1 kg parcel, Leeds to Manchester</div>
+          </div>
+          <div class="rate-list">
+            <div class="rate best">
+              <div>
+                <div class="rate-name">Economy</div>
+                <div class="rate-time">4 to 6 days, cheapest</div>
+              </div>
+              <div class="rate-price">$4.20</div>
+              <div class="rate-bar"><i style="width: 43%"></i></div>
+            </div>
+            <div class="rate">
+              <div>
+                <div class="rate-name">Standard</div>
+                <div class="rate-time">2 to 3 days</div>
+              </div>
+              <div class="rate-price">$5.10</div>
+              <div class="rate-bar"><i style="width: 52%"></i></div>
+            </div>
+            <div class="rate">
+              <div>
+                <div class="rate-name">Express</div>
+                <div class="rate-time">Next day</div>
+              </div>
+              <div class="rate-price">$9.80</div>
+              <div class="rate-bar"><i style="width: 100%"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="label">
+          <div class="label-top">
+            <strong>Standard 2-day</strong>
+            <span class="mono">1 of 1</span>
+          </div>
+          <div class="label-lbl">Ship to</div>
+          <div class="addr">Maya Okafor<br>14 Linden Street<br>Manchester M1 4AB</div>
+          <svg class="route" viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true">
+            <circle cx="4" cy="12" r="3.5" fill="none" stroke="#1f1b16" stroke-width="1.5"/>
+            <line x1="12" y1="12" x2="288" y2="12" stroke="#1f1b16" stroke-width="1.5" stroke-dasharray="2 4" stroke-linecap="round"/>
+            <circle cx="296" cy="12" r="3.5" fill="#1f1b16"/>
+          </svg>
+          <div class="stops">
+            <span>Leeds LS1</span>
+            <span>Manchester M1</span>
+          </div>
+          <svg class="barcode" viewBox="0 0 292 56" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0h2v56h-2z M4 0h1v56h-1z M7 0h3v56h-3z M12 0h1v56h-1z M15 0h2v56h-2z M19 0h1v56h-1z M22 0h4v56h-4z M28 0h2v56h-2z M32 0h1v56h-1z M35 0h2v56h-2z M39 0h1v56h-1z M42 0h3v56h-3z M47 0h1v56h-1z M51 0h2v56h-2z M55 0h1v56h-1z M59 0h4v56h-4z M65 0h2v56h-2z M69 0h1v56h-1z M73 0h2v56h-2z M77 0h1v56h-1z M80 0h3v56h-3z M85 0h1v56h-1z M89 0h2v56h-2z M93 0h1v56h-1z M97 0h4v56h-4z M103 0h2v56h-2z M107 0h1v56h-1z M111 0h2v56h-2z M115 0h1v56h-1z M118 0h3v56h-3z M123 0h1v56h-1z M127 0h2v56h-2z M131 0h1v56h-1z M135 0h4v56h-4z M141 0h2v56h-2z M145 0h1v56h-1z M149 0h2v56h-2z M153 0h1v56h-1z M156 0h3v56h-3z M161 0h1v56h-1z M165 0h2v56h-2z M169 0h1v56h-1z M173 0h4v56h-4z M179 0h2v56h-2z M183 0h1v56h-1z M187 0h2v56h-2z M191 0h1v56h-1z M194 0h3v56h-3z M199 0h1v56h-1z M203 0h2v56h-2z M207 0h1v56h-1z M211 0h4v56h-4z M217 0h2v56h-2z M221 0h1v56h-1z M225 0h2v56h-2z M229 0h1v56h-1z M232 0h3v56h-3z M237 0h1v56h-1z M241 0h2v56h-2z M245 0h1v56h-1z M249 0h4v56h-4z M255 0h2v56h-2z M259 0h1v56h-1z M263 0h2v56h-2z M267 0h1v56h-1z M270 0h3v56h-3z M275 0h1v56h-1z M279 0h2v56h-2z M283 0h1v56h-1z M287 0h4v56h-4z"/></svg>
+          <div class="mono track">1Z 48A 209 774 1305</div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

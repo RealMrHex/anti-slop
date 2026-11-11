@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Olive & Thyme | Book a Table</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --page: #f7f5e9;
+      --card: #fbfaf6;
+      --raised: #ede9dd;
+      --hair: #e7e5e4;
+      --edge: #d6d3d1;
+      --text: #1c1917;
+      --text-2: #57534e;
+      --accent: #c2410c;
+      --accent-hover: #9a3412;
+      --accent-ink: #ffffff;
+      --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+      --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: var(--page);
+      color: var(--text);
+      font: 400 16px/24px var(--sans);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    a { color: inherit; }
+    ul { margin: 0; padding: 0; list-style: none; }
+    p { margin: 0; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+    @media (min-width: 768px) { .wrap { padding: 0 24px; } }
+
+    /* Navigation */
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--serif); font-weight: 500; font-size: 20px; line-height: 28px; }
+    .mark { width: 28px; height: 28px; border-radius: 8px; background: var(--accent); display: grid; place-items: center; flex: none; }
+    .links { display: none; gap: 32px; font-size: 14px; line-height: 20px; font-weight: 500; color: var(--text-2); }
+    .links a { text-decoration: none; transition: color 150ms cubic-bezier(0, 0, 0.2, 1); }
+    .links a:hover { color: var(--text); }
+    @media (min-width: 768px) { .links { display: flex; } }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 44px; padding: 10px 20px; border-radius: 8px;
+      font: 500 15px/20px var(--sans); text-decoration: none; border: 1px solid transparent;
+      transition: background-color 150ms cubic-bezier(0, 0, 0.2, 1), color 150ms cubic-bezier(0, 0, 0.2, 1);
+      white-space: nowrap;
+    }
+    .btn-primary { background: var(--accent); color: var(--accent-ink); }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-ghost { border-color: var(--edge); color: var(--text); background: transparent; }
+    .btn-ghost:hover { background: var(--raised); }
+    .btn-small { min-height: 40px; padding: 8px 16px; }
+
+    /* Hero */
+    .hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; align-items: center; padding: 48px 0 64px; }
+    .hero > * { min-width: 0; }
+    .nav > * { min-width: 0; }
+    .panel-party { display: none; }
+    @media (min-width: 480px) { .panel-party { display: block; } }
+    @media (min-width: 900px) {
+      .hero { grid-template-columns: 1.05fr 0.95fr; gap: 64px; padding: 96px 0 80px; }
+    }
+    .eyebrow { font-size: 14px; line-height: 20px; color: var(--text-2); }
+    h1 {
+      margin: 16px 0 0;
+      font-family: var(--serif); font-weight: 400;
+      font-size: 42px; line-height: 1.05; letter-spacing: -0.02em;
+    }
+    @media (min-width: 900px) { h1 { font-size: 64px; } }
+    .lede { margin-top: 20px; max-width: 52ch; font-size: 18px; line-height: 28px; color: var(--text-2); }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+
+    /* Booking panel (drawn example of the product) */
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+    }
+    .panel-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
+    .panel-label { font-size: 12px; line-height: 16px; color: var(--text-2); }
+    .panel-date { margin-top: 4px; font-family: var(--serif); font-size: 22px; line-height: 28px; font-weight: 400; }
+    .panel-party { font-size: 14px; line-height: 20px; color: var(--text-2); white-space: nowrap; }
+    .party-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 20px; padding: 10px 12px;
+      border: 1px solid var(--hair); border-radius: 8px;
+      font-size: 14px; line-height: 20px;
+    }
+    .party-row span:last-child { font-variant-numeric: tabular-nums; font-weight: 500; }
+    .slots-label { margin: 20px 0 8px; font-size: 12px; line-height: 16px; color: var(--text-2); }
+    .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .slot {
+      height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      border: 1px solid var(--edge); border-radius: 8px; background: var(--card);
+      font-size: 15px; line-height: 20px; font-variant-numeric: tabular-nums;
+    }
+    .slot small { font-size: 12px; line-height: 16px; color: var(--text-2); }
+    .slot.is-selected { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 500; }
+    .slot.is-selected small { color: var(--accent-ink); }
+    .slot.is-full { background: var(--raised); border-color: var(--raised); color: var(--text-2); }
+    .panel-foot {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--hair);
+      font-size: 14px; line-height: 20px; color: var(--text-2);
+    }
+    .panel-foot strong { color: var(--text); font-weight: 500; }
+
+    /* Supporting points: text only, separated by hairlines */
+    .points { display: grid; gap: 32px; padding: 0 0 72px; }
+    @media (min-width: 900px) { .points { grid-template-columns: repeat(3, 1fr); gap: 40px; } }
+    .point { border-top: 1px solid var(--hair); padding-top: 20px; }
+    .point h2 { margin: 0; font-size: 16px; line-height: 24px; font-weight: 500; }
+    .point p { margin-top: 8px; font-size: 15px; line-height: 24px; color: var(--text-2); }
+
+    footer { border-top: 1px solid var(--hair); }
+    .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding-top: 24px; padding-bottom: 24px; font-size: 14px; line-height: 20px; color: var(--text-2); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav" aria-label="Main">
+      <a class="brand" href="#">
+        <span class="mark" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M5 19C5 10.5 10 5 19 5C19 13.5 14 19 5 19Z" fill="#ffffff"/>
+            <path d="M5 19L12.5 11.5" stroke="#c2410c" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Olive &amp; Thyme
+      </a>
+      <ul class="links">
+        <li><a href="#">Menu</a></li>
+        <li><a href="#">Hours</a></li>
+        <li><a href="#">Private dining</a></li>
+      </ul>
+      <a href="#book" class="btn btn-primary btn-small">Book a table</a>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Table reservations</p>
+          <h1>Book a table<br />for tonight.</h1>
+          <p class="lede">Pick a time and book in a few steps. Check tonight's menu and our hours, or plan private dining for groups of eight or more.</p>
+          <div class="actions">
+            <a href="#book" class="btn btn-primary">Book a table</a>
+            <a href="#" class="btn btn-ghost">See tonight's menu</a>
+          </div>
+        </div>
+
+        <div id="book" class="panel" aria-hidden="true">
+          <div class="panel-head">
+            <div>
+              <p class="panel-label">Tonight</p>
+              <p class="panel-date">Wednesday 11 November</p>
+            </div>
+            <p class="panel-party">Tuesday to Sunday</p>
+          </div>
+
+          <div class="party-row">
+            <span>Guests</span>
+            <span>2</span>
+          </div>
+
+          <p class="slots-label">Times</p>
+          <div class="slots">
+            <div class="slot">17:00</div>
+            <div class="slot">17:30</div>
+            <div class="slot">18:00</div>
+            <div class="slot is-selected">19:00<small>Selected</small></div>
+            <div class="slot is-full">19:30<small>Full</small></div>
+            <div class="slot">20:30</div>
+          </div>
+
+          <div class="panel-foot">
+            <span>Table for <strong>2</strong> at <strong>19:00</strong></span>
+            <span class="btn btn-primary btn-small">Continue</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="points" aria-label="Good to know">
+        <div class="point">
+          <h2>Opening hours</h2>
+          <p>Tuesday to Sunday, 17:00 to 23:00.</p>
+        </div>
+        <div class="point">
+          <h2>Tonight's menu</h2>
+          <p>See what the kitchen is serving before you arrive.</p>
+        </div>
+        <div class="point">
+          <h2>Private dining</h2>
+          <p>For groups of eight or more.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="wrap foot">
+      <span>Olive &amp; Thyme</span>
+      <span>Walk-ins welcome.</span>
+    </div>
+  </footer>
+</body>
+</html>

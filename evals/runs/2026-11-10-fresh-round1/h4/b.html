@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rootline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --hairline: rgba(31, 27, 22, 0.08);
+      --line-strong: rgba(31, 27, 22, 0.16);
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --text-3: #7b7266;
+      --accent: #2f5d46;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 0 32px;
+    }
+
+    /* Navigation */
+    nav {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .wordmark { font-size: 18px; font-weight: 600; letter-spacing: 0; }
+    .links { display: flex; gap: 32px; font-size: 15px; color: var(--text-2); }
+    .links a, .login { transition: color 160ms var(--ease); }
+    .links a:hover, .login:hover { color: var(--text); }
+    .nav-end { display: flex; align-items: center; gap: 24px; }
+    .login { font-size: 15px; color: var(--text-2); }
+    .menu { display: none; font-size: 15px; color: var(--text-2); padding: 8px 0; }
+
+    /* Hero */
+    .hero {
+      flex: 1;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 64px;
+      padding: 32px 0 80px;
+    }
+
+    .copy { max-width: 540px; }
+    .eyebrow { font-size: 14px; color: var(--text-2); }
+    h1 {
+      margin-top: 20px;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(44px, 5vw, 64px);
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .lede {
+      margin-top: 24px;
+      max-width: 36rem;
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--text-2);
+    }
+    .actions { margin-top: 36px; display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      height: 48px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background-color 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease);
+    }
+    .btn-primary { background: var(--accent); color: #ffffff; }
+    .btn-primary:hover { background: #264d3a; }
+    .btn-secondary { border: 1px solid var(--line-strong); color: var(--text); }
+    .btn-secondary:hover { background: var(--raised); }
+    .btn:focus-visible, .links a:focus-visible, .login:focus-visible, .store:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .stores { margin-top: 28px; font-size: 14px; color: var(--text-3); }
+    .store {
+      color: var(--text-2);
+      border-bottom: 1px solid var(--line-strong);
+      padding-bottom: 1px;
+      transition: color 160ms var(--ease), border-color 160ms var(--ease);
+    }
+    .store:hover { color: var(--text); border-color: var(--text-2); }
+
+    /* Product view: one solid panel with the one moment (the potted plant) */
+    .product {
+      background: var(--raised);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .photo {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      background: #e6dfd3;
+    }
+    .result {
+      margin-top: 16px;
+      background: var(--card);
+      border: 1px solid var(--hairline);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .result-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .species { font-size: 20px; font-weight: 500; line-height: 1.2; }
+    .latin { margin-top: 4px; font-size: 14px; color: var(--text-3); }
+    .match { font-size: 14px; color: var(--text-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .rule { height: 1px; background: var(--hairline); margin: 16px 0; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 15px; }
+    .row-main { display: flex; align-items: center; gap: 10px; color: var(--text); }
+    .row-main svg { width: 16px; height: 16px; flex: none; color: var(--accent); }
+    .row-meta { color: var(--text-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .row + .row { margin-top: 12px; }
+    .row-light { color: var(--text-2); }
+
+    /* One entrance on load */
+    .rise { animation: rise 420ms var(--ease) both; }
+    .rise-2 { animation-delay: 60ms; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Small screens: stack in reading order, actions before the product view */
+    @media (max-width: 900px) {
+      .page { padding: 0 16px; }
+      nav { height: 64px; }
+      .links { display: none; }
+      .menu { display: inline-block; }
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 40px 0 56px;
+      }
+      h1 { font-size: 40px; }
+      .lede { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav>
+      <div class="wordmark">Rootline</div>
+      <div class="links">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Blog</a>
+      </div>
+      <div class="nav-end">
+        <a class="login" href="#">Log in</a>
+        <button class="menu" aria-label="Open menu">Menu</button>
+      </div>
+    </nav>
+
+    <main class="hero">
+      <div class="copy rise">
+        <p class="eyebrow">New: plant ID from a photo</p>
+        <h1>Identify any houseplant from a photo</h1>
+        <p class="lede">Snap a photo to identify a houseplant, then get a watering schedule that keeps track for you</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#">Get started free</a>
+          <a class="btn btn-secondary" href="#">See how it works</a>
+        </div>
+        <p class="stores">Also on <a class="store" href="#">App Store</a> and <a class="store" href="#">Google Play</a></p>
+      </div>
+
+      <div class="product rise rise-2" aria-label="Example plant identification result">
+        <svg class="photo" viewBox="0 0 400 300" role="img" aria-label="A monstera in a terracotta pot">
+          <!-- leaves, drawn first so the pot and soil cover their bases -->
+          <g transform="translate(200 214) rotate(-40) scale(0.85)">
+            <path d="M0 0 C-40 -20 -46 -92 0 -132 C46 -92 40 -20 0 0 Z" fill="#4f7a5c"/>
+            <path d="M0 -4 L0 -118" stroke="#e6dfd3" stroke-width="2" opacity="0.45"/>
+          </g>
+          <g transform="translate(200 214) rotate(36) scale(0.95)">
+            <path d="M0 0 C-40 -20 -46 -92 0 -132 C46 -92 40 -20 0 0 Z" fill="#2f5d46"/>
+            <path d="M0 -4 L0 -118" stroke="#e6dfd3" stroke-width="2" opacity="0.45"/>
+          </g>
+          <g transform="translate(200 214) rotate(-12) scale(0.7)">
+            <path d="M0 0 C-40 -20 -46 -92 0 -132 C46 -92 40 -20 0 0 Z" fill="#6d9478"/>
+            <path d="M0 -4 L0 -118" stroke="#e6dfd3" stroke-width="2" opacity="0.45"/>
+          </g>
+          <g transform="translate(200 214) rotate(15) scale(0.6)">
+            <path d="M0 0 C-40 -20 -46 -92 0 -132 C46 -92 40 -20 0 0 Z" fill="#8aa98f"/>
+            <path d="M0 -4 L0 -118" stroke="#e6dfd3" stroke-width="2" opacity="0.45"/>
+          </g>
+
+          <!-- ground shadow -->
+          <ellipse cx="200" cy="296" rx="92" ry="7" fill="rgba(31,27,22,0.12)"/>
+
+          <!-- pot -->
+          <path d="M146 222 L254 222 L241 292 Q239 298 231 298 L169 298 Q161 298 159 292 Z" fill="#b9674a"/>
+          <path d="M214 222 L254 222 L241 292 Q239 298 231 298 L214 298 Z" fill="rgba(31,27,22,0.10)"/>
+          <rect x="140" y="208" width="120" height="20" rx="6" fill="#c97a5e"/>
+          <rect x="140" y="222" width="120" height="6" fill="rgba(31,27,22,0.08)"/>
+          <ellipse cx="200" cy="210" rx="56" ry="6" fill="#4a3b2e"/>
+        </svg>
+
+        <div class="result">
+          <div class="result-head">
+            <div>
+              <div class="species">Monstera deliciosa</div>
+              <div class="latin">Swiss cheese plant</div>
+            </div>
+            <div class="match">96% match</div>
+          </div>
+          <div class="rule"></div>
+          <div class="row">
+            <div class="row-main">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5s6 6.2 6 10.5a6 6 0 0 1-12 0c0-4.3 6-10.5 6-10.5z"/></svg>
+              Water every 7 days
+            </div>
+            <div class="row-meta">Next: Thu</div>
+          </div>
+          <div class="row">
+            <div class="row-light">Light</div>
+            <div class="row-meta">Bright, indirect</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

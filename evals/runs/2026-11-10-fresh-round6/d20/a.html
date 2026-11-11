@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Margin Book Club</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#f7f4ee',
+            sidebar: '#efe9df',
+            card: '#fdfbf7',
+            well: '#efe9df',
+            ink: '#1f1b16',
+            ink2: '#5e554a',
+            ink3: '#7b7266',
+            rust: '#9a4a2f',
+            line: 'rgba(31,27,22,0.08)'
+          },
+          fontFamily: {
+            sans: ['"Instrument Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Instrument Serif"', 'Georgia', 'serif']
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    html { -webkit-font-smoothing: antialiased; }
+    .nav-icon { width: 18px; height: 18px; flex: none; }
+  </style>
+</head>
+<body class="bg-paper text-ink font-sans min-h-screen">
+  <div class="flex min-h-screen">
+
+    <aside class="w-64 shrink-0 bg-sidebar border-r border-line p-6 flex flex-col">
+      <div class="flex items-center gap-2.5 mb-8 px-1">
+        <svg class="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7 4.5 3 5v14c4-.5 7 0 9 1.5 2-1.5 5-2 9-1.5V5c-4-.5-7 0-9 1.5z"/><path d="M12 6.5V20.5"/></svg>
+        <span class="font-serif text-[22px] leading-none">Margin</span>
+      </div>
+
+      <p class="text-[13px] text-ink3 px-3 mb-2">Menu</p>
+      <nav class="flex flex-col gap-1 text-sm">
+        <a class="flex items-center gap-2.5 h-9 px-3 rounded-lg bg-card text-ink font-medium shadow-[inset_0_0_0_1px_rgba(31,27,22,0.08)]" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9.5V20.5h13V9.5"/></svg>
+          Home
+        </a>
+        <a class="flex items-center gap-2.5 h-9 px-3 rounded-lg text-ink2 hover:bg-well hover:text-ink transition-colors duration-150" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7 4.5 3 5v14c4-.5 7 0 9 1.5 2-1.5 5-2 9-1.5V5c-4-.5-7 0-9 1.5z"/><path d="M12 6.5V20.5"/></svg>
+          My shelf
+        </a>
+        <a class="flex items-center gap-2.5 h-9 px-3 rounded-lg text-ink2 hover:bg-well hover:text-ink transition-colors duration-150" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="16" rx="2"/><path d="M3.5 9.5h17M8 3v3M16 3v3"/></svg>
+          Meetings
+        </a>
+        <a class="flex items-center gap-2.5 h-9 px-3 rounded-lg text-ink2 hover:bg-well hover:text-ink transition-colors duration-150" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h16v10.5H9.5L5 20v-4H4z"/></svg>
+          Discussions
+        </a>
+        <a class="flex items-center gap-2.5 h-9 px-3 rounded-lg text-ink2 hover:bg-well hover:text-ink transition-colors duration-150" href="#">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3.5 2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 17l-5.3 2.6 1-5.8-4.2-4.1 5.9-.9z"/></svg>
+          Go Pro
+        </a>
+      </nav>
+
+      <div class="mt-auto rounded-xl bg-card border border-line p-4">
+        <p class="text-sm font-medium">Reading streak</p>
+        <p class="text-sm text-ink2 mt-1">Keep it going until the Nov 14 meeting</p>
+      </div>
+    </aside>
+
+    <main class="flex-1 px-10 py-8 min-w-0">
+      <header class="flex items-end justify-between mb-8">
+        <div>
+          <p class="text-sm text-ink3">Tuesday, Nov 10, 2026</p>
+          <h1 class="font-serif text-[40px] leading-[1.1] mt-1">Home</h1>
+        </div>
+        <button class="h-10 px-4 rounded-[10px] border border-line bg-card text-sm font-medium text-ink hover:bg-well transition-colors duration-150">Join the club</button>
+      </header>
+
+      <div class="grid grid-cols-3 gap-5">
+        <section class="col-span-2 rounded-2xl border border-line bg-card p-6 flex gap-6">
+          <div class="relative w-32 h-44 shrink-0 rounded-[6px] bg-[#2d4a42] overflow-hidden shadow-[0_8px_24px_rgba(31,27,22,0.14)]" role="img" aria-label="Cover of The Midnight Garden">
+            <div class="absolute inset-y-0 left-0 w-2 bg-black/20"></div>
+            <div class="absolute left-1/2 top-9 -translate-x-1/2 w-14 h-14 rounded-full bg-[#e8c98a]"></div>
+            <p class="absolute inset-x-4 bottom-4 font-serif text-[19px] leading-tight text-[#f4ecdc]">The Midnight Garden</p>
+          </div>
+
+          <div class="flex-1 flex flex-col min-w-0">
+            <p class="text-[13px] text-ink3">Current book</p>
+            <h2 class="font-serif text-[30px] leading-tight mt-1">The Midnight Garden</h2>
+            <p class="text-sm text-ink2 mt-1">by Elena Varga · 412 pages</p>
+
+            <div class="mt-6">
+              <div class="flex justify-between text-sm">
+                <span class="text-ink2">Progress</span>
+                <span class="tabular-nums text-ink">p. 264 of 412 · 64%</span>
+              </div>
+              <div class="h-2 rounded-full bg-well mt-2 overflow-hidden">
+                <div class="h-full w-[64%] rounded-full bg-rust"></div>
+              </div>
+            </div>
+
+            <p class="text-sm text-ink2 mt-6">Next meeting <span class="text-ink tabular-nums">Nov 14, 2026 · 7 PM</span></p>
+
+            <div class="mt-6">
+              <button class="h-10 px-4 rounded-[10px] bg-rust text-white text-sm font-medium hover:opacity-90 transition-opacity duration-150">Continue reading</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-line bg-card p-6">
+          <h3 class="text-[15px] font-medium">Members' progress</h3>
+          <ul class="mt-3">
+            <li class="grid grid-cols-[32px_1fr_96px_40px] items-center gap-3 h-12 border-t border-line">
+              <span class="w-8 h-8 rounded-full bg-well text-ink2 text-xs font-medium flex items-center justify-center">AM</span>
+              <span class="text-sm">Ana M.</span>
+              <span class="h-1 rounded-full bg-well overflow-hidden"><span class="block h-full w-[92%] bg-ink2"></span></span>
+              <span class="text-sm tabular-nums text-right text-ink2">92%</span>
+            </li>
+            <li class="grid grid-cols-[32px_1fr_96px_40px] items-center gap-3 h-12 border-t border-line">
+              <span class="w-8 h-8 rounded-full bg-well text-ink2 text-xs font-medium flex items-center justify-center">JK</span>
+              <span class="text-sm">Jun K.</span>
+              <span class="h-1 rounded-full bg-well overflow-hidden"><span class="block h-full w-[78%] bg-ink2"></span></span>
+              <span class="text-sm tabular-nums text-right text-ink2">78%</span>
+            </li>
+            <li class="grid grid-cols-[32px_1fr_96px_40px] items-center gap-3 h-12 border-t border-line">
+              <span class="w-8 h-8 rounded-full bg-well text-ink2 text-xs font-medium flex items-center justify-center">RB</span>
+              <span class="text-sm">Ravi B.</span>
+              <span class="h-1 rounded-full bg-well overflow-hidden"><span class="block h-full w-[64%] bg-ink2"></span></span>
+              <span class="text-sm tabular-nums text-right text-ink2">64%</span>
+            </li>
+            <li class="grid grid-cols-[32px_1fr_96px_40px] items-center gap-3 h-12 border-t border-line">
+              <span class="w-8 h-8 rounded-full bg-well text-ink2 text-xs font-medium flex items-center justify-center">SL</span>
+              <span class="text-sm">Sofia L.</span>
+              <span class="h-1 rounded-full bg-well overflow-hidden"><span class="block h-full w-[51%] bg-ink2"></span></span>
+              <span class="text-sm tabular-nums text-right text-ink2">51%</span>
+            </li>
+            <li class="grid grid-cols-[32px_1fr_96px_40px] items-center gap-3 h-12 border-t border-line">
+              <span class="w-8 h-8 rounded-full bg-well text-ink2 text-xs font-medium flex items-center justify-center">TO</span>
+              <span class="text-sm">Tom O.</span>
+              <span class="h-1 rounded-full bg-well overflow-hidden"><span class="block h-full w-[33%] bg-ink2"></span></span>
+              <span class="text-sm tabular-nums text-right text-ink2">33%</span>
+            </li>
+            <li class="grid grid-cols-[32px_1fr_96px_40px] items-center gap-3 h-12 border-t border-line">
+              <span class="w-8 h-8 rounded-full bg-well text-ink2 text-xs font-medium flex items-center justify-center">NC</span>
+              <span class="text-sm">Nia C.</span>
+              <span class="h-1 rounded-full bg-well overflow-hidden"><span class="block h-full w-[12%] bg-ink2"></span></span>
+              <span class="text-sm tabular-nums text-right text-ink2">12%</span>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="grid grid-cols-3 gap-5 mt-5">
+        <section class="rounded-2xl border border-line bg-card p-6">
+          <h3 class="text-[15px] font-medium">Upcoming meetings</h3>
+          <ul class="mt-3">
+            <li class="py-3 border-t border-line first:border-t-0">
+              <p class="text-sm font-medium tabular-nums">Nov 14, 2026 · 7 PM</p>
+              <p class="text-sm text-ink2 mt-0.5">The Midnight Garden, ch. 9–12</p>
+            </li>
+            <li class="py-3 border-t border-line">
+              <p class="text-sm font-medium tabular-nums">Nov 21, 2026 · 6:30 PM</p>
+              <p class="text-sm text-ink2 mt-0.5">Vote-off night</p>
+            </li>
+            <li class="py-3 border-t border-line">
+              <p class="text-sm font-medium tabular-nums">Dec 5, 2026 · 7 PM</p>
+              <p class="text-sm text-ink2 mt-0.5">Holiday potluck</p>
+            </li>
+          </ul>
+        </section>
+
+        <section class="col-span-2 rounded-2xl border border-line bg-card p-6">
+          <div class="flex items-baseline justify-between">
+            <h3 class="text-[15px] font-medium">To-read shelf</h3>
+            <p class="text-sm text-ink3">Sorted by votes</p>
+          </div>
+          <div class="grid grid-cols-3 gap-3 mt-4">
+            <div class="rounded-xl border border-line bg-paper p-4 flex flex-col hover:bg-well transition-colors duration-150">
+              <p class="text-sm font-medium">Salt &amp; Static</p>
+              <p class="text-sm text-ink2 mt-0.5">R. Okafor</p>
+              <p class="mt-auto pt-4 text-sm tabular-nums text-ink3">14 votes</p>
+            </div>
+            <div class="rounded-xl border border-line bg-paper p-4 flex flex-col hover:bg-well transition-colors duration-150">
+              <p class="text-sm font-medium">Paper Lanterns</p>
+              <p class="text-sm text-ink2 mt-0.5">M. Chen</p>
+              <p class="mt-auto pt-4 text-sm tabular-nums text-ink3">11 votes</p>
+            </div>
+            <div class="rounded-xl border border-line bg-paper p-4 flex flex-col hover:bg-well transition-colors duration-150">
+              <p class="text-sm font-medium">The Quiet Harbor</p>
+              <p class="text-sm text-ink2 mt-0.5">L. Brandt</p>
+              <p class="mt-auto pt-4 text-sm tabular-nums text-ink3">9 votes</p>
+            </div>
+            <div class="rounded-xl border border-line bg-paper p-4 flex flex-col hover:bg-well transition-colors duration-150">
+              <p class="text-sm font-medium">Wild Tangerine</p>
+              <p class="text-sm text-ink2 mt-0.5">A. Haddad</p>
+              <p class="mt-auto pt-4 text-sm tabular-nums text-ink3">7 votes</p>
+            </div>
+            <div class="rounded-xl border border-line bg-paper p-4 flex flex-col hover:bg-well transition-colors duration-150">
+              <p class="text-sm font-medium">Glass Orchard</p>
+              <p class="text-sm text-ink2 mt-0.5">P. Lindqvist</p>
+              <p class="mt-auto pt-4 text-sm tabular-nums text-ink3">5 votes</p>
+            </div>
+            <div class="rounded-xl border border-line bg-paper p-4 flex flex-col hover:bg-well transition-colors duration-150">
+              <p class="text-sm font-medium">Honey &amp; Ash</p>
+              <p class="text-sm text-ink2 mt-0.5">S. Ruiz</p>
+              <p class="mt-auto pt-4 text-sm tabular-nums text-ink3">3 votes <span class="ml-1 text-ink2">· Pro pick</span></p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="mt-5 rounded-2xl border border-line bg-card p-6">
+        <h3 class="text-[15px] font-medium">Recent discussion</h3>
+        <ul class="mt-4 grid grid-cols-2 gap-3">
+          <li class="flex gap-3 rounded-xl border border-line bg-paper p-4 hover:bg-well transition-colors duration-150">
+            <span class="w-8 h-8 shrink-0 rounded-full bg-well text-ink2 text-xs font-medium flex items-center justify-center">AM</span>
+            <div class="min-w-0">
+              <p class="text-sm font-medium">Ana M. <span class="font-normal text-ink3">· 2 hrs ago</span></p>
+              <p class="text-sm text-ink2 mt-1">The ending was the best twist of the year, no contest.</p>
+            </div>
+          </li>
+          <li class="flex gap-3 rounded-xl border border-line bg-paper p-4 hover:bg-well transition-colors duration-150">
+            <span class="w-8 h-8 shrink-0 rounded-full bg-well text-ink2 text-xs font-medium flex items-center justify-center">JK</span>
+            <div class="min-w-0">
+              <p class="text-sm font-medium">Jun K. <span class="font-normal text-ink3">· Nov 9, 2026</span></p>
+              <p class="text-sm text-ink2 mt-1">Chapter 7 wrecked me. Unbelievable writing.</p>
+            </div>
+          </li>
+          <li class="flex gap-3 rounded-xl border border-line bg-paper p-4 hover:bg-well transition-colors duration-150">
+            <span class="w-8 h-8 shrink-0 rounded-full bg-well text-ink2 text-xs font-medium flex items-center justify-center">RB</span>
+            <div class="min-w-0">
+              <p class="text-sm font-medium">Ravi B. <span class="font-normal text-ink3">· yesterday</span></p>
+              <p class="text-sm text-ink2 mt-1">Anyone else spot the garden clue? Let's go deep.</p>
+            </div>
+          </li>
+          <li class="flex gap-3 rounded-xl border border-line bg-paper p-4 hover:bg-well transition-colors duration-150">
+            <span class="w-8 h-8 shrink-0 rounded-full bg-well text-ink2 text-xs font-medium flex items-center justify-center">SL</span>
+            <div class="min-w-0">
+              <p class="text-sm font-medium">Sofia L. <span class="font-normal text-ink3">· 3 days ago</span></p>
+              <p class="text-sm text-ink2 mt-1">Honestly the most loved pick of all time.</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

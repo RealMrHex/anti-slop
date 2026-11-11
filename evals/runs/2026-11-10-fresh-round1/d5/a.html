@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deskwise | Support Inbox</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef1f4;
+    --sidebar: #f6f8fa;
+    --surface: #ffffff;
+    --surface-2: #f3f5f8;
+    --line: #dde2e8;
+    --line-soft: #e8ecf1;
+    --text: #161c24;
+    --text-2: #4f5965;
+    --text-3: #66707c;
+    --accent: #1e6b58;
+    --accent-soft: #e4f0ec;
+    --urgent: #b42318;
+    --open: #1e7a4c;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12161c;
+      --sidebar: #161b22;
+      --surface: #1b2129;
+      --surface-2: #222934;
+      --line: #2e3642;
+      --line-soft: #262d38;
+      --text: #e6e9ee;
+      --text-2: #aab2bd;
+      --text-3: #7f8896;
+      --accent: #5fb8a0;
+      --accent-soft: #1d2d2a;
+      --urgent: #f0796f;
+      --open: #6ccf9a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12161c;
+    --sidebar: #161b22;
+    --surface: #1b2129;
+    --surface-2: #222934;
+    --line: #2e3642;
+    --line-soft: #262d38;
+    --text: #e6e9ee;
+    --text-2: #aab2bd;
+    --text-3: #7f8896;
+    --accent: #5fb8a0;
+    --accent-soft: #1d2d2a;
+    --urgent: #f0796f;
+    --open: #6ccf9a;
+  }
+
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  .app {
+    display: grid;
+    grid-template-columns: 216px minmax(300px, 360px) minmax(0, 1fr);
+    height: 100vh;
+    min-height: 560px;
+    min-width: 900px;
+  }
+  .pane { min-height: 0; }
+  .sidebar { background: var(--sidebar); border-right: 1px solid var(--line); }
+  .list { background: var(--surface); border-right: 1px solid var(--line); }
+  .main { background: var(--bg); }
+
+  .wordmark { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; color: var(--text); }
+  .mark { width: 20px; height: 20px; border-radius: 5px; background: var(--accent); }
+  .eyebrow { font-size: 12px; font-weight: 500; color: var(--text-3); }
+
+  .nav-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 10px; border-radius: 6px; border: 1px solid transparent;
+    color: var(--text-2); text-decoration: none; font-weight: 500;
+    transition: background-color .15s ease, color .15s ease;
+  }
+  .nav-item:hover { background: var(--surface-2); color: var(--text); }
+  .nav-item[aria-current="page"] { background: var(--surface); border-color: var(--line); color: var(--text); }
+  .count { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+
+  .side-note { border-top: 1px solid var(--line); padding-top: 14px; color: var(--text-3); font-size: 12px; }
+
+  .search {
+    display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px;
+    border: 1px solid var(--line); border-radius: 8px; background: var(--surface);
+  }
+  .search:focus-within { border-color: var(--accent); }
+  .search input {
+    flex: 1; min-width: 0; border: 0; outline: none; background: transparent;
+    font: inherit; color: var(--text);
+  }
+  .search input::placeholder { color: var(--text-3); }
+  .search svg { color: var(--text-3); flex: none; }
+
+  .row {
+    display: block; padding: 12px; border-radius: 10px; border: 1px solid transparent;
+    color: inherit; text-decoration: none;
+    transition: background-color .15s ease, border-color .15s ease;
+  }
+  .row:hover { background: var(--surface-2); }
+  .row[aria-current="true"] { background: var(--surface-2); border-color: var(--line); }
+  .row-top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .row-name { font-weight: 600; font-size: 14px; color: var(--text); }
+  .row-time { font-size: 12px; color: var(--text-3); white-space: nowrap; }
+  .row-subject { font-weight: 500; font-size: 14px; color: var(--text); margin-top: 2px; }
+  .row-preview { font-size: 13px; color: var(--text-2); margin-top: 1px; }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--line-soft); color: var(--text-2); font-weight: 600; font-size: 12px;
+  }
+  .avatar.lg { width: 44px; height: 44px; font-size: 14px; }
+
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 1px 7px; border: 1px solid var(--line); border-radius: 4px;
+    font-size: 12px; color: var(--text-2); background: var(--surface);
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-3); flex: none; }
+  .dot.urgent { background: var(--urgent); }
+  .dot.open { background: var(--open); }
+
+  .ticket-head {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .ticket-title { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; margin: 0; line-height: 1.25; }
+  .meta { font-family: var(--mono); font-size: 12px; color: var(--text-3); margin-top: 4px; }
+  .status { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--text-2); }
+
+  .thread {
+    flex: 1; min-height: 0; overflow-y: auto;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 8px 32px;
+  }
+  .msg { padding: 20px 0; border-top: 1px solid var(--line-soft); max-width: 640px; }
+  .msg:first-child { border-top: 0; }
+  .msg-head { display: flex; align-items: baseline; gap: 8px; font-size: 13px; }
+  .msg-name { font-weight: 600; color: var(--text); }
+  .msg-time { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+  .msg-body { margin: 6px 0 0; font-size: 15px; line-height: 1.6; color: var(--text); }
+  .msg.agent .msg-body { color: var(--text); }
+  .msg.agent { margin-left: auto; }
+  .msg.agent .msg-head { justify-content: flex-end; }
+
+  .composer {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .composer-tools { display: flex; gap: 6px; align-items: center; }
+  .chip {
+    height: 28px; padding: 0 10px; border-radius: 6px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--text-2); font: inherit; font-size: 13px; font-weight: 500;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    transition: background-color .15s ease, color .15s ease;
+  }
+  .chip:hover { background: var(--surface-2); color: var(--text); }
+  .chip svg { color: var(--text-3); }
+  textarea {
+    width: 100%; box-sizing: border-box; height: 88px; resize: none; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 8px; background: var(--surface);
+    color: var(--text); font: inherit; font-size: 14px; line-height: 1.5; outline: none;
+  }
+  textarea::placeholder { color: var(--text-3); }
+  textarea:focus { border-color: var(--accent); }
+  .send {
+    height: 36px; padding: 0 16px; border-radius: 8px; border: 1px solid var(--accent);
+    background: var(--accent); color: #ffffff; font: inherit; font-weight: 500; font-size: 14px;
+    cursor: pointer; transition: filter .15s ease;
+  }
+  .send:hover { filter: brightness(1.06); }
+  .send:active { filter: brightness(.94); }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar pane flex flex-col gap-6 p-4">
+    <div class="flex items-center gap-2 px-1 pt-1">
+      <span class="mark"></span>
+      <span class="wordmark">Deskwise</span>
+    </div>
+    <div class="flex flex-col gap-2">
+      <p class="eyebrow px-2.5">Workspace</p>
+      <nav class="flex flex-col gap-0.5" aria-label="Workspace">
+        <a class="nav-item" href="#" aria-current="page"><span>Inbox</span><span class="count">12</span></a>
+        <a class="nav-item" href="#"><span>Assigned to me</span><span class="count">7</span></a>
+        <a class="nav-item" href="#"><span>Unassigned</span><span class="count">3</span></a>
+        <a class="nav-item" href="#"><span>Closed</span><span class="count">148</span></a>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Ticket list -->
+  <section class="list pane flex flex-col">
+    <div class="p-4 pb-3 flex flex-col gap-3">
+      <h2 class="text-base font-semibold m-0">Inbox</h2>
+      <label class="search">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14" stroke-linecap="round"/></svg>
+        <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search tickets</span>
+        <input type="search" placeholder="Search" autocomplete="off">
+      </label>
+    </div>
+    <div class="flex-1 overflow-y-auto px-2 pb-3 flex flex-col gap-0.5">
+
+      <a class="row" href="#" aria-current="true">
+        <div class="flex items-center gap-3">
+          <div class="avatar">MR</div>
+          <div class="flex-1 min-w-0">
+            <div class="row-top"><span class="row-name">Maria Rossi</span><span class="row-time">2m ago</span></div>
+            <p class="row-subject truncate">Login loop after password reset</p>
+            <p class="row-preview truncate">I reset my password and now I keep getting...</p>
+            <div class="flex gap-1.5 mt-2"><span class="tag"><span class="dot urgent"></span>Urgent</span><span class="tag">Auth</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a class="row" href="#">
+        <div class="flex items-center gap-3">
+          <div class="avatar">JK</div>
+          <div class="flex-1 min-w-0">
+            <div class="row-top"><span class="row-name">James Kim</span><span class="row-time">14:05</span></div>
+            <p class="row-subject truncate">Invoice shows wrong VAT</p>
+            <p class="row-preview truncate">Hi, the VAT on invoice #4471 looks off...</p>
+            <div class="flex gap-1.5 mt-2"><span class="tag"><span class="dot urgent"></span>Urgent</span><span class="tag">Billing</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a class="row" href="#">
+        <div class="flex items-center gap-3">
+          <div class="avatar">AL</div>
+          <div class="flex-1 min-w-0">
+            <div class="row-top"><span class="row-name">Aisha Lewis</span><span class="row-time">Yesterday</span></div>
+            <p class="row-subject truncate">Can't export CSV</p>
+            <p class="row-preview truncate">Export button spins forever on big...</p>
+            <div class="flex gap-1.5 mt-2"><span class="tag">Bug</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a class="row" href="#">
+        <div class="flex items-center gap-3">
+          <div class="avatar">DO</div>
+          <div class="flex-1 min-w-0">
+            <div class="row-top"><span class="row-name">David Okafor</span><span class="row-time">09:41</span></div>
+            <p class="row-subject truncate">Feature request: dark mode</p>
+            <p class="row-preview truncate">Would love a dark theme for late shifts</p>
+            <div class="flex gap-1.5 mt-2"><span class="tag">High</span><span class="tag">Idea</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a class="row" href="#">
+        <div class="flex items-center gap-3">
+          <div class="avatar">SP</div>
+          <div class="flex-1 min-w-0">
+            <div class="row-top"><span class="row-name">Sofia Pereira</span><span class="row-time">3m ago</span></div>
+            <p class="row-subject truncate">Team seats not syncing</p>
+            <p class="row-preview truncate">We added 4 seats but only 2 show up</p>
+            <div class="flex gap-1.5 mt-2"><span class="tag">Medium</span><span class="tag">Teams</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a class="row" href="#">
+        <div class="flex items-center gap-3">
+          <div class="avatar">TN</div>
+          <div class="flex-1 min-w-0">
+            <div class="row-top"><span class="row-name">Tom Nguyen</span><span class="row-time">Mon</span></div>
+            <p class="row-subject truncate">Webhook retries?</p>
+            <p class="row-preview truncate">Do failed webhooks get retried automatically</p>
+            <div class="flex gap-1.5 mt-2"><span class="tag">Low</span><span class="tag">API</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a class="row" href="#">
+        <div class="flex items-center gap-3">
+          <div class="avatar">EB</div>
+          <div class="flex-1 min-w-0">
+            <div class="row-top"><span class="row-name">Elena Brandt</span><span class="row-time">11:20</span></div>
+            <p class="row-subject truncate">Thanks so much</p>
+            <p class="row-preview truncate">Issue fixed, appreciate the quick help</p>
+            <div class="flex gap-1.5 mt-2"><span class="tag"><span class="dot open"></span>Resolved</span></div>
+          </div>
+        </div>
+      </a>
+
+      <a class="row" href="#">
+        <div class="flex items-center gap-3">
+          <div class="avatar">RP</div>
+          <div class="flex-1 min-w-0">
+            <div class="row-top"><span class="row-name">Raj Patel</span><span class="row-time">2 days ago</span></div>
+            <p class="row-subject truncate">Locked out of account</p>
+            <p class="row-preview truncate">Two-factor app got wiped, help pls</p>
+            <div class="flex gap-1.5 mt-2"><span class="tag"><span class="dot urgent"></span>Urgent</span><span class="tag">Security</span></div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- Open ticket -->
+  <main class="main pane flex flex-col gap-4 p-5 min-w-0">
+    <header class="ticket-head">
+      <div class="flex items-center gap-4 min-w-0">
+        <div class="avatar lg">MR</div>
+        <div class="min-w-0">
+          <h1 class="ticket-title">Login loop after password reset</h1>
+          <p class="meta">Ticket #DW-20417 · Opened 2m ago</p>
+        </div>
+      </div>
+      <span class="status"><span class="dot open"></span>Open</span>
+    </header>
+
+    <div class="thread">
+      <article class="msg">
+        <div class="msg-head"><span class="msg-name">Maria Rossi</span><span class="msg-time">2m ago</span></div>
+        <p class="msg-body">I reset my password and now I keep getting bounced back to the login screen. Tried three browsers already!! 😩</p>
+      </article>
+      <article class="msg agent">
+        <div class="msg-head"><span class="msg-name">Sam</span><span class="msg-time">14:05</span></div>
+        <p class="msg-body">Hi Maria! Sorry about that. Let's get this sorted, can you clear your cookies for deskwise.app?</p>
+      </article>
+      <article class="msg">
+        <div class="msg-head"><span class="msg-name">Maria Rossi</span><span class="msg-time">Yesterday</span></div>
+        <p class="msg-body">Did that, still looping. Any update?? 🙏</p>
+      </article>
+    </div>
+
+    <div class="composer">
+      <div class="composer-tools">
+        <button type="button" class="chip">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 2v3M8 11v3M2 8h3M11 8h3" stroke-linecap="round"/></svg>
+          Smart reply
+        </button>
+        <button type="button" class="chip">Friendly</button>
+        <button type="button" class="chip">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M13 7.5 8 12.5a3.5 3.5 0 0 1-5-5L8.5 2.5a2.3 2.3 0 0 1 3.3 3.3L6.5 11.1a1.1 1.1 0 0 1-1.6-1.6L9 5.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Attach
+        </button>
+      </div>
+      <label class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)" for="reply">Reply</label>
+      <textarea id="reply" placeholder="Write a reply"></textarea>
+      <div class="flex justify-end">
+        <button type="button" class="send">Send reply</button>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Northstar Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #fafafa;
+    --side: #f5f5f5;
+    --card: #ffffff;
+    --lane: #f2f2f4;
+    --raised: #ffffff;
+    --hair: rgba(23, 23, 23, 0.08);
+    --hair-strong: rgba(23, 23, 23, 0.14);
+    --text: #171717;
+    --text-2: #525252;
+    --muted: #666666;
+    --accent: #3554d1;
+    --pos: #15803d;
+    --neg: #b91c1c;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--page);
+    color: var(--text);
+    font-family: 'Geist', 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, p { margin: 0; }
+  button, select, a { font: inherit; color: inherit; }
+  a { text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  .app {
+    display: grid;
+    grid-template-columns: 232px 1fr;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .side {
+    background: var(--side);
+    border-right: 1px solid var(--hair);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; padding: 0 4px; }
+  .mark {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--accent); color: #fff;
+    display: grid; place-items: center;
+    font-size: 14px; font-weight: 600;
+  }
+  .brand-name { font-size: 15px; font-weight: 600; line-height: 18px; }
+  .brand-plan { font-size: 12px; color: var(--muted); line-height: 16px; }
+
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 8px;
+    color: var(--text-2); font-weight: 500;
+    border: 1px solid transparent;
+    transition: background-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .nav a svg { width: 16px; height: 16px; flex: none; color: var(--muted); stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .nav a:hover { background: #ececef; color: var(--text); }
+  .nav a[aria-current="page"] { background: var(--raised); border-color: var(--hair); color: var(--text); }
+  .nav a[aria-current="page"] svg { color: var(--text-2); }
+  .nav .chip-new { margin-left: auto; }
+
+  .chip {
+    display: inline-block;
+    border: 1px solid var(--hair-strong);
+    border-radius: 6px;
+    padding: 1px 7px;
+    font-size: 12px; line-height: 18px;
+    color: var(--text-2);
+    background: var(--card);
+    white-space: nowrap;
+  }
+
+  /* Main */
+  .main {
+    padding: 28px 32px 32px;
+    display: flex; flex-direction: column; gap: 20px;
+    min-width: 0;
+    animation: rise 400ms var(--ease) both;
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .head h1 { font-size: 28px; line-height: 36px; font-weight: 500; }
+  .controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .select {
+    appearance: none;
+    background: var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;
+    border: 1px solid var(--hair-strong);
+    border-radius: 8px;
+    padding: 7px 30px 7px 12px;
+    font-size: 13px; font-weight: 400;
+    color: var(--text);
+  }
+  .btn {
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: background-color 160ms var(--ease);
+  }
+  .btn:hover { background: #2c46b5; border-color: #2c46b5; }
+  .btn:active { transform: scale(0.98); }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    padding: 16px 20px;
+  }
+  .stat-label { display: flex; align-items: center; gap: 8px; color: var(--text-2); font-weight: 500; }
+  .stat-num { margin-top: 4px; font-size: 32px; line-height: 36px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .stat-num .of { font-size: 14px; line-height: 20px; color: var(--muted); font-weight: 400; margin-left: 4px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; flex: none; display: inline-block; }
+  .dot.pos { background: var(--pos); }
+  .dot.neg { background: var(--neg); }
+  .dot.accent { background: var(--accent); }
+  .dot.idle { background: #a3a3a3; }
+
+  /* Board */
+  .board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  .lane {
+    background: var(--lane);
+    border-radius: 16px;
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .lane-head { display: flex; flex-direction: column; gap: 2px; padding: 4px 4px 8px; }
+  .lane-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; }
+  .lane-meta { font-size: 12px; line-height: 16px; color: var(--muted); padding-left: 14px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex; flex-direction: column;
+    gap: 8px;
+  }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .card h3 { font-size: 15px; line-height: 20px; font-weight: 500; }
+  .foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+  .owner { display: flex; align-items: center; gap: 8px; color: var(--text-2); font-size: 13px; min-width: 0; }
+  .av {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #e7e7ea; color: var(--text-2);
+    display: grid; place-items: center;
+    font-size: 11px; font-weight: 500;
+    flex: none;
+  }
+  .when { font-size: 13px; color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .conf { font-size: 12px; line-height: 16px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* Narrow screens */
+  @media (max-width: 880px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .side { border-right: 0; border-bottom: 1px solid var(--hair); padding: 16px; }
+    .brand { margin-bottom: 12px; }
+    .nav { flex-direction: row; overflow-x: auto; gap: 4px; }
+    .nav a { white-space: nowrap; }
+    .nav .chip-new { display: none; }
+    .main { padding: 20px 16px 24px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .board { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">N</div>
+      <div>
+        <p class="brand-name">Northstar</p>
+        <p class="brand-plan">Pro plan</p>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="Main">
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</a>
+      <a href="#" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>Roadmap</a>
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>Goals <span class="chip chip-new">New</span></a>
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-6M13 17V7M18 17v-3"/></svg>Insights</a>
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1"/><path d="M16 4.5a4 4 0 0 1 0 7"/><path d="M22 21v-1a6 6 0 0 0-4-5.6"/></svg>Teams</a>
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>Settings</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <header class="head">
+      <h1>Q1 2027 roadmap</h1>
+      <div class="controls">
+        <select class="select" aria-label="Quarter">
+          <option>Q1 2027</option>
+          <option>Q2 2027</option>
+          <option>Q3 2027</option>
+        </select>
+        <select class="select" aria-label="Team">
+          <option>All teams</option>
+          <option>Platform</option>
+          <option>Growth</option>
+        </select>
+        <button class="btn" type="button">New initiative</button>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Summary">
+      <div class="stat">
+        <p class="stat-label">Initiatives</p>
+        <p class="stat-num">42</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label"><span class="dot pos" aria-hidden="true"></span>On track</p>
+        <p class="stat-num">31</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label"><span class="dot neg" aria-hidden="true"></span>At risk</p>
+        <p class="stat-num">7</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Shipped</p>
+        <p class="stat-num">4 <span class="of">of 9 total</span></p>
+      </div>
+    </section>
+
+    <section class="board" aria-label="Initiatives by stage">
+
+      <div class="lane">
+        <div class="lane-head">
+          <h2 class="lane-title"><span class="dot accent" aria-hidden="true"></span>Now</h2>
+          <p class="lane-meta">3 initiatives · Oct 2026</p>
+        </div>
+        <article class="card">
+          <div class="tags"><span class="chip">Growth</span><span class="chip">Q1</span></div>
+          <h3>Onboarding flow rework</h3>
+          <div class="foot">
+            <div class="owner"><span class="av" aria-hidden="true">MR</span>Growth</div>
+            <span class="when">Jan 2027</span>
+          </div>
+          <p class="conf">Confidence 94%</p>
+        </article>
+        <article class="card">
+          <div class="tags"><span class="chip">Platform</span></div>
+          <h3>AI insights engine</h3>
+          <div class="foot">
+            <div class="owner"><span class="av" aria-hidden="true">JK</span>Platform</div>
+            <span class="when">Feb 2027</span>
+          </div>
+          <p class="conf">Confidence 88%</p>
+        </article>
+        <article class="card">
+          <div class="tags"><span class="chip">Mobile</span></div>
+          <h3>Faster mobile app</h3>
+          <div class="foot">
+            <div class="owner"><span class="av" aria-hidden="true">AL</span>Mobile</div>
+            <span class="when">Mar 2027</span>
+          </div>
+          <p class="conf">Confidence 71%</p>
+        </article>
+      </div>
+
+      <div class="lane">
+        <div class="lane-head">
+          <h2 class="lane-title">Next</h2>
+          <p class="lane-meta">2 initiatives · Q2 2027</p>
+        </div>
+        <article class="card">
+          <div class="tags"><span class="chip">Billing</span><span class="chip">Revenue</span></div>
+          <h3>New billing system</h3>
+          <div class="foot">
+            <div class="owner"><span class="av" aria-hidden="true">SP</span>Revenue</div>
+            <span class="when">Apr 2027</span>
+          </div>
+          <p class="conf">Confidence 80%</p>
+        </article>
+        <article class="card">
+          <div class="tags"><span class="chip">Platform</span><span class="chip">Infra</span></div>
+          <h3>Global CDN rollout</h3>
+          <div class="foot">
+            <div class="owner"><span class="av" aria-hidden="true">TD</span>Platform</div>
+            <span class="when">May 2027</span>
+          </div>
+          <p class="conf">Confidence 52%</p>
+        </article>
+      </div>
+
+      <div class="lane">
+        <div class="lane-head">
+          <h2 class="lane-title">Later</h2>
+          <p class="lane-meta">2 initiatives · H2 2027</p>
+        </div>
+        <article class="card">
+          <div class="tags"><span class="chip">Growth</span></div>
+          <h3>Partner marketplace</h3>
+          <div class="foot">
+            <div class="owner"><span class="av" aria-hidden="true">DR</span>Growth</div>
+            <span class="when">Sep 2027</span>
+          </div>
+          <p class="conf">Confidence TBD</p>
+        </article>
+        <article class="card">
+          <div class="tags"><span class="chip">Mobile</span><span class="chip">Beta</span></div>
+          <h3>Offline mode</h3>
+          <div class="foot">
+            <div class="owner"><span class="av" aria-hidden="true">KW</span>Mobile</div>
+            <span class="when">Nov 2027</span>
+          </div>
+          <p class="conf">Confidence TBD</p>
+        </article>
+      </div>
+
+      <div class="lane">
+        <div class="lane-head">
+          <h2 class="lane-title">Shipped</h2>
+          <p class="lane-meta">4 initiatives · 2026</p>
+        </div>
+        <article class="card">
+          <div class="tags"><span class="chip">Platform</span></div>
+          <h3>Single sign-on for everyone</h3>
+          <div class="foot">
+            <div class="owner"><span class="av" aria-hidden="true">JK</span>Platform</div>
+            <span class="when">Aug 12, 2026</span>
+          </div>
+        </article>
+        <article class="card">
+          <div class="tags"><span class="chip">Growth</span><span class="chip">Launch</span></div>
+          <h3>Referral program</h3>
+          <div class="foot">
+            <div class="owner"><span class="av" aria-hidden="true">MR</span>Growth</div>
+            <span class="when">Sep 3, 2026</span>
+          </div>
+          <p class="conf">Confidence 100%</p>
+        </article>
+        <article class="card">
+          <div class="tags"><span class="chip">Billing</span></div>
+          <h3>Invoices 2.0</h3>
+          <div class="foot">
+            <div class="owner"><span class="av" aria-hidden="true">SP</span>Revenue</div>
+            <span class="when">Jun 4, 2026</span>
+          </div>
+        </article>
+      </div>
+
+    </section>
+  </main>
+</div>
+</body>
+</html>

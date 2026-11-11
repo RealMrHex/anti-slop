@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rootline - Plant care</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --hair: rgba(31, 27, 22, 0.08);
+      --hair-strong: rgba(31, 27, 22, 0.16);
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --muted: #6f675b;
+      --accent: #2f5d3a;
+      --accent-hover: #264d30;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    @media (min-width: 768px) {
+      .wrap { padding: 0 40px; }
+    }
+
+    /* Header */
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0;
+    }
+
+    .brand svg { width: 20px; height: 20px; display: block; }
+
+    .links {
+      display: none;
+      gap: 28px;
+      font-size: 15px;
+      color: var(--text-2);
+    }
+
+    .links a { text-decoration: none; transition: color 160ms var(--ease); }
+    .links a:hover { color: var(--text); }
+
+    @media (min-width: 768px) {
+      .links { display: flex; }
+      .menu { display: none; }
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .login {
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--text);
+      transition: color 160ms var(--ease);
+    }
+
+    .login:hover { color: var(--accent); }
+
+    .menu { position: relative; }
+
+    .menu summary {
+      list-style: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 8px 0;
+    }
+
+    .menu summary::-webkit-details-marker { display: none; }
+
+    .menu-list {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 8px;
+      min-width: 160px;
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 12px;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.06);
+    }
+
+    .menu-list a {
+      padding: 8px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 15px;
+      color: var(--text-2);
+    }
+
+    .menu-list a:hover { background: var(--raised); color: var(--text); }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      gap: 56px;
+      align-items: center;
+      padding: 40px 0 72px;
+    }
+
+    @media (min-width: 900px) {
+      .hero {
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 64px;
+        padding: 56px 0 96px;
+        min-height: calc(100vh - 72px);
+      }
+    }
+
+    h1 {
+      margin: 0;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(40px, 5.6vw, 68px);
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      max-width: 17ch;
+    }
+
+    .lede {
+      margin: 24px 0 0;
+      max-width: 34rem;
+      font-size: 18px;
+      line-height: 28px;
+      color: var(--text-2);
+    }
+
+    .actions {
+      margin-top: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease), transform 120ms var(--ease);
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      border: 1px solid var(--accent);
+    }
+
+    .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--hair-strong);
+    }
+
+    .btn-ghost:hover { background: var(--raised); }
+
+    .stores {
+      margin: 24px 0 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .stores a {
+      color: var(--text-2);
+      text-decoration: underline;
+      text-decoration-color: var(--hair-strong);
+      text-underline-offset: 3px;
+      transition: color 160ms var(--ease);
+    }
+
+    .stores a:hover { color: var(--accent); }
+
+    /* Preview card: the one moment on the screen */
+    .card {
+      width: 100%;
+      max-width: 400px;
+      justify-self: center;
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.06);
+    }
+
+    @media (min-width: 900px) {
+      .card { justify-self: end; }
+    }
+
+    .card-art {
+      height: 240px;
+      background: var(--raised);
+    }
+
+    .card-art svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .card-body { padding: 20px; }
+
+    .meta {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .name {
+      margin: 4px 0 0;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    .sub {
+      margin: 2px 0 0;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    .rule {
+      height: 1px;
+      background: var(--hair);
+      margin: 20px 0;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 4px 0;
+      font-size: 14px;
+    }
+
+    .row span:first-child { color: var(--muted); }
+
+    .row span:last-child {
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .week {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-top: 20px;
+    }
+
+    .day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .day .n {
+      position: relative;
+      width: 100%;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .day.today .n {
+      background: var(--raised);
+      box-shadow: inset 0 0 0 1px var(--hair), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+    }
+
+    .day.water .n::after {
+      content: "";
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      margin-left: -3px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .due {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 20px 0 0;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex: none;
+    }
+
+    /* One entrance, short and quiet */
+    .rise {
+      animation: rise 420ms var(--ease) both;
+    }
+
+    .rise-2 { animation-delay: 60ms; }
+    .rise-3 { animation-delay: 120ms; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <a class="brand" href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6 7 5 14 12 22C19 14 18 7 12 2Z" fill="#2f5d3a"/></svg>
+        Rootline
+      </a>
+
+      <nav class="links" aria-label="Primary">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Blog</a>
+      </nav>
+
+      <div class="top-right">
+        <a class="login" href="#">Log in</a>
+        <details class="menu">
+          <summary aria-label="Open menu">Menu</summary>
+          <nav class="menu-list" aria-label="Mobile">
+            <a href="#">Features</a>
+            <a href="#">Pricing</a>
+            <a href="#">Blog</a>
+          </nav>
+        </details>
+      </div>
+    </header>
+
+    <main class="hero">
+      <div>
+        <h1 class="rise">Identify any houseplant from a photo, then water it on time</h1>
+
+        <p class="lede rise rise-2">Snap a photo and Rootline names the plant, then builds a watering schedule that keeps track for you.</p>
+
+        <div class="actions rise rise-2">
+          <a class="btn btn-primary" href="#">Get started free</a>
+          <a class="btn btn-ghost" href="#">See how it works</a>
+        </div>
+
+        <p class="stores rise rise-3">Also on the <a href="#">App Store</a> and <a href="#">Google Play</a></p>
+      </div>
+
+      <article class="card rise rise-3" aria-label="Example plant result">
+        <div class="card-art">
+          <svg viewBox="0 0 240 240" role="img" aria-label="Illustration of a leafy plant in a terracotta pot">
+            <defs>
+              <g id="leaf">
+                <path d="M0 0C-34-20-36-70 0-100C36-70 34-20 0 0Z"/>
+                <path d="M0 -4L0 -88" stroke="#ffffff" stroke-opacity="0.22" stroke-width="2.5" fill="none"/>
+              </g>
+            </defs>
+            <ellipse cx="120" cy="222" rx="62" ry="5" fill="#2c241c" opacity="0.12"/>
+            <use href="#leaf" transform="translate(120 146) rotate(-58) scale(0.6)" fill="#5b8a62"/>
+            <use href="#leaf" transform="translate(120 146) rotate(56) scale(0.62)" fill="#5b8a62"/>
+            <use href="#leaf" transform="translate(120 146) rotate(-30) scale(0.85)" fill="#3d6b47"/>
+            <use href="#leaf" transform="translate(120 146) rotate(30) scale(0.9)" fill="#4f7d55"/>
+            <use href="#leaf" transform="translate(120 146) rotate(-6) scale(1.05)" fill="#2f5d3a"/>
+            <ellipse cx="120" cy="140" rx="42" ry="5" fill="#3b2f25"/>
+            <path d="M80 150H160L151 216Q150 222 144 222H96Q90 222 89 216Z" fill="#b65f3c"/>
+            <rect x="72" y="138" width="96" height="16" rx="6" fill="#c76e49"/>
+          </svg>
+        </div>
+
+        <div class="card-body">
+          <p class="meta">Identified from your photo</p>
+          <h2 class="name">Monstera deliciosa</h2>
+          <p class="sub">Swiss cheese plant</p>
+
+          <div class="rule"></div>
+
+          <div class="row"><span>Light</span><span>Bright, indirect</span></div>
+          <div class="row"><span>Water</span><span>Every 7 days</span></div>
+          <div class="row"><span>Next watering</span><span>Thu, 12 Nov</span></div>
+
+          <div class="week" aria-label="This week">
+            <div class="day"><span>M</span><span class="n">9</span></div>
+            <div class="day today"><span>T</span><span class="n">10</span></div>
+            <div class="day"><span>W</span><span class="n">11</span></div>
+            <div class="day water"><span>T</span><span class="n">12</span></div>
+            <div class="day"><span>F</span><span class="n">13</span></div>
+            <div class="day"><span>S</span><span class="n">14</span></div>
+            <div class="day"><span>S</span><span class="n">15</span></div>
+          </div>
+
+          <p class="due"><span class="dot" aria-hidden="true"></span>Due in 2 days</p>
+        </div>
+      </article>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API keys and webhooks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #161513;
+    --side: #12110f;
+    --card: #1c1a18;
+    --raised: #262421;
+    --hair: rgba(239, 233, 222, 0.08);
+    --hair-strong: rgba(239, 233, 222, 0.14);
+    --text: #efe9de;
+    --text2: #aaa398;
+    --text3: #8a847a;
+    --accent: #e9a64f;
+    --on-accent: #161513;
+    --ghost: #efe9de;
+    --ghost-hover: #ddd5c6;
+    --pos: #4cc38a;
+    --neg: #e5484d;
+    --r-ctrl: 10px;
+    --r-card: 14px;
+    --r-tag: 6px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --sans: 'Instrument Sans', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  button, input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--text2); outline-offset: 2px; }
+
+  .app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
+
+  /* Sidebar */
+  .side {
+    background: var(--side);
+    border-right: 1px solid var(--hair);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    height: 32px; padding: 0 10px;
+    font-size: 16px; font-weight: 600;
+    margin-bottom: 24px;
+  }
+  .mark { width: 12px; height: 12px; border-radius: 3px; background: var(--accent); flex: none; }
+  .label { font-size: 12px; color: var(--text3); padding: 0 10px; margin: 0 0 8px; }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex; align-items: center; gap: 10px;
+    height: 36px; padding: 0 10px;
+    border-radius: var(--r-ctrl);
+    color: var(--text2);
+    text-decoration: none;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .nav a:hover { background: rgba(239, 233, 222, 0.05); color: var(--text); }
+  .nav a[aria-current="page"] {
+    background: var(--raised);
+    color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 0 0 1px var(--hair);
+  }
+  .ic {
+    width: 16px; height: 16px; flex: none;
+    fill: none; stroke: currentColor; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* Main */
+  main {
+    padding: 32px;
+    min-width: 0;
+    animation: rise 400ms var(--ease) both;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { main { animation: none; } }
+
+  .top {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;
+  }
+  h1 { font-size: 28px; font-weight: 500; line-height: 1.15; margin: 0; }
+  .sub { color: var(--text2); font-size: 15px; margin: 8px 0 0; }
+
+  .search { position: relative; width: 280px; flex: none; }
+  .search svg {
+    position: absolute; left: 12px; top: 10px;
+    width: 16px; height: 16px;
+    fill: none; stroke: var(--text3); stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+  .search input {
+    width: 100%; height: 36px;
+    border-radius: var(--r-ctrl);
+    background: var(--card);
+    border: 1px solid var(--hair-strong);
+    padding: 0 12px 0 36px;
+    font-size: 14px;
+  }
+  .search input::placeholder { color: var(--text3); }
+
+  /* Cards */
+  .grid { display: grid; gap: 24px; margin-top: 32px; }
+  .row1 { grid-template-columns: minmax(0, 1fr) 320px; }
+  .row2 { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); margin-top: 24px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: var(--r-card);
+    padding: 24px;
+    min-width: 0;
+  }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    margin-bottom: 16px;
+  }
+  h2 { font-size: 18px; font-weight: 500; line-height: 1.3; margin: 0; }
+  .count { font-family: var(--mono); font-size: 12px; color: var(--text3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--pos); margin-right: 8px; vertical-align: middle;
+  }
+  .hint { color: var(--text3); font-size: 13px; margin: 6px 0 16px; }
+  .foot { color: var(--text3); font-size: 12px; margin: 16px 0 0; }
+
+  /* Keys table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    font-size: 12px; font-weight: 400; color: var(--text3);
+    text-align: left; white-space: nowrap;
+    padding: 0 16px 10px 0;
+  }
+  td {
+    padding: 12px 16px 12px 0;
+    border-top: 1px solid var(--hair);
+    white-space: nowrap;
+    color: var(--text2);
+    font-variant-numeric: tabular-nums;
+  }
+  td:first-child { color: var(--text); font-weight: 500; }
+  td.act { text-align: right; padding-right: 0; }
+  .mono { font-family: var(--mono); font-size: 12px; color: var(--text2); }
+  .tag {
+    display: inline-block;
+    font-family: var(--mono); font-size: 11px; line-height: 16px;
+    color: var(--text2);
+    border: 1px solid var(--hair-strong);
+    border-radius: var(--r-tag);
+    padding: 2px 6px;
+  }
+  .btn-text {
+    background: none; border: 0; cursor: pointer;
+    height: 32px; padding: 0 8px; margin-right: -8px;
+    border-radius: var(--r-tag);
+    color: var(--text2); font-size: 13px;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .btn-text:hover { background: rgba(229, 72, 77, 0.1); color: var(--neg); }
+
+  /* Buttons */
+  .btn-primary {
+    height: 40px; width: 100%;
+    border: 0; border-radius: var(--r-ctrl);
+    background: var(--ghost); color: var(--on-accent);
+    font-weight: 500; font-size: 14px;
+    cursor: pointer;
+    transition: background-color 150ms var(--ease), transform 120ms var(--ease);
+  }
+  .btn-primary:hover { background: var(--ghost-hover); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-ghost {
+    height: 32px; padding: 0 12px;
+    border: 1px solid var(--hair-strong); border-radius: var(--r-ctrl);
+    background: var(--raised); color: var(--text);
+    font-size: 13px; cursor: pointer;
+    transition: background-color 150ms var(--ease), transform 120ms var(--ease);
+  }
+  .btn-ghost:hover { background: #2e2c28; }
+  .btn-ghost:active { transform: scale(0.98); }
+
+  /* Create form */
+  form { display: flex; flex-direction: column; gap: 16px; }
+  .field {
+    display: flex; flex-direction: column; gap: 6px;
+    font-size: 13px; color: var(--text2);
+    border: 0; margin: 0; padding: 0; min-width: 0;
+  }
+  .field legend { padding: 0; margin-bottom: 6px; }
+  .field input, .field select {
+    height: 36px; width: 100%;
+    border-radius: var(--r-ctrl);
+    background: var(--bg);
+    border: 1px solid var(--hair-strong);
+    padding: 0 12px;
+    font-size: 14px; color: var(--text);
+  }
+  .field select { background: var(--raised); }
+  .field input::placeholder { color: var(--text3); }
+  .perms { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 32px; padding: 0 10px;
+    border: 1px solid var(--hair-strong); border-radius: 8px;
+    font-size: 13px; color: var(--text2); cursor: pointer;
+  }
+  .chip input { margin: 0; accent-color: var(--text); }
+
+  /* Webhooks */
+  .hooks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .hook { border: 1px solid var(--hair); border-radius: var(--r-ctrl); padding: 16px; }
+  .hook-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .hook-url { font-family: var(--mono); font-size: 12px; color: var(--text); overflow-wrap: anywhere; }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); white-space: nowrap; }
+  .status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--pos); }
+  .status.retry::before { background: var(--text3); }
+  .status.failed::before { background: var(--neg); }
+  .hook-events { margin-top: 8px; color: var(--text2); font-size: 13px; }
+  .hook-time { margin-top: 4px; color: var(--text3); font-size: 12px; font-variant-numeric: tabular-nums; }
+
+  /* Deliveries */
+  .deliv { list-style: none; margin: 0; padding: 0; }
+  .d {
+    display: grid; grid-template-columns: 32px minmax(0, 1fr) 56px 64px;
+    align-items: center; gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid var(--hair);
+    font-size: 13px;
+  }
+  .d:first-child { border-top: 0; padding-top: 0; }
+  .code { font-family: var(--mono); font-size: 12px; color: var(--text2); }
+  .code.bad { color: var(--neg); }
+  .event { font-family: var(--mono); font-size: 12px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar { height: 4px; border-radius: 2px; background: var(--raised); overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--text3); border-radius: 2px; }
+  .bar i.hot { background: var(--accent); }
+  .ms { text-align: right; font-family: var(--mono); font-size: 12px; color: var(--text2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* Small screens */
+  @media (max-width: 1080px) {
+    .row1, .row2 { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 860px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .side { border-right: 0; border-bottom: 1px solid var(--hair); padding: 16px; }
+    .nav { flex-direction: row; flex-wrap: wrap; }
+    .label { display: none; }
+    .brand { margin-bottom: 8px; }
+    main { padding: 24px 16px; }
+    .top { flex-direction: column; }
+    .search { width: 100%; }
+    .card { padding: 20px; }
+    .table-wrap { margin: 0 -20px; padding: 0 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand"><span class="mark" aria-hidden="true"></span>Ferry</div>
+    <div class="label">Settings</div>
+    <nav class="nav" aria-label="Settings">
+      <a href="#" aria-current="page">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15 19 4"/><path d="M18 5l3 3"/><path d="M15 8l3 3"/></svg>
+        API keys
+      </a>
+      <a href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="16" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v5"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/></svg>
+        Webhooks
+      </a>
+      <a href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+        Team members
+      </a>
+      <a href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        Billing
+      </a>
+      <a href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Security
+      </a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="top">
+      <div>
+        <h1>API keys and webhooks</h1>
+        <p class="sub">Manage keys and endpoints for your integrations.</p>
+      </div>
+      <label class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="search" placeholder="Search" aria-label="Search">
+      </label>
+    </header>
+
+    <div class="grid row1">
+      <section class="card" aria-labelledby="keys-title">
+        <div class="card-head">
+          <h2 id="keys-title">Your keys</h2>
+          <span class="count"><i class="dot" aria-hidden="true"></i>5 active</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Prefix</th>
+                <th scope="col">Created</th>
+                <th scope="col">Last used</th>
+                <th scope="col">Permissions</th>
+                <th scope="col"><span class="sr-only">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Prod Live</td>
+                <td class="mono">fk_live_9Xq2</td>
+                <td>Mar 14, 2026</td>
+                <td>2 min ago</td>
+                <td><span class="tag">Admin</span></td>
+                <td class="act"><button class="btn-text" type="button">Revoke</button></td>
+              </tr>
+              <tr>
+                <td>Staging</td>
+                <td class="mono">fk_test_4Lp8</td>
+                <td>Jan 2, 2026</td>
+                <td>1 day ago</td>
+                <td><span class="tag">Write</span></td>
+                <td class="act"><button class="btn-text" type="button">Revoke</button></td>
+              </tr>
+              <tr>
+                <td>Sandbox QA</td>
+                <td class="mono">fk_test_7Hd1</td>
+                <td>Feb 19, 2026</td>
+                <td>3 days ago</td>
+                <td><span class="tag">Read</span></td>
+                <td class="act"><button class="btn-text" type="button">Revoke</button></td>
+              </tr>
+              <tr>
+                <td>Analytics</td>
+                <td class="mono">fk_live_2Zm7</td>
+                <td>Nov 12, 2025</td>
+                <td>Never</td>
+                <td><span class="tag">Payouts</span></td>
+                <td class="act"><button class="btn-text" type="button">Revoke</button></td>
+              </tr>
+              <tr>
+                <td>Bot Zeta</td>
+                <td class="mono">fk_live_5Vb3</td>
+                <td>Oct 9, 2025</td>
+                <td>1 hr ago</td>
+                <td><span class="tag">Refunds</span></td>
+                <td class="act"><button class="btn-text" type="button">Revoke</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="create-title">
+        <h2 id="create-title">Create key</h2>
+        <p class="hint">Shown once. Copy it when it appears.</p>
+        <form onsubmit="event.preventDefault()">
+          <label class="field">Key name
+            <input placeholder="e.g. Checkout backend">
+          </label>
+          <label class="field">Environment
+            <select>
+              <option>Live</option>
+              <option>Test</option>
+            </select>
+          </label>
+          <fieldset class="field">
+            <legend>Permissions</legend>
+            <div class="perms">
+              <label class="chip"><input type="checkbox"> Admin</label>
+              <label class="chip"><input type="checkbox"> Write</label>
+              <label class="chip"><input type="checkbox" checked> Read</label>
+              <label class="chip"><input type="checkbox"> Payouts</label>
+              <label class="chip"><input type="checkbox"> Refunds</label>
+            </div>
+          </fieldset>
+          <button class="btn-primary" type="submit">Create key</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="grid row2">
+      <section class="card" aria-labelledby="hooks-title">
+        <div class="card-head">
+          <h2 id="hooks-title">Webhook endpoints</h2>
+          <button class="btn-ghost" type="button">Add endpoint</button>
+        </div>
+        <ul class="hooks">
+          <li class="hook">
+            <div class="hook-top">
+              <span class="hook-url">https://hooks.acme.io/ferry/prod</span>
+              <span class="status">Active</span>
+            </div>
+            <div class="hook-events">Events: payment.succeeded, refund.created, payout.paid</div>
+            <div class="hook-time">Last delivery: Nov 9, 2026, 14:22</div>
+          </li>
+          <li class="hook">
+            <div class="hook-top">
+              <span class="hook-url">https://staging.acme.io/hooks/ferry</span>
+              <span class="status retry">Retrying</span>
+            </div>
+            <div class="hook-events">Events: payment.failed, dispute.opened</div>
+            <div class="hook-time">Last delivery: Nov 9, 2026, 15:07</div>
+          </li>
+          <li class="hook">
+            <div class="hook-top">
+              <span class="hook-url">https://old.acme.io/legacy-hook</span>
+              <span class="status failed">Failed</span>
+            </div>
+            <div class="hook-events">Events: all</div>
+            <div class="hook-time">Last delivery: Oct 28, 2026, 08:41</div>
+          </li>
+        </ul>
+      </section>
+
+      <section class="card" aria-labelledby="deliv-title">
+        <h2 id="deliv-title" style="margin-bottom:16px">Recent deliveries</h2>
+        <ul class="deliv">
+          <li class="d">
+            <span class="code">200</span>
+            <span class="event">payment.succeeded</span>
+            <span class="bar"><i style="width:6%"></i></span>
+            <span class="ms">142 ms</span>
+          </li>
+          <li class="d">
+            <span class="code">200</span>
+            <span class="event">refund.created</span>
+            <span class="bar"><i style="width:4%"></i></span>
+            <span class="ms">98 ms</span>
+          </li>
+          <li class="d">
+            <span class="code bad">500</span>
+            <span class="event">payout.paid</span>
+            <span class="bar"><i class="hot" style="width:100%"></i></span>
+            <span class="ms">2.4 s</span>
+          </li>
+          <li class="d">
+            <span class="code">200</span>
+            <span class="event">payment.succeeded</span>
+            <span class="bar"><i style="width:5%"></i></span>
+            <span class="ms">117 ms</span>
+          </li>
+          <li class="d">
+            <span class="code">429</span>
+            <span class="event">dispute.opened</span>
+            <span class="bar"><i style="width:3%"></i></span>
+            <span class="ms">61 ms</span>
+          </li>
+          <li class="d">
+            <span class="code">200</span>
+            <span class="event">payment.failed</span>
+            <span class="bar"><i style="width:8%"></i></span>
+            <span class="ms">203 ms</span>
+          </li>
+        </ul>
+        <p class="foot">Last 6 deliveries. Bars show response time, scaled to the slowest.</p>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

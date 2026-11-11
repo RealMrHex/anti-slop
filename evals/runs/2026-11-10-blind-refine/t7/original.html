@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travel Blog</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    background: #ffffff;
+    color: #222222;
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  header {
+    border-bottom: 1px solid #cccccc;
+    padding: 24px 0 12px;
+  }
+  header h1 {
+    margin: 0 0 4px;
+    font-size: 2em;
+  }
+  nav a {
+    margin-right: 12px;
+    color: #225588;
+  }
+  .intro {
+    padding: 20px 0;
+  }
+  .post {
+    padding: 16px 0;
+    border-bottom: 1px solid #eeeeee;
+  }
+  .post h2 {
+    margin: 0 0 4px;
+    font-size: 1.3em;
+  }
+  .post h2 a {
+    color: #222222;
+  }
+  .date {
+    font-size: 0.85em;
+    color: #666666;
+    margin-bottom: 6px;
+  }
+  .signup {
+    margin: 24px 0;
+    padding: 16px;
+    border: 1px solid #cccccc;
+  }
+  .signup h3 {
+    margin-top: 0;
+  }
+  .signup input[type="email"] {
+    width: 100%;
+    max-width: 320px;
+    padding: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+  }
+  .signup button {
+    padding: 8px 16px;
+    font-size: 1em;
+    cursor: pointer;
+  }
+  footer {
+    border-top: 1px solid #cccccc;
+    padding: 16px 0;
+    font-size: 0.85em;
+    color: #666666;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>[Writer Name] Travels</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Posts</a>
+      <a href="#">Destinations</a>
+      <a href="#">About</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <p>
+      Notes, road stories and honest recommendations from years of slow travel,
+      cheap trains, and getting lost on purpose. I write about the places I actually
+      stayed, the meals I actually ate, and the mistakes I would like you to skip.
+    </p>
+  </section>
+
+  <main>
+    <h2>Recent posts</h2>
+
+    <article class="post">
+      <div class="date">November 4, 2026</div>
+      <h2><a href="#">Three Days on the Night Train to Lisbon</a></h2>
+      <p>Sleeper berths, a broken air vent, and the best pastry I have had all year at a station kiosk before dawn.</p>
+    </article>
+
+    <article class="post">
+      <div class="date">October 22, 2026</div>
+      <h2><a href="#">Hill Towns Without a Car</a></h2>
+      <p>How to string together buses, shared taxis and long walks through the mountain villages of central Italy.</p>
+    </article>
+
+    <article class="post">
+      <div class="date">October 8, 2026</div>
+      <h2><a href="#">What I Packed for Six Weeks in One Bag</a></h2>
+      <p>A full list, what I wore every day, and the two items I would never bring again.</p>
+    </article>
+
+    <article class="post">
+      <div class="date">September 19, 2026</div>
+      <h2><a href="#">A Quiet Week on the Coast of Vietnam</a></h2>
+      <p>Off-season fishing towns, family guesthouses, and why I stopped checking the weather app.</p>
+    </article>
+
+    <article class="post">
+      <div class="date">September 2, 2026</div>
+      <h2><a href="#">Booking Hostels Without Regret</a></h2>
+      <p>Questions to ask before you click reserve, and the signs that a bunk room will be a bad idea.</p>
+    </article>
+  </main>
+
+  <section class="signup">
+    <h3>Get new posts by email</h3>
+    <p>One letter a month. No ads, no spam, unsubscribe any time.</p>
+    <form action="#" method="post" onsubmit="event.preventDefault(); alert('Sign-up not connected yet.');">
+      <label for="email">Email address</label><br>
+      <input type="email" id="email" name="email" required placeholder="you@example.com"><br>
+      <button type="submit">Subscribe</button>
+    </form>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    &copy; 2026 [Writer Name]. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

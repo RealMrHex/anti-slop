@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing ✨ Lumen Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #1e1b4b; color: #f5f3ff; }
+    .glow-a { box-shadow: 0 0 60px 10px rgba(168, 85, 247, 0.55); }
+    .glow-b { box-shadow: 0 0 45px 6px rgba(236, 72, 153, 0.45); }
+    .glass { background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(14px); border: 2px solid rgba(192, 132, 252, 0.6); }
+    .pulse-btn { animation: pulse 1.6s infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+    .float { animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+    .blob { position: absolute; border-radius: 9999px; filter: blur(90px); opacity: 0.6; pointer-events: none; }
+  </style>
+</head>
+<body class="min-h-screen relative overflow-hidden">
+  <div class="blob w-[420px] h-[420px] bg-fuchsia-500 -top-20 -left-16"></div>
+  <div class="blob w-[380px] h-[380px] bg-indigo-400 top-1/3 right-[-80px]"></div>
+
+  <div class="relative flex min-h-screen w-[1280px] mx-auto">
+    <aside class="glass w-[250px] mt-[18px] mb-[18px] ml-[18px] rounded-3xl p-[22px] flex flex-col gap-[6px]">
+      <p class="text-[11px] uppercase tracking-[0.25em] text-violet-300 font-extrabold mb-[10px]">⚙️ Settings Menu</p>
+      <a class="rounded-2xl px-[14px] py-[10px] font-extrabold bg-gradient-to-r from-violet-600 to-pink-500 glow-b">🏠 Overview</a>
+      <a class="rounded-2xl px-[14px] py-[10px] font-extrabold hover:bg-white/10">👤 Profile</a>
+      <a class="rounded-2xl px-[14px] py-[10px] font-extrabold hover:bg-white/10">💳 Billing &amp; Invoices</a>
+      <a class="rounded-2xl px-[14px] py-[10px] font-extrabold hover:bg-white/10">🎨 Projects</a>
+      <a class="rounded-2xl px-[14px] py-[10px] font-extrabold hover:bg-white/10">🔔 Notifications <span class="ml-1 text-[10px] bg-pink-500 rounded-full px-2 py-[2px]">NEW</span></a>
+      <a class="rounded-2xl px-[14px] py-[10px] font-extrabold hover:bg-white/10">🔐 Security</a>
+      <div class="mt-auto rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 p-[14px] text-indigo-950 float">
+        <p class="text-[10px] uppercase tracking-[0.2em] font-black">⭐ PRO PLAN</p>
+        <p class="font-black text-[15px] mt-[4px]">Unlock 100x power!!</p>
+      </div>
+    </aside>
+
+    <main class="flex-1 px-[34px] py-[26px]">
+      <div class="flex items-center justify-between mb-[22px]">
+        <h1 class="text-[40px] font-black tracking-tight bg-gradient-to-r from-violet-300 via-pink-300 to-amber-200 bg-clip-text text-transparent">🚀 Billing &amp; Invoices 💎</h1>
+        <div class="glass rounded-full px-[18px] py-[10px] w-[300px] text-violet-200 text-[14px]">🔍 Search anything...</div>
+      </div>
+
+      <section class="grid grid-cols-3 gap-[18px] mb-[22px]">
+        <div class="col-span-2 rounded-[28px] p-[28px] bg-gradient-to-br from-fuchsia-600 via-violet-600 to-indigo-600 glow-a">
+          <p class="text-[12px] uppercase tracking-[0.3em] font-extrabold text-pink-100">💰 Outstanding Balance</p>
+          <p class="text-[64px] font-black leading-none mt-[10px]">$4,820.5</p>
+          <p class="mt-[12px] font-extrabold text-pink-100">🔥 3 invoices due soon!! Don't miss out!</p>
+          <button class="pulse-btn mt-[20px] rounded-full px-[30px] py-[13px] font-black text-[16px] bg-gradient-to-r from-amber-300 to-pink-400 text-indigo-950 shadow-[0_0_30px_rgba(251,191,36,0.8)] hover:scale-110 transition-transform">💸 PAY NOW!!</button>
+        </div>
+        <div class="glass rounded-[28px] p-[24px] border-emerald-400 border-[2px]">
+          <p class="text-[11px] uppercase tracking-[0.25em] font-extrabold text-emerald-300">✅ Paid This Year</p>
+          <p class="text-[44px] font-black mt-[8px]">$18,300</p>
+          <p class="text-[13px] text-emerald-200 font-bold mt-[6px]">🏆 Top 1% client!!</p>
+          <span class="inline-block mt-[12px] rounded-full bg-cyan-400 text-indigo-950 text-[11px] font-black px-[10px] py-[3px]">PRO ✨</span>
+        </div>
+      </section>
+
+      <section class="glass rounded-[26px] p-[22px] mb-[22px]">
+        <h2 class="text-[20px] font-black mb-[14px]">📄 Your Invoices 🧾</h2>
+        <table class="w-full text-[14px]">
+          <thead>
+            <tr class="text-left text-[11px] uppercase tracking-[0.2em] text-violet-300">
+              <th class="py-[10px] pl-[8px]">Number</th>
+              <th>Project</th>
+              <th>Issued</th>
+              <th>Due</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th class="pr-[8px]">Download</th>
+            </tr>
+          </thead>
+          <tbody class="font-semibold">
+            <tr class="border-t border-white/10"><td class="py-[11px] pl-[8px]">#INV-1041</td><td>🌈 Brand Refresh</td><td>3/2/26</td><td>March 16, 2026</td><td>$1,200</td><td><span class="rounded-full bg-emerald-400 text-indigo-950 px-[10px] py-[2px] text-[11px] font-black">PAID ✅</span></td><td class="pr-[8px]"><button class="rounded-full bg-violet-500 px-[12px] py-[4px] text-[12px] font-black hover:scale-110 transition-transform">⬇️ PDF</button></td></tr>
+            <tr class="border-t border-white/10"><td class="py-[11px] pl-[8px]">#INV-1042</td><td>📱 App Mockups</td><td>2026-03-09</td><td>Apr 2, 2026</td><td>$2,450.00</td><td><span class="rounded-full bg-amber-300 text-indigo-950 px-[10px] py-[2px] text-[11px] font-black">PENDING ⏳</span></td><td class="pr-[8px]"><button class="rounded-full bg-violet-500 px-[12px] py-[4px] text-[12px] font-black hover:scale-110 transition-transform">⬇️ PDF</button></td></tr>
+            <tr class="border-t border-white/10"><td class="py-[11px] pl-[8px]">#INV-1043</td><td>🎬 Video Ads</td><td>15.03.2026</td><td>Mar 30, 2026</td><td>$860</td><td><span class="rounded-full bg-rose-400 text-indigo-950 px-[10px] py-[2px] text-[11px] font-black">OVERDUE 🚨</span></td><td class="pr-[8px]"><button class="rounded-full bg-violet-500 px-[12px] py-[4px] text-[12px] font-black hover:scale-110 transition-transform">⬇️ PDF</button></td></tr>
+            <tr class="border-t border-white/10"><td class="py-[11px] pl-[8px]">#INV-1044</td><td>🛍️ E-commerce UI</td><td>Feb 27, 2026</td><td>2026/04/05</td><td>$3,100.5</td><td><span class="rounded-full bg-emerald-400 text-indigo-950 px-[10px] py-[2px] text-[11px] font-black">PAID ✅</span></td><td class="pr-[8px]"><button class="rounded-full bg-violet-500 px-[12px] py-[4px] text-[12px] font-black hover:scale-110 transition-transform">⬇️ PDF</button></td></tr>
+            <tr class="border-t border-white/10"><td class="py-[11px] pl-[8px]">#INV-1045</td><td>🧠 Pitch Deck</td><td>4-1-26</td><td>Apr 20, 2026</td><td>$975</td><td><span class="rounded-full bg-amber-300 text-indigo-950 px-[10px] py-[2px] text-[11px] font-black">PENDING ⏳</span></td><td class="pr-[8px]"><button class="rounded-full bg-violet-500 px-[12px] py-[4px] text-[12px] font-black hover:scale-110 transition-transform">⬇️ PDF</button></td></tr>
+            <tr class="border-t border-white/10"><td class="py-[11px] pl-[8px]">#INV-1046</td><td>🎨 Icon Set 2.0</td><td>April 8 2026</td><td>May 1, 2026</td><td>$640</td><td><span class="rounded-full bg-cyan-400 text-indigo-950 px-[10px] py-[2px] text-[11px] font-black">DRAFT ✏️</span></td><td class="pr-[8px]"><button class="rounded-full bg-violet-500 px-[12px] py-[4px] text-[12px] font-black hover:scale-110 transition-transform">⬇️ PDF</button></td></tr>
+            <tr class="border-t border-white/10"><td class="py-[11px] pl-[8px]">#INV-1047</td><td>🌟 Retainer Q2</td><td>06/04/2026</td><td>June 30, 2026</td><td>$1,650.75</td><td><span class="rounded-full bg-amber-300 text-indigo-950 px-[10px] py-[2px] text-[11px] font-black">PENDING ⏳</span></td><td class="pr-[8px]"><button class="rounded-full bg-violet-500 px-[12px] py-[4px] text-[12px] font-black hover:scale-110 transition-transform">⬇️ PDF</button></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="grid grid-cols-2 gap-[18px]">
+        <div class="glass rounded-[26px] p-[22px] float">
+          <h2 class="text-[18px] font-black mb-[12px]">💳 Payment Method 🔥</h2>
+          <div class="rounded-2xl bg-gradient-to-r from-pink-500 to-violet-700 p-[18px] glow-b">
+            <p class="text-[12px] uppercase tracking-[0.25em] font-extrabold">VISA • Ending 6411</p>
+            <p class="text-[20px] font-black mt-[10px] tracking-[0.15em]">•••• •••• •••• 6411</p>
+            <p class="text-[12px] font-bold mt-[8px]">Expires 09/28 ✨</p>
+          </div>
+          <p class="mt-[12px] text-[13px] text-violet-200">🛡️ 100% secure, guaranteed!! Trusted by 10,000+ clients!</p>
+        </div>
+
+        <div class="glass rounded-[26px] p-[22px]">
+          <h2 class="text-[18px] font-black mb-[12px]">📬 Billing Contact 🎯</h2>
+          <form class="flex flex-col gap-[11px] text-[14px]">
+            <input class="rounded-xl bg-white/10 px-[14px] py-[9px] placeholder:text-violet-300 outline-none" placeholder="Full name ✍️">
+            <input class="rounded-xl bg-white/10 px-[14px] py-[9px] placeholder:text-violet-300 outline-none" placeholder="Email address 📧">
+            <input class="rounded-xl bg-white/10 px-[14px] py-[9px] placeholder:text-violet-300 outline-none" placeholder="Company name 🏢">
+            <button type="button" class="pulse-btn mt-[4px] rounded-full py-[12px] font-black bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-400 glow-a hover:scale-105 transition-transform">🚀 SAVE NOW!!</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

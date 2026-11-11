@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atmos – Weather, planned</title>
+<meta name="description" content="Atmos: current conditions, hourly and 7-day forecasts for San Francisco, Tokyo, London and New York.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: { fontFamily: { sans: ['Manrope', 'ui-rounded', 'system-ui', 'sans-serif'] } } }
+  };
+</script>
+<style>
+  :root {
+    --bg: #eaf0f7;
+    --surface: #ffffff;
+    --ink: #0f2238;
+    --ink-2: #4a5d73;
+    --line: #dbe4ee;
+    --accent: #1f5ea8;
+    --accent-ink: #ffffff;
+    --sun: #f5a623;
+    --cloud: #b4c5da;
+    --r-lg: 28px;
+    --r-md: 18px;
+    --r-sm: 12px;
+    --shadow: 0 1px 2px rgba(15, 34, 56, .05), 0 8px 24px -8px rgba(15, 34, 56, .12);
+    --hero-a: #1b4f8f;
+    --hero-b: #3b7cc4;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Manrope', ui-rounded, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .card { background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); }
+  .muted { color: var(--ink-2); }
+  :focus-visible { outline: 3px solid #f5a623; outline-offset: 2px; border-radius: 10px; }
+  .hero { background: linear-gradient(160deg, var(--hero-a), var(--hero-b)); transition: background .4s; position: relative; overflow: hidden; color: #fff; }
+  .hero .cloud { fill: #fff; }
+  .hero::before { content: ""; position: absolute; inset: 0; background: radial-gradient(60% 70% at 85% 20%, rgba(255,255,255,.18), transparent 70%); pointer-events: none; }
+  .cloud { fill: var(--cloud); }
+  .sun-c { fill: var(--sun); }
+  .sun-r { stroke: var(--sun); }
+  .moon { fill: #e8edf7; }
+  .hero .moon { fill: #f4f6fc; }
+  .rain { stroke: #4b8fd6; }
+  .hero .rain { stroke: #bfe0ff; }
+  .bolt { fill: #f5a623; }
+  .float { animation: float 7s ease-in-out infinite; }
+  @keyframes float { 50% { transform: translateY(-8px); } }
+  @media (prefers-reduced-motion: reduce) { .float { animation: none; } html { scroll-behavior: auto; } * { transition: none !important; } }
+  .chip { border: 1px solid var(--line); background: var(--surface); color: var(--ink); transition: background .15s, color .15s, border-color .15s, transform .1s; }
+  .chip:hover { border-color: var(--accent); }
+  .chip:active { transform: scale(.97); }
+  .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .seg button { transition: background .15s, color .15s; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  .seg button[aria-pressed="false"]:hover { background: #e4edf8; }
+  .hours { scroll-snap-type: x proximity; scrollbar-width: thin; }
+  .hours li { scroll-snap-align: start; }
+  .range-track { background: #e4ebf3; }
+  .range-fill { background: linear-gradient(90deg, #4b8fd6, #f5a623); }
+  .tile { background: #f4f7fb; border-radius: var(--r-md); }
+  .sr-only-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .now-cell { background: linear-gradient(180deg, #e3eefb, #f3f8fe); border: 1px solid #c4d8f0; }
+  .fade-in { animation: fade .35s ease both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } }
+</style>
+</head>
+<body class="min-h-screen font-sans overflow-x-hidden">
+<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded-lg">Skip to forecast</a>
+
+<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pb-12">
+
+  <header class="flex flex-wrap items-center gap-x-6 gap-y-4 py-5">
+    <a href="#" class="flex items-center gap-2.5 mr-auto" aria-label="Atmos home">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="11" fill="#1f5ea8"/><circle cx="14" cy="15" r="6" fill="#f5a623"/><path d="M12 26a4.5 4.5 0 0 1-.4-8.98A6 6 0 0 1 23 16.5 4.3 4.3 0 0 1 23.5 26z" fill="#fff"/></svg>
+      <span class="text-xl font-extrabold tracking-tight">Atmos</span>
+    </a>
+
+    <form id="searchForm" class="relative order-3 sm:order-none w-full sm:w-72" role="search" autocomplete="off">
+      <label for="search" class="sr-only">Search for a city</label>
+      <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 muted" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="search" list="cities" type="search" placeholder="Search a city" class="w-full h-11 pl-10 pr-4 rounded-full bg-white border border-[var(--line)] text-[15px] placeholder:text-[#5d6f84] focus:border-[var(--accent)]" aria-describedby="searchMsg">
+      <datalist id="cities"><option value="San Francisco"><option value="Tokyo"><option value="London"><option value="New York"></datalist>
+      <p id="searchMsg" class="absolute left-4 top-12 text-sm text-[#a33a1f] font-semibold" role="status"></p>
+    </form>
+
+    <div class="seg flex p-1 rounded-full bg-white border border-[var(--line)]" role="group" aria-label="Temperature unit">
+      <button type="button" data-unit="C" aria-pressed="true" class="h-9 min-w-[3rem] px-4 rounded-full text-sm font-bold">°C</button>
+      <button type="button" data-unit="F" aria-pressed="false" class="h-9 min-w-[3rem] px-4 rounded-full text-sm font-bold">°F</button>
+    </div>
+  </header>
+
+  <nav aria-label="Cities" class="mb-5">
+    <ul id="cityChips" class="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0"></ul>
+  </nav>
+
+  <main id="main">
+    <h1 class="sr-only">Atmos weather forecast</h1>
+    <div id="live" class="sr-only-live" aria-live="polite"></div>
+
+    <!-- Hero -->
+    <section id="hero" class="hero rounded-[32px] p-6 sm:p-10 lg:p-12 shadow-[0_24px_48px_-24px_rgba(20,60,110,.55)]" aria-labelledby="cityName">
+      <div class="relative grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1fr)_auto] items-center">
+        <div>
+          <p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[15px] font-semibold text-white/90">
+            <span class="inline-flex items-center gap-1.5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+              <span id="cityMeta">California, USA</span>
+            </span>
+            <span aria-hidden="true" class="opacity-60">·</span>
+            <span>Local time <time id="clock" class="font-extrabold tabular-nums"></time></span>
+          </p>
+          <h2 id="cityName" class="mt-1 text-3xl sm:text-4xl font-extrabold tracking-tight">San Francisco</h2>
+          <p id="dateLine" class="text-white/85 text-[15px] font-medium"></p>
+
+          <div class="mt-6 flex items-start gap-1">
+            <span id="temp" class="text-[6.5rem] sm:text-[9rem] leading-[.85] font-light tracking-tighter tabular-nums" aria-label="Current temperature">19</span>
+            <span id="tempUnit" class="text-4xl sm:text-5xl font-light mt-2 sm:mt-3" aria-hidden="true">°C</span>
+          </div>
+
+          <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
+            <p id="cond" class="text-2xl font-bold">Partly Cloudy</p>
+            <p class="text-lg font-semibold text-white/95">
+              <span class="sr-only">High</span><span aria-hidden="true">H:</span> <span id="hi">22°</span>
+              <span class="mx-1.5 opacity-60" aria-hidden="true">/</span>
+              <span class="sr-only">Low</span><span aria-hidden="true">L:</span> <span id="lo">14°</span>
+            </p>
+          </div>
+          <p id="tip" class="mt-4 max-w-md text-[15px] leading-relaxed text-white/90"></p>
+        </div>
+
+        <div class="flex justify-center md:justify-end" aria-hidden="true">
+          <div id="heroIcon" class="float w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hourly -->
+    <section class="card mt-6 p-5 sm:p-7 min-w-0" aria-labelledby="hourlyH">
+      <div class="flex items-baseline justify-between gap-4">
+        <h2 id="hourlyH" class="text-xl font-extrabold tracking-tight">Next 24 hours</h2>
+        <p class="text-sm muted">Scroll for later <span aria-hidden="true">→</span></p>
+      </div>
+      <ol id="hourly" class="hours mt-4 flex gap-2.5 overflow-x-auto pb-3 -mx-1 px-1" tabindex="0" aria-label="Hourly forecast, scrollable"></ol>
+    </section>
+
+    <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
+      <!-- 7 day -->
+      <section class="card p-5 sm:p-7 lg:col-span-3 min-w-0 flex flex-col" aria-labelledby="weekH">
+        <h2 id="weekH" class="text-xl font-extrabold tracking-tight">7-day forecast</h2>
+        <ul id="week" class="mt-3 flex-1 flex flex-col divide-y divide-[var(--line)]"></ul>
+      </section>
+
+      <!-- Details -->
+      <section class="lg:col-span-2 min-w-0 flex flex-col gap-6" aria-labelledby="detH">
+        <div class="card p-5 sm:p-7">
+          <h2 id="detH" class="text-xl font-extrabold tracking-tight">Right now in detail</h2>
+          <dl id="details" class="mt-4 grid grid-cols-2 gap-3"></dl>
+        </div>
+        <div class="card p-5 sm:p-7" id="sunCard"></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="mt-10 text-sm muted flex flex-wrap justify-between gap-2">
+    <p>Atmos · Sample data for demonstration. Not for navigation or safety decisions.</p>
+    <p>Times shown in each city's local time zone.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- Data ----------
+  // cond codes: s sunny, p partly cloudy, c cloudy, r rain, t thunderstorm
+  const COND = {
+    s: 'Sunny', p: 'Partly Cloudy', c: 'Cloudy', r: 'Rain', t: 'Thunderstorms'
+  };
+  const CITIES = {
+    sf: {
+      name: 'San Francisco', meta: 'California, USA', tz: 'America/Los_Angeles',
+      temp: 19, cond: 'Partly Cloudy', code: 'p', hi: 22, lo: 14,
+      humidity: 64, wind: 12, uv: 5, vis: 10, feels: 18, sunrise: '6:42 AM', sunset: '7:28 PM',
+      tip: 'Mild and breezy. Bring a light jacket for the evening when fog rolls in off the bay.',
+      hourT: [19,20,21,22,22,21,20,19,18,17,16,15,15,14,14,14,15,16,18,20,21,22,21,20],
+      hourC: 'ppppssspppccccccccppppps'.slice(0,24),
+      hourP: [5,5,5,5,0,0,0,5,5,10,10,10,15,15,15,10,10,10,5,5,5,0,0,5],
+      days: [['p',22,14,10],['s',23,14,0],['s',24,15,0],['p',21,14,10],['c',19,13,20],['r',17,12,60],['p',20,13,15]]
+    },
+    tokyo: {
+      name: 'Tokyo', meta: 'Kanto, Japan', tz: 'Asia/Tokyo',
+      temp: 24, cond: 'Mostly Sunny', code: 's', hi: 26, lo: 19,
+      humidity: 58, wind: 9, uv: 7, vis: 12, feels: 25, sunrise: '5:12 AM', sunset: '6:48 PM',
+      tip: 'Warm and bright with a strong midday sun. Sunscreen and a hat are worth it.',
+      hourT: [24,25,26,26,26,25,24,23,22,21,21,20,20,19,19,19,20,21,23,24,25,26,25,24],
+      hourC: 'ssssssppppppcccccppsssss',
+      hourP: [0,0,0,0,0,5,5,5,10,10,10,10,15,15,15,15,10,10,5,5,0,0,0,0],
+      days: [['s',26,19,0],['s',27,20,0],['p',25,19,10],['c',23,18,30],['r',21,17,70],['r',20,17,60],['p',23,17,15]]
+    },
+    london: {
+      name: 'London', meta: 'England, UK', tz: 'Europe/London',
+      temp: 13, cond: 'Light Rain', code: 'r', hi: 15, lo: 9,
+      humidity: 82, wind: 18, uv: 2, vis: 7, feels: 11, sunrise: '6:05 AM', sunset: '8:31 PM',
+      tip: 'Damp and breezy with showers on and off. Take an umbrella and a waterproof layer.',
+      hourT: [13,13,14,14,15,15,14,14,13,12,12,11,11,10,10,10,9,10,11,12,13,13,14,14],
+      hourC: 'rrrcccccccrrrrrcccccppcc',
+      hourP: [70,60,50,40,30,30,25,25,30,60,70,70,60,50,40,30,20,20,20,25,25,30,30,30],
+      days: [['r',15,9,70],['c',16,10,30],['p',17,10,15],['r',14,9,65],['r',13,8,70],['c',14,8,25],['p',16,9,10]]
+    },
+    ny: {
+      name: 'New York', meta: 'New York, USA', tz: 'America/New_York',
+      temp: 27, cond: 'Mostly Sunny', code: 's', hi: 29, lo: 21,
+      humidity: 55, wind: 15, uv: 8, vis: 16, feels: 29, sunrise: '5:41 AM', sunset: '8:12 PM',
+      tip: 'Hot in the afternoon with a steady breeze. Plan outdoor time for the morning and drink water.',
+      hourT: [27,28,29,29,29,28,27,26,25,24,23,23,22,22,21,21,22,24,26,27,28,29,28,27],
+      hourC: 'sssspppppcccttcccppppsss',
+      hourP: [0,0,0,5,5,10,10,15,20,30,40,50,60,50,40,30,20,15,10,10,5,5,0,0],
+      days: [['s',29,21,0],['p',28,21,15],['t',26,20,60],['c',24,19,30],['s',25,18,0],['s',27,19,0],['p',28,20,10]]
+    }
+  };
+  const ORDER = ['sf', 'tokyo', 'london', 'ny'];
+
+  // ---------- State ----------
+  const state = { city: 'sf', unit: 'C', lastHour: -1, lastMin: -1 };
+
+  const $ = (id) => document.getElementById(id);
+  const toU = (c) => state.unit === 'C' ? Math.round(c) : Math.round(c * 9 / 5 + 32);
+  const deg = (c) => toU(c) + '°';
+
+  // ---------- Time helpers ----------
+  function parts(tz, date) {
+    const f = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: false, weekday: 'long', month: 'long', day: 'numeric' });
+    const o = {};
+    f.formatToParts(date || new Date()).forEach(p => o[p.type] = p.value);
+    o.h = parseInt(o.hour, 10) % 24; o.m = parseInt(o.minute, 10);
+    return o;
+  }
+  const toMin = (s) => { const m = s.match(/(\d+):(\d+) (AM|PM)/); return ((parseInt(m[1],10) % 12) + (m[3] === 'PM' ? 12 : 0)) * 60 + parseInt(m[2],10); };
+  const hourLabel = (h) => (h % 12 === 0 ? 12 : h % 12) + (h % 24 < 12 ? ' AM' : ' PM');
+  function isNight(city, minutes) { return minutes < toMin(city.sunrise) || minutes >= toMin(city.sunset); }
+
+  // ---------- Icons ----------
+  const CLOUD = 'M10 40a9 9 0 0 1-1-17.95A13 13 0 0 1 34 19a10.5 10.5 0 0 1 1.5 21z';
+  function icon(code, night) {
+    let s = '<svg viewBox="0 0 56 56" width="100%" height="100%" fill="none" aria-hidden="true">';
+    const sun = (cx, cy, r, rays) => {
+      let o = '<circle class="sun-c" cx="' + cx + '" cy="' + cy + '" r="' + r + '"/>';
+      if (rays) for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, r1 = r + 3.5, r2 = r + 7;
+        o += '<line class="sun-r" stroke-width="2.6" stroke-linecap="round" x1="' + (cx + Math.cos(a) * r1).toFixed(1) + '" y1="' + (cy + Math.sin(a) * r1).toFixed(1) + '" x2="' + (cx + Math.cos(a) * r2).toFixed(1) + '" y2="' + (cy + Math.sin(a) * r2).toFixed(1) + '"/>'; }
+      return o;
+    };
+    const moon = (cx, cy, r) => '<path class="moon" d="M' + (cx + r * .35) + ' ' + (cy - r) + 'a' + r + ' ' + r + ' 0 1 0 ' + r * 1.05 + ' ' + r * 1.35 + 'a' + r * .85 + ' ' + r * .85 + ' 0 0 1 ' + (-r * 1.05) + ' ' + (-r * 1.35) + 'z"/>';
+    const cloud = (t) => '<g transform="' + (t || '') + '"><path class="cloud" d="' + CLOUD + '"/></g>';
+    if (code === 's') s += night ? moon(26, 26, 13) : sun(28, 28, 11, true);
+    else if (code === 'p') s += (night ? moon(20, 20, 10) : sun(21, 21, 9, true)) + cloud('translate(8 4)');
+    else if (code === 'c') s += cloud('translate(2 -4)') + '<g opacity=".85">' + cloud('translate(10 6) scale(.9)') + '</g>';
+    else if (code === 'r') s += cloud('translate(5 -3)') + '<g class="rain" stroke-width="2.8" stroke-linecap="round"><path d="M18 43l-2 6M28 43l-2 6M38 43l-2 6"/></g>';
+    else if (code === 't') s += cloud('translate(5 -4)') + '<path class="bolt" d="M29 34l-7 11h5l-2 8 9-12h-5z"/>';
+    return s + '</svg>';
+  }
+
+  // ---------- Render ----------
+  function renderChips() {
+    $('cityChips').innerHTML = ORDER.map(k => {
+      const c = CITIES[k];
+      return '<li class="shrink-0"><button type="button" class="chip h-11 px-5 rounded-full text-[15px] font-bold" data-city="' + k + '" aria-pressed="' + (k === state.city) + '">' + c.name + '</button></li>';
+    }).join('');
+  }
+
+  function heroTheme(city, night) {
+    const root = document.documentElement.style;
+    let a, b;
+    if (night) { a = '#0e1b3a'; b = '#2a3f78'; }
+    else if (city.code === 'r') { a = '#2d4560'; b = '#587792'; }
+    else if (city.code === 's') { a = '#1a5aa8'; b = '#2f82d0'; }
+    else if (city.code === 't') { a = '#2b3350'; b = '#4f5a80'; }
+    else { a = '#1b4f8f'; b = '#3b7cc4'; }
+    root.setProperty('--hero-a', a); root.setProperty('--hero-b', b);
+  }
+
+  function uvLabel(u) { return u <= 2 ? 'Low' : u <= 5 ? 'Moderate' : u <= 7 ? 'High' : 'Very high'; }
+  function humLabel(h) { return h < 40 ? 'Dry' : h <= 65 ? 'Comfortable' : h <= 80 ? 'Humid' : 'Very humid'; }
+
+  function renderStatic() {
+    const city = CITIES[state.city];
+    const t = parts(city.tz);
+    const night = isNight(city, t.h * 60 + t.m);
+    heroTheme(city, night);
+
+    $('cityName').textContent = city.name;
+    $('cityMeta').textContent = city.meta;
+    $('temp').textContent = toU(city.temp);
+    $('tempUnit').textContent = '°' + state.unit;
+    $('cond').textContent = city.cond;
+    $('hi').textContent = deg(city.hi);
+    $('lo').textContent = deg(city.lo);
+    $('tip').textContent = city.tip;
+    $('heroIcon').innerHTML = icon(city.code, night);
+    $('live').textContent = city.name + ': ' + toU(city.temp) + ' degrees ' + (state.unit === 'C' ? 'Celsius' : 'Fahrenheit') + ', ' + city.cond;
+
+    // Details
+    const imperial = state.unit === 'F';
+    const wind = imperial ? Math.round(city.wind * 0.621) + ' mph' : city.wind + ' km/h';
+    const vis = imperial ? Math.round(city.vis * 0.621) + ' mi' : city.vis + ' km';
+    const D = [
+      ['Humidity', city.humidity + '%', humLabel(city.humidity), 'M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z'],
+      ['Wind', wind, 'Light breeze', 'M3 9h10a3 3 0 1 0-3-3M3 15h14a3 3 0 1 1-3 3M3 12h7'],
+      ['UV Index', String(city.uv), uvLabel(city.uv), 'M12 4v2M12 18v2M4 12h2M18 12h2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M6.3 17.7l1.4-1.4M16.3 7.7l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z'],
+      ['Visibility', vis, city.vis >= 10 ? 'Clear view' : 'Reduced', 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zm10-3a3 3 0 1 0 0 6 3 3 0 0 0 0-6z'],
+      ['Feels like', deg(city.feels), city.feels < city.temp ? 'Cooler than actual' : city.feels > city.temp ? 'Warmer than actual' : 'Same as actual', 'M10 14.5V5a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0z']
+    ];
+    $('details').innerHTML = D.map((d, i) =>
+      '<div class="tile p-4 ' + (i === 4 ? 'col-span-2 sm:col-span-2' : '') + '">' +
+        '<dt class="flex items-center gap-2 text-[13px] font-bold muted uppercase tracking-wide">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1f5ea8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d[3] + '"/></svg>' + d[0] + '</dt>' +
+        '<dd class="mt-2 text-[1.7rem] leading-none font-extrabold tabular-nums">' + d[1] + '</dd>' +
+        '<dd class="mt-1.5 text-sm muted">' + d[2] + '</dd>' +
+      '</div>').join('');
+
+    // 7 day
+    const all = city.days;
+    const min = Math.min.apply(null, all.map(d => d[2])), max = Math.max.apply(null, all.map(d => d[1]));
+    const span = max - min;
+    $('week').innerHTML = all.map((d, i) => {
+      const date = new Date(Date.now() + i * 864e5);
+      const name = i === 0 ? 'Today' : new Intl.DateTimeFormat('en-US', { timeZone: city.tz, weekday: 'short' }).format(date);
+      const left = ((d[2] - min) / span * 100).toFixed(1), width = ((d[1] - d[2]) / span * 100).toFixed(1);
+      return '<li class="grid grid-cols-[3.5rem_2.5rem_1fr] sm:grid-cols-[4.5rem_2.75rem_3.5rem_1fr] items-center gap-x-3 py-3 flex-1">' +
+        '<span class="font-bold ' + (i === 0 ? 'text-[var(--accent)]' : '') + '">' + name + '</span>' +
+        '<span class="w-10 h-10">' + icon(d[0], false) + '</span>' +
+        '<span class="hidden sm:block text-sm font-semibold ' + (d[3] >= 30 ? 'text-[#1f5ea8]' : 'muted') + '"><span class="sr-only">Chance of rain </span>' + (d[3] ? '💧 ' + d[3] + '%' : '<span aria-hidden="true">–</span><span class="sr-only">0%</span>') + '</span>' +
+        '<span class="flex items-center gap-3"><span class="sr-only">' + COND[d[0]] + '. </span>' +
+          '<span class="w-9 text-right text-sm font-semibold muted tabular-nums"><span class="sr-only">Low </span>' + deg(d[2]) + '</span>' +
+          '<span class="range-track relative h-2 flex-1 rounded-full" aria-hidden="true"><span class="range-fill absolute top-0 bottom-0 rounded-full" style="left:' + left + '%;width:' + Math.max(width, 8) + '%"></span></span>' +
+          '<span class="w-9 text-sm font-extrabold tabular-nums"><span class="sr-only">High </span>' + deg(d[1]) + '</span>' +
+        '</span></li>';
+    }).join('');
+  }
+
+  function renderHourly(h) {
+    const city = CITIES[state.city];
+    $('hourly').innerHTML = city.hourT.map((t, i) => {
+      const hh = (h + i) % 24;
+      const night = isNight(city, hh * 60 + 30);
+      const code = city.hourC[i];
+      const now = i === 0;
+      return '<li class="shrink-0 w-[4.6rem] rounded-[var(--r-md)] py-3 flex flex-col items-center gap-1.5 ' + (now ? 'now-cell' : 'tile') + '">' +
+        '<span class="text-[13px] font-bold ' + (now ? 'text-[var(--accent)]' : 'muted') + '">' + (now ? 'Now' : hourLabel(hh)) + '</span>' +
+        '<span class="w-9 h-9">' + icon(code, night) + '</span>' +
+        '<span class="text-lg font-extrabold tabular-nums"><span class="sr-only">' + COND[code] + ', </span>' + deg(t) + '</span>' +
+        '<span class="text-xs font-semibold ' + (city.hourP[i] >= 30 ? 'text-[#1f5ea8]' : 'muted') + '"><span class="sr-only">rain chance </span>' + city.hourP[i] + '%</span>' +
+      '</li>';
+    }).join('');
+  }
+
+  function renderSun(t) {
+    const city = CITIES[state.city];
+    const sr = toMin(city.sunrise), ss = toMin(city.sunset), now = t.h * 60 + t.m;
+    const prog = Math.max(0, Math.min(1, (now - sr) / (ss - sr)));
+    const up = now >= sr && now < ss;
+    // arc from (20,100) to (280,100), semicircle-ish
+    const cx = 150, cy = 104, rx = 130, ry = 84;
+    const ang = Math.PI * (1 - prog);
+    const sx = cx + rx * Math.cos(ang), sy = cy - ry * Math.sin(ang);
+    const daylight = ss - sr;
+    $('sunCard').innerHTML =
+      '<h2 class="text-xl font-extrabold tracking-tight">Sunrise &amp; sunset</h2>' +
+      '<svg viewBox="0 0 300 124" class="w-full mt-3" role="img" aria-label="Sun position: ' + (up ? Math.round(prog * 100) + ' percent of the way through daylight' : 'currently below the horizon') + '">' +
+        '<defs><linearGradient id="sk" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#dcebfb"/><stop offset="1" stop-color="#f7fbff" stop-opacity="0"/></linearGradient></defs>' +
+        '<path d="M20 104A130 84 0 0 1 280 104Z" fill="url(#sk)"/>' +
+        '<path d="M20 104A130 84 0 0 1 280 104" fill="none" stroke="#9db8d6" stroke-width="2" stroke-dasharray="3 6" stroke-linecap="round"/>' +
+        '<line x1="8" y1="104" x2="292" y2="104" stroke="#c5d3e3" stroke-width="2" stroke-linecap="round"/>' +
+        (up ? '<circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="15" fill="#f5a623" opacity=".25"/><circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="8.5" fill="#f5a623"/>' : '<path d="M150 112a0 0 0 0 0 0 0" />') +
+      '</svg>' +
+      '<div class="mt-2 grid grid-cols-2 gap-3">' +
+        '<div><p class="text-[13px] font-bold muted uppercase tracking-wide">Sunrise</p><p class="text-2xl font-extrabold tabular-nums">' + city.sunrise + '</p></div>' +
+        '<div class="text-right"><p class="text-[13px] font-bold muted uppercase tracking-wide">Sunset</p><p class="text-2xl font-extrabold tabular-nums">' + city.sunset + '</p></div>' +
+      '</div>' +
+      '<p class="mt-3 text-sm muted">' + Math.floor(daylight / 60) + ' h ' + (daylight % 60) + ' min of daylight' + (up ? ' · ' + Math.floor((ss - now) / 60) + ' h ' + ((ss - now) % 60) + ' min until sunset' : ' · the sun is down in ' + city.name) + '</p>';
+  }
+
+  function tick(force) {
+    const city = CITIES[state.city];
+    const t = parts(city.tz);
+    $('clock').textContent = new Intl.DateTimeFormat('en-US', { timeZone: city.tz, hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date());
+    $('dateLine').textContent = t.weekday + ', ' + t.month + ' ' + t.day;
+    if (force || t.h !== state.lastHour) { renderHourly(t.h); state.lastHour = t.h; }
+    if (force || t.m !== state.lastMin) { renderSun(t); state.lastMin = t.m; if (!force) { const n = isNight(city, t.h * 60 + t.m); heroTheme(city, n); $('heroIcon').innerHTML = icon(city.code, n); } }
+  }
+
+  function renderAll() { renderChips(); renderStatic(); tick(true); }
+
+  // ---------- Events ----------
+  function setCity(k) {
+    if (!CITIES[k]) return;
+    state.city = k;
+    renderAll();
+    $('hero').classList.remove('fade-in'); void $('hero').offsetWidth; $('hero').classList.add('fade-in');
+    $('searchMsg').textContent = '';
+  }
+  function setUnit(u) {
+    state.unit = u;
+    document.querySelectorAll('[data-unit]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.unit === u)));
+    renderStatic(); tick(true);
+  }
+
+  document.addEventListener('click', (e) => {
+    const c = e.target.closest('[data-city]'); if (c) { setCity(c.dataset.city); $('search').value = ''; c.focus(); return; }
+    const u = e.target.closest('[data-unit]'); if (u) setUnit(u.dataset.unit);
+  });
+
+  function findCity(q) {
+    q = q.trim().toLowerCase(); if (!q) return null;
+    const exact = ORDER.find(k => CITIES[k].name.toLowerCase() === q);
+    return exact || ORDER.find(k => CITIES[k].name.toLowerCase().startsWith(q)) || ORDER.find(k => CITIES[k].name.toLowerCase().includes(q));
+  }
+  $('searchForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const k = findCity($('search').value);
+    if (k) { setCity(k); $('search').value = ''; }
+    else if ($('search').value.trim()) $('searchMsg').textContent = 'Try San Francisco, Tokyo, London or New York.';
+  });
+  $('search').addEventListener('input', () => {
+    const v = $('search').value.trim().toLowerCase();
+    const k = ORDER.find(k => CITIES[k].name.toLowerCase() === v);
+    if (k && k !== state.city) { setCity(k); }
+    else if (!v) $('searchMsg').textContent = '';
+  });
+
+  renderAll();
+  setInterval(() => tick(false), 1000);
+})();
+</script>
+</body>
+</html>

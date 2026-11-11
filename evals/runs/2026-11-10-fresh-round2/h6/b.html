@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loomdesk - Bookings, rotas and reminders for salons</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Graphite ramp, dark theme. One accent, used sparingly. */
+      --sidebar: #0f0f10;
+      --page: #141415;
+      --card: #19191b;
+      --raised: #232325;
+      --text: #ededed;
+      --text-2: #c4c4c9;
+      --text-3: #9a9aa0;
+      --line: rgba(237, 237, 237, 0.08);
+      --accent: #ff7a45;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --font: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--page); color: var(--text); }
+    body {
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+    .wrap { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+    @media (min-width: 768px) { .wrap { padding: 0 24px; } }
+
+    /* Navigation */
+    .nav {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .nav-links { display: none; gap: 28px; font-size: 14px; color: var(--text-2); }
+    .nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 160ms var(--ease);
+    }
+    .nav-links a:hover { color: var(--text); }
+    .icon { width: 16px; height: 16px; flex: none; color: var(--text-3); }
+    @media (min-width: 768px) { .nav-links { display: flex; } }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background-color 160ms var(--ease), transform 160ms var(--ease);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-sm { height: 34px; padding: 0 14px; font-size: 14px; }
+    .btn-primary { background: var(--text); color: var(--page); }
+    .btn-primary:hover { background: #d6d6d9; }
+    .btn-secondary { background: var(--raised); color: var(--text); box-shadow: inset 0 0 0 1px var(--line); }
+    .btn-secondary:hover { background: #2b2b2e; }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 48px;
+      align-items: center;
+      padding: 72px 0 80px;
+    }
+    @media (min-width: 900px) {
+      .hero { grid-template-columns: 1fr 1fr; gap: 64px; padding: 64px 0 96px; }
+    }
+    .news {
+      display: inline-block;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: var(--text-2);
+      transition: color 160ms var(--ease);
+    }
+    .news:hover { color: var(--text); }
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(40px, 5vw, 60px);
+      line-height: 1.04;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      max-width: 14ch;
+    }
+    .lede {
+      margin: 20px 0 0;
+      max-width: 36rem;
+      font-size: 18px;
+      line-height: 28px;
+      color: var(--text-2);
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+
+    /* Product panel: the one drawn thing */
+    .panel {
+      margin: 0;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .panel-date { margin: 0; font-size: 15px; font-weight: 500; }
+    .panel-sub { margin: 2px 0 0; font-size: 13px; color: var(--text-3); }
+    .tiles {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 20px 0;
+    }
+    .tile {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--raised);
+    }
+    .label { font-size: 12px; color: var(--text-3); }
+    .fig {
+      font-family: var(--mono);
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+    .fig small {
+      display: block;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-3);
+    }
+    .base { font-size: 12px; line-height: 16px; color: var(--text-2); }
+    .accent-text { color: var(--accent); }
+
+    .rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+    .rows li {
+      display: grid;
+      grid-template-columns: 52px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 52px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .time {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-2);
+      font-variant-numeric: tabular-nums;
+    }
+    .name { display: block; font-size: 14px; color: var(--text); }
+    .svc {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-3);
+    }
+    .staff { font-size: 13px; color: var(--text-2); }
+    .muted-row .name { color: var(--text-3); }
+    .dot {
+      width: 6px;
+      height: 6px;
+      flex: none;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav" aria-label="Main">
+      <a class="brand" href="#" aria-label="Loomdesk home">
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+          <rect x="2" y="3" width="3.5" height="14" rx="1.75" fill="#ededed"/>
+          <rect x="8.25" y="6" width="3.5" height="11" rx="1.75" fill="#ff7a45"/>
+          <rect x="14.5" y="1" width="3.5" height="18" rx="1.75" fill="#ededed"/>
+        </svg>
+        <span>Loomdesk</span>
+      </a>
+      <div class="nav-links">
+        <a href="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+          Features
+        </a>
+        <a href="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+          Pricing
+        </a>
+        <a href="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg>
+          Stories
+        </a>
+        <a href="#">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8"/></svg>
+          Blog
+        </a>
+      </div>
+      <a class="btn btn-primary btn-sm" href="#">Start free trial</a>
+    </nav>
+
+    <main class="hero">
+      <div>
+        <a class="news" href="#">Now with AI-powered rebooking &rarr;</a>
+        <h1>Every chair booked, every stylist on rota.</h1>
+        <p class="lede">Loomdesk runs online bookings, staff rotas and text reminders for your salon, and offers AI-powered rebooking when a client cancels.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#">Start free trial</a>
+          <a class="btn btn-secondary" href="#">Watch demo</a>
+        </div>
+      </div>
+
+      <figure class="panel" aria-label="Sample schedule for one day">
+        <div class="panel-head">
+          <div>
+            <p class="panel-date">Tuesday 10 November</p>
+            <p class="panel-sub">Maya, Jonah, Priya</p>
+          </div>
+          <p class="panel-sub">32 appointments</p>
+        </div>
+
+        <div class="tiles">
+          <div class="tile">
+            <span class="label">Booked</span>
+            <span class="fig">27<small>of 32 slots</small></span>
+            <span class="base">Today</span>
+          </div>
+          <div class="tile">
+            <span class="label">No-shows</span>
+            <span class="fig">1</span>
+            <span class="base">3 fewer than last week</span>
+          </div>
+          <div class="tile">
+            <span class="label">Rebooked</span>
+            <span class="fig accent-text">4</span>
+            <span class="base">From cancellations this week</span>
+          </div>
+        </div>
+
+        <ul class="rows">
+          <li>
+            <span class="time">10:00</span>
+            <div>
+              <span class="name">Olivia Reed</span>
+              <span class="svc">Cut and colour</span>
+            </div>
+            <span class="staff">Maya</span>
+          </li>
+          <li class="muted-row">
+            <span class="time">11:30</span>
+            <div>
+              <span class="name">Daniel Ortiz</span>
+              <span class="svc">Beard trim</span>
+            </div>
+            <span class="staff">Cancelled</span>
+          </li>
+          <li>
+            <span class="time">12:00</span>
+            <div>
+              <span class="name">Hannah Lim</span>
+              <span class="svc">Highlights</span>
+            </div>
+            <span class="staff">Maya</span>
+          </li>
+          <li>
+            <span class="time">13:15</span>
+            <div>
+              <span class="name">Amara Okafor</span>
+              <span class="svc"><i class="dot" aria-hidden="true"></i>Rebooked from 11:30 by text</span>
+            </div>
+            <span class="staff">Priya</span>
+          </li>
+        </ul>
+      </figure>
+    </main>
+  </div>
+</body>
+</html>

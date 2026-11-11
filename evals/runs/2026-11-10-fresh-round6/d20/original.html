@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Margin Book Club</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #fff8e7 0%, #ffe4ec 100%); min-height: 100vh; }
+    .glow { box-shadow: 0 0 24px rgba(236, 72, 153, 0.45); }
+    .float { animation: floaty 3s ease-in-out infinite; }
+    @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    .pulse-btn { animation: pulse 1.8s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.6); } 50% { box-shadow: 0 0 0 14px rgba(168, 85, 247, 0); } }
+  </style>
+</head>
+<body class="text-gray-800">
+  <div class="flex h-[900px] w-[1280px] overflow-hidden">
+
+    <aside class="w-[237px] bg-white/70 backdrop-blur border-r border-pink-100 p-[22px] flex flex-col">
+      <div class="flex items-center gap-2 mb-[30px]">
+        <span class="text-2xl">📚</span>
+        <span class="text-xl font-black bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">Margin!</span>
+      </div>
+      <p class="text-[10px] font-black tracking-[0.2em] text-pink-400 uppercase mb-3">MENU</p>
+      <nav class="space-y-2 font-extrabold text-sm">
+        <a class="block rounded-2xl px-4 py-[11px] bg-gradient-to-r from-pink-400 to-purple-500 text-white glow">🏠 Home</a>
+        <a class="block rounded-2xl px-4 py-[11px] hover:bg-pink-50">📖 My Shelf</a>
+        <a class="block rounded-2xl px-4 py-[11px] hover:bg-pink-50">🗓️ Meetings</a>
+        <a class="block rounded-2xl px-4 py-[11px] hover:bg-pink-50">💬 Discussions <span class="ml-1 text-[10px] bg-rose-500 text-white rounded-full px-2 py-[2px]">NEW</span></a>
+        <a class="block rounded-2xl px-4 py-[11px] hover:bg-pink-50">⭐ Go PRO</a>
+      </nav>
+      <div class="mt-auto rounded-3xl p-[18px] bg-gradient-to-br from-yellow-200 via-pink-200 to-purple-200 float">
+        <p class="text-sm font-black">🎉 Reading streak!</p>
+        <p class="text-xs font-semibold mt-1">You're in the top 1% of readers!!</p>
+      </div>
+    </aside>
+
+    <main class="flex-1 p-[34px] overflow-y-auto">
+      <header class="flex items-center justify-between mb-[26px]">
+        <div>
+          <p class="text-[11px] font-black tracking-[0.25em] text-purple-500 uppercase">Thursday, Nov 10 2026</p>
+          <h1 class="text-[40px] font-black leading-tight">Hey there, bookworm! 👋✨</h1>
+        </div>
+        <button class="pulse-btn rounded-full px-7 py-3 font-black text-white bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:scale-110 transition-transform">🚀 Join the Party!!</button>
+      </header>
+
+      <div class="grid grid-cols-3 gap-[18px] mb-[22px]">
+        <section class="col-span-2 rounded-[28px] p-[26px] bg-gradient-to-br from-rose-200 via-pink-200 to-orange-100 glow hover:scale-[1.02] transition-transform">
+          <p class="text-[10px] font-black tracking-[0.2em] uppercase text-rose-600">📖 CURRENT BOOK</p>
+          <div class="flex gap-5 mt-3">
+            <div class="w-[118px] h-[164px] rounded-2xl bg-gradient-to-br from-fuchsia-400 to-amber-300 float flex items-center justify-center text-4xl">🌙</div>
+            <div class="flex-1">
+              <h2 class="text-[26px] font-black">The Midnight Garden!</h2>
+              <p class="text-sm font-bold text-gray-600">by Elena Varga · 412 pages</p>
+              <div class="mt-4">
+                <div class="flex justify-between text-xs font-extrabold"><span>Progress</span><span>64%</span></div>
+                <div class="h-3 rounded-full bg-white/80 mt-1 overflow-hidden"><div class="h-full w-[64%] rounded-full bg-gradient-to-r from-pink-500 to-purple-500"></div></div>
+              </div>
+              <p class="mt-4 text-sm font-black">📅 Next meeting: 11/14/26 · 7PM!!</p>
+              <button class="mt-3 rounded-full px-5 py-2 text-sm font-black text-white bg-gradient-to-r from-pink-500 to-orange-400 glow hover:scale-110 transition-transform">✨ Continue reading</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="rounded-[28px] p-[22px] bg-white/80 shadow-lg hover:scale-[1.03] transition-transform">
+          <p class="text-[10px] font-black tracking-[0.2em] uppercase text-purple-500">👥 MEMBERS' PROGRESS</p>
+          <ul class="mt-3 space-y-[11px]">
+            <li class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 text-white font-black text-xs flex items-center justify-center">AM</span><span class="flex-1 text-sm font-extrabold">Ana M.</span><span class="text-xs font-black text-pink-600">92%</span></li>
+            <li class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-400 to-indigo-500 text-white font-black text-xs flex items-center justify-center">JK</span><span class="flex-1 text-sm font-extrabold">Jun K.</span><span class="text-xs font-black text-pink-600">78%</span></li>
+            <li class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-300 to-orange-400 text-white font-black text-xs flex items-center justify-center">RB</span><span class="flex-1 text-sm font-extrabold">Ravi B.</span><span class="text-xs font-black text-pink-600">64%</span></li>
+            <li class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-gradient-to-br from-teal-300 to-emerald-500 text-white font-black text-xs flex items-center justify-center">SL</span><span class="flex-1 text-sm font-extrabold">Sofia L.</span><span class="text-xs font-black text-pink-600">51%</span></li>
+            <li class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-300 to-blue-500 text-white font-black text-xs flex items-center justify-center">TO</span><span class="flex-1 text-sm font-extrabold">Tom O.</span><span class="text-xs font-black text-pink-600">33%</span></li>
+            <li class="flex items-center gap-3"><span class="w-9 h-9 rounded-full bg-gradient-to-br from-lime-300 to-green-500 text-white font-black text-xs flex items-center justify-center">NC</span><span class="flex-1 text-sm font-extrabold">Nia C.</span><span class="text-xs font-black text-pink-600">12%</span></li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="grid grid-cols-3 gap-[18px]">
+        <section class="rounded-[28px] p-[22px] bg-white/80 shadow-lg">
+          <p class="text-[10px] font-black tracking-[0.2em] uppercase text-indigo-500">🗓️ UPCOMING MEETINGS</p>
+          <ul class="mt-3 space-y-3">
+            <li class="rounded-2xl p-[14px] bg-gradient-to-r from-yellow-100 to-pink-100 hover:scale-105 transition-transform"><p class="text-sm font-black">Nov 14, 2026 · 7 PM</p><p class="text-xs font-bold text-gray-600">The Midnight Garden, ch. 9–12</p></li>
+            <li class="rounded-2xl p-[14px] bg-gradient-to-r from-sky-100 to-violet-100 hover:scale-105 transition-transform"><p class="text-sm font-black">21/11/2026 · 6:30pm</p><p class="text-xs font-bold text-gray-600">Vote-off night!! 🗳️</p></li>
+            <li class="rounded-2xl p-[14px] bg-gradient-to-r from-green-100 to-teal-100 hover:scale-105 transition-transform"><p class="text-sm font-black">Dec. 5 · 19:00</p><p class="text-xs font-bold text-gray-600">Holiday potluck 🎄🍪</p></li>
+          </ul>
+        </section>
+
+        <section class="col-span-2 rounded-[28px] p-[22px] bg-white/80 shadow-lg">
+          <p class="text-[10px] font-black tracking-[0.2em] uppercase text-pink-500">📚 TO-READ SHELF</p>
+          <div class="grid grid-cols-3 gap-[13px] mt-3">
+            <div class="rounded-2xl p-[14px] bg-gradient-to-br from-pink-300 to-rose-400 text-white glow hover:scale-105 transition-transform"><p class="font-black text-sm">Salt &amp; Static!</p><p class="text-xs font-bold opacity-90">R. Okafor</p><p class="mt-2 text-xs font-black">🔥 14 votes</p></div>
+            <div class="rounded-2xl p-[14px] bg-gradient-to-br from-violet-300 to-indigo-400 text-white glow hover:scale-105 transition-transform"><p class="font-black text-sm">Paper Lanterns</p><p class="text-xs font-bold opacity-90">M. Chen</p><p class="mt-2 text-xs font-black">🔥 11 votes</p></div>
+            <div class="rounded-2xl p-[14px] bg-gradient-to-br from-amber-200 to-orange-300 text-white glow hover:scale-105 transition-transform"><p class="font-black text-sm">The Quiet Harbor</p><p class="text-xs font-bold opacity-90">L. Brandt</p><p class="mt-2 text-xs font-black">🔥 9 votes</p></div>
+            <div class="rounded-2xl p-[14px] bg-gradient-to-br from-teal-200 to-cyan-400 text-white glow hover:scale-105 transition-transform"><p class="font-black text-sm">Wild Tangerine</p><p class="text-xs font-bold opacity-90">A. Haddad</p><p class="mt-2 text-xs font-black">🔥 7 votes</p></div>
+            <div class="rounded-2xl p-[14px] bg-gradient-to-br from-lime-200 to-emerald-400 text-white glow hover:scale-105 transition-transform"><p class="font-black text-sm">Glass Orchard</p><p class="text-xs font-bold opacity-90">P. Lindqvist</p><p class="mt-2 text-xs font-black">🔥 5 votes</p></div>
+            <div class="rounded-2xl p-[14px] bg-gradient-to-br from-fuchsia-300 to-pink-500 text-white glow hover:scale-105 transition-transform"><p class="font-black text-sm">Honey &amp; Ash!!</p><p class="text-xs font-bold opacity-90">S. Ruiz</p><p class="mt-2 text-xs font-black">🔥 3 votes <span class="bg-yellow-300 text-yellow-900 rounded-full px-2 py-[1px] ml-1">PRO PICK</span></p></div>
+          </div>
+        </section>
+      </div>
+
+      <section class="mt-[22px] rounded-[28px] p-[22px] bg-white/80 shadow-lg">
+        <p class="text-[10px] font-black tracking-[0.2em] uppercase text-rose-500">💬 RECENT DISCUSSION</p>
+        <ul class="mt-3 grid grid-cols-2 gap-[14px]">
+          <li class="flex gap-3 rounded-2xl p-[14px] bg-pink-50 hover:scale-[1.02] transition-transform"><span class="w-9 h-9 shrink-0 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 text-white font-black text-xs flex items-center justify-center">AM</span><div><p class="text-sm font-black">Ana M. <span class="text-xs font-semibold text-gray-500">· 2 hrs ago</span></p><p class="text-sm font-semibold">OMG the ending!!! 😭 Best twist of the year, no contest!</p></div></li>
+          <li class="flex gap-3 rounded-2xl p-[14px] bg-purple-50 hover:scale-[1.02] transition-transform"><span class="w-9 h-9 shrink-0 rounded-full bg-gradient-to-br from-purple-400 to-indigo-500 text-white font-black text-xs flex items-center justify-center">JK</span><div><p class="text-sm font-black">Jun K. <span class="text-xs font-semibold text-gray-500">· 11/09/2026</span></p><p class="text-sm font-semibold">Chapter 7 totally wrecked me 🥹 unbelievable writing!</p></div></li>
+          <li class="flex gap-3 rounded-2xl p-[14px] bg-amber-50 hover:scale-[1.02] transition-transform"><span class="w-9 h-9 shrink-0 rounded-full bg-gradient-to-br from-amber-300 to-orange-400 text-white font-black text-xs flex items-center justify-center">RB</span><div><p class="text-sm font-black">Ravi B. <span class="text-xs font-semibold text-gray-500">· yesterday</span></p><p class="text-sm font-semibold">Anyone else spot the garden clue?? 🌿 Let's GO deep!</p></div></li>
+          <li class="flex gap-3 rounded-2xl p-[14px] bg-teal-50 hover:scale-[1.02] transition-transform"><span class="w-9 h-9 shrink-0 rounded-full bg-gradient-to-br from-teal-300 to-emerald-500 text-white font-black text-xs flex items-center justify-center">SL</span><div><p class="text-sm font-black">Sofia L. <span class="text-xs font-semibold text-gray-500">· 3 days ago</span></p><p class="text-sm font-semibold">Honestly the #1 most-loved pick of all time!! 💖🚀</p></div></li>
+        </ul>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

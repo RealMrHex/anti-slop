@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wavecast: Podcast hosting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --surface: #fdfbf7;
+      --raised: #efe9df;
+      --text: #1f1b16;
+      --text2: #5e554a;
+      --muted: #7b7266;
+      --line: rgba(31, 27, 22, 0.08);
+      --wave-idle: #d9d0c1;
+      --accent: #9a4f08;
+      --accent-hover: #7d3f06;
+      --accent-wave: #c9731a;
+      --pos: #16a34a;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    svg { display: block; }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+    @media (min-width: 768px) { .wrap { padding: 0 32px; } }
+
+    /* Header */
+    .top { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+    .links { display: none; gap: 32px; font-size: 14px; font-weight: 500; color: var(--text2); }
+    .links a { transition: color 160ms var(--ease); }
+    .links a:hover { color: var(--text); }
+    @media (min-width: 768px) { .links { display: flex; } }
+    .actions { display: flex; align-items: center; gap: 16px; }
+    .quiet { font-size: 14px; font-weight: 500; color: var(--text2); padding: 8px 4px; transition: color 160ms var(--ease); }
+    .quiet:hover { color: var(--text); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 44px; padding: 0 20px; border-radius: 10px;
+      font: inherit; font-size: 15px; font-weight: 500; white-space: nowrap;
+      transition: background-color 160ms var(--ease), transform 160ms var(--ease);
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: var(--surface); color: var(--text); box-shadow: inset 0 0 0 1px var(--line); }
+    .btn-secondary:hover { background: var(--raised); }
+    .btn:active { transform: scale(0.98); }
+    .btn:focus-visible, .quiet:focus-visible, .links a:focus-visible, .eyebrow:focus-visible {
+      outline: 2px solid var(--accent); outline-offset: 2px;
+    }
+
+    /* Hero */
+    .hero {
+      display: grid; gap: 56px; align-items: center;
+      padding: 56px 0 80px;
+    }
+    @media (min-width: 960px) {
+      .hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 64px; padding: 96px 0 112px; }
+    }
+    .eyebrow {
+      display: inline-block; font-size: 14px; font-weight: 500; color: var(--accent);
+      border-radius: 4px;
+    }
+    .eyebrow:hover { text-decoration: underline; text-underline-offset: 4px; }
+    h1 {
+      margin: 16px 0 0;
+      font-size: clamp(40px, 5vw, 64px);
+      line-height: 1.04;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+    }
+    .lead {
+      margin: 24px 0 0; max-width: 34rem;
+      font-size: 18px; line-height: 1.6; color: var(--text2);
+    }
+    .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
+
+    /* Product moment */
+    .panel {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 12px;
+      box-shadow: inset 0 0 0 1px var(--line), 0 8px 24px rgba(31, 27, 22, 0.06);
+    }
+    .episode {
+      background: var(--raised);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .episode-head { display: flex; gap: 16px; align-items: center; }
+    .cover {
+      flex: none; width: 56px; height: 56px; border-radius: 8px;
+      background: #2a241d; display: grid; place-items: center;
+    }
+    .episode-title { font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
+    .episode-meta { margin-top: 2px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .wave { margin-top: 24px; width: 100%; height: 64px; }
+    .times {
+      display: flex; justify-content: space-between; margin-top: 8px;
+      font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums;
+    }
+
+    .dist { padding: 16px 8px 8px; }
+    .dist-title { font-size: 13px; color: var(--muted); margin: 0 0 4px 8px; }
+    .dist-row {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 40px; padding: 0 8px; border-radius: 8px; font-size: 14px;
+    }
+    .dist-name { display: flex; align-items: center; gap: 10px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pos); }
+    .dist-state { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+    /* Features */
+    .features {
+      display: grid; gap: 32px;
+      border-top: 1px solid var(--line);
+      padding: 32px 0 96px;
+    }
+    @media (min-width: 768px) { .features { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; } }
+    .feature-icon { color: var(--muted); }
+    .feature-title { margin: 12px 0 0; font-size: 16px; font-weight: 500; }
+    .feature-text { margin: 4px 0 0; font-size: 15px; color: var(--text2); }
+
+    /* One entrance on load */
+    @media (prefers-reduced-motion: no-preference) {
+      .rise { animation: rise 480ms var(--ease) both; }
+      .rise-2 { animation: rise 480ms var(--ease) 60ms both; }
+      @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <a href="#" class="brand" aria-label="Wavecast home">
+        <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="9" width="2.5" height="6" rx="1.25" fill="#9a4f08"/>
+          <rect x="7.5" y="5" width="2.5" height="14" rx="1.25" fill="#9a4f08"/>
+          <rect x="12" y="8" width="2.5" height="8" rx="1.25" fill="#9a4f08"/>
+          <rect x="16.5" y="3" width="2.5" height="18" rx="1.25" fill="#9a4f08"/>
+        </svg>
+        <span>Wavecast</span>
+      </a>
+      <nav class="links" aria-label="Main">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Analytics</a>
+        <a href="#">Resources</a>
+      </nav>
+      <div class="actions">
+        <a href="#" class="quiet">Log in</a>
+        <a href="#" class="btn btn-primary">Start free</a>
+      </div>
+    </header>
+
+    <main class="hero">
+      <div class="rise">
+        <a href="#" class="eyebrow">New: AI show notes</a>
+        <h1>Upload once. Publish in seconds.</h1>
+        <p class="lead">
+          Wavecast is podcast hosting that stays fast and simple. Upload each episode once and distribute it to Spotify and Apple Podcasts.
+        </p>
+        <div class="ctas">
+          <a href="#" class="btn btn-primary">Start publishing</a>
+          <a href="#" class="btn btn-secondary">Watch demo</a>
+        </div>
+      </div>
+
+      <div class="rise-2" aria-label="Episode preview">
+        <div class="panel">
+          <div class="episode">
+            <div class="episode-head">
+              <div class="cover" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c9731a" stroke-width="1.5" stroke-linecap="round">
+                  <rect x="9" y="2" width="6" height="11" rx="3"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <path d="M12 19v3"/>
+                </svg>
+              </div>
+              <div>
+                <div class="episode-title">Why we rebuilt the mixer</div>
+                <div class="episode-meta">Episode 42, 48:12</div>
+              </div>
+            </div>
+            <svg id="wave" class="wave" viewBox="0 0 240 64" preserveAspectRatio="none" aria-hidden="true"></svg>
+            <div class="times"><span>18:04</span><span>48:12</span></div>
+          </div>
+
+          <div class="dist">
+            <p class="dist-title">Distribution</p>
+            <div class="dist-row"><span class="dist-name"><span class="dot"></span>Spotify</span><span class="dist-state">Live, 2 min ago</span></div>
+            <div class="dist-row"><span class="dist-name"><span class="dot"></span>Apple Podcasts</span><span class="dist-state">Live, 2 min ago</span></div>
+            <div class="dist-row"><span class="dist-name"><span class="dot"></span>RSS feed</span><span class="dist-state">Updated just now</span></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <section class="features" aria-label="Highlights">
+      <div>
+        <svg class="feature-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+        <h3 class="feature-title">Publish in seconds</h3>
+        <p class="feature-text">Upload each episode once and send it to Spotify and Apple Podcasts.</p>
+      </div>
+      <div>
+        <svg class="feature-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <h3 class="feature-title">Your content stays yours</h3>
+        <p class="feature-text">Your episodes stay safe with Wavecast from upload to publish.</p>
+      </div>
+      <div>
+        <svg class="feature-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M22 7 13.5 15.5 8.5 10.5 2 17"/>
+          <path d="M16 7h6v6"/>
+        </svg>
+        <h3 class="feature-title">Hosting that grows with your show</h3>
+        <p class="feature-text">Keep the same workflow as your audience gets bigger.</p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      var svg = document.getElementById('wave');
+      var n = 60, step = 4, played = 22, html = '';
+      for (var i = 0; i < n; i++) {
+        var v = Math.abs(Math.sin(i * 0.41) * 0.55 + Math.sin(i * 0.97 + 1.3) * 0.3 + Math.sin(i * 2.1) * 0.15);
+        var h = Math.round((0.18 + v * 0.82) * 64);
+        var y = (64 - h) / 2;
+        var fill = i < played ? '#c9731a' : '#d9d0c1';
+        html += '<rect x="' + (i * step) + '" y="' + y + '" width="2.4" height="' + h + '" rx="1.2" fill="' + fill + '"/>';
+      }
+      svg.innerHTML = html;
+    })();
+  </script>
+</body>
+</html>

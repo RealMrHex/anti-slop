@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lingua - Course progress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #161513;
+    --sidebar: #12110f;
+    --card: #1c1a18;
+    --raised: #262421;
+    --line: rgba(239, 233, 222, 0.08);
+    --text: #efe9de;
+    --text-2: #aaa398;
+    --muted: #8a847a;
+    --accent: #f0b43c;
+    --on-accent: #1a1407;
+    --ok: #4cc38a;
+    --bad: #e5484d;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text);
+    font: 400 15px/22px var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, p, ul { margin: 0; }
+  ul { padding: 0; list-style: none; }
+  svg.i { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  .app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
+
+  /* Sidebar */
+  aside {
+    background: var(--sidebar);
+    border-right: 1px solid var(--line);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; font-weight: 500; font-size: 17px; }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex; align-items: center; gap: 12px; height: 36px; padding: 0 12px;
+    border-radius: 8px; color: var(--text-2); text-decoration: none; font-size: 14px;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .nav a:hover { background: var(--raised); color: var(--text); }
+  .nav a[aria-current="page"] { background: var(--raised); color: var(--text); font-weight: 500; }
+  .promo { margin-top: auto; padding: 16px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); }
+  .promo p + p { margin-top: 4px; }
+  .promo .sub { font-size: 13px; color: var(--text-2); }
+
+  /* Main */
+  main { padding: 24px 32px 24px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  .eyebrow { font-size: 13px; color: var(--text-2); }
+  h1 { font-size: 30px; line-height: 1.15; font-weight: 500; margin-top: 4px; }
+  .tools { display: flex; align-items: center; gap: 12px; }
+  .icon-btn {
+    position: relative; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--line); color: var(--text-2);
+    display: grid; place-items: center; cursor: pointer;
+    transition: color 150ms var(--ease), background-color 150ms var(--ease);
+  }
+  .icon-btn:hover { color: var(--text); background: var(--raised); }
+  .icon-btn .dot { position: absolute; top: 9px; right: 10px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--raised);
+    border: 1px solid var(--line); display: grid; place-items: center;
+    font-size: 13px; font-weight: 500; color: var(--text-2);
+  }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 22px; min-width: 0; }
+  .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .title { font-size: 16px; font-weight: 500; line-height: 1.3; }
+  .label { font-size: 13px; color: var(--text-2); }
+  .meta { font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .figure { font-size: 32px; font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums; }
+  .unit { font-size: 14px; color: var(--text-2); }
+  .faint { color: var(--muted); }
+
+  .row-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .stat { display: flex; flex-direction: column; gap: 12px; }
+  .goal { display: flex; align-items: center; gap: 20px; }
+  .ring { position: relative; width: 88px; height: 88px; flex: none; }
+  .ring svg { width: 88px; height: 88px; transform: rotate(-90deg); }
+  .ring .pct { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+
+  .row-main { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; }
+  .row-bottom { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; }
+
+  /* Current unit: the lesson path is the one drawn thing on the screen */
+  .unit-card { display: flex; flex-direction: column; gap: 16px; }
+  .meter { height: 4px; border-radius: 2px; background: var(--raised); overflow: hidden; }
+  .meter span { display: block; height: 100%; background: var(--accent); }
+  .progress-line { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .path { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .step { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding-right: 12px; }
+  .step:not(:last-child)::after {
+    content: ""; position: absolute; top: 13px; left: 38px; right: -6px; height: 1px; background: var(--line);
+  }
+  .step.done:not(:last-child)::after { background: var(--text-2); }
+  .node {
+    position: relative; z-index: 1; width: 28px; height: 28px; border-radius: 50%;
+    display: grid; place-items: center; border: 1px solid var(--line);
+    background: var(--raised); color: var(--text-2);
+  }
+  .node svg.i { width: 14px; height: 14px; stroke-width: 2; }
+  .step.done .node { background: var(--text); border-color: var(--text); color: var(--page); }
+  .step.current .node { background: var(--accent); border-color: var(--accent); color: var(--on-accent); box-shadow: 0 0 0 5px rgba(240, 180, 60, 0.16); }
+  .step.locked .node { background: transparent; color: var(--muted); }
+  .step .name { font-size: 13px; line-height: 18px; color: var(--text); }
+  .step.locked .name { color: var(--text-2); }
+  .step .state { font-size: 12px; color: var(--muted); }
+  .step.current .state { color: var(--accent); font-weight: 500; }
+  .unit-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  .btn-primary {
+    height: 44px; padding: 0 20px; border: 0; border-radius: 10px;
+    background: var(--text); color: var(--page);
+    font: 500 14px/1 var(--sans); display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+    transition: transform 120ms var(--ease), background-color 150ms var(--ease);
+  }
+  .btn-primary:hover { background: #ffffff; }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary svg.i { width: 16px; height: 16px; }
+  .btn-secondary {
+    height: 36px; padding: 0 14px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--raised); color: var(--text); font: 500 13px/1 var(--sans); cursor: pointer;
+    transition: background-color 150ms var(--ease);
+  }
+  .btn-secondary:hover { background: #2e2b27; }
+  .btn-secondary:active { transform: scale(0.98); }
+
+  /* Upcoming */
+  .up-list { display: flex; flex-direction: column; margin-top: 16px; }
+  .up-list li { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); }
+  .up-list li:first-child { border-top: 0; padding-top: 0; }
+  .up-list li:last-child { padding-bottom: 0; }
+  .up-icon {
+    width: 32px; height: 32px; border-radius: 8px; background: var(--raised);
+    display: grid; place-items: center; color: var(--text-2); flex: none;
+  }
+  .up-icon svg.i { width: 16px; height: 16px; }
+  .up-list .what { font-size: 14px; font-weight: 500; line-height: 20px; }
+  .up-list .when { font-size: 13px; line-height: 18px; }
+
+  /* Minutes chart */
+  .chart { margin-top: 0; }
+  .bars {
+    height: 116px; display: flex; align-items: flex-end; gap: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .bar { flex: 1; border-radius: 4px 4px 0 0; background: #3a3631; }
+  .bar.peak { background: var(--accent); }
+  .days { display: flex; gap: 14px; margin-top: 8px; }
+  .days span { flex: 1; text-align: center; font-size: 12px; color: var(--muted); }
+  .total { margin-top: 16px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .total .figure { font-size: 24px; }
+
+  /* Vocabulary */
+  .vocab { margin-top: 12px; }
+  .vocab li { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 36px; border-top: 1px solid var(--line); }
+  .vocab li:first-child { border-top: 0; }
+  .word { font-size: 14px; }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); white-space: nowrap; }
+  .status .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
+  .status.ok .dot { background: var(--ok); }
+  .status.bad .dot { background: var(--bad); }
+
+  /* Narrow screens: stack everything */
+  @media (max-width: 1000px) {
+    .row-stats, .row-main, .row-bottom { grid-template-columns: minmax(0, 1fr); }
+    .app { grid-template-columns: minmax(0, 1fr); }
+    aside { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 16px; }
+    .app > * { min-width: 0; }
+    aside { width: 100%; }
+    .nav { flex-direction: row; overflow-x: auto; width: 100%; min-width: 0; }
+    .nav a { flex: none; }
+    .card-head { flex-wrap: wrap; }
+    .promo { display: none; }
+    main { padding: 20px 16px 28px; }
+    .path { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 20px; }
+    .step:nth-child(3)::after { display: none; }
+    .step:nth-child(n+4)::after { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside>
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="#f0b43c"/><circle cx="15.5" cy="15.5" r="4" fill="#161513"/></svg>
+      Lingua
+    </div>
+    <nav class="nav" aria-label="Main">
+      <a href="#" aria-current="page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg>My courses</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg>Review</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-6M13 17V8M18 17v-3"/></svg>Leaderboard</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>Settings</a>
+    </nav>
+    <div class="promo">
+      <p class="title">Lingua Pro</p>
+      <p class="sub">Unlock the rest of this course.</p>
+      <button class="btn-secondary" style="margin-top:12px">Upgrade</button>
+    </div>
+  </aside>
+
+  <main>
+    <header class="top">
+      <div>
+        <p class="eyebrow">Spanish</p>
+        <h1>Course progress</h1>
+      </div>
+      <div class="tools">
+        <button class="icon-btn" aria-label="Notifications, new items">
+          <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="dot" aria-hidden="true"></span>
+        </button>
+        <div class="avatar" aria-label="Account: AL">AL</div>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <section class="row-stats" aria-label="Summary">
+      <div class="card stat">
+        <p class="label">Day streak</p>
+        <p class="figure">47 <span class="unit">days</span></p>
+        <p class="label faint">Personal best</p>
+      </div>
+
+      <div class="card goal">
+        <div class="ring">
+          <svg viewBox="0 0 100 100" role="img" aria-label="Daily goal 75 percent complete">
+            <circle cx="50" cy="50" r="40" stroke="rgba(239,233,222,0.08)" stroke-width="8" fill="none"/>
+            <circle cx="50" cy="50" r="40" stroke="#f0b43c" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="188 251"/>
+          </svg>
+          <div class="pct">75%</div>
+        </div>
+        <div>
+          <p class="label">Daily goal</p>
+          <p class="title" style="font-size:22px;margin-top:6px;font-variant-numeric:tabular-nums">15 of 20 min</p>
+          <p class="label faint" style="margin-top:4px">5 min to go</p>
+        </div>
+      </div>
+
+      <div class="card stat">
+        <p class="label">Level</p>
+        <p class="figure">B1</p>
+        <p class="label">1,240 XP &middot; 3.5K to next level</p>
+      </div>
+    </section>
+
+    <!-- Current unit and upcoming -->
+    <section class="row-main">
+      <div class="card unit-card" aria-labelledby="unit-title">
+        <div class="card-head">
+          <div>
+            <p class="label">Current unit</p>
+            <h2 class="title" id="unit-title" style="font-size:20px;margin-top:4px">Unit 3: Ordering food and drinks</h2>
+          </div>
+          <button class="btn-primary">Start lesson 4
+            <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+
+        <div class="progress-line">
+          <p class="label">3 of 6 lessons complete</p>
+          <span class="meter-wrap" style="width:160px">
+            <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" aria-label="Unit 3 progress"><span style="width:50%"></span></div>
+          </span>
+        </div>
+
+        <ol class="path" aria-label="Lessons in unit 3">
+          <li class="step done">
+            <span class="node"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span class="name">Greetings at the café</span>
+            <span class="state">Done</span>
+          </li>
+          <li class="step done">
+            <span class="node"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span class="name">Reading the menu</span>
+            <span class="state">Done</span>
+          </li>
+          <li class="step done">
+            <span class="node"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span class="name">Asking for the bill</span>
+            <span class="state">Done</span>
+          </li>
+          <li class="step current" aria-current="step">
+            <span class="node"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><polygon points="7 4 20 12 7 20 7 4"/></svg></span>
+            <span class="name">Ordering tacos</span>
+            <span class="state">Next</span>
+          </li>
+          <li class="step locked">
+            <span class="node"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+            <span class="name">Drinks and desserts</span>
+            <span class="state">Locked</span>
+          </li>
+          <li class="step locked">
+            <span class="node"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+            <span class="name">Unit test</span>
+            <span class="state">Locked</span>
+          </li>
+        </ol>
+      </div>
+
+      <section class="card" aria-labelledby="up-title">
+        <p class="label" id="up-title">Upcoming</p>
+        <ul class="up-list">
+          <li>
+            <span class="up-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3"/></svg></span>
+            <div>
+              <p class="what">Live class with Ana</p>
+              <p class="when meta">Nov 12, 2026 &middot; 6:30 pm</p>
+            </div>
+          </li>
+          <li>
+            <span class="up-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></span>
+            <div>
+              <p class="what">Weekly quiz</p>
+              <p class="when meta">Nov 14, 2026 &middot; 9:00 am</p>
+            </div>
+          </li>
+          <li>
+            <span class="up-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></span>
+            <div>
+              <p class="what">Speaking club</p>
+              <p class="when meta">Friday, Nov 14 &middot; 7:00 pm</p>
+            </div>
+          </li>
+        </ul>
+        <div style="margin-top:16px">
+          <button class="btn-secondary">See all</button>
+        </div>
+      </section>
+    </section>
+
+    <!-- Minutes and vocabulary -->
+    <section class="row-bottom">
+      <div class="card chart" aria-labelledby="chart-title" style="margin-top:0">
+        <div class="card-head">
+          <p class="label" id="chart-title">Minutes practised this week</p>
+        </div>
+        <div class="total" style="margin-top:12px">
+          <span class="figure">312 min</span>
+          <span class="label">2&times; last week</span>
+        </div>
+        <div class="bars" role="img" aria-label="Bar chart of minutes practised, Monday to Sunday. Saturday is the highest day.">
+          <div class="bar" style="height:40%"></div>
+          <div class="bar" style="height:65%"></div>
+          <div class="bar" style="height:30%"></div>
+          <div class="bar" style="height:80%"></div>
+          <div class="bar" style="height:55%"></div>
+          <div class="bar peak" style="height:90%"></div>
+          <div class="bar" style="height:22%"></div>
+        </div>
+        <div class="days" aria-hidden="true">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+      </div>
+
+      <section class="card" aria-labelledby="vocab-title">
+        <div class="card-head">
+          <p class="label" id="vocab-title">Vocabulary</p>
+          <button class="btn-secondary">Review now</button>
+        </div>
+        <ul class="vocab">
+          <li><span class="word">la manzana</span><span class="status ok"><span class="dot"></span>Strong</span></li>
+          <li><span class="word">el perro</span><span class="status ok"><span class="dot"></span>Strong</span></li>
+          <li><span class="word">el café</span><span class="status"><span class="dot"></span>Learning</span></li>
+          <li><span class="word">la casa</span><span class="status"><span class="dot"></span>Learning</span></li>
+          <li><span class="word">el sol</span><span class="status bad"><span class="dot"></span>Needs practice</span></li>
+          <li><span class="word">leer</span><span class="status bad"><span class="dot"></span>Needs practice</span></li>
+        </ul>
+      </section>
+    </section>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Innkeeper - Bookings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #161513;
+      --sidebar: #12110f;
+      --card: #1c1a18;
+      --raised: #262421;
+      --hairline: rgba(239, 233, 222, 0.08);
+      --text: #efe9de;
+      --text-2: #aaa398;
+      --text-3: #8a847a;
+      --accent: #e0a94e;
+      --accent-ink: #1a1510;
+      --pos: #4cc38a;
+      --neg: #e5484d;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --sans: 'Instrument Sans', system-ui, sans-serif;
+      --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    }
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) {
+        --bg: #f7f4ee; --sidebar: #efe9df; --card: #fdfbf7; --raised: #efe9df;
+        --hairline: rgba(31, 27, 22, 0.08); --text: #1f1b16; --text-2: #5e554a; --text-3: #7b7266;
+        --accent: #9a6418; --accent-ink: #ffffff; --pos: #16a34a; --neg: #dc2626;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 20px;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; color: inherit; }
+    .num { font-variant-numeric: tabular-nums; }
+    .mono { font-family: var(--mono); }
+
+    .app { display: grid; grid-template-columns: 248px 1fr; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--sidebar);
+      border-right: 1px solid var(--hairline);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; margin-bottom: 32px; }
+    .brand svg { width: 20px; height: 20px; color: var(--accent); flex: none; }
+    .brand-name { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+    .brand-plan { font-size: 12px; color: var(--text-3); }
+    .nav { display: flex; flex-direction: column; gap: 2px; }
+    .nav-label { font-size: 12px; color: var(--text-3); padding: 0 10px; margin: 0 0 8px; }
+    .nav a {
+      display: flex; align-items: center; gap: 10px;
+      height: 36px; padding: 0 10px; border-radius: 8px;
+      color: var(--text-2);
+      transition: background-color 150ms var(--ease), color 150ms var(--ease);
+    }
+    .nav a svg { width: 18px; height: 18px; stroke: var(--text-3); flex: none; }
+    .nav a:hover { background: var(--raised); color: var(--text); }
+    .nav a[aria-current="page"] {
+      background: var(--raised);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--hairline), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+    .nav a[aria-current="page"] svg { stroke: var(--text); }
+    .nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* Main */
+    .main { padding: 32px 40px; min-width: 0; max-width: 1440px; width: 100%; }
+    .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
+    .page-title { font-size: 32px; line-height: 1.15; font-weight: 500; letter-spacing: -0.02em; }
+    .page-meta { font-size: 14px; color: var(--text-3); margin-top: 4px; }
+    .actions { display: flex; align-items: center; gap: 12px; }
+    .search {
+      width: 260px; height: 36px; padding: 0 12px;
+      background: var(--card); border: 1px solid var(--hairline); border-radius: 10px;
+      color: var(--text);
+    }
+    .search::placeholder { color: var(--text-3); }
+    .search:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .btn {
+      height: 36px; padding: 0 16px; border-radius: 10px;
+      border: 1px solid var(--hairline); background: var(--raised); color: var(--text);
+      font-weight: 500; cursor: pointer;
+      transition: background-color 150ms var(--ease), border-color 150ms var(--ease);
+    }
+    .btn:hover { border-color: rgba(239, 233, 222, 0.16); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+    .btn-primary:hover { background: #ebb866; }
+    .btn-block { width: 100%; }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat {
+      background: var(--card); border: 1px solid var(--hairline); border-radius: 14px;
+      padding: 20px; min-height: 124px;
+      display: flex; flex-direction: column;
+    }
+    .stat-label { color: var(--text-2); font-size: 13px; }
+    .stat-value { font-size: 32px; line-height: 1; font-weight: 500; margin-top: auto; padding-top: 16px; font-variant-numeric: tabular-nums; }
+    .stat-change { font-size: 13px; color: var(--text-3); margin-top: 8px; font-variant-numeric: tabular-nums; }
+
+    /* Panels */
+    .panels { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+    .panel { background: var(--card); border: 1px solid var(--hairline); border-radius: 16px; padding: 24px; }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .panel-title { font-size: 18px; font-weight: 500; }
+    .panel-sub { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+    .link-btn { font-size: 13px; color: var(--text-2); }
+    .link-btn:hover { color: var(--text); }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th {
+      text-align: left; font-weight: 400; font-size: 12px; color: var(--text-3);
+      padding: 0 12px 12px 0; border-bottom: 1px solid var(--hairline);
+    }
+    td {
+      height: 48px; padding: 0 12px 0 0;
+      border-bottom: 1px solid var(--hairline);
+      white-space: nowrap; font-variant-numeric: tabular-nums;
+    }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover td { background: rgba(239, 233, 222, 0.02); }
+    .guest { font-weight: 500; }
+    .muted { color: var(--text-2); }
+    .right { text-align: right; padding-right: 0; }
+    th.right { text-align: right; }
+    .keytag {
+      display: inline-block; font-family: var(--mono); font-size: 12px;
+      padding: 2px 6px; border-radius: 5px;
+      border: 1px solid var(--hairline); color: var(--text-2);
+    }
+    .status { display: inline-flex; align-items: center; gap: 8px; color: var(--text-2); }
+    .dot { width: 6px; height: 6px; border-radius: 9999px; flex: none; background: var(--text-3); }
+    .dot-pos { background: var(--pos); }
+    .dot-neg { background: var(--neg); }
+    .dot-accent { background: var(--accent); }
+    .dot-ink { background: var(--text-2); }
+    .neg-text { color: var(--neg); }
+
+    /* Availability */
+    .avail-row { display: flex; align-items: center; gap: 12px; height: 32px; }
+    .avail-row + .avail-row { margin-top: 4px; }
+    .avail-day { width: 56px; font-size: 13px; color: var(--text-2); flex: none; }
+    .cells { display: flex; gap: 6px; }
+    .cell {
+      width: 24px; height: 24px; border-radius: 6px;
+      box-shadow: inset 0 0 0 1px var(--hairline);
+    }
+    .cell-free { background: transparent; }
+    .cell-hold { background: transparent; box-shadow: inset 0 0 0 1.5px var(--accent); }
+    .cell-booked { background: #4a463f; box-shadow: none; }
+    .legend { display: flex; gap: 16px; margin-top: 20px; font-size: 13px; color: var(--text-2); }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+    .panel-foot { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--hairline); }
+
+    @media (max-width: 1100px) {
+      .panels { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v11"/><path d="M3 15h18"/><path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/></svg>
+        <div>
+          <p class="brand-name">Innkeeper</p>
+          <p class="brand-plan">Pro plan</p>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Main">
+        <a href="#" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Bookings
+        </a>
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"/><path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M2 18h20"/></svg>
+          Rooms
+        </a>
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21v-4a4 4 0 0 1 4-4h4"/><path d="M14 5l5 5-7 7-5-5z"/></svg>
+          Housekeeping
+        </a>
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+          Guests
+        </a>
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          Payments
+        </a>
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-4"/></svg>
+          Reports
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="page-head">
+        <div>
+          <h1 class="page-title">Bookings</h1>
+          <p class="page-meta">Tuesday 10 November 2026</p>
+        </div>
+        <div class="actions">
+          <input class="search" type="text" placeholder="Search" aria-label="Search bookings">
+          <button class="btn btn-primary">New booking</button>
+        </div>
+      </header>
+
+      <section class="stats" aria-label="Today">
+        <div class="stat">
+          <p class="stat-label">Arrivals today</p>
+          <p class="stat-value">14</p>
+          <p class="stat-change">+12% vs last week</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">Departures today</p>
+          <p class="stat-value">9</p>
+          <p class="stat-change">+3% vs last week</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">Occupancy</p>
+          <p class="stat-value">87.5%</p>
+          <p class="stat-change">+8% vs last week</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">Rooms to clean</p>
+          <p class="stat-value">23</p>
+          <p class="stat-change">&minus;5% vs last week</p>
+        </div>
+      </section>
+
+      <div class="panels">
+        <section class="panel" aria-labelledby="res-title">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title" id="res-title">Reservations</h2>
+              <p class="panel-sub">8 bookings</p>
+            </div>
+            <button class="btn">View all</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Guest</th>
+                <th>Room</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Nights</th>
+                <th>Status</th>
+                <th class="right">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="guest">Maria Lopez</td><td><span class="keytag">101</span></td><td>10 Nov</td><td>12 Nov</td><td>2</td><td><span class="status"><span class="dot dot-pos"></span>Checked in</span></td><td class="right">$240.00</td></tr>
+              <tr><td class="guest">James Okafor</td><td><span class="keytag">204</span></td><td>10 Nov</td><td>14 Nov</td><td>4</td><td><span class="status"><span class="dot"></span>Pending</span></td><td class="right">$0.00</td></tr>
+              <tr><td class="guest">Yuki Tanaka</td><td><span class="keytag">305</span></td><td>10 Nov</td><td>11 Nov</td><td>1</td><td><span class="status"><span class="dot dot-ink"></span>Confirmed</span></td><td class="right">$129.50</td></tr>
+              <tr><td class="guest">Priya Raman</td><td><span class="keytag">112</span></td><td>8 Nov</td><td>13 Nov</td><td>5</td><td><span class="status"><span class="dot dot-accent"></span>In house</span></td><td class="right">$612.00</td></tr>
+              <tr><td class="guest">Tom Becker</td><td><span class="keytag">210</span></td><td>10 Nov</td><td>15 Nov</td><td>5</td><td><span class="status"><span class="dot dot-neg"></span>Unpaid</span></td><td class="right neg-text">$380.00</td></tr>
+              <tr><td class="guest">Sofia Rossi</td><td><span class="keytag">118</span></td><td>9 Nov</td><td>10 Nov</td><td>1</td><td><span class="status"><span class="dot"></span>Departing</span></td><td class="right">$0.00</td></tr>
+              <tr><td class="guest">Liam Chen</td><td><span class="keytag">402</span></td><td>11 Nov</td><td>16 Nov</td><td>5</td><td><span class="status"><span class="dot dot-ink"></span>Confirmed</span></td><td class="right">$875.25</td></tr>
+              <tr><td class="guest">Aisha Bello</td><td><span class="keytag">207</span></td><td>10 Nov</td><td>11 Nov</td><td>1</td><td><span class="status"><span class="dot"></span>Pending</span></td><td class="right">$95.00</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <aside class="panel" aria-labelledby="avail-title">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title" id="avail-title">Availability</h2>
+              <p class="panel-sub">Next 7 days</p>
+            </div>
+          </div>
+
+          <div class="avail-row"><span class="avail-day">Tue 10</span><div class="cells"><span class="cell cell-free"></span><span class="cell cell-free"></span><span class="cell cell-booked"></span><span class="cell cell-hold"></span><span class="cell cell-free"></span></div></div>
+          <div class="avail-row"><span class="avail-day">Wed 11</span><div class="cells"><span class="cell cell-booked"></span><span class="cell cell-booked"></span><span class="cell cell-free"></span><span class="cell cell-hold"></span><span class="cell cell-booked"></span></div></div>
+          <div class="avail-row"><span class="avail-day">Thu 12</span><div class="cells"><span class="cell cell-free"></span><span class="cell cell-hold"></span><span class="cell cell-free"></span><span class="cell cell-free"></span><span class="cell cell-booked"></span></div></div>
+          <div class="avail-row"><span class="avail-day">Fri 13</span><div class="cells"><span class="cell cell-hold"></span><span class="cell cell-free"></span><span class="cell cell-free"></span><span class="cell cell-booked"></span><span class="cell cell-free"></span></div></div>
+          <div class="avail-row"><span class="avail-day">Sat 14</span><div class="cells"><span class="cell cell-booked"></span><span class="cell cell-free"></span><span class="cell cell-free"></span><span class="cell cell-hold"></span><span class="cell cell-free"></span></div></div>
+          <div class="avail-row"><span class="avail-day">Sun 15</span><div class="cells"><span class="cell cell-free"></span><span class="cell cell-free"></span><span class="cell cell-hold"></span><span class="cell cell-free"></span><span class="cell cell-free"></span></div></div>
+          <div class="avail-row"><span class="avail-day">Mon 16</span><div class="cells"><span class="cell cell-free"></span><span class="cell cell-booked"></span><span class="cell cell-booked"></span><span class="cell cell-hold"></span><span class="cell cell-booked"></span></div></div>
+
+          <div class="legend">
+            <span><i class="cell-free" style="box-shadow: inset 0 0 0 1px var(--hairline)"></i>Free</span>
+            <span><i style="box-shadow: inset 0 0 0 1.5px var(--accent)"></i>Hold</span>
+            <span><i style="background:#4a463f"></i>Booked</span>
+          </div>
+
+          <div class="panel-foot">
+            <button class="btn btn-block">Forecasts</button>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

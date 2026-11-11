@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact and Appointment Request</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 16px; color: #222; background: #fff; }
+  h1 { font-size: 1.6em; margin: 0.4em 0; }
+  h2 { font-size: 1.2em; margin-top: 1.2em; }
+  table { border-collapse: collapse; }
+  td { padding: 4px 12px 4px 0; vertical-align: top; }
+  label { display: block; margin-top: 10px; font-weight: bold; }
+  input, select, textarea { width: 100%; max-width: 420px; padding: 6px; box-sizing: border-box; font: inherit; }
+  textarea { height: 90px; }
+  button { margin-top: 12px; padding: 8px 14px; font: inherit; cursor: pointer; }
+  #msg { margin-top: 12px; font-weight: bold; }
+  .note { font-size: 0.9em; color: #555; }
+</style>
+</head>
+<body>
+
+<h1>[Clinic Name] Dental</h1>
+
+<h2>Contact</h2>
+<table>
+  <tr><td>Address</td><td>[Street address], [City], [State] [ZIP]</td></tr>
+  <tr><td>Phone</td><td>[Phone number]</td></tr>
+  <tr><td>Email</td><td>[Email address]</td></tr>
+</table>
+
+<h2>Hours</h2>
+<table>
+  <tr><td>Monday</td><td>8:00 AM - 5:00 PM</td></tr>
+  <tr><td>Tuesday</td><td>8:00 AM - 5:00 PM</td></tr>
+  <tr><td>Wednesday</td><td>8:00 AM - 5:00 PM</td></tr>
+  <tr><td>Thursday</td><td>8:00 AM - 7:00 PM</td></tr>
+  <tr><td>Friday</td><td>8:00 AM - 1:00 PM</td></tr>
+  <tr><td>Saturday</td><td>Closed</td></tr>
+  <tr><td>Sunday</td><td>Closed</td></tr>
+</table>
+<p class="note">Hours are placeholders. Confirm before publishing.</p>
+
+<h2>Request an Appointment</h2>
+<p class="note">This form is a first draft. It does not send anything yet.</p>
+
+<form id="apptForm">
+  <label for="name">Full name</label>
+  <input type="text" id="name" name="name" required>
+
+  <label for="phone">Phone number</label>
+  <input type="tel" id="phone" name="phone" required>
+
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email">
+
+  <label for="reason">Reason for visit</label>
+  <select id="reason" name="reason" required>
+    <option value="">-- Select --</option>
+    <option>Cleaning or checkup</option>
+    <option>Toothache or pain</option>
+    <option>Filling or crown</option>
+    <option>Whitening</option>
+    <option>Other</option>
+  </select>
+
+  <label for="preferred">Preferred date</label>
+  <input type="date" id="preferred" name="preferred">
+
+  <label for="time">Preferred time of day</label>
+  <select id="time" name="time">
+    <option>No preference</option>
+    <option>Morning</option>
+    <option>Afternoon</option>
+    <option>Evening</option>
+  </select>
+
+  <label for="notes">Additional notes</label>
+  <textarea id="notes" name="notes"></textarea>
+
+  <button type="submit">Request appointment</button>
+</form>
+
+<div id="msg" role="status"></div>
+
+<script>
+  document.getElementById('apptForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('msg').textContent =
+      'Thanks. Your request was noted. We will contact you to confirm. (Draft: nothing was sent.)';
+    this.reset();
+  });
+</script>
+
+</body>
+</html>

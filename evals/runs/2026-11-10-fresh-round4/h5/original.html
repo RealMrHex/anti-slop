@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keystone - The CRM for Agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .glow-1 { background: radial-gradient(circle, rgba(249,115,22,.55), transparent 65%); }
+  .glow-2 { background: radial-gradient(circle, rgba(236,72,153,.5), transparent 65%); }
+  .glass { background: rgba(255,255,255,.06); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,.12); }
+  .grad-text { background: linear-gradient(90deg,#fb923c,#f472b6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .btn-glow { box-shadow: 0 0 30px rgba(249,115,22,.5); transition: transform .2s; }
+  .btn-glow:hover { transform: scale(1.08); }
+</style>
+</head>
+<body class="bg-[#0b1026] text-white h-[900px] w-[1280px] overflow-hidden relative">
+
+<div class="absolute -top-40 -left-32 w-[620px] h-[620px] rounded-full glow-1 blur-3xl"></div>
+<div class="absolute top-24 -right-40 w-[560px] h-[560px] rounded-full glow-2 blur-3xl"></div>
+
+<header class="fixed top-[18px] left-1/2 -translate-x-1/2 w-[1100px] z-50 glass rounded-full px-[26px] py-[13px] flex items-center justify-between">
+  <div class="font-black text-xl tracking-tight">🔑 Keystone</div>
+  <nav class="flex gap-[30px] text-sm font-semibold text-white/80">
+    <a href="#">✨ Features</a>
+    <a href="#">💰 Pricing</a>
+    <a href="#">📈 Pipeline</a>
+    <a href="#">📞 Resources</a>
+  </nav>
+  <div class="flex items-center gap-3">
+    <a href="#" class="text-sm font-semibold px-4 py-2">🔐 Log in</a>
+    <button class="btn-glow bg-gradient-to-r from-orange-500 to-pink-500 rounded-full px-5 py-2.5 text-sm font-bold">🚀 Start free!</button>
+  </div>
+</header>
+
+<main class="relative grid grid-cols-2 items-center gap-[40px] px-[72px] pt-[150px]">
+  <div>
+    <span class="inline-flex items-center gap-2 glass rounded-full px-4 py-[7px] text-sm font-semibold">🔥 #1 CRM for agents</span>
+    <h1 class="mt-[22px] text-[80px] leading-[0.92] font-black tracking-[-0.03em]">Close more deals, <span class="grad-text">effortlessly</span>, with AI!</h1>
+    <p class="mt-[26px] max-w-[560px] text-[19px] leading-[1.5] text-white/70">Keystone tracks your leads, books your viewings, nudges your follow-ups and shows every deal from first call to closing. Never miss a beat again!</p>
+    <div class="mt-[34px] flex gap-[18px]">
+      <button class="btn-glow bg-gradient-to-r from-orange-500 to-pink-500 rounded-2xl px-[34px] py-[16px] text-lg font-extrabold">🚀 Get started free</button>
+      <button class="glass rounded-2xl px-[30px] py-[16px] text-lg font-bold">▶️ Watch demo</button>
+    </div>
+    <p class="mt-[18px] text-sm font-semibold text-white/60">⚡ 3x more closings! Join 10,000+ agents today!</p>
+  </div>
+
+  <div class="relative flex justify-center">
+    <div class="glass rounded-[28px] rotate-[-6deg] w-[460px] h-[400px] p-[30px] shadow-2xl shadow-pink-500/20">
+      <div class="flex justify-between text-sm font-bold">
+        <span>📊 Pipeline</span>
+        <span class="text-orange-400">+312%</span>
+      </div>
+      <div class="mt-[28px] h-[260px] flex items-end gap-[12px]">
+        <div class="flex-1 rounded-t-xl bg-gradient-to-t from-orange-500 to-pink-500" style="height:38%"></div>
+        <div class="flex-1 rounded-t-xl bg-gradient-to-t from-orange-500 to-pink-500" style="height:62%"></div>
+        <div class="flex-1 rounded-t-xl bg-gradient-to-t from-orange-500 to-pink-500" style="height:47%"></div>
+        <div class="flex-1 rounded-t-xl bg-gradient-to-t from-orange-500 to-pink-500" style="height:81%"></div>
+        <div class="flex-1 rounded-t-xl bg-gradient-to-t from-orange-500 to-pink-500" style="height:55%"></div>
+        <div class="flex-1 rounded-t-xl bg-gradient-to-t from-orange-500 to-pink-500" style="height:90%"></div>
+        <div class="flex-1 rounded-t-xl bg-gradient-to-t from-orange-500 to-pink-500" style="height:68%"></div>
+        <div class="flex-1 rounded-t-xl bg-gradient-to-t from-orange-500 to-pink-500" style="height:74%"></div>
+      </div>
+      <div class="mt-[22px] flex justify-between text-xs font-semibold text-white/50">
+        <span>🔥 Hot</span>
+        <span>📞 Calls</span>
+        <span>🏠 Viewings</span>
+        <span>✅ Closed</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<section class="absolute bottom-[40px] left-0 right-0 text-center">
+  <p class="text-xs font-bold tracking-[0.3em] uppercase text-white/50">Trusted by top brokerages</p>
+  <div class="mt-[18px] flex justify-center gap-[46px] text-[22px] font-black tracking-[0.12em] text-white/40">
+    <span>ACME</span>
+    <span>GLOBEX</span>
+    <span>INITECH</span>
+    <span>HOOLI</span>
+    <span>STARK</span>
+    <span>UMBRELLA</span>
+  </div>
+</section>
+
+</body>
+</html>

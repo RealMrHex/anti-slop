@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Sprouts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #f7f5e9;
+    --card: #fbfaf6;
+    --raised: #ede9dd;
+    --hairline: #e7e5e4;
+    --text: #1c1917;
+    --text-2: #57534e;
+    --edge: #78716c;
+    --accent: #047857;
+    --accent-hover: #065f46;
+    --accent-ink: #ffffff;
+    --r-small: 6px;
+    --r-control: 8px;
+    --r-card: 12px;
+    --r-panel: 16px;
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.05);
+    --shadow-float: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --ease: cubic-bezier(0, 0, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--page);
+    color: var(--text);
+    font: 400 16px/24px var(--sans);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  a { color: inherit; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--r-small); }
+
+  .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 24px; }
+
+  /* Navigation */
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; font-size: 16px; text-decoration: none; }
+  .nav-links { display: flex; align-items: center; gap: 32px; font-size: 14px; line-height: 20px; }
+  .nav-links a { text-decoration: none; color: var(--text-2); }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a.login { color: var(--text); font-weight: 500; }
+
+  /* Hero */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 64px;
+    align-items: center;
+    padding-block: 96px 80px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 64px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .lede { margin: 24px 0 0; font-size: 18px; line-height: 28px; color: var(--text-2); max-width: 52ch; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+  .btn {
+    display: inline-flex; align-items: center; height: 44px; padding: 0 20px;
+    border-radius: var(--r-control); font-weight: 500; font-size: 15px; text-decoration: none;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-secondary { border: 1px solid var(--edge); color: var(--text); }
+  .btn-secondary:hover { background: var(--raised); }
+
+  /* Product panel: a sample day */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-panel);
+    box-shadow: var(--shadow-float);
+    padding: 24px;
+    animation: enter 300ms var(--ease) both;
+  }
+  @keyframes enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .panel-head strong { font-weight: 500; font-size: 16px; line-height: 24px; }
+  .muted { color: var(--text-2); font-size: 14px; line-height: 20px; }
+
+  .figures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+  .fig { background: var(--raised); border-radius: var(--r-card); padding: 16px; }
+  .fig b { display: block; font-size: 30px; line-height: 36px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .fig span { font-size: 14px; line-height: 20px; color: var(--text-2); }
+
+  .timeline { margin-top: 24px; }
+  .track { position: relative; height: 8px; border-radius: 4px; background: var(--raised); }
+  .seg { position: absolute; top: 0; height: 8px; border-radius: 4px; background: var(--edge); }
+  .meal { position: absolute; top: -4px; width: 2px; height: 16px; margin-left: -1px; background: var(--text-2); }
+  .pickup { position: absolute; top: -6px; width: 12px; height: 20px; margin-left: -6px; border-radius: 6px; background: var(--accent); }
+  .axis { position: relative; height: 16px; margin-top: 8px; font-size: 12px; line-height: 16px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .axis span { position: absolute; top: 0; transform: translateX(-50%); }
+  .axis span:first-child { transform: none; }
+
+  .rows { list-style: none; margin: 20px 0 0; padding: 0; border-top: 1px solid var(--hairline); }
+  .row {
+    display: grid; grid-template-columns: 56px 1fr; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--hairline);
+    font-size: 14px; line-height: 20px;
+  }
+  .row time { color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .detail { color: var(--text-2); }
+  .status { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+
+  /* Supporting points */
+  .points {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    padding-block: 0 96px;
+  }
+  .point {
+    background: var(--card);
+    border: 1px solid var(--hairline);
+    border-radius: var(--r-card);
+    box-shadow: var(--shadow-card);
+    padding: 24px;
+  }
+  .point h2 { font-size: 18px; line-height: 28px; font-weight: 500; margin: 0; }
+  .point p { margin: 8px 0 0; font-size: 15px; line-height: 24px; color: var(--text-2); }
+
+  /* Phone */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: minmax(0, 1fr); gap: 40px; padding-block: 48px 56px; }
+    h1 { font-size: 48px; }
+    .points { grid-template-columns: minmax(0, 1fr); padding-block: 0 56px; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding-inline: 16px; }
+    .nav-links { gap: 20px; }
+    .nav-links .hide-sm { display: none; }
+    h1 { font-size: 40px; }
+    .fig { padding: 12px; }
+    .fig b { font-size: 22px; line-height: 32px; white-space: nowrap; }
+    .fig span { font-size: 13px; line-height: 18px; }
+    .panel { padding: 20px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel { animation: none; }
+    .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="#" aria-label="Little Sprouts home">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M10 18V9" stroke="#047857" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M10 10C10 6.5 7.8 4.5 4 4.5C4 8 6 10 10 10Z" stroke="#047857" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M10 8C10 5.2 11.8 3.2 16 3.2C16 6 14.2 8 10 8Z" stroke="#047857" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      Little Sprouts
+    </a>
+    <div class="nav-links">
+      <a class="hide-sm" href="#">Features</a>
+      <a class="hide-sm" href="#">How it works</a>
+      <a href="#">Pricing</a>
+      <a class="login" href="#">Log in</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <h1>Stop asking how the day went.</h1>
+      <p class="lede">Daily photos, nap and meal logs, and pickup alerts from your child's carers, in one place.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#">Start free</a>
+        <a class="btn btn-secondary" href="#">Watch demo</a>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <strong>Mia, Tuesday</strong>
+        <span class="muted">Sample day</span>
+      </div>
+
+      <div class="figures">
+        <div class="fig"><b>2 h 10</b><span>Asleep, 2 naps</span></div>
+        <div class="fig"><b>3 of 3</b><span>Meals logged</span></div>
+        <div class="fig"><b>12</b><span>Photos shared</span></div>
+      </div>
+
+      <div class="timeline">
+        <div class="track" aria-hidden="true">
+          <i class="seg" style="left:31%; width:12.7%"></i>
+          <i class="seg" style="left:65.1%; width:7.9%"></i>
+          <i class="meal" style="left:14.3%"></i>
+          <i class="meal" style="left:47.6%"></i>
+          <i class="meal" style="left:76.2%"></i>
+          <i class="pickup" style="left:90.5%"></i>
+        </div>
+        <div class="axis" aria-hidden="true">
+          <span style="left:0">07:00</span>
+          <span style="left:47.6%">12:00</span>
+          <span style="left:100%; transform:translateX(-100%)">17:30</span>
+        </div>
+      </div>
+
+      <ul class="rows">
+        <li class="row"><time>09:40</time><div>Photo shared <span class="detail">Painting at the easel</span></div></li>
+        <li class="row"><time>10:15</time><div>Nap <span class="detail">1 h 20 min</span></div></li>
+        <li class="row"><time>12:00</time><div>Lunch <span class="detail">Pasta, carrots, half a pear</span></div></li>
+        <li class="row"><time>16:30</time><div class="status"><span class="dot" aria-hidden="true"></span>Pickup alert sent. You can collect Mia now.</div></li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="points" aria-label="What Little Sprouts does">
+    <article class="point">
+      <h2>Daily photos</h2>
+      <p>See the day's photos as carers share them.</p>
+    </article>
+    <article class="point">
+      <h2>Nap and meal logs</h2>
+      <p>Know when your child slept and what they ate.</p>
+    </article>
+    <article class="point">
+      <h2>Pickup alerts</h2>
+      <p>Get a message when it is time to collect your child.</p>
+    </article>
+  </section>
+</div>
+
+</body>
+</html>

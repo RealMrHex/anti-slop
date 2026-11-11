@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brightside | Online maths tutoring for ages 11 to 16</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --page: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --text-3: #7b7266;
+      --bar: #bdb3a4;
+      --hair: rgba(31, 27, 22, 0.08);
+      --hair-strong: rgba(31, 27, 22, 0.14);
+      --accent: #e8862e;
+      --accent-hover: #d9761f;
+      --pos: #15803d;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--text);
+      font-family: 'Figtree', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--text);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+    @media (min-width: 900px) { .wrap { padding: 0 48px; } }
+
+    /* Navigation */
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px 32px;
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 24px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-2);
+    }
+    .links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      transition: color 160ms var(--ease);
+    }
+    .links a:hover { color: var(--text); }
+    .links .login { color: var(--text); }
+
+    .icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      margin-right: 8px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 48px;
+      align-items: center;
+      padding-top: 40px;
+      padding-bottom: 64px;
+    }
+    @media (min-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 64px;
+        padding-top: 56px;
+        padding-bottom: 96px;
+      }
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-size: 44px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    @media (min-width: 900px) {
+      .hero h1 { font-size: 68px; letter-spacing: -0.03em; }
+    }
+
+    .lead {
+      margin: 20px 0 0;
+      max-width: 36rem;
+      font-size: 18px;
+      line-height: 28px;
+      color: var(--text-2);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 22px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background-color 160ms var(--ease), transform 160ms var(--ease);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn.primary { background: var(--accent); color: var(--text); }
+    .btn.primary:hover { background: var(--accent-hover); }
+    .btn.secondary {
+      background: var(--raised);
+      color: var(--text);
+      border: 1px solid var(--hair-strong);
+    }
+    .btn.secondary:hover { background: #e6dfd2; }
+
+    /* Drawn thing: a sample progress report */
+    .report {
+      margin: 0;
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+    .report-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .kicker {
+      margin: 0;
+      font-size: 12px;
+      color: var(--text-3);
+    }
+    .title {
+      margin: 2px 0 0;
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+    .meta {
+      font-size: 12px;
+      color: var(--text-3);
+      white-space: nowrap;
+      padding-top: 2px;
+    }
+
+    .tiles {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .tile {
+      background: var(--raised);
+      border-radius: 10px;
+      padding: 14px;
+      min-width: 0;
+    }
+    .tile-label {
+      margin: 0;
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--text-3);
+    }
+    .tile-fig {
+      margin: 6px 0 0;
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .tile-delta {
+      margin: 6px 0 0;
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--pos);
+    }
+
+    .topics {
+      list-style: none;
+      margin: 20px 0 0;
+      padding: 0;
+      border-top: 1px solid var(--hair);
+    }
+    .topics li {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(64px, 120px) 44px;
+      align-items: center;
+      gap: 16px;
+      min-height: 44px;
+      border-bottom: 1px solid var(--hair);
+      font-size: 14px;
+    }
+    .t-name small {
+      display: block;
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--text-3);
+    }
+    .bar {
+      display: block;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--raised);
+      overflow: hidden;
+    }
+    .bar span {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--bar);
+    }
+    .topics .focus .bar span { background: var(--accent); }
+    .t-val {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-2);
+    }
+
+    .report-foot {
+      margin: 16px 0 0;
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    @media (max-width: 899px) {
+      .report { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="wrap">
+    <nav class="nav" aria-label="Main">
+      <a href="#" class="brand">
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="#e8862e"/></svg>
+        Brightside
+      </a>
+      <ul class="links">
+        <li><a href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a></li>
+        <li><a href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>How it works</a></li>
+        <li><a href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>Homework help</a></li>
+        <li><a href="#"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>PRO plans</a></li>
+        <li><a href="#" class="login"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7v1"/></svg>Log in</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="wrap hero">
+    <div>
+      <h1>Online one-to-one maths for ages 11 to 16</h1>
+      <p class="lead">Weekly one-to-one video lessons, homework help by chat, and progress reports for parents.</p>
+      <div class="actions">
+        <a href="#" class="btn primary">Start free trial</a>
+        <a href="#" class="btn secondary">Watch demo</a>
+      </div>
+    </div>
+
+    <figure class="report" aria-label="Sample progress report">
+      <div class="report-head">
+        <div>
+          <p class="kicker">Sample progress report</p>
+          <p class="title">Year 8, term 2</p>
+        </div>
+        <span class="meta">Parent view</span>
+      </div>
+
+      <div class="tiles">
+        <div class="tile">
+          <p class="tile-label">Lessons attended</p>
+          <p class="tile-fig">9 of 10</p>
+        </div>
+        <div class="tile">
+          <p class="tile-label">Quiz average</p>
+          <p class="tile-fig">74%</p>
+          <p class="tile-delta">+9 pts vs last term</p>
+        </div>
+        <div class="tile">
+          <p class="tile-label">Homework done</p>
+          <p class="tile-fig">14 of 16</p>
+        </div>
+      </div>
+
+      <ul class="topics">
+        <li>
+          <span class="t-name">Fractions</span>
+          <span class="bar"><span style="width:86%"></span></span>
+          <span class="t-val">86%</span>
+        </li>
+        <li>
+          <span class="t-name">Area and perimeter</span>
+          <span class="bar"><span style="width:92%"></span></span>
+          <span class="t-val">92%</span>
+        </li>
+        <li class="focus">
+          <span class="t-name">Linear equations<small>Focus this week</small></span>
+          <span class="bar"><span style="width:61%"></span></span>
+          <span class="t-val">61%</span>
+        </li>
+        <li>
+          <span class="t-name">Ratio</span>
+          <span class="bar"><span style="width:78%"></span></span>
+          <span class="t-val">78%</span>
+        </li>
+      </ul>
+
+      <p class="report-foot">Next lesson: Tuesday, 4:00 pm</p>
+    </figure>
+  </main>
+
+</body>
+</html>

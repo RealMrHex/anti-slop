@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trailhead Maps: offline hiking maps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b0d14;
+      --surface: #11141c;
+      --raised: #1a1e28;
+      --hair: rgba(238, 240, 245, 0.08);
+      --text: #eef0f5;
+      --text-2: #a3a9b8;
+      --muted: #7a8296;
+      --accent: #f97316;
+      --on-accent: #1a1206;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; transition: color 150ms var(--ease); }
+    a:hover { color: var(--text); }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+    /* Navigation */
+    .nav {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .brand svg { width: 22px; height: 22px; display: block; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      padding: 96px 0 96px;
+    }
+    .eyebrow {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    h1 {
+      margin: 16px 0 0;
+      font-size: 64px;
+      line-height: 1.05;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      max-width: 13ch;
+      color: var(--text);
+    }
+    .subhead {
+      margin: 24px 0 0;
+      max-width: 36rem;
+      font-size: 18px;
+      line-height: 28px;
+      color: var(--text-2);
+    }
+    .actions {
+      margin-top: 32px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px 24px;
+    }
+    .btn-primary {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 20px;
+      border-radius: 8px;
+      background: var(--accent);
+      color: var(--on-accent);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.2;
+      transition: transform 150ms var(--ease), background-color 150ms var(--ease);
+    }
+    .btn-primary small {
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+    .btn-primary:hover { color: var(--on-accent); background: #fb8a3c; }
+    .btn-primary:active { transform: scale(0.98); }
+    .store-link { font-size: 15px; color: var(--text-2); }
+    .store-link:hover { color: var(--text); }
+
+    /* Product panel: the one drawn thing */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--hair);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .panel-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .panel-title { font-size: 17px; font-weight: 500; margin: 0; }
+    .panel-meta { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+    .map {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin-top: 16px;
+      border-radius: 10px;
+      background: var(--raised);
+    }
+    .figures {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .tile {
+      background: var(--raised);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .tile-value {
+      display: block;
+      font-family: var(--mono);
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+    }
+    .tile-label {
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Features */
+    .features {
+      border-top: 1px solid var(--hair);
+      padding: 80px 0 96px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--raised);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-2);
+    }
+    .icon-box svg { width: 18px; height: 18px; }
+    .feature-title {
+      margin: 20px 0 0;
+      font-size: 17px;
+      font-weight: 500;
+    }
+    .feature-body {
+      margin: 8px 0 0;
+      font-size: 15px;
+      line-height: 22px;
+      color: var(--text-2);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 48px; padding: 64px 0; }
+      h1 { font-size: 52px; }
+    }
+    @media (max-width: 640px) {
+      .wrap { padding: 0 16px; }
+      .nav-links { gap: 20px; font-size: 13px; }
+      .nav-links a:not(:first-child) { display: none; }
+      .hero { padding: 40px 0 56px; }
+      h1 { font-size: 40px; }
+      .subhead { font-size: 16px; line-height: 24px; }
+      .features-grid { grid-template-columns: 1fr; gap: 32px; }
+      .features { padding: 56px 0 72px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <nav class="nav" aria-label="Main">
+      <a class="brand" href="#" aria-label="Trailhead Maps home">
+        <svg viewBox="0 0 22 22" aria-hidden="true">
+          <path d="M1.5 18.5 8 7l4 6.5 2.5-3.5 6 8.5z" fill="#f97316" />
+        </svg>
+        <span>Trailhead Maps</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Community</a>
+      </div>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Offline hiking maps</p>
+          <h1>Trail maps that work without signal.</h1>
+          <p class="subhead">Download any region before you leave. Record your hike with GPS, check the elevation profile, and share routes with friends.</p>
+
+          <div class="actions">
+            <a class="btn-primary" href="#">
+              <small>Download on the</small>
+              <span>App Store</span>
+            </a>
+            <a class="store-link" href="#">Get it on Google Play</a>
+          </div>
+        </div>
+
+        <div class="panel" aria-label="Sample saved route">
+          <div class="panel-head">
+            <p class="panel-title">Ridge loop</p>
+            <span class="panel-meta">Saved offline</span>
+          </div>
+
+          <svg class="map" viewBox="0 0 400 250" role="img" aria-label="Sample map with a route climbing across contour lines">
+            <g fill="none" stroke="rgba(238,240,245,0.09)" stroke-width="1">
+              <path d="M-10 52 C 60 18, 140 38, 200 28 S 330 8, 410 46" />
+              <path d="M-10 102 C 70 72, 120 96, 190 84 S 300 62, 410 98" />
+              <path d="M-10 160 C 50 130, 150 146, 230 128 S 340 144, 410 172" />
+              <path d="M-10 218 C 90 196, 170 210, 260 194 S 360 200, 410 220" />
+            </g>
+            <path d="M58 196 C 90 168, 118 184, 150 150 S 212 92, 246 108 S 318 58, 350 68" fill="none" stroke="#f97316" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="58" cy="196" r="5" fill="#eef0f5" />
+            <circle cx="350" cy="68" r="6" fill="#f97316" stroke="#1a1e28" stroke-width="2" />
+          </svg>
+
+          <div class="figures">
+            <div class="tile">
+              <span class="tile-value">8.4 km</span>
+              <span class="tile-label">Distance</span>
+            </div>
+            <div class="tile">
+              <span class="tile-value">612 m</span>
+              <span class="tile-label">Elevation gain</span>
+            </div>
+            <div class="tile">
+              <span class="tile-value">2:40</span>
+              <span class="tile-label">Moving time</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="features" id="features" aria-label="Features">
+        <div class="features-grid">
+          <div>
+            <div class="icon-box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v12m0 0-4-4m4 4 4-4" />
+                <path d="M4 15v3a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-3" />
+              </svg>
+            </div>
+            <h2 class="feature-title">Offline maps</h2>
+            <p class="feature-body">Download a region before you set off. Maps stay available with no signal.</p>
+          </div>
+          <div>
+            <div class="icon-box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" />
+                <path d="m15.5 8.5-2 5-5 2 2-5z" />
+              </svg>
+            </div>
+            <h2 class="feature-title">GPS tracking</h2>
+            <p class="feature-body">Record your hike as you walk, with distance and time along the way.</p>
+          </div>
+          <div>
+            <div class="icon-box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2.5 20 9 9.5l4 6 2.5-3.5 6 8z" />
+              </svg>
+            </div>
+            <h2 class="feature-title">Elevation profile</h2>
+            <p class="feature-body">See the climb for every saved route before you commit to it.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Content calendar · Postbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #fafafa;
+    --side: #f4f4f5;
+    --card: #ffffff;
+    --hair: #e4e4e7;
+    --edge: #d4d4d8;
+    --t1: #18181b;
+    --t2: #52525b;
+    --t3: #71717a;
+    --accent: #1d4ed8;
+    --accent-hover: #1e40af;
+    --accent-ink: #ffffff;
+    --ok: #16a34a;
+    --wait: #b45309;
+    --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --r-s: 6px;
+    --r-c: 8px;
+    --r-card: 12px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    color: var(--t1);
+    background: var(--page);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  .ic {
+    width: 18px; height: 18px; flex: none;
+    fill: none; stroke: currentColor; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* Shell */
+  .app { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: 100vh; }
+
+  .side {
+    background: var(--side);
+    border-right: 1px solid var(--hair);
+    padding: 20px 16px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 16px; line-height: 24px; font-weight: 500;
+    padding: 4px 8px 20px;
+  }
+  .mark {
+    width: 24px; height: 24px; border-radius: var(--r-s);
+    background: var(--t1); color: #fff;
+    display: grid; place-items: center;
+  }
+  .mark .ic { width: 14px; height: 14px; }
+  .group { margin: 16px 8px 6px; font-size: 12px; line-height: 16px; color: var(--t2); }
+  .nav {
+    display: flex; align-items: center; gap: 10px;
+    height: 34px; padding: 0 10px;
+    border-radius: var(--r-c);
+    color: var(--t2); text-decoration: none;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .nav:hover { background: #ebebed; color: var(--t1); }
+  .nav[aria-current="page"] { background: var(--hair); color: var(--t1); font-weight: 500; }
+
+  /* Header */
+  .main { padding: 28px 40px 48px; min-width: 0; }
+  .top {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 16px; flex-wrap: wrap;
+  }
+  h1 { margin: 0; font-size: 30px; line-height: 36px; font-weight: 500; letter-spacing: -0.01em; }
+  .sub { margin: 4px 0 0; color: var(--t2); }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  select {
+    height: 36px; padding: 0 12px;
+    font: inherit; color: var(--t1);
+    background: var(--card);
+    border: 1px solid var(--edge); border-radius: var(--r-c);
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 36px; padding: 0 14px;
+    font: inherit; font-weight: 500; color: var(--accent-ink);
+    background: var(--accent);
+    border: 0; border-radius: var(--r-c);
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+  .btn:hover { background: var(--accent-hover); }
+  .btn .ic { width: 16px; height: 16px; }
+
+  /* Status summary: one line and one thin bar, built from the page's own counts */
+  .status {
+    margin-top: 24px;
+    background: var(--card);
+    border: 1px solid var(--hair); border-radius: var(--r-card);
+    padding: 16px 20px;
+  }
+  .status h2 { margin: 0 0 12px; font-size: 14px; line-height: 20px; font-weight: 500; }
+  .bar { display: flex; gap: 2px; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 16px; }
+  .bar span { display: block; }
+  .legend { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 0; }
+  .legend > div { display: flex; flex-direction: column; gap: 2px; }
+  .legend dt { display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; color: var(--t2); }
+  .legend dd { margin: 0; font-size: 20px; line-height: 28px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .legend .attn dd { color: var(--accent); }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+  .c-sched { background: #a1a1aa; }
+  .c-draft { background: #d4d4d8; }
+  .c-pub   { background: #3f3f46; }
+  .c-appr  { background: var(--accent); }
+
+  /* Calendar */
+  .week { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 24px; }
+  .day-h {
+    display: flex; align-items: baseline; gap: 8px;
+    margin: 0 0 10px; padding: 0 2px;
+    font-size: 14px; line-height: 20px; font-weight: 500;
+  }
+  .dnum { font-weight: 400; color: var(--t2); font-variant-numeric: tabular-nums; }
+  .posts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .post {
+    background: var(--card);
+    border: 1px solid var(--hair); border-radius: var(--r-card);
+    padding: 12px;
+  }
+  .meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; line-height: 16px; color: var(--t2); }
+  time { font-variant-numeric: tabular-nums; }
+  .chip {
+    padding: 1px 6px;
+    font-size: 12px; line-height: 18px; color: var(--t2);
+    border: 1px solid var(--edge); border-radius: var(--r-s);
+    white-space: nowrap;
+  }
+  .copy { margin: 8px 0 12px; color: var(--t1); }
+  .foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--hair); color: #3f3f46;
+    font-size: 11px; line-height: 16px; font-weight: 500;
+  }
+  .state { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; color: var(--t2); }
+  .s-ok    { background: var(--ok); }
+  .s-wait  { background: var(--wait); }
+  .s-draft { background: #a1a1aa; }
+  .s-pub   { background: #3f3f46; }
+  .s-sched { background: transparent; box-shadow: inset 0 0 0 1.5px #71717a; }
+
+  /* Sizes */
+  @media (min-width: 640px) {
+    .legend { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .week { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1100px) {
+    .week { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  }
+  @media (max-width: 800px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .side { border-right: 0; border-bottom: 1px solid var(--hair); padding: 12px 16px; min-width: 0; }
+    .brand { padding: 0 0 10px; }
+    .side nav { display: flex; flex-wrap: wrap; gap: 4px; }
+    .group { display: none; }
+    .nav { height: 32px; }
+    .main { padding: 20px 16px 40px; min-width: 0; }
+    .status, .week, .top { min-width: 0; max-width: 100%; }
+  }
+  @media (max-width: 640px) {
+    .legend { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
+    .controls { width: 100%; }
+    .controls select { flex: 1 1 0; min-width: 0; }
+    .controls .btn { width: 100%; justify-content: center; }
+    .top { flex-direction: column; align-items: stretch; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">
+        <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6 8.5-6"/></svg>
+      </span>
+      Postbox
+    </div>
+
+    <nav aria-label="Main">
+      <p class="group">Workspace</p>
+      <a class="nav" href="#" aria-current="page">
+        <svg class="ic" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+        Calendar
+      </a>
+      <a class="nav" href="#">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>
+        Drafts
+      </a>
+      <a class="nav" href="#">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4 20h16M7 16v-5M12 16V6M17 16v-8"/></svg>
+        Analytics
+      </a>
+      <a class="nav" href="#">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg>
+        Channels
+      </a>
+
+      <p class="group">Team</p>
+      <a class="nav" href="#">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.6.8 2.6 2.7 3 5.2"/></svg>
+        Members
+      </a>
+      <a class="nav" href="#">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+        Settings
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <header class="top">
+      <div>
+        <h1>Content calendar</h1>
+        <p class="sub">Week of 9 to 15 November</p>
+      </div>
+      <div class="controls">
+        <label class="visually-hidden" for="channel">Channel</label>
+        <select id="channel">
+          <option>All channels</option>
+          <option>Instagram</option>
+          <option>LinkedIn</option>
+        </select>
+        <label class="visually-hidden" for="author">Author</label>
+        <select id="author">
+          <option>All authors</option>
+          <option>Mia</option>
+          <option>Jordan</option>
+        </select>
+        <button class="btn" type="button">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          New post
+        </button>
+      </div>
+    </header>
+
+    <section class="status" aria-labelledby="status-h">
+      <h2 id="status-h">Status</h2>
+      <div class="bar" aria-hidden="true">
+        <span class="c-sched" style="flex: 14"></span>
+        <span class="c-draft" style="flex: 7"></span>
+        <span class="c-pub" style="flex: 23"></span>
+        <span class="c-appr" style="flex: 5"></span>
+      </div>
+      <dl class="legend">
+        <div>
+          <dt><i class="dot c-sched"></i>Scheduled</dt>
+          <dd>14</dd>
+        </div>
+        <div>
+          <dt><i class="dot c-draft"></i>Drafts</dt>
+          <dd>7</dd>
+        </div>
+        <div>
+          <dt><i class="dot c-pub"></i>Published</dt>
+          <dd>23</dd>
+        </div>
+        <div class="attn">
+          <dt><i class="dot c-appr"></i>Needs approval</dt>
+          <dd>5</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="week" aria-label="Posts by day">
+
+      <div class="day">
+        <h2 class="day-h"><span>Mon</span><span class="dnum">9 Nov</span></h2>
+        <ul class="posts">
+          <li class="post">
+            <div class="meta"><time>10:00 AM</time><span class="chip">Instagram</span></div>
+            <p class="copy">Big news!!! Our new feature is HERE 🎉</p>
+            <div class="foot"><span class="avatar" aria-label="Mia Kim">MK</span><span class="state"><i class="dot s-ok"></i>Approved</span></div>
+          </li>
+          <li class="post">
+            <div class="meta"><time>2:00 PM</time><span class="chip">LinkedIn</span></div>
+            <p class="copy">World-class insights you CAN'T miss 🚀</p>
+            <div class="foot"><span class="avatar" aria-label="Jordan Diaz">JD</span><span class="state"><i class="dot s-draft"></i>Draft</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="day">
+        <h2 class="day-h"><span>Tue</span><span class="dnum">10 Nov</span></h2>
+        <ul class="posts">
+          <li class="post">
+            <div class="meta"><time>9:30 AM</time><span class="chip">TikTok</span></div>
+            <p class="copy">Game-changing tips!! 🤯🔥</p>
+            <div class="foot"><span class="avatar" aria-label="Alex Sato">AS</span><span class="state"><i class="dot s-wait"></i>Review</span></div>
+          </li>
+          <li class="post">
+            <div class="meta"><time>4:15 PM</time><span class="chip">X</span></div>
+            <p class="copy">Trust us, it's the BEST 💯</p>
+            <div class="foot"><span class="avatar" aria-label="Mia Kim">MK</span><span class="state"><i class="dot s-sched"></i>Scheduled</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="day">
+        <h2 class="day-h"><span>Wed</span><span class="dnum">11 Nov</span></h2>
+        <ul class="posts">
+          <li class="post">
+            <div class="meta"><time>11:00 AM</time><span class="chip">Facebook</span></div>
+            <p class="copy">Join 1M+ creators!! Don't miss out 🙌</p>
+            <div class="foot"><span class="avatar" aria-label="Jordan Diaz">JD</span><span class="state"><i class="dot s-ok"></i>Approved</span></div>
+          </li>
+          <li class="post">
+            <div class="meta"><time>5:45 PM</time><span class="chip">Instagram</span></div>
+            <p class="copy">#1 rated tool, guaranteed results! ✨</p>
+            <div class="foot"><span class="avatar" aria-label="Alex Sato">AS</span><span class="state"><i class="dot s-wait"></i>Review</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="day">
+        <h2 class="day-h"><span>Thu</span><span class="dnum">12 Nov</span></h2>
+        <ul class="posts">
+          <li class="post">
+            <div class="meta"><time>8:00 AM</time><span class="chip">LinkedIn</span></div>
+            <p class="copy">Thrilled to announce!!! 🎊</p>
+            <div class="foot"><span class="avatar" aria-label="Jordan Diaz">JD</span><span class="state"><i class="dot s-pub"></i>Published</span></div>
+          </li>
+          <li class="post">
+            <div class="meta"><time>3:00 PM</time><span class="chip">TikTok</span></div>
+            <p class="copy">Watch this VIRAL hack!! 😱</p>
+            <div class="foot"><span class="avatar" aria-label="Mia Kim">MK</span><span class="state"><i class="dot s-draft"></i>Draft</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="day">
+        <h2 class="day-h"><span>Fri</span><span class="dnum">13 Nov</span></h2>
+        <ul class="posts">
+          <li class="post">
+            <div class="meta"><time>9:00 AM</time><span class="chip">X</span></div>
+            <p class="copy">Weekend vibes incoming!!! 🌞🙌</p>
+            <div class="foot"><span class="avatar" aria-label="Alex Sato">AS</span><span class="state"><i class="dot s-ok"></i>Approved</span></div>
+          </li>
+          <li class="post">
+            <div class="meta"><time>4:00 PM</time><span class="chip">Facebook</span></div>
+            <p class="copy">Limited time!!! Act NOW 🚨</p>
+            <div class="foot"><span class="avatar" aria-label="Mia Kim">MK</span><span class="state"><i class="dot s-wait"></i>Review</span></div>
+          </li>
+          <li class="post">
+            <div class="meta"><time>6:30 PM</time><span class="chip">Instagram</span></div>
+            <p class="copy">Our BEST campaign ever!! 💎</p>
+            <div class="foot"><span class="avatar" aria-label="Jordan Diaz">JD</span><span class="state"><i class="dot s-sched"></i>Scheduled</span></div>
+          </li>
+        </ul>
+      </div>
+
+    </section>
+  </main>
+</div>
+</body>
+</html>

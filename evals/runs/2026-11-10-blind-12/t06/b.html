@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Store Analytics</title>
+<style>
+:root{
+  --bg:#f6f5f2; --surface:#fff; --ink:#1d1f23; --muted:#6b6f76; --line:#e6e3dc;
+  --accent:#2f5d8a; --accent-soft:#dbe6f1; --good:#2b7a4b; --bad:#b3382c; --prev:#b9b6ad;
+  --shadow:0 1px 2px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#14161a;--surface:#1c1f25;--ink:#ecebe7;--muted:#9a9ea6;--line:#2c3037;
+  --accent:#7fb0e0;--accent-soft:#27384a;--good:#6cc58f;--bad:#f08a7e;--prev:#4a4e57;--shadow:none}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1160px;margin:0 auto;padding:28px 24px 48px}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:end;justify-content:space-between;margin-bottom:22px}
+h1{font-size:22px;margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13px;margin-top:2px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{font:inherit;font-size:13px;padding:7px 14px;border:0;background:none;color:var(--muted);cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--accent-soft);color:var(--ink);font-weight:600}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;box-shadow:var(--shadow)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.kpi .l{color:var(--muted);font-size:12.5px}
+.kpi .v{font-size:26px;font-weight:650;letter-spacing:-.02em;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.kpi .d{font-size:12.5px;font-variant-numeric:tabular-nums}
+.up{color:var(--good)}.down{color:var(--bad)}
+.kpi .d span{color:var(--muted)}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px}
+h2{font-size:14px;margin:0 0 2px}
+.card .note{color:var(--muted);font-size:12.5px;margin-bottom:12px}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-bottom:6px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+svg{display:block;width:100%;height:auto}
+svg text{fill:var(--muted);font-size:11px;font-family:inherit}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12px;padding:6px 9px;border-radius:6px;opacity:0;transition:opacity .1s;z-index:5;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{font-size:12px;font-weight:500;color:var(--muted);text-align:right;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right;font-size:14px}
+th:first-child,td:first-child{text-align:left}
+tr:last-child td{border-bottom:0}
+.pn{display:flex;align-items:center;gap:10px}
+.rank{color:var(--muted);width:16px;font-size:12px}
+.bar{height:6px;background:var(--accent-soft);border-radius:3px;margin-top:5px;min-width:120px}
+.bar b{display:block;height:100%;background:var(--accent);border-radius:3px}
+.ch{list-style:none;margin:0;padding:0}
+.ch li{margin-bottom:14px}
+.ch .r{display:flex;justify-content:space-between;font-size:14px}
+.ch .r span:last-child{color:var(--muted);font-variant-numeric:tabular-nums}
+@media (max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
+@media (max-width:520px){.wrap{padding:20px 16px}.kpi .v{font-size:22px}.bar{min-width:70px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Store analytics</h1>
+      <div class="sub" id="range">Sample data</div>
+    </div>
+    <div class="seg" role="group" aria-label="Date range">
+      <button data-n="7" aria-pressed="false">7 days</button>
+      <button data-n="30" aria-pressed="true">30 days</button>
+      <button data-n="90" aria-pressed="false">90 days</button>
+    </div>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Revenue</h2>
+      <div class="note">Daily revenue vs. the previous period</div>
+      <div class="legend"><span><i style="background:var(--accent)"></i>This period</span><span><i style="background:var(--prev)"></i>Previous</span></div>
+      <div id="rev"></div>
+    </div>
+    <div class="card">
+      <h2>Orders by channel</h2>
+      <div class="note">Share of orders this period</div>
+      <ul class="ch" id="ch"></ul>
+    </div>
+  </section>
+
+  <section class="grid" style="grid-template-columns:1fr 1.4fr">
+    <div class="card">
+      <h2>Orders per day</h2>
+      <div class="note">Hover a bar for detail</div>
+      <div id="ord"></div>
+    </div>
+    <div class="card">
+      <h2>Top products</h2>
+      <div class="note">Ranked by revenue</div>
+      <table><thead><tr><th>Product</th><th>Units</th><th>Revenue</th></tr></thead><tbody id="top"></tbody></table>
+    </div>
+  </section>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+// Deterministic sample data
+let s=42;const rnd=()=>(s=(s*1664525+1013904223)%4294967296)/4294967296;
+const DAYS=180, AOV=[];
+const days=[];
+const end=new Date(2026,10,9);
+for(let i=0;i<DAYS;i++){
+  const d=new Date(end);d.setDate(end.getDate()-(DAYS-1-i));
+  const dow=d.getDay();
+  const base=62+i*0.12+(dow===0||dow===6?14:0)+(d.getMonth()===10&&d.getDate()>=6?18:0);
+  const orders=Math.round(base*(0.85+rnd()*0.3));
+  const aov=58+rnd()*14;
+  days.push({d,orders,rev:Math.round(orders*aov)});
+}
+const products=[
+ ["Merino Crew Sweater",0.19,96],["Trail Running Shoes",0.16,128],["Canvas Weekender Bag",0.13,84],
+ ["Insulated Bottle 750ml",0.12,32],["Linen Throw Blanket",0.10,68]
+];
+const channels=[["Direct",.34],["Organic search",.27],["Email",.18],["Paid social",.14],["Referral",.07]];
+
+const $=id=>document.getElementById(id);
+const money=n=>"$"+Math.round(n).toLocaleString("en-US");
+const num=n=>Math.round(n).toLocaleString("en-US");
+const sum=(a,f)=>a.reduce((t,x)=>t+f(x),0);
+const fmtD=d=>d.toLocaleDateString("en-US",{month:"short",day:"numeric"});
+const tip=$("tip");
+function showTip(e,t){tip.textContent=t;tip.style.opacity=1;tip.style.left=Math.min(e.clientX+12,innerWidth-170)+"px";tip.style.top=(e.clientY-34)+"px"}
+function hideTip(){tip.style.opacity=0}
+
+function delta(cur,prev,inv){
+  const p=(cur-prev)/prev*100, good=inv?p<=0:p>=0;
+  return `<div class="d ${good?'up':'down'}">${p>=0?'▲':'▼'} ${Math.abs(p).toFixed(1)}% <span>vs previous</span></div>`;
+}
+function niceMax(v){const e=Math.pow(10,Math.floor(Math.log10(v)));for(const m of [1,2,4,8,10])if(m*e>=v)return m*e}
+
+function render(n){
+  const cur=days.slice(-n), prev=days.slice(-2*n,-n);
+  $("range").textContent=`${fmtD(cur[0].d)} – ${fmtD(cur[n-1].d)}, 2026 · sample data`;
+  const rev=sum(cur,x=>x.rev), pr=sum(prev,x=>x.rev);
+  const ord=sum(cur,x=>x.orders), po=sum(prev,x=>x.orders);
+  const aov=rev/ord, paov=pr/po;
+  const conv=2.6+ (n===7?0.2:n===30?0.1:0), pconv=2.5;
+  $("kpis").innerHTML=[
+   ["Revenue",money(rev),delta(rev,pr)],
+   ["Orders",num(ord),delta(ord,po)],
+   ["Average order value","$"+aov.toFixed(2),delta(aov,paov)],
+   ["Conversion rate",conv.toFixed(1)+"%",delta(conv,pconv)]
+  ].map(k=>`<div class="card kpi"><div class="l">${k[0]}</div><div class="v">${k[1]}</div>${k[2]}</div>`).join("");
+
+  lineChart(cur,prev);
+  barChart(cur);
+
+  $("ch").innerHTML=channels.map(c=>`<li><div class="r"><span>${c[0]}</span><span>${num(ord*c[1])} · ${Math.round(c[1]*100)}%</span></div><div class="bar"><b style="width:${c[1]/.34*100}%"></b></div></li>`).join("");
+
+  const tp=products.map(p=>{const u=Math.round(ord*p[1]*0.9);return {n:p[0],u,r:u*p[2]}}).sort((a,b)=>b.r-a.r);
+  const mx=tp[0].r;
+  $("top").innerHTML=tp.map((p,i)=>`<tr><td><div class="pn"><span class="rank">${i+1}</span><div style="flex:1"><div>${p.n}</div><div class="bar"><b style="width:${p.r/mx*100}%"></b></div></div></div></td><td>${num(p.u)}</td><td>${money(p.r)}</td></tr>`).join("");
+}
+
+function lineChart(cur,prev){
+  const W=680,H=280,L=48,R=10,T=10,B=26,n=cur.length;
+  const max=niceMax(Math.max(...cur.map(x=>x.rev),...prev.map(x=>x.rev)));
+  const x=i=>L+(W-L-R)*i/(n-1), y=v=>T+(H-T-B)*(1-v/max);
+  const path=a=>a.map((p,i)=>(i?"L":"M")+x(i).toFixed(1)+" "+y(p.rev).toFixed(1)).join("");
+  let g="";
+  for(let i=0;i<=4;i++){const v=max*i/4;g+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">$${v>=1000?(v/1000).toFixed(v%1000?1:0)+"k":v}</text>`}
+  const ticks=5;let xt="";
+  for(let i=0;i<ticks;i++){const k=Math.round((n-1)*i/(ticks-1));xt+=`<text x="${x(k)}" y="${H-6}" text-anchor="${i==0?'start':i==ticks-1?'end':'middle'}">${fmtD(cur[k].d)}</text>`}
+  $("rev").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Daily revenue line chart">${g}${xt}
+   <path d="${path(prev)}" fill="none" stroke="var(--prev)" stroke-width="1.5"/>
+   <path d="${path(cur)}" fill="none" stroke="var(--accent)" stroke-width="2.25" stroke-linejoin="round"/>
+   <line id="cl" y1="${T}" y2="${H-B}" stroke="var(--muted)" stroke-dasharray="3 3" opacity="0"/>
+   <circle id="cd" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0"/>
+   <rect x="${L}" y="${T}" width="${W-L-R}" height="${H-T-B}" fill="transparent" id="hit"/></svg>`;
+  const svg=$("rev").firstChild,hit=$("hit");
+  hit.addEventListener("mousemove",e=>{
+    const r=svg.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*W;
+    const i=Math.max(0,Math.min(n-1,Math.round((px-L)/(W-L-R)*(n-1))));
+    $("cl").setAttribute("x1",x(i));$("cl").setAttribute("x2",x(i));$("cl").setAttribute("opacity",1);
+    $("cd").setAttribute("cx",x(i));$("cd").setAttribute("cy",y(cur[i].rev));$("cd").setAttribute("opacity",1);
+    showTip(e,`${fmtD(cur[i].d)} · ${money(cur[i].rev)} (prev ${money(prev[i].rev)})`);
+  });
+  hit.addEventListener("mouseleave",()=>{hideTip();$("cl").setAttribute("opacity",0);$("cd").setAttribute("opacity",0)});
+}
+
+function barChart(cur){
+  // aggregate to weeks when long
+  let data=cur.map(x=>({l:fmtD(x.d),v:x.orders}));
+  let unit="orders";
+  if(cur.length>35){
+    data=[];for(let i=0;i<cur.length;i+=7){const w=cur.slice(i,i+7);data.push({l:"Week of "+fmtD(w[0].d),v:sum(w,x=>x.orders)})}
+    unit="orders / week";
+  }
+  const W=420,H=280,L=40,R=6,T=10,B=26,n=data.length;
+  const max=niceMax(Math.max(...data.map(d=>d.v)));
+  const y=v=>T+(H-T-B)*(1-v/max), bw=(W-L-R)/n;
+  let g="";for(let i=0;i<=4;i++){const v=max*i/4;g+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${Math.round(v)}</text>`}
+  const bars=data.map((d,i)=>`<rect data-t="${d.l} · ${num(d.v)} orders" x="${L+i*bw+bw*.15}" y="${y(d.v)}" width="${bw*.7}" height="${H-B-y(d.v)}" rx="2" fill="var(--accent)"/>`).join("");
+  $("ord").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Orders per ${n>35?'week':'day'}">${g}${bars}
+   <text x="${L}" y="${H-6}">${data[0].l.replace("Week of ","")}</text><text x="${W-R}" y="${H-6}" text-anchor="end">${data[n-1].l.replace("Week of ","")}</text></svg>`;
+  $("ord").querySelectorAll("rect").forEach(r=>{
+    r.addEventListener("mousemove",e=>{r.setAttribute("opacity",.75);showTip(e,r.dataset.t)});
+    r.addEventListener("mouseleave",()=>{r.removeAttribute("opacity");hideTip()});
+  });
+}
+
+document.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  render(+b.dataset.n);
+}));
+render(30);
+</script>
+</body>
+</html>

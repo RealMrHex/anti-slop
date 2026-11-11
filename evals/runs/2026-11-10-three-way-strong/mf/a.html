@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview · MetricFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['JetBrains Mono', 'ui-monospace', 'monospace'] },
+      colors: {
+        ink: { 900: '#14161a', 700: '#3a3f47', 500: '#6b7280', 300: '#c9ccd1', 200: '#e3e5e8', 100: '#f0f1f3', 50: '#f7f8f9' },
+        accent: { DEFAULT: '#3b5bdb', soft: '#e8edfc', dark: '#2f4ab8' },
+        up: '#1f7a4d', down: '#b4372f'
+      }
+    }
+  }
+}
+</script>
+<style>
+  body { font-feature-settings: "cv11", "ss01"; }
+  .tnum { font-variant-numeric: tabular-nums; }
+  :focus-visible { outline: 2px solid #3b5bdb; outline-offset: 2px; border-radius: 6px; }
+  .chart-grid line { stroke: #e3e5e8; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body class="bg-ink-50 text-ink-900 font-sans antialiased">
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 bg-white px-3 py-2 rounded-md shadow">Skip to content</a>
+
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <div id="scrim" class="fixed inset-0 bg-ink-900/30 z-30 hidden lg:hidden" aria-hidden="true"></div>
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-60 bg-white border-r border-ink-200 flex flex-col -translate-x-full lg:translate-x-0 lg:static transition-transform duration-200" aria-label="Primary">
+    <div class="h-16 flex items-center gap-2.5 px-5 border-b border-ink-200">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="7" fill="#3b5bdb"/><path d="M6 17l4.5-5 3.5 3 6-7" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="font-semibold tracking-tight">MetricFlow</span>
+    </div>
+    <nav class="flex-1 px-3 py-4">
+      <ul class="space-y-0.5" id="nav">
+        <li><a href="#" aria-current="page" class="nav-link flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Overview</a></li>
+        <li><a href="#" class="nav-link flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-linecap="round"/></svg>Analytics</a></li>
+        <li><a href="#" class="nav-link flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.3-5.5 6.5-5.5s5.7 2 6.5 5.5M16 4.5a3.5 3.5 0 010 7M18 14.8c2 .7 3.2 2.5 3.6 5.2" stroke-linecap="round"/></svg>Customers</a></li>
+        <li><a href="#" class="nav-link flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z" stroke-linejoin="round"/><path d="M14 3v5h5M10 13h6M10 17h6" stroke-linecap="round"/></svg>Reports</a></li>
+        <li><a href="#" class="nav-link flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>Settings</a></li>
+      </ul>
+    </nav>
+    <div class="m-3 p-4 rounded-lg bg-ink-50 border border-ink-200">
+      <p class="text-xs font-medium text-ink-700">Growth plan</p>
+      <p class="text-xs text-ink-500 mt-1">8,420 of 10,000 tracked events used this month.</p>
+      <div class="mt-3 h-1.5 rounded-full bg-ink-200" role="progressbar" aria-valuenow="84" aria-valuemin="0" aria-valuemax="100" aria-label="Event quota used"><div class="h-full w-[84%] rounded-full bg-accent"></div></div>
+    </div>
+  </aside>
+
+  <div class="flex-1 min-w-0 flex flex-col">
+    <!-- Header -->
+    <header class="h-16 bg-white border-b border-ink-200 flex items-center gap-3 px-4 sm:px-6 sticky top-0 z-20">
+      <button id="menuBtn" class="lg:hidden p-2 -ml-2 rounded-md text-ink-700 hover:bg-ink-100" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+      </button>
+      <h1 class="text-lg font-semibold tracking-tight">Overview</h1>
+
+      <div class="ml-auto flex items-center gap-2 sm:gap-3">
+        <label for="range" class="sr-only">Date range</label>
+        <div class="relative">
+          <select id="range" class="appearance-none text-sm bg-white border border-ink-200 rounded-md pl-3 pr-8 py-1.5 text-ink-700 hover:border-ink-300 cursor-pointer">
+            <option value="3">3 months</option>
+            <option value="6">6 months</option>
+            <option value="12" selected>12 months</option>
+          </select>
+          <svg class="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 text-ink-500 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+
+        <div class="relative">
+          <button id="notifBtn" class="relative p-2 rounded-md text-ink-700 hover:bg-ink-100" aria-label="Notifications, 3 unread" aria-haspopup="true" aria-expanded="false" aria-controls="notifPanel">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 003.4 0" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="notifDot" class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-down ring-2 ring-white"></span>
+          </button>
+          <div id="notifPanel" class="hidden absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white border border-ink-200 rounded-lg shadow-lg z-30" role="region" aria-label="Notifications">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-ink-200">
+              <p class="text-sm font-semibold">Notifications</p>
+              <button id="markRead" class="text-xs font-medium text-accent hover:underline">Mark all read</button>
+            </div>
+            <ul class="divide-y divide-ink-100 text-sm" id="notifList">
+              <li class="px-4 py-3 unread"><p class="text-ink-900">Weekly revenue report is ready</p><p class="text-xs text-ink-500 mt-0.5">12 minutes ago</p></li>
+              <li class="px-4 py-3 unread"><p class="text-ink-900">Payment from Halden Studio failed (card declined)</p><p class="text-xs text-ink-500 mt-0.5">1 hour ago</p></li>
+              <li class="px-4 py-3 unread"><p class="text-ink-900">Checkout conversion crossed 3.2% target</p><p class="text-xs text-ink-500 mt-0.5">Yesterday</p></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="relative">
+          <button id="profileBtn" class="flex items-center gap-2 p-1 pr-2 rounded-md hover:bg-ink-100" aria-haspopup="menu" aria-expanded="false" aria-controls="profileMenu">
+            <span class="w-8 h-8 rounded-full bg-accent-soft text-accent-dark text-xs font-semibold grid place-items-center" aria-hidden="true">NR</span>
+            <span class="hidden sm:block text-left leading-tight">
+              <span class="block text-sm font-medium">Nadia Reyes</span>
+              <span class="block text-xs text-ink-500">Admin</span>
+            </span>
+            <span class="sr-only">Account menu</span>
+          </button>
+          <ul id="profileMenu" role="menu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-ink-200 rounded-lg shadow-lg py-1 z-30 text-sm">
+            <li role="none"><a role="menuitem" href="#" class="block px-3 py-2 hover:bg-ink-50">Your profile</a></li>
+            <li role="none"><a role="menuitem" href="#" class="block px-3 py-2 hover:bg-ink-50">Workspace settings</a></li>
+            <li role="none"><a role="menuitem" href="#" class="block px-3 py-2 hover:bg-ink-50 text-down">Sign out</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="flex-1 p-4 sm:p-6 space-y-6 max-w-[1400px] w-full">
+      <!-- KPIs -->
+      <section aria-labelledby="kpi-h">
+        <h2 id="kpi-h" class="sr-only">Key metrics</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4" id="kpis"></div>
+      </section>
+
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Revenue chart -->
+        <section class="min-w-0 xl:col-span-2 bg-white border border-ink-200 rounded-lg p-5" aria-labelledby="rev-h">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 id="rev-h" class="text-sm font-semibold">Revenue</h2>
+              <p class="text-sm text-ink-500 mt-0.5"><span id="revTotal" class="tnum text-ink-900 font-medium"></span> <span id="revLabel"></span></p>
+            </div>
+            <div class="inline-flex p-0.5 bg-ink-100 rounded-md text-xs font-medium" role="group" aria-label="Chart metric">
+              <button class="metric-btn px-3 py-1.5 rounded" data-metric="revenue" aria-pressed="true">Revenue</button>
+              <button class="metric-btn px-3 py-1.5 rounded" data-metric="orders" aria-pressed="false">Orders</button>
+            </div>
+          </div>
+          <div class="relative mt-4" id="chartWrap">
+            <svg id="chart" class="w-full h-64" role="img" aria-labelledby="chartDesc"></svg>
+            <p id="chartDesc" class="sr-only"></p>
+            <div id="tip" class="pointer-events-none absolute hidden bg-ink-900 text-white text-xs rounded-md px-2.5 py-1.5 shadow tnum whitespace-nowrap"></div>
+          </div>
+        </section>
+
+        <!-- Traffic -->
+        <section class="min-w-0 bg-white border border-ink-200 rounded-lg p-5" aria-labelledby="traffic-h">
+          <h2 id="traffic-h" class="text-sm font-semibold">Traffic sources</h2>
+          <p class="text-sm text-ink-500 mt-0.5"><span class="tnum text-ink-900 font-medium">186,400</span> sessions</p>
+          <div class="mt-5 flex h-3 rounded-full overflow-hidden gap-0.5" id="trafficBar" aria-hidden="true"></div>
+          <ul class="mt-5 space-y-3" id="trafficList"></ul>
+        </section>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Transactions -->
+        <section class="min-w-0 xl:col-span-2 bg-white border border-ink-200 rounded-lg" aria-labelledby="tx-h">
+          <div class="flex flex-wrap items-center justify-between gap-3 px-5 pt-5 pb-4">
+            <h2 id="tx-h" class="text-sm font-semibold">Recent transactions</h2>
+            <div class="inline-flex p-0.5 bg-ink-100 rounded-md text-xs font-medium" role="group" aria-label="Filter by status">
+              <button class="tx-filter px-3 py-1.5 rounded" data-filter="all" aria-pressed="true">All</button>
+              <button class="tx-filter px-3 py-1.5 rounded" data-filter="Paid" aria-pressed="false">Paid</button>
+              <button class="tx-filter px-3 py-1.5 rounded" data-filter="Pending" aria-pressed="false">Pending</button>
+              <button class="tx-filter px-3 py-1.5 rounded" data-filter="Failed" aria-pressed="false">Failed</button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm sm:min-w-[560px]">
+              <thead>
+                <tr class="text-left text-xs text-ink-500 border-y border-ink-200 bg-ink-50">
+                  <th scope="col" class="font-medium px-5 py-2.5">Customer</th>
+                  <th scope="col" class="hidden md:table-cell font-medium px-3 py-2.5">Plan</th>
+                  <th scope="col" class="hidden sm:table-cell font-medium px-3 py-2.5">Date</th>
+                  <th scope="col" class="font-medium px-3 py-2.5">Status</th>
+                  <th scope="col" class="font-medium px-5 py-2.5 text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="txBody" class="divide-y divide-ink-100"></tbody>
+            </table>
+          </div>
+          <p id="txEmpty" class="hidden px-5 py-8 text-sm text-ink-500 text-center">No transactions match this filter.</p>
+        </section>
+
+        <!-- Insights -->
+        <section class="min-w-0 bg-white border border-ink-200 rounded-lg p-5" aria-labelledby="ins-h">
+          <h2 id="ins-h" class="text-sm font-semibold">What changed this month</h2>
+          <ol class="mt-4 space-y-4 text-sm">
+            <li class="flex gap-3">
+              <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-up shrink-0" aria-hidden="true"></span>
+              <p class="text-ink-700"><span class="text-ink-900 font-medium">Organic search drove most of the revenue gain.</span> Sessions from search rose 18% after the pricing page refresh on Oct 21.</p>
+            </li>
+            <li class="flex gap-3">
+              <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-down shrink-0" aria-hidden="true"></span>
+              <p class="text-ink-700"><span class="text-ink-900 font-medium">Order value slipped 2.1%.</span> More customers chose the Starter plan; annual Pro upgrades fell from 41 to 33.</p>
+            </li>
+            <li class="flex gap-3">
+              <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-ink-300 shrink-0" aria-hidden="true"></span>
+              <p class="text-ink-700"><span class="text-ink-900 font-medium">2 payments need attention.</span> One declined card and one pending invoice total <span class="tnum">$1,148</span>.</p>
+            </li>
+          </ol>
+          <a href="#" class="mt-5 inline-flex items-center gap-1 text-sm font-medium text-accent hover:underline">Open full report
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+(() => {
+  // ---------- Data ----------
+  const months = ['Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov'];
+  const years  = [2025,2026,2026,2026,2026,2026,2026,2026,2026,2026,2026,2026];
+  const revenue = [31240, 29870, 32510, 34980, 33620, 36450, 38120, 37280, 40150, 41940, 42810, 48290];
+  const orders  = [   402,   381,   409,   431,   408,   436,   451,   437,   463,   480,   484,   558];
+
+  const kpis = [
+    { label: 'Total revenue', value: '$48,290', delta: 12.8, spark: revenue },
+    { label: 'Active users', value: '12,840', delta: 8.2, spark: [9120,9480,9710,10050,10220,10630,10980,11240,11420,11610,11867,12840] },
+    { label: 'Conversion rate', value: '3.24%', delta: 1.4, spark: [2.91,2.88,2.97,3.02,2.99,3.08,3.11,3.09,3.15,3.18,3.195,3.24] },
+    { label: 'Average order value', value: '$86.50', delta: -2.1, spark: [88.4,89.1,90.2,90.6,89.9,90.4,90.0,89.6,89.2,88.9,88.36,86.5] }
+  ];
+
+  const traffic = [
+    { name: 'Organic search', pct: 42, color: '#3b5bdb' },
+    { name: 'Direct',         pct: 28, color: '#7b93ea' },
+    { name: 'Social',         pct: 18, color: '#b3c1f3' },
+    { name: 'Referral',       pct: 12, color: '#d9e0f9' }
+  ];
+  const totalSessions = 186400;
+
+  const tx = [
+    { name: 'Northwind Logistics', email: 'billing@northwind.io', plan: 'Pro · Annual', date: 'Nov 10, 2026', status: 'Paid', amount: 1188.00 },
+    { name: 'Halden Studio', email: 'ops@haldenstudio.com', plan: 'Pro · Monthly', date: 'Nov 10, 2026', status: 'Failed', amount: 99.00 },
+    { name: 'Priya Natarajan', email: 'priya@lumenlabs.co', plan: 'Starter · Monthly', date: 'Nov 9, 2026', status: 'Paid', amount: 29.00 },
+    { name: 'Cobalt & Pine', email: 'finance@cobaltpine.com', plan: 'Business · Annual', date: 'Nov 9, 2026', status: 'Pending', amount: 1049.00 },
+    { name: 'Marcus Feld', email: 'marcus@feldcoffee.de', plan: 'Starter · Annual', date: 'Nov 8, 2026', status: 'Paid', amount: 290.00 },
+    { name: 'Orbit Health', email: 'accounts@orbithealth.org', plan: 'Business · Monthly', date: 'Nov 8, 2026', status: 'Paid', amount: 249.00 },
+    { name: 'Tessaly Goods', email: 'hello@tessaly.shop', plan: 'Pro · Monthly', date: 'Nov 7, 2026', status: 'Refunded', amount: 99.00 }
+  ];
+
+  const fmtUSD = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  const fmtUSD2 = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const NS = 'http://www.w3.org/2000/svg';
+
+  // ---------- KPI cards ----------
+  const kpiWrap = document.getElementById('kpis');
+  kpis.forEach(k => {
+    const up = k.delta >= 0;
+    const min = Math.min(...k.spark), max = Math.max(...k.spark);
+    const pts = k.spark.map((v, i) => `${(i / (k.spark.length - 1)) * 100},${28 - ((v - min) / (max - min || 1)) * 24 - 2}`).join(' ');
+    const el = document.createElement('article');
+    el.className = 'bg-white border border-ink-200 rounded-lg p-5';
+    el.innerHTML = `
+      <h3 class="text-sm text-ink-500">${k.label}</h3>
+      <div class="mt-2 flex items-end justify-between gap-3">
+        <div>
+          <p class="text-2xl font-semibold tracking-tight tnum">${k.value}</p>
+          <p class="mt-1 text-xs tnum ${up ? 'text-up' : 'text-down'}">
+            <span aria-hidden="true">${up ? '▲' : '▼'}</span>
+            <span class="font-medium">${up ? '+' : '−'}${Math.abs(k.delta)}%</span>
+            <span class="block mt-0.5 text-ink-500">vs last month</span>
+          </p>
+        </div>
+        <svg viewBox="0 0 100 28" preserveAspectRatio="none" class="w-20 h-8 shrink-0" aria-hidden="true">
+          <polyline points="${pts}" fill="none" stroke="${up ? '#3b5bdb' : '#b4372f'}" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+        </svg>
+      </div>`;
+    kpiWrap.appendChild(el);
+  });
+
+  // ---------- Revenue chart ----------
+  const svg = document.getElementById('chart');
+  const tip = document.getElementById('tip');
+  const wrap = document.getElementById('chartWrap');
+  let metric = 'revenue';
+  let range = 12;
+
+  function niceMax(v) {
+    const pow = Math.pow(10, Math.floor(Math.log10(v)));
+    const steps = [1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
+    for (const s of steps) if (s * pow >= v) return s * pow;
+    return 10 * pow;
+  }
+
+  function drawChart() {
+    const data = (metric === 'revenue' ? revenue : orders).slice(-range);
+    const labels = months.slice(-range);
+    const yrs = years.slice(-range);
+    const W = svg.clientWidth || 800, H = svg.clientHeight || 256;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.innerHTML = '';
+    const pad = { l: 52, r: 8, t: 10, b: 26 };
+    const iw = W - pad.l - pad.r, ih = H - pad.t - pad.b;
+    const max = niceMax(Math.max(...data) * 1.05);
+    const ticks = 4;
+    const fmtAxis = v => metric === 'revenue' ? (v >= 1000 ? '$' + (v / 1000) + 'k' : '$' + v) : String(v);
+
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'chart-grid');
+    for (let i = 0; i <= ticks; i++) {
+      const v = (max / ticks) * i;
+      const y = pad.t + ih - (v / max) * ih;
+      const line = document.createElementNS(NS, 'line');
+      line.setAttribute('x1', pad.l); line.setAttribute('x2', W - pad.r);
+      line.setAttribute('y1', y); line.setAttribute('y2', y);
+      if (i === 0) line.setAttribute('style', 'stroke:#c9ccd1');
+      g.appendChild(line);
+      const t = document.createElementNS(NS, 'text');
+      t.setAttribute('x', pad.l - 10); t.setAttribute('y', y + 4);
+      t.setAttribute('text-anchor', 'end');
+      t.setAttribute('class', 'fill-ink-500 tnum'); t.setAttribute('font-size', '11');
+      t.textContent = fmtAxis(Math.round(v));
+      g.appendChild(t);
+    }
+    svg.appendChild(g);
+
+    const slot = iw / data.length;
+    const bw = Math.min(36, slot * 0.6);
+    data.forEach((v, i) => {
+      const x = pad.l + slot * i + (slot - bw) / 2;
+      const h = (v / max) * ih;
+      const isLast = i === data.length - 1;
+      const r = document.createElementNS(NS, 'rect');
+      r.setAttribute('x', x); r.setAttribute('y', pad.t + ih - h);
+      r.setAttribute('width', bw); r.setAttribute('height', h);
+      r.setAttribute('rx', 3);
+      r.setAttribute('fill', isLast ? '#3b5bdb' : '#b3c1f3');
+      r.dataset.i = i;
+      svg.appendChild(r);
+
+      const t = document.createElementNS(NS, 'text');
+      t.setAttribute('x', x + bw / 2); t.setAttribute('y', H - 8);
+      t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', '11');
+      t.setAttribute('class', isLast ? 'fill-ink-900' : 'fill-ink-500');
+      if (slot < 34 && (data.length - 1 - i) % 2 === 1) t.setAttribute("visibility", "hidden");
+      t.textContent = labels[i];
+      svg.appendChild(t);
+
+      // hit area
+      const hit = document.createElementNS(NS, 'rect');
+      hit.setAttribute('x', pad.l + slot * i); hit.setAttribute('y', pad.t);
+      hit.setAttribute('width', slot); hit.setAttribute('height', ih);
+      hit.setAttribute('fill', 'transparent');
+      hit.addEventListener('mouseenter', () => {
+        r.setAttribute('fill', isLast ? '#2f4ab8' : '#7b93ea');
+        const prev = i > 0 ? data[i - 1] : null;
+        const ch = prev ? ((v - prev) / prev * 100) : null;
+        tip.innerHTML = `<div class="text-ink-300">${labels[i]} ${yrs[i]}</div><div class="font-medium">${metric === 'revenue' ? fmtUSD(v) : v + ' orders'}${ch !== null ? ` <span class="${ch >= 0 ? 'text-green-300' : 'text-red-300'}">${ch >= 0 ? '+' : '−'}${Math.abs(ch).toFixed(1)}%</span>` : ''}</div>`;
+        tip.classList.remove('hidden');
+        const bx = (x + bw / 2) * (svg.getBoundingClientRect().width / W);
+        const tw = tip.offsetWidth;
+        tip.style.left = Math.max(0, Math.min(wrap.clientWidth - tw, bx - tw / 2)) + 'px';
+        tip.style.top = Math.max(0, (pad.t + ih - h) - 48) + 'px';
+      });
+      hit.addEventListener('mouseleave', () => { r.setAttribute('fill', isLast ? '#3b5bdb' : '#b3c1f3'); tip.classList.add('hidden'); });
+      svg.appendChild(hit);
+    });
+
+    const sum = data.reduce((a, b) => a + b, 0);
+    document.getElementById('revTotal').textContent = metric === 'revenue' ? fmtUSD(sum) : sum.toLocaleString('en-US');
+    document.getElementById('revLabel').textContent = (metric === 'revenue' ? 'earned' : 'orders') + ` in the last ${range} months`;
+    document.getElementById('chartDesc').textContent = `${metric === 'revenue' ? 'Monthly revenue' : 'Monthly orders'}: ` +
+      data.map((v, i) => `${labels[i]} ${metric === 'revenue' ? fmtUSD(v) : v}`).join(', ');
+  }
+
+  document.querySelectorAll('.metric-btn').forEach(b => b.addEventListener('click', () => {
+    metric = b.dataset.metric;
+    document.querySelectorAll('.metric-btn').forEach(x => x.setAttribute('aria-pressed', x === b));
+    styleToggles(); drawChart();
+  }));
+  document.getElementById('range').addEventListener('change', e => { range = +e.target.value; drawChart(); });
+  let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawChart, 80); });
+
+  // ---------- Traffic ----------
+  const bar = document.getElementById('trafficBar');
+  const list = document.getElementById('trafficList');
+  traffic.forEach(t => {
+    const seg = document.createElement('div');
+    seg.style.width = t.pct + '%'; seg.style.background = t.color;
+    bar.appendChild(seg);
+    const li = document.createElement('li');
+    li.className = 'flex items-center gap-3 text-sm';
+    li.innerHTML = `<span class="w-2.5 h-2.5 rounded-sm shrink-0" style="background:${t.color}" aria-hidden="true"></span>
+      <span class="text-ink-700 flex-1">${t.name}</span>
+      <span class="text-ink-500 tnum text-xs">${Math.round(totalSessions * t.pct / 100).toLocaleString('en-US')}</span>
+      <span class="tnum font-medium w-10 text-right">${t.pct}%</span>`;
+    list.appendChild(li);
+  });
+
+  // ---------- Transactions ----------
+  const statusCls = {
+    Paid: 'bg-green-50 text-up',
+    Pending: 'bg-amber-50 text-amber-700',
+    Failed: 'bg-red-50 text-down',
+    Refunded: 'bg-ink-100 text-ink-700'
+  };
+  const initials = n => n.split(/\s+/).filter(w => /^[A-Za-z]/.test(w)).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+  function drawTx(filter) {
+    const body = document.getElementById('txBody');
+    const rows = tx.filter(t => filter === 'all' || t.status === filter);
+    body.innerHTML = rows.map(t => `
+      <tr class="hover:bg-ink-50">
+        <td class="px-5 py-3 max-w-[9rem] sm:max-w-none">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full bg-ink-100 text-ink-700 text-xs font-semibold grid place-items-center shrink-0" aria-hidden="true">${initials(t.name)}</span>
+            <div class="min-w-0"><p class="font-medium text-ink-900 truncate">${t.name}</p><p class="text-xs text-ink-500 truncate">${t.email}</p></div>
+          </div>
+        </td>
+        <td class="hidden md:table-cell px-3 py-3 text-ink-700 whitespace-nowrap">${t.plan}</td>
+        <td class="hidden sm:table-cell px-3 py-3 text-ink-500 whitespace-nowrap tnum">${t.date}</td>
+        <td class="px-3 py-3"><span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${statusCls[t.status]}">${t.status}</span></td>
+        <td class="px-5 py-3 text-right tnum font-medium whitespace-nowrap ${t.status === 'Refunded' ? 'text-ink-500 line-through' : ''}">${fmtUSD2(t.amount)}</td>
+      </tr>`).join('');
+    document.getElementById('txEmpty').classList.toggle('hidden', rows.length > 0);
+  }
+  document.querySelectorAll('.tx-filter').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.tx-filter').forEach(x => x.setAttribute('aria-pressed', x === b));
+    styleToggles(); drawTx(b.dataset.filter);
+  }));
+
+  function styleToggles() {
+    document.querySelectorAll('[aria-pressed]').forEach(b => {
+      const on = b.getAttribute('aria-pressed') === 'true';
+      b.classList.toggle('bg-white', on); b.classList.toggle('shadow-sm', on);
+      b.classList.toggle('text-ink-900', on); b.classList.toggle('text-ink-500', !on);
+    });
+  }
+
+  // ---------- Nav ----------
+  const links = document.querySelectorAll('.nav-link');
+  function styleNav() {
+    links.forEach(l => {
+      const on = l.getAttribute('aria-current') === 'page';
+      l.classList.toggle('bg-accent-soft', on); l.classList.toggle('text-accent-dark', on);
+      l.classList.toggle('text-ink-700', !on); l.classList.toggle('hover:bg-ink-100', !on);
+    });
+  }
+  links.forEach(l => l.addEventListener('click', e => {
+    e.preventDefault();
+    links.forEach(x => x.removeAttribute('aria-current'));
+    l.setAttribute('aria-current', 'page');
+    document.querySelector('h1').textContent = l.textContent.trim();
+    document.title = l.textContent.trim() + ' · MetricFlow';
+    styleNav(); closeSidebar();
+  }));
+
+  const sidebar = document.getElementById('sidebar'), scrim = document.getElementById('scrim'), menuBtn = document.getElementById('menuBtn');
+  function openSidebar() { sidebar.classList.remove('-translate-x-full'); scrim.classList.remove('hidden'); menuBtn.setAttribute('aria-expanded', 'true'); }
+  function closeSidebar() { sidebar.classList.add('-translate-x-full'); scrim.classList.add('hidden'); menuBtn.setAttribute('aria-expanded', 'false'); }
+  menuBtn.addEventListener('click', openSidebar);
+  scrim.addEventListener('click', closeSidebar);
+
+  // ---------- Popovers ----------
+  function popover(btnId, panelId) {
+    const btn = document.getElementById(btnId), panel = document.getElementById(panelId);
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = panel.classList.contains('hidden');
+      closeAll();
+      if (open) { panel.classList.remove('hidden'); btn.setAttribute('aria-expanded', 'true'); }
+    });
+    panel.addEventListener('click', e => e.stopPropagation());
+    return { btn, panel };
+  }
+  const pops = [popover('notifBtn', 'notifPanel'), popover('profileBtn', 'profileMenu')];
+  function closeAll() { pops.forEach(p => { p.panel.classList.add('hidden'); p.btn.setAttribute('aria-expanded', 'false'); }); }
+  document.addEventListener('click', closeAll);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAll(); closeSidebar(); } });
+
+  document.getElementById('markRead').addEventListener('click', () => {
+    document.getElementById('notifDot').remove();
+    document.querySelectorAll('#notifList .unread p:first-child').forEach(p => p.classList.replace('text-ink-900', 'text-ink-500'));
+    document.getElementById('notifBtn').setAttribute('aria-label', 'Notifications, none unread');
+    document.getElementById('markRead').disabled = true;
+    document.getElementById('markRead').classList.add('opacity-40');
+  });
+
+  styleNav(); styleToggles(); drawChart(); drawTx('all');
+})();
+</script>
+</body>
+</html>

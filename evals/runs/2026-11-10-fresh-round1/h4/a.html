@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rootline: identify and water houseplants</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            canvas: '#F5F7F6',
+            surface: '#FFFFFF',
+            line: '#DCE3DF',
+            'line-strong': '#B7C4BC',
+            ink: '#15201A',
+            secondary: '#3E4E46',
+            muted: '#5F6F66',
+            accent: '#1F6FB2',
+            'accent-hover': '#185C96'
+          },
+          fontFamily: {
+            sans: ['"Instrument Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"IBM Plex Mono"', 'ui-monospace', 'Menlo', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body class="bg-canvas text-ink font-sans antialiased min-h-screen">
+
+  <header class="mx-auto flex h-16 max-w-[1160px] items-center justify-between px-4 sm:px-6">
+    <a href="#" class="text-[17px] font-semibold tracking-tight text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">Rootline</a>
+    <nav class="hidden gap-7 text-[15px] text-secondary md:flex">
+      <a href="#" class="hover:text-accent">Features</a>
+      <a href="#" class="hover:text-accent">Pricing</a>
+      <a href="#" class="hover:text-accent">Blog</a>
+    </nav>
+    <button class="text-[15px] font-medium text-ink hover:text-accent">Log in</button>
+  </header>
+
+  <main class="mx-auto grid max-w-[1160px] grid-cols-1 items-center gap-12 px-4 pb-16 pt-10 sm:px-6 md:pt-16 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-16">
+
+    <div>
+      <a href="#" class="text-sm font-medium text-accent hover:underline">New: identify a plant from a photo</a>
+
+      <h1 class="mt-4 text-[40px] font-semibold leading-[1.06] tracking-[-0.02em] text-ink sm:text-[56px]">
+        Identify any houseplant from a photo. Then water it on time.
+      </h1>
+
+      <p class="mt-5 max-w-[30rem] text-lg leading-7 text-secondary">
+        Snap a photo to identify a houseplant. Rootline keeps a watering schedule for each plant and remembers when you last watered it.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <button class="h-12 rounded-lg bg-accent px-6 text-[15px] font-medium text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-[0.98]">Get started free</button>
+        <button class="h-12 rounded-lg border border-line-strong bg-surface px-6 text-[15px] font-medium text-ink transition-colors duration-150 hover:bg-canvas focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent active:scale-[0.98]">See how it works</button>
+      </div>
+
+      <div class="mt-4 flex flex-wrap gap-3">
+        <button class="flex h-11 items-center rounded-lg border border-line bg-surface px-4 text-left transition-colors duration-150 hover:bg-canvas focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+          <span class="leading-tight">
+            <span class="block text-xs text-muted">Download on the</span>
+            <span class="block text-sm font-medium text-ink">App Store</span>
+          </span>
+        </button>
+        <button class="flex h-11 items-center rounded-lg border border-line bg-surface px-4 text-left transition-colors duration-150 hover:bg-canvas focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
+          <span class="leading-tight">
+            <span class="block text-xs text-muted">Get it on</span>
+            <span class="block text-sm font-medium text-ink">Google Play</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div>
+      <section aria-label="Example plant in Rootline" class="rounded-2xl border border-line bg-surface p-6 sm:p-8">
+        <div>
+          <p class="text-sm text-muted">Identified from a photo</p>
+          <h2 class="mt-1 text-2xl font-semibold tracking-tight text-ink">Monstera deliciosa</h2>
+          <p class="mt-1 text-sm text-secondary">Swiss cheese plant. Bright, indirect light.</p>
+        </div>
+
+        <div class="mt-8 border-t border-line pt-6">
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h3 class="text-base font-medium text-ink">Watering</h3>
+            <p class="text-sm text-secondary">Every 7 days</p>
+          </div>
+          <p class="mt-1 text-xl font-semibold text-accent">Water today</p>
+
+          <!-- The one special element: the watering line -->
+          <div class="relative mx-3 mt-8 h-10">
+            <div class="absolute left-0 right-0 top-1/2 h-0.5 -translate-y-1/2 bg-line"></div>
+            <div class="absolute left-0 top-1/2 h-0.5 w-[66.67%] -translate-y-1/2 bg-accent"></div>
+
+            <span class="absolute left-0 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent" aria-hidden="true"></span>
+            <span class="absolute left-[33.33%] top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent" aria-hidden="true"></span>
+            <span class="absolute left-[66.67%] top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-accent bg-surface" aria-hidden="true">
+              <span class="absolute inset-[3px] rounded-full bg-accent"></span>
+            </span>
+            <span class="absolute left-full top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-line-strong bg-surface" aria-hidden="true"></span>
+          </div>
+
+          <div class="relative mx-3 mt-2 h-4 font-mono text-xs text-muted">
+            <span class="absolute left-0">27 Oct</span>
+            <span class="absolute left-[33.33%] -translate-x-1/2">3 Nov</span>
+            <span class="absolute left-[66.67%] -translate-x-1/2 font-medium text-ink">10 Nov</span>
+            <span class="absolute right-0">17 Nov</span>
+          </div>
+        </div>
+
+        <dl class="mt-8 grid grid-cols-2 gap-6 border-t border-line pt-6 text-sm">
+          <div>
+            <dt class="text-muted">Last watered</dt>
+            <dd class="mt-1 font-mono text-ink">3 Nov</dd>
+          </div>
+          <div>
+            <dt class="text-muted">Light</dt>
+            <dd class="mt-1 text-ink">Bright, indirect</dd>
+          </div>
+        </dl>
+      </section>
+      <p class="mt-3 text-xs text-muted">Example plant. Sample data.</p>
+    </div>
+
+  </main>
+</body>
+</html>

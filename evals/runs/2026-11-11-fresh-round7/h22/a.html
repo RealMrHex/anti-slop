@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Little Sprouts for nursery parents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ee;
+    --card: #fdfbf7;
+    --raised: #efe9df;
+    --text: #1f1b16;
+    --text-2: #5e554a;
+    --text-3: #6b6255;
+    --line: rgba(31, 27, 22, .09);
+    --accent: #3d6b4a;
+    --accent-hover: #33593d;
+    --accent-ink: #2f5a3c;
+    --accent-soft: #e4ebe2;
+    --ease: cubic-bezier(.22, 1, .36, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Instrument Sans", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+  p, h1, h3 { margin: 0; }
+  svg.i { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+  .page {
+    max-width: 1280px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 0 64px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Navigation */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 84px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 17px;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    font-size: 15px;
+    color: var(--text-2);
+  }
+  .nav-links a { transition: color .15s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links .login { color: var(--text); }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background-color .15s, color .15s, border-color .15s, transform .15s;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-secondary {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid rgba(31, 27, 22, .12);
+  }
+  .btn-secondary:hover { background: var(--raised); }
+  .btn-sm { height: 36px; padding: 0 16px; font-size: 14px; }
+
+  /* Hero */
+  .hero {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 64px;
+    align-items: center;
+    padding: 32px 0 64px;
+  }
+  h1 {
+    font-family: "Instrument Serif", Georgia, serif;
+    font-weight: 400;
+    font-size: 64px;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    max-width: 13ch;
+  }
+  .lede {
+    margin-top: 24px;
+    max-width: 30rem;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--text-2);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .features {
+    list-style: none;
+    margin: 48px 0 0;
+    padding: 24px 0 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: 20px;
+  }
+  .features li {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  .features .i { color: var(--text-3); margin-top: 1px; }
+  .features h3 { font-size: 15px; font-weight: 500; }
+  .features p { margin-top: 2px; font-size: 15px; color: var(--text-2); }
+
+  /* Product preview: one daily log */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(31, 27, 22, .06);
+  }
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .child { display: flex; align-items: center; gap: 12px; }
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .name { font-size: 15px; font-weight: 500; }
+  .meta { font-size: 13px; color: var(--text-3); }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  .photo { margin: 20px 0 0; }
+  .photo svg { display: block; width: 100%; height: auto; border-radius: 12px; }
+  .photo figcaption {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .photo figcaption span { color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+  .log { list-style: none; margin: 20px 0 0; padding: 0; }
+  .log li {
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    min-height: 60px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+  }
+  .log .ic {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--raised);
+    color: var(--text-2);
+    display: grid;
+    place-items: center;
+  }
+  .log .ic .i { width: 16px; height: 16px; }
+  .log p { font-size: 15px; }
+  .log time { font-size: 14px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+  /* One entrance on load */
+  .enter { animation: rise .4s var(--ease) both; }
+  .preview.enter { animation-delay: .06s; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Small screens */
+  @media (max-width: 960px) {
+    .page { padding: 0 24px; }
+    .hero { grid-template-columns: 1fr; gap: 48px; padding: 16px 0 48px; }
+    h1 { font-size: 48px; }
+  }
+  @media (max-width: 640px) {
+    .page { padding: 0 16px; }
+    .nav-links a:not(.login):not(.btn) { display: none; }
+    .nav-links { gap: 20px; }
+    h1 { font-size: 40px; }
+    .lede { font-size: 17px; }
+    .btn { flex: 1 1 auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .enter { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <a class="logo" href="#" aria-label="Little Sprouts home">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 22v-9" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M12 13C12 8.6 9.2 6 4 5.6 4 10.2 6.8 13 12 13z" fill="var(--accent)"/>
+        <path d="M12 10.5c0-3.4 2.1-5.6 7-6 0 3.6-2.2 6-7 6z" fill="var(--accent)"/>
+      </svg>
+      <span>Little Sprouts</span>
+    </a>
+    <div class="nav-links">
+      <a href="#">Features</a>
+      <a href="#">How it works</a>
+      <a href="#">Pricing</a>
+      <a href="#" class="login">Log in</a>
+      <a href="#" class="btn btn-primary btn-sm">Start free</a>
+    </div>
+  </nav>
+
+  <main class="hero">
+    <section class="enter">
+      <h1>Know how your child's day went, as it happens</h1>
+      <p class="lede">Daily photos, nap and meal logs, pickup alerts and chats with your carers, in one place.</p>
+
+      <div class="actions">
+        <a href="#" class="btn btn-primary">Get started free</a>
+        <a href="#" class="btn btn-secondary">Watch demo</a>
+      </div>
+
+      <ul class="features">
+        <li>
+          <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4h-5L8 6H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          <div>
+            <h3>Daily photos</h3>
+            <p>See each moment of the day as it happens.</p>
+          </div>
+        </li>
+        <li>
+          <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+          <div>
+            <h3>Nap and meal logs</h3>
+            <p>Know when they slept and what they ate.</p>
+          </div>
+        </li>
+        <li>
+          <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+          <div>
+            <h3>Pickup alerts</h3>
+            <p>Get notified the moment you can collect them.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="card preview enter" aria-label="Example daily log for Maya">
+      <header class="card-head">
+        <div class="child">
+          <span class="avatar" aria-hidden="true">M</span>
+          <div>
+            <p class="name">Maya</p>
+            <p class="meta">Sunflower room</p>
+          </div>
+        </div>
+        <p class="meta tnum">Tue 11 Nov</p>
+      </header>
+
+      <figure class="photo">
+        <svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of a young sprout in a meadow, standing in for a daily photo">
+          <rect width="400" height="200" fill="#e9e1cf"/>
+          <circle cx="314" cy="58" r="24" fill="#e0a54f"/>
+          <path d="M0 132 C 70 104 150 110 220 128 S 344 124 400 112 V200 H0 Z" fill="#b5c7a6"/>
+          <path d="M0 162 C 90 138 180 146 262 162 S 352 158 400 152 V200 H0 Z" fill="#7d9a72"/>
+          <path d="M176 176 V118" fill="none" stroke="#2f5a3c" stroke-width="3" stroke-linecap="round"/>
+          <path d="M176 124 C 176 104 160 96 146 98 C 148 114 160 124 176 124 Z" fill="#2f5a3c"/>
+          <path d="M176 116 C 176 98 192 88 210 90 C 208 106 194 118 176 116 Z" fill="#2f5a3c"/>
+        </svg>
+        <figcaption>
+          <span style="color:var(--text-2)">Painting time</span>
+          <span>10:15</span>
+        </figcaption>
+      </figure>
+
+      <ol class="log">
+        <li>
+          <span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v7a2 2 0 0 0 2 2 2 2 0 0 0 2-2V3"/><path d="M6 3v18"/><path d="M18 21V3c-2 1-3 3-3 6v3h3"/></svg></span>
+          <div><p>Breakfast</p><p class="meta">Porridge and banana, most eaten</p></div>
+          <time>08:10</time>
+        </li>
+        <li>
+          <span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></span>
+          <div><p>Nap</p><p class="meta">Slept 1 h 20 min</p></div>
+          <time>09:40</time>
+        </li>
+        <li>
+          <span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3v7a2 2 0 0 0 2 2 2 2 0 0 0 2-2V3"/><path d="M6 3v18"/><path d="M18 21V3c-2 1-3 3-3 6v3h3"/></svg></span>
+          <div><p>Lunch</p><p class="meta">Pasta, peas and yoghurt</p></div>
+          <time>12:05</time>
+        </li>
+        <li>
+          <span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg></span>
+          <div><p>Pickup alert</p><p class="meta">Sent to Jo</p></div>
+          <time>16:50</time>
+        </li>
+      </ol>
+    </section>
+  </main>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hearth &amp; Pine | Handmade oak tables and chairs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --line: rgba(31, 27, 22, 0.08);
+      --line-strong: rgba(31, 27, 22, 0.18);
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --text-3: #7b7266;
+      --accent: #9a4a1f;
+      --accent-text: #fdfbf7;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    /* Header */
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      height: 72px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .brand svg { display: block; }
+
+    .links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .links a {
+      color: var(--text-2);
+      transition: color 160ms var(--ease);
+    }
+
+    .links a:hover { color: var(--text); }
+
+    .cart {
+      color: var(--text) !important;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      padding: 7px 14px;
+      transition: background-color 160ms var(--ease), border-color 160ms var(--ease) !important;
+    }
+
+    .cart:hover {
+      background: var(--raised);
+      border-color: rgba(31, 27, 22, 0.28);
+    }
+
+    /* Hero */
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 96px 32px 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      align-items: center;
+      gap: 72px;
+    }
+
+    .copy h1 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(44px, 5.4vw, 68px);
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      max-width: 14ch;
+    }
+
+    .lede {
+      margin: 24px 0 0;
+      max-width: 34rem;
+      font-size: 19px;
+      line-height: 1.5;
+      color: var(--text-2);
+      text-wrap: pretty;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 36px;
+    }
+
+    .btn {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      padding: 0 22px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition:
+        background-color 160ms var(--ease),
+        border-color 160ms var(--ease),
+        color 160ms var(--ease),
+        transform 120ms var(--ease);
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-text);
+    }
+
+    .btn-primary:hover { background: #823c18; }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--line-strong);
+    }
+
+    .btn-secondary:hover {
+      background: var(--raised);
+      border-color: rgba(31, 27, 22, 0.28);
+    }
+
+    /* Product view */
+    .product {
+      margin: 0;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.06);
+    }
+
+    .product-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 4px 4px 16px;
+    }
+
+    .product-head strong {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .product-head span {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    .scene {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
+
+    .specs {
+      margin: 16px 0 0;
+      padding: 0 4px;
+    }
+
+    .specs div {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 11px 0;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    .specs div:first-child { border-top: 0; }
+
+    .specs dt { color: var(--text-2); }
+
+    .specs dd {
+      margin: 0;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+
+    /* Supporting row */
+    .facts {
+      list-style: none;
+      max-width: 1200px;
+      margin: 96px auto 0;
+      padding: 32px 32px 96px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 40px;
+      border-top: 1px solid var(--line);
+    }
+
+    .facts h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .facts p {
+      margin: 6px 0 0;
+      font-size: 15px;
+      color: var(--text-2);
+    }
+
+    /* Entrance: one short fade and rise */
+    .rise {
+      animation: rise 480ms var(--ease) both;
+    }
+
+    .rise-2 { animation-delay: 60ms; }
+    .rise-3 { animation-delay: 120ms; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* Small screens */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 48px;
+        padding-top: 56px;
+      }
+
+      .copy h1 { max-width: 16ch; }
+
+      .facts {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        margin-top: 64px;
+        padding-bottom: 64px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .top {
+        height: auto;
+        flex-wrap: wrap;
+        padding: 20px 16px 0;
+        row-gap: 14px;
+      }
+
+      .links {
+        gap: 20px;
+        font-size: 14px;
+        flex-wrap: wrap;
+      }
+
+      .hero { padding: 40px 16px 0; }
+      .facts { padding-left: 16px; padding-right: 16px; }
+      .lede { font-size: 17px; }
+      .actions .btn { flex: 1 1 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rise { animation: none; }
+      .btn:active { transform: none; }
+      .links a, .cart, .btn { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top rise">
+    <a class="brand" href="#" aria-label="Hearth &amp; Pine home">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2 L19 12 H15.5 L20 19 H4 L8.5 12 H5 Z" fill="#9a4a1f"/>
+        <rect x="11" y="19" width="2" height="3" fill="#9a4a1f"/>
+      </svg>
+      <span>Hearth &amp; Pine</span>
+    </a>
+    <nav class="links" aria-label="Main">
+      <a href="#">Shop</a>
+      <a href="#">Custom</a>
+      <a href="#">Our story</a>
+      <a class="cart" href="#">Cart (0)</a>
+    </nav>
+  </header>
+
+  <main class="hero">
+    <div class="copy rise rise-2">
+      <h1>Oak tables and chairs, made by hand to order</h1>
+      <p class="lede">Each piece is built by hand after you order it. Lead time is six weeks.</p>
+      <div class="actions">
+        <button class="btn btn-primary" type="button">Shop now</button>
+        <button class="btn btn-secondary" type="button">Build yours</button>
+      </div>
+    </div>
+
+    <figure class="product rise rise-3">
+      <figcaption class="product-head">
+        <strong>Oak dining table</strong>
+        <span>Made to order</span>
+      </figcaption>
+
+      <svg class="scene" viewBox="0 0 480 300" role="img" aria-label="Drawing of an oak dining table with two chairs">
+        <defs>
+          <linearGradient id="oakTop" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#d4a775"/>
+            <stop offset="1" stop-color="#bf8e5a"/>
+          </linearGradient>
+          <pattern id="grain" width="60" height="22" patternUnits="userSpaceOnUse">
+            <path d="M0 5 C15 2 30 8 60 4" stroke="#8a5a2e" stroke-opacity="0.22" fill="none"/>
+            <path d="M0 13 C18 10 34 16 60 12" stroke="#8a5a2e" stroke-opacity="0.16" fill="none"/>
+            <path d="M0 19 C12 17 40 21 60 18" stroke="#8a5a2e" stroke-opacity="0.2" fill="none"/>
+          </pattern>
+          <g id="chair">
+            <rect x="34" y="118" width="6" height="78" fill="#9a6a3c"/>
+            <rect x="72" y="118" width="6" height="78" fill="#9a6a3c"/>
+            <rect x="34" y="118" width="44" height="8" rx="2" fill="#9a6a3c"/>
+            <rect x="34" y="148" width="44" height="5" rx="2" fill="#9a6a3c"/>
+            <rect x="30" y="196" width="52" height="9" rx="2" fill="#b98a58"/>
+            <rect x="32" y="205" width="6" height="31" fill="#9a6a3c"/>
+            <rect x="76" y="205" width="6" height="31" fill="#9a6a3c"/>
+          </g>
+        </defs>
+
+        <rect width="480" height="300" fill="#ebe3d5"/>
+        <rect y="236" width="480" height="64" fill="#dfd3bf"/>
+        <line x1="0" y1="236" x2="480" y2="236" stroke="#cbbda6"/>
+        <ellipse cx="240" cy="270" rx="180" ry="9" fill="#5a3b1d" fill-opacity="0.14"/>
+
+        <use href="#chair"/>
+        <use href="#chair" transform="translate(480 0) scale(-1 1)"/>
+
+        <rect x="112" y="170" width="12" height="66" fill="#9a6a3c"/>
+        <rect x="356" y="170" width="12" height="66" fill="#9a6a3c"/>
+        <rect x="110" y="150" width="260" height="20" rx="3" fill="url(#oakTop)"/>
+        <rect x="110" y="150" width="260" height="20" rx="3" fill="url(#grain)"/>
+        <rect x="110" y="170" width="260" height="6" fill="#a8733f"/>
+      </svg>
+
+      <dl class="specs">
+        <div><dt>Material</dt><dd>Oak</dd></div>
+        <div><dt>Lead time</dt><dd>Six weeks</dd></div>
+        <div><dt>Made</dt><dd>By hand, to order</dd></div>
+      </dl>
+    </figure>
+  </main>
+
+  <ul class="facts">
+    <li>
+      <h2>Made to order</h2>
+      <p>Every piece is built by hand after you order it.</p>
+    </li>
+    <li>
+      <h2>Six weeks lead time</h2>
+      <p>Plan your order around a six-week build.</p>
+    </li>
+    <li>
+      <h2>Oak tables and chairs</h2>
+      <p>The range is oak, built by hand, one piece at a time.</p>
+    </li>
+  </ul>
+
+</body>
+</html>

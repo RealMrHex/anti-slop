@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loaf | Fresh bread for pickup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --card: #fdfbf7;
+      --flour: #ece3d4;
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --text-3: #7b7266;
+      --line: rgba(31, 27, 22, 0.08);
+      --line-strong: rgba(31, 27, 22, 0.16);
+      --accent: #a84a2a;
+      --accent-hover: #8f3d22;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+
+    /* Navigation */
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 24px;
+    }
+    .links {
+      display: flex;
+      gap: 32px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-2);
+    }
+    .links a { transition: color 160ms var(--ease); }
+    .links a:hover { color: var(--text); }
+    .nav-end { display: flex; align-items: center; gap: 8px; }
+    .nav-end .menu-btn { display: none; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1;
+      cursor: pointer;
+      transition: background-color 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .btn-primary { background: var(--accent); border: 1px solid var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .btn-secondary { background: var(--card); border: 1px solid var(--line-strong); color: var(--text); }
+    .btn-secondary:hover { border-color: rgba(31, 27, 22, 0.28); }
+    .btn-small { height: 36px; padding: 0 14px; font-size: 14px; }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      padding: 72px 0 80px;
+    }
+    h1 {
+      margin: 0;
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 400;
+      font-size: 64px;
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+    }
+    .lede {
+      max-width: 36rem;
+      margin: 24px 0 0;
+      font-size: 18px;
+      line-height: 28px;
+      color: var(--text-2);
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+
+    .visual {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 32px;
+      background: var(--flour);
+      border-radius: 20px;
+    }
+    .visual svg { display: block; width: 100%; height: auto; }
+    .caption {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+    .caption strong { font-weight: 500; color: var(--text); }
+
+    /* Signature divider */
+    .score { display: block; width: 100%; height: 24px; }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.3fr;
+      gap: 16px;
+      padding: 40px 0 0;
+    }
+    .stat {
+      padding: 20px 24px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+    .stat-label { font-size: 14px; color: var(--text-2); }
+    .stat-value {
+      margin-top: 8px;
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .meta {
+      margin: 24px 0 0;
+      padding-bottom: 96px;
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    /* Mobile */
+    @media (max-width: 900px) {
+      .wrap { padding: 0 16px; }
+      .links { display: none; }
+      .nav-end .menu-btn { display: inline-flex; }
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 40px 0 56px;
+      }
+      h1 { font-size: 44px; }
+      .visual { padding: 24px; }
+      .stats { grid-template-columns: 1fr; }
+      .meta { padding-bottom: 64px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <nav class="top" aria-label="Main">
+      <a class="logo" href="#" aria-label="Loaf home">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 19 Q2 9 9 6.5 Q12 5.5 15 6.5 Q22 9 21 19 Z" fill="#a84a2a"/>
+          <path d="M8 11 Q12 9 16 11" fill="none" stroke="#f7f4ee" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        Loaf
+      </a>
+      <ul class="links" style="list-style:none;margin:0;padding:0">
+        <li><a href="#">Menu</a></li>
+        <li><a href="#">Subscribe</a></li>
+        <li><a href="#">Visit us</a></li>
+      </ul>
+      <div class="nav-end">
+        <button class="btn btn-secondary btn-small">Cart (0)</button>
+        <button class="btn btn-secondary btn-small menu-btn">Menu</button>
+      </div>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <div>
+          <h1>Fresh bread, baked for pickup today</h1>
+          <p class="lede">Order sourdough and pastries online, then pick them up at the bakery. Pickup is open 7:00am to 7:00pm.</p>
+          <div class="actions">
+            <button class="btn btn-primary">Order now</button>
+            <button class="btn btn-secondary">Weekly subscription</button>
+          </div>
+        </div>
+
+        <div class="visual">
+          <svg viewBox="0 0 320 220" role="img" aria-label="A scored sourdough loaf on a flour-colored ground">
+            <ellipse cx="160" cy="186" rx="130" ry="10" fill="#1f1b16" opacity="0.12"/>
+            <path d="M34 178 Q22 96 96 66 Q160 42 224 66 Q298 96 286 178 Z" fill="#b8643a"/>
+            <path d="M52 170 Q46 104 104 80 Q96 120 96 170 Z" fill="#cf8a57"/>
+            <path d="M112 96 Q162 70 214 92" fill="none" stroke="#f3dcc2" stroke-width="9" stroke-linecap="round"/>
+            <path d="M120 130 Q162 112 204 128" fill="none" stroke="#f3dcc2" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+          </svg>
+          <div class="caption">
+            <strong>Today's bake</strong>
+            <span>Sourdough, croissants, pastries</span>
+          </div>
+        </div>
+      </section>
+
+      <svg class="score" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 14 Q600 -2 1200 14" fill="none" stroke="rgba(31,27,22,0.14)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+      </svg>
+
+      <section class="stats" aria-label="Today's bake list">
+        <div class="stat">
+          <p class="stat-label">Sourdough</p>
+          <p class="stat-value">12 left</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">Croissants</p>
+          <p class="stat-value">48 baked</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">Next bake</p>
+          <p class="stat-value">Nov 11, 2026</p>
+        </div>
+      </section>
+
+      <p class="meta">Pickup open 7:00am to 7:00pm</p>
+    </main>
+  </div>
+
+</body>
+</html>

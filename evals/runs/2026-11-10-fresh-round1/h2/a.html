@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wavecast - Podcast hosting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F5F7F8;
+      --surface: #FFFFFF;
+      --line: #E1E6EA;
+      --ink: #14191F;
+      --ink-2: #3B4551;
+      --ink-3: #5F6A76;
+      --accent: #C2410C;
+      --wave: #C9D1D8;
+      --sans: 'Instrument Sans', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+      --r-ctl: 8px;
+      --r-card: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    .top .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      height: 64px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+    .logo svg { width: 22px; height: 22px; flex: none; }
+    .nav { display: flex; gap: 28px; font-size: 14px; color: var(--ink-2); }
+    .nav a { transition: color .15s; }
+    .nav a:hover { color: var(--ink); }
+    .top-actions { display: flex; align-items: center; gap: 16px; }
+    .login { font-size: 14px; font-weight: 500; color: var(--ink-2); transition: color .15s; }
+    .login:hover { color: var(--ink); }
+    @media (max-width: 860px) { .nav { display: none; } }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      height: 44px;
+      padding: 0 18px;
+      border-radius: var(--r-ctl);
+      font-size: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background-color .15s, border-color .15s, transform .1s;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn-sm { height: 36px; padding: 0 14px; font-size: 14px; }
+    .btn-primary { background: var(--ink); color: #fff; }
+    .btn-primary:hover { background: #2A323C; }
+    .btn-ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+    .btn-ghost:hover { border-color: #C5CED6; }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      gap: 64px;
+      align-items: center;
+      padding-top: 56px;
+      padding-bottom: 96px;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: 14px;
+      color: var(--ink-2);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 2px;
+      transition: color .15s;
+    }
+    .eyebrow:hover { color: var(--accent); }
+    h1 {
+      margin-top: 20px;
+      font-size: clamp(40px, 5vw, 60px);
+      font-weight: 600;
+      line-height: 1.04;
+      letter-spacing: -0.025em;
+    }
+    .lede {
+      margin-top: 20px;
+      max-width: 30em;
+      font-size: 18px;
+      color: var(--ink-3);
+    }
+    .actions { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+    /* Product view */
+    .product {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--r-card);
+      padding: 24px;
+      box-shadow: 0 1px 2px rgba(20, 25, 31, .04), 0 16px 36px -20px rgba(20, 25, 31, .22);
+    }
+    .p-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+    .p-kicker { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+    .p-title { margin-top: 4px; font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+    .status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+
+    .wave {
+      margin-top: 24px;
+      height: 96px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .wave span {
+      flex: 1;
+      height: var(--h);
+      border-radius: 2px;
+      background: var(--wave);
+    }
+    .wave span.on { background: var(--accent); }
+    .time {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink-3);
+    }
+
+    .dist { margin-top: 24px; border-top: 1px solid var(--line); }
+    .dist li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .dist .live { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-2); }
+
+    .notes { margin-top: 20px; font-size: 14px; }
+    .notes h2 { font-size: 14px; font-weight: 500; }
+    .notes p { margin-top: 4px; color: var(--ink-3); }
+
+    /* How it works */
+    .how { border-top: 1px solid var(--line); padding-top: 88px; padding-bottom: 104px; }
+    .how-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+      gap: 64px;
+      align-items: start;
+    }
+    .how h2 { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+    .how .lede { margin-top: 12px; font-size: 16px; }
+    .steps li {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 24px;
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+    }
+    .steps li:last-child { border-bottom: 1px solid var(--line); }
+    .steps h3 { font-size: 17px; font-weight: 600; }
+    .steps p { color: var(--ink-3); }
+
+    /* Small screens */
+    @media (max-width: 860px) {
+      .hero, .how-grid { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+      .hero { padding-top: 32px; padding-bottom: 72px; }
+      .how { padding-top: 64px; padding-bottom: 72px; }
+    }
+    @media (max-width: 600px) {
+      .wrap { padding: 0 16px; }
+      .steps li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+      .product { padding: 18px; }
+      .p-head { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a href="#" class="logo" aria-label="Wavecast home">
+        <svg viewBox="0 0 22 22" aria-hidden="true">
+          <rect x="1" y="8" width="3" height="6" rx="1.5" fill="#14191F"/>
+          <rect x="6" y="4" width="3" height="14" rx="1.5" fill="#14191F"/>
+          <rect x="11" y="1" width="3" height="20" rx="1.5" fill="#C2410C"/>
+          <rect x="16" y="6" width="3" height="10" rx="1.5" fill="#14191F"/>
+        </svg>
+        <span>Wavecast</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Analytics</a>
+        <a href="#">Resources</a>
+      </nav>
+      <div class="top-actions">
+        <a href="#" class="login">Log in</a>
+        <a href="#" class="btn btn-primary btn-sm">Start free</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrap hero">
+      <div>
+        <a href="#" class="eyebrow">New: AI show notes</a>
+        <h1>Upload once. Live on Spotify and Apple Podcasts in seconds.</h1>
+        <p class="lede">Podcast hosting that is fast and simple. Upload each episode once and it is distributed to Spotify and Apple Podcasts.</p>
+        <div class="actions">
+          <a href="#" class="btn btn-primary">Start publishing</a>
+          <a href="#" class="btn btn-ghost">Watch demo</a>
+        </div>
+      </div>
+
+      <div class="product">
+        <div class="p-head">
+          <div>
+            <p class="p-kicker">Episode 48</p>
+            <p class="p-title">Mixing the live room</p>
+          </div>
+          <p class="status"><span class="dot" aria-hidden="true"></span>Published</p>
+        </div>
+
+        <div class="wave" aria-hidden="true">
+          <span class="on" style="--h:30px"></span><span class="on" style="--h:46px"></span><span class="on" style="--h:22px"></span><span class="on" style="--h:58px"></span><span class="on" style="--h:70px"></span><span class="on" style="--h:40px"></span><span class="on" style="--h:28px"></span><span class="on" style="--h:62px"></span><span class="on" style="--h:80px"></span><span class="on" style="--h:54px"></span><span class="on" style="--h:36px"></span><span class="on" style="--h:20px"></span><span class="on" style="--h:44px"></span><span class="on" style="--h:66px"></span><span class="on" style="--h:88px"></span><span class="on" style="--h:72px"></span><span class="on" style="--h:50px"></span><span class="on" style="--h:34px"></span><span class="on" style="--h:26px"></span><span style="--h:58px"></span><span style="--h:76px"></span><span style="--h:62px"></span><span style="--h:40px"></span><span style="--h:24px"></span><span style="--h:48px"></span><span style="--h:68px"></span><span style="--h:90px"></span><span style="--h:74px"></span><span style="--h:52px"></span><span style="--h:32px"></span><span style="--h:44px"></span><span style="--h:60px"></span><span style="--h:70px"></span><span style="--h:46px"></span><span style="--h:28px"></span><span style="--h:38px"></span><span style="--h:56px"></span><span style="--h:78px"></span><span style="--h:64px"></span><span style="--h:42px"></span><span style="--h:30px"></span><span style="--h:50px"></span><span style="--h:66px"></span><span style="--h:54px"></span><span style="--h:36px"></span><span style="--h:22px"></span><span style="--h:44px"></span><span style="--h:58px"></span>
+        </div>
+        <div class="time"><span>12:04</span><span>41:37</span></div>
+
+        <ul class="dist">
+          <li><span>Spotify</span><span class="live"><span class="dot" aria-hidden="true"></span>Live</span></li>
+          <li><span>Apple Podcasts</span><span class="live"><span class="dot" aria-hidden="true"></span>Live</span></li>
+        </ul>
+
+        <div class="notes">
+          <h2>Show notes</h2>
+          <p>Chapters: 0:00 Intro, 4:12 Gear and setup, 18:40 Listener questions</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="how">
+      <div class="wrap how-grid">
+        <div>
+          <h2>How it works</h2>
+          <p class="lede">Three steps from a finished recording to a live episode.</p>
+        </div>
+        <ol class="steps">
+          <li>
+            <h3>Upload</h3>
+            <p>Add an episode once. Wavecast hosts the audio for you.</p>
+          </li>
+          <li>
+            <h3>Describe</h3>
+            <p>AI drafts show notes for each episode, with chapters.</p>
+          </li>
+          <li>
+            <h3>Distribute</h3>
+            <p>Each episode goes out to Spotify and Apple Podcasts in seconds.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

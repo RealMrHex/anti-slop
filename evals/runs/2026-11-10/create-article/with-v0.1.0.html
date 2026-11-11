@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Wall That Breathes — Section Quarterly</title>
+<meta name="description" content="A long read on lime plaster, moisture and the retrofit of a 1930s municipal bathhouse. Placeholder article for a quarterly architecture magazine.">
+<style>
+  :root {
+    /* colour roles */
+    --paper: #f4f0e8;
+    --paper-raised: #ebe5d8;
+    --ink: #1d1a16;
+    --ink-soft: #564f45;
+    --rule: #b9b09f;
+    --accent: #9a3b1f;       /* links, drop cap, figure marks: nothing else */
+    --focus: #1d1a16;
+
+    /* type roles */
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --sans: "Avenir Next", "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+
+    /* spacing scale (rem) */
+    --s1: .25rem; --s2: .5rem; --s3: .75rem; --s4: 1rem;
+    --s5: 1.5rem; --s6: 2.5rem; --s7: 4rem; --s8: 6rem;
+
+    --measure: 34rem;      /* ~62 characters at body size */
+    --note: 14rem;
+    --gutter: clamp(1rem, 4vw, 2.5rem);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #16140f;
+      --paper-raised: #211e17;
+      --ink: #ece6da;
+      --ink-soft: #b0a795;
+      --rule: #5c5547;
+      --accent: #e58a67;
+      --focus: #ece6da;
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-padding-top: var(--s5); }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    font-kerning: normal;
+    hanging-punctuation: first;
+  }
+
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+  .skip {
+    position: absolute; left: var(--s4); top: -4rem;
+    background: var(--ink); color: var(--paper);
+    font-family: var(--sans); font-size: .875rem;
+    padding: var(--s3) var(--s4); z-index: 10;
+  }
+  .skip:focus { top: var(--s4); }
+
+  .wrap { padding-inline: var(--gutter); max-width: 74rem; margin-inline: auto; }
+
+  /* masthead */
+  .masthead {
+    font-family: var(--sans);
+    font-size: .8125rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--rule);
+  }
+  .masthead .wrap {
+    display: flex; flex-wrap: wrap; justify-content: space-between;
+    gap: var(--s2) var(--s5); padding-block: var(--s4);
+  }
+  .masthead a { color: var(--ink); text-decoration: none; font-weight: 700; letter-spacing: .14em; }
+  .masthead a:hover { text-decoration: underline; }
+  .masthead span { color: var(--ink-soft); }
+
+  /* opening */
+  .opening { padding-block: var(--s7) var(--s6); }
+  .kicker {
+    font-family: var(--sans); font-size: .8125rem; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--accent); font-weight: 700;
+    margin: 0 0 var(--s5);
+  }
+  h1 {
+    font-weight: 400;
+    font-size: clamp(2.75rem, 1.5rem + 6.5vw, 6.5rem);
+    line-height: 1.0;
+    letter-spacing: -.02em;
+    margin: 0;
+    max-width: 12ch;
+    text-wrap: balance;
+  }
+  .dek {
+    font-size: clamp(1.25rem, 1.05rem + 1vw, 1.75rem);
+    line-height: 1.35;
+    font-style: italic;
+    color: var(--ink-soft);
+    max-width: 32rem;
+    margin: var(--s5) 0 0;
+    text-wrap: pretty;
+  }
+  .byline {
+    font-family: var(--sans); font-size: .875rem; color: var(--ink-soft);
+    margin: var(--s6) 0 0; padding-top: var(--s4);
+    border-top: 1px solid var(--rule);
+    display: flex; flex-wrap: wrap; gap: var(--s2) var(--s6);
+  }
+  .byline b { color: var(--ink); font-weight: 700; }
+
+  /* article grid: text column + marginal notes */
+  .body { padding-bottom: var(--s7); }
+  .row { display: block; }
+  .row > p, .row > h2, .row > figure, .row > blockquote { max-width: var(--measure); }
+
+  .body p { margin: 0 0 var(--s4); text-wrap: pretty; }
+  .body p + p { text-indent: 0; }
+
+  h2 {
+    font-family: var(--sans);
+    font-size: 1.0625rem; font-weight: 700; letter-spacing: .01em;
+    line-height: 1.3;
+    margin: var(--s7) 0 var(--s4);
+  }
+  h2 .n { color: var(--accent); margin-right: var(--s3); font-variant-numeric: tabular-nums; }
+
+  .lede::first-letter {
+    float: left;
+    font-size: 4.6em; line-height: .8;
+    padding: .06em .09em 0 0;
+    color: var(--accent);
+  }
+
+  .note {
+    font-family: var(--sans); font-size: .875rem; line-height: 1.5;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--rule);
+    padding-left: var(--s4);
+    margin: var(--s5) 0;
+    max-width: var(--measure);
+  }
+  .note b { color: var(--ink); }
+
+  /* pull quote */
+  blockquote {
+    margin: var(--s6) 0;
+    padding: 0;
+    font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.125rem);
+    line-height: 1.25;
+    font-style: italic;
+    letter-spacing: -.005em;
+    text-wrap: balance;
+  }
+  blockquote footer {
+    font-family: var(--sans); font-style: normal; font-size: .8125rem;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft);
+    margin-top: var(--s3);
+  }
+
+  /* figures */
+  figure { margin: var(--s6) 0; }
+  figure svg { display: block; width: 100%; height: auto; background: var(--paper-raised); }
+  figcaption {
+    font-family: var(--sans); font-size: .875rem; line-height: 1.5; color: var(--ink-soft);
+    margin-top: var(--s3);
+  }
+  figcaption b { color: var(--ink); }
+  .fig-wide { max-width: 100% !important; }
+
+  /* drawing colours via roles */
+  .d-line { stroke: var(--ink); fill: none; stroke-width: 1.5; }
+  .d-thin { stroke: var(--ink-soft); fill: none; stroke-width: 1; }
+  .d-fill { fill: var(--ink); opacity: .12; }
+  .d-hatch { stroke: var(--ink-soft); stroke-width: 1; }
+  .d-mark { stroke: var(--accent); fill: none; stroke-width: 2; }
+  .d-text { fill: var(--ink-soft); font-family: var(--sans); font-size: 12px; }
+  .d-text-strong { fill: var(--ink); font-family: var(--sans); font-size: 12px; font-weight: 700; }
+  .d-text-acc { fill: var(--accent); font-family: var(--sans); font-size: 12px; font-weight: 700; }
+
+  /* data table */
+  .table-wrap { max-width: var(--measure); margin: var(--s6) 0; }
+  table { border-collapse: collapse; width: 100%; font-family: var(--sans); font-size: .9375rem; }
+  caption { text-align: left; font-weight: 700; padding-bottom: var(--s3); }
+  th, td { padding: var(--s3) var(--s3) var(--s3) 0; text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule); }
+  thead th { font-size: .8125rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); border-bottom-color: var(--ink); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; padding-right: 0; padding-left: var(--s3); }
+
+  /* end matter */
+  .endmatter {
+    border-top: 1px solid var(--rule);
+    font-family: var(--sans); font-size: .875rem; color: var(--ink-soft);
+    padding-block: var(--s6) var(--s7);
+  }
+  .endmatter .wrap { display: grid; gap: var(--s5) var(--s6); }
+  .endmatter h2 { margin: 0 0 var(--s2); font-size: .8125rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink); }
+  .endmatter p { margin: 0; max-width: 34rem; }
+  .next a { font-family: var(--serif); font-size: 1.375rem; line-height: 1.3; display: inline-block; padding-block: var(--s2); }
+
+  /* wide: notes move into the right margin */
+  @media (min-width: 62rem) {
+    .row {
+      display: grid;
+      grid-template-columns: minmax(0, var(--measure)) var(--note);
+      column-gap: var(--s7);
+      align-items: start;
+    }
+    .row > .note { grid-column: 2; grid-row: 1; margin: .35rem 0 0; max-width: none; }
+    .row > :not(.note) { grid-column: 1; }
+    .row > .fig-wide { grid-column: 1 / -1; }
+    .endmatter .wrap { grid-template-columns: minmax(0, var(--measure)) var(--note); column-gap: var(--s7); }
+    .body, .opening .wrap > * { }
+    .byline { max-width: calc(var(--measure) + var(--note) + var(--s7)); }
+  }
+
+  @media (max-width: 30rem) {
+    body { font-size: 1.0625rem; }
+    .opening { padding-block: var(--s6) var(--s5); }
+  }
+
+  @media print {
+    body { background: #fff; color: #000; font-size: 11pt; }
+    .skip, .masthead span { display: none; }
+    a { color: inherit; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#article">Skip to article</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <a href="#top" id="top" aria-label="Section Quarterly, top of page">Section Quarterly</a>
+    <span>Issue 14 &middot; Autumn</span>
+  </div>
+</header>
+
+<main id="article">
+  <article>
+    <header class="opening">
+      <div class="wrap">
+        <p class="kicker">Repair &middot; Materials</p>
+        <h1>The Wall That Breathes</h1>
+        <p class="dek">A municipal bathhouse spent ninety years sealing water out. Its restorers spent four trying to let it back in.</p>
+        <p class="byline">
+          <span>Words <b>Placeholder Author</b></span>
+          <span>Drawings <b>Placeholder Studio</b></span>
+          <span><time datetime="2026-09-21">21 September 2026</time> &middot; 9 min read</span>
+        </p>
+      </div>
+    </header>
+
+    <div class="body">
+      <div class="wrap">
+
+        <div class="row">
+          <p class="lede">The first thing the surveyors noticed at the Hallgate Baths was the smell, and the second was that it was coming from the repairs. Every patch laid since 1962 was cement: hard, grey, and faintly warm to the hand. Around each one the original brick had crumbled to the colour and texture of brown sugar.</p>
+          <aside class="note" aria-label="Note on names">
+            <b>A note on this text.</b> Hallgate Baths, its dates and its figures are invented placeholders standing in for a commissioned feature.
+          </aside>
+        </div>
+
+        <div class="row">
+          <p>The diagnosis was not mysterious. A masonry wall is not a barrier; it is a slow conversation between wet and dry. Water enters as rain, rises from the ground, condenses from the air of a building full of hot pools, and leaves again by evaporating through whatever surface will let it. Close that surface with something dense, and the water does not stop arriving. It simply chooses another way out, and the brick, being softer than the cement, pays.</p>
+        </div>
+
+        <div class="row">
+          <h2><span class="n">1</span>A soft skin on a hard problem</h2>
+          <p>Lime plaster is porous, weak and slow. It cures by taking carbon dioxide back from the air, which takes weeks, and it cracks if it is rushed. For most of the twentieth century these were reasons to abandon it. For the conservators at Hallgate they were the specification: a skin weaker than the wall beneath it, so that when something has to give, it is the cheap, replaceable layer that does.</p>
+          <aside class="note" aria-label="Note on cure time">
+            <b>Cure time.</b> The east hall was plastered in three thin coats, each left to dry before the next. The sequence took eleven weeks.
+          </aside>
+        </div>
+
+        <div class="row">
+          <p>The team ran the building like a long experiment. They removed the cement in sections, logged the condition of the brick behind each, and let the exposed walls dry for a full season before touching them. Moisture readings fell steadily. Nobody on site found this exciting, and that, one of them told me, was the point.</p>
+        </div>
+
+        <div class="row">
+          <figure class="fig-wide">
+            <svg viewBox="0 0 800 300" role="img" aria-labelledby="fig1t fig1d" focusable="false">
+              <title id="fig1t">Wall section before and after repair</title>
+              <desc id="fig1d">Two vertical sections of a brick wall side by side. On the left, a thick cement render traps water inside the brick and the brick surface is shown crumbling. On the right, a thin lime plaster coat lets moisture evaporate outward through the surface.</desc>
+
+              <!-- left: before -->
+              <g transform="translate(40,30)">
+                <rect class="d-fill" x="80" y="0" width="110" height="220"/>
+                <g class="d-hatch"><path d="M80 20h110M80 60h110M80 100h110M80 140h110M80 180h110"/><path d="M135 0v20M107 20v40M163 20v40M135 60v40M107 100v40M163 100v40M135 140v40M107 180v40M163 180v40"/></g>
+                <rect class="d-line" x="80" y="0" width="110" height="220"/>
+                <rect class="d-line" x="190" y="0" width="34" height="220"/>
+                <path class="d-mark" d="M70 190c-14-20-14-60 0-80M60 175c-8-14-8-40 0-54" />
+                <path class="d-thin" d="M120 220v-60M150 220v-90M170 220v-40" stroke-dasharray="3 4"/>
+                <text class="d-text-strong" x="0" y="-12">Before</text>
+                <text class="d-text" x="190" y="245">Cement render</text>
+                <text class="d-text" x="0" y="245">Water has no way out</text>
+              </g>
+
+              <!-- right: after -->
+              <g transform="translate(440,30)">
+                <rect class="d-fill" x="80" y="0" width="110" height="220"/>
+                <g class="d-hatch"><path d="M80 20h110M80 60h110M80 100h110M80 140h110M80 180h110"/><path d="M135 0v20M107 20v40M163 20v40M135 60v40M107 100v40M163 100v40M135 140v40M107 180v40M163 180v40"/></g>
+                <rect class="d-line" x="80" y="0" width="110" height="220"/>
+                <rect class="d-line" x="190" y="0" width="10" height="220"/>
+                <path class="d-mark" d="M205 60h60M205 110h60M205 160h60"/>
+                <path class="d-mark" d="M259 54l8 6-8 6M259 104l8 6-8 6M259 154l8 6-8 6"/>
+                <text class="d-text-strong" x="0" y="-12">After</text>
+                <text class="d-text" x="190" y="245">Lime plaster, three coats</text>
+                <text class="d-text" x="0" y="245">Moisture leaves through the skin</text>
+              </g>
+            </svg>
+            <figcaption><b>Fig. 1</b> Schematic wall section, east hall, before and after. Not to scale; redrawn as a placeholder illustration. Accent-coloured lines mark where moisture escapes or is trapped.</figcaption>
+          </figure>
+        </div>
+
+        <div class="row">
+          <h2><span class="n">2</span>What a building is allowed to do</h2>
+          <p>The usual language of restoration is the language of return: to a date, to a drawing, to a photograph. Hallgate's team distrusted it. The 1932 building was never in a stable state; it was always drying, always taking on water, always being mended. What they chose to restore was not an appearance but a behaviour.</p>
+          <aside class="note" aria-label="Note on method">
+            <b>Method.</b> Readings were taken weekly at the same twelve points, at the same hour, by the same person.
+          </aside>
+        </div>
+
+        <div class="row">
+          <blockquote>
+            <p>&ldquo;We stopped asking what the wall should look like and started asking what it should be allowed to do.&rdquo;</p>
+            <footer>Conservation lead, Hallgate Baths (placeholder quotation)</footer>
+          </blockquote>
+        </div>
+
+        <div class="row">
+          <p>That shift has costs. A lime wall wants repainting in lime wash every few years; it marks, it stains, it shows its age honestly and unevenly. The council, which pays for upkeep, had to be persuaded that visible weathering was a sign of a healthy wall rather than a neglected one. The compromise was a maintenance calendar pinned inside the boiler room door, where the people who actually do the work will see it.</p>
+        </div>
+
+        <div class="row">
+          <div class="table-wrap">
+            <table>
+              <caption>Moisture reading, east hall, mid-height (placeholder data)</caption>
+              <thead>
+                <tr><th scope="col">Stage</th><th scope="col" class="num">Reading, % by weight</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Before removal of cement</th><td class="num">11.8</td></tr>
+                <tr><th scope="row">After one dry season</th><td class="num">6.4</td></tr>
+                <tr><th scope="row">After final lime coat</th><td class="num">4.1</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <aside class="note" aria-label="Note on data">
+            <b>Placeholder.</b> Replace with measured figures and state the instrument and method.
+          </aside>
+        </div>
+
+        <div class="row">
+          <h2><span class="n">3</span>Slow work, short season</h2>
+          <p>On the day I visited, the pools had been refilled and the hall was loud with the ordinary noise of a public building working: whistles, shoes, a child refusing to get out. The east wall ran in a pale, uneven band behind the lifeguard&rsquo;s chair. Close to, it was slightly damp to the touch, and cooler than the air.</p>
+          <p>That coolness is the wall working. It is the sound, as far as a wall has one, of water leaving.</p>
+        </div>
+
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="endmatter">
+  <div class="wrap">
+    <div>
+      <h2>About the drawings</h2>
+      <p>Illustrations in this page are inline vector drawings with text equivalents in their descriptions. Replace with commissioned drawings and photography, each with credit.</p>
+    </div>
+    <div class="next">
+      <h2>Navigation</h2>
+      <a href="#top">Back to the top of this article</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

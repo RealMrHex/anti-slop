@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dozer | Sleep Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0d14;
+    --side: #07080d;
+    --card: #11141c;
+    --raised: #1a1e28;
+    --hair: rgba(238, 240, 245, 0.08);
+    --text: #eef0f5;
+    --text2: #a3a9b8;
+    --text3: #7a8296;
+    --accent: #e8b04b;
+    --deep: #4f6df5;
+    --light: #6cc5d6;
+    --rem: #b08bf2;
+    --awake: #f08a6b;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; }
+  :focus-visible { outline: 2px solid var(--text2); outline-offset: 2px; }
+  .mono { font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace; font-variant-numeric: tabular-nums; }
+
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* Sidebar */
+  .side { background: var(--side); border-right: 1px solid var(--hair); padding: 24px 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 8px; margin-bottom: 24px; font-size: 16px; font-weight: 500; }
+  .brand svg { width: 20px; height: 20px; }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 12px;
+    border-radius: 8px; color: var(--text2); font-weight: 500;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .nav a:hover { background: rgba(238, 240, 245, 0.05); color: var(--text); }
+  .nav a.is-active { background: var(--raised); color: var(--text); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+  .ic {
+    width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor;
+    stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .nav a .ic { color: var(--text3); }
+  .nav a.is-active .ic { color: var(--text2); }
+
+  /* Main */
+  .main { padding: 32px 40px; min-width: 0; }
+  .content { animation: rise 360ms var(--ease) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .content { animation: none; } }
+
+  .head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 24px; }
+  .meta { margin: 0; color: var(--text3); font-size: 13px; }
+  h1 { margin: 4px 0 0; font-size: 32px; line-height: 1.15; font-weight: 500; letter-spacing: -0.02em; }
+
+  .btn-primary {
+    height: 40px; padding: 0 16px; border: 0; border-radius: 10px;
+    background: var(--text); color: var(--bg); font-weight: 500; cursor: pointer;
+    transition: background-color 150ms var(--ease);
+  }
+  .btn-primary:hover { background: #d9dde8; }
+  .btn-ghost {
+    height: 32px; padding: 0 12px; border-radius: 8px; cursor: pointer;
+    background: var(--raised); color: var(--text); border: 1px solid var(--hair); font-weight: 500;
+    transition: background-color 150ms var(--ease);
+  }
+  .btn-ghost:hover { background: #232832; }
+
+  /* Grid and cards */
+  .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+  .s5 { grid-column: span 5; }
+  .s7 { grid-column: span 7; }
+  .s12 { grid-column: span 12; }
+  .card { background: var(--card); border: 1px solid var(--hair); border-radius: 16px; padding: 24px; min-width: 0; }
+  .card-h { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+  .card-t { margin: 0; font-size: 14px; font-weight: 500; }
+  .card-m { color: var(--text3); font-size: 13px; }
+  .label { display: block; color: var(--text3); font-size: 12px; line-height: 16px; }
+  .figure { font-family: 'Geist Mono', ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; font-weight: 500; letter-spacing: 0; }
+
+  /* Last night */
+  .night { display: flex; align-items: center; gap: 32px; }
+  .ring { position: relative; width: 136px; height: 136px; flex: none; }
+  .ring svg { position: absolute; inset: 0; width: 136px; height: 136px; }
+  .ring-c { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-c .figure { font-size: 40px; line-height: 1; }
+  .ring-c .label { margin-top: 4px; }
+  .stats { display: flex; flex-direction: column; gap: 16px; }
+  .stats .figure { font-size: 24px; line-height: 1.2; }
+
+  /* Stages */
+  .hyp { display: block; width: 100%; height: auto; }
+  .axis { position: relative; height: 16px; margin-top: 12px; color: var(--text3); font-size: 12px; }
+  .axis span { position: absolute; top: 0; white-space: nowrap; transform: translateX(-50%); }
+  .axis span:first-child { transform: none; }
+  .axis span:last-child { transform: translateX(-100%); }
+  .legend { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
+  .legend .k { display: flex; align-items: center; gap: 8px; color: var(--text2); font-size: 13px; }
+  .legend .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .legend .figure { display: block; margin-top: 4px; font-size: 16px; }
+
+  /* Last 7 nights */
+  .bars { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 16px; align-items: end; height: 176px; }
+  .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; height: 100%; }
+  .bar-col .v { color: var(--text2); font-size: 12px; }
+  .bar { width: 28px; border-radius: 6px 6px 0 0; background: #2a3142; }
+  .bar.is-last { background: #d9dde8; }
+  .bar-col .v.is-last { color: var(--text); }
+  .days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 16px; margin-top: 12px; color: var(--text3); font-size: 12px; text-align: center; }
+
+  /* Bedtime */
+  .bed-big { font-size: 44px; line-height: 1; margin: 4px 0 0; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--hair); }
+  .pair .figure { display: block; margin-top: 4px; font-size: 18px; }
+
+  /* Tips */
+  .tips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; list-style: none; margin: 0; padding: 0; }
+  .tips li { padding-top: 16px; border-top: 1px solid var(--hair); color: var(--text); line-height: 20px; }
+  .tips-actions { display: flex; gap: 8px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="#e8b04b"/></svg>
+      <span>Dozer</span>
+    </div>
+    <nav class="nav">
+      <a class="is-active" href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Overview
+      </a>
+      <a href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+        Sleep log
+      </a>
+      <a href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2.3h6c0-1.1.4-1.8 1-2.3A7 7 0 0 0 12 2Z"/></svg>
+        Insights
+      </a>
+      <a href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.1A8.4 8.4 0 1 1 21 11.5Z"/></svg>
+        Coach
+      </a>
+      <a href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>
+        Settings
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="content">
+      <header class="head">
+        <div>
+          <p class="meta">Monday, 9 November 2026</p>
+          <h1>Sleep overview</h1>
+        </div>
+        <button class="btn-primary" type="button">Start sleep mode</button>
+      </header>
+
+      <div class="grid">
+
+        <section class="card s5">
+          <div class="card-h">
+            <p class="card-t">Last night</p>
+            <span class="card-m">Mon 9 Nov</span>
+          </div>
+          <div class="night">
+            <div class="ring" role="img" aria-label="Sleep score 87 out of 100">
+              <svg viewBox="0 0 136 136" aria-hidden="true">
+                <circle cx="68" cy="68" r="60" fill="none" stroke="rgba(238,240,245,0.08)" stroke-width="8"/>
+                <circle cx="68" cy="68" r="60" fill="none" stroke="#e8b04b" stroke-width="8" stroke-linecap="round" stroke-dasharray="376.99" stroke-dashoffset="49" transform="rotate(-90 68 68)"/>
+              </svg>
+              <div class="ring-c">
+                <span class="figure">87</span>
+                <span class="label">Score</span>
+              </div>
+            </div>
+            <div class="stats">
+              <div><span class="label">Time asleep</span><span class="figure">7h 42m</span></div>
+              <div><span class="label">Fell asleep in</span><span class="figure">12 min</span></div>
+              <div><span class="label">Wake-ups</span><span class="figure">3</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card s7">
+          <div class="card-h">
+            <p class="card-t">Sleep stages</p>
+            <span class="card-m">Updated 6:58 AM</span>
+          </div>
+          <svg class="hyp" viewBox="0 0 640 130" aria-label="Hypnogram of last night from 11:14 PM to 6:56 AM" role="img">
+            <line x1="0" x2="640" y1="11" y2="11" stroke="rgba(238,240,245,0.06)" stroke-dasharray="2 4"/>
+            <line x1="0" x2="640" y1="47" y2="47" stroke="rgba(238,240,245,0.06)" stroke-dasharray="2 4"/>
+            <line x1="0" x2="640" y1="83" y2="83" stroke="rgba(238,240,245,0.06)" stroke-dasharray="2 4"/>
+            <line x1="0" x2="640" y1="119" y2="119" stroke="rgba(238,240,245,0.06)" stroke-dasharray="2 4"/>
+            <!-- Awake -->
+            <rect x="166.2" y="0" width="8.3" height="22" rx="5" fill="#f08a6b"/>
+            <rect x="410.0" y="0" width="11.1" height="22" rx="5" fill="#f08a6b"/>
+            <rect x="608.2" y="0" width="6.9" height="22" rx="5" fill="#f08a6b"/>
+            <!-- REM -->
+            <rect x="138.5" y="36" width="27.7" height="22" rx="5" fill="#b08bf2"/>
+            <rect x="361.5" y="36" width="48.5" height="22" rx="5" fill="#b08bf2"/>
+            <rect x="483.4" y="36" width="41.6" height="22" rx="5" fill="#b08bf2"/>
+            <rect x="615.1" y="36" width="24.9" height="22" rx="5" fill="#b08bf2"/>
+            <!-- Light -->
+            <rect x="0" y="72" width="34.6" height="22" rx="5" fill="#6cc5d6"/>
+            <rect x="90.0" y="72" width="48.5" height="22" rx="5" fill="#6cc5d6"/>
+            <rect x="174.5" y="72" width="69.3" height="22" rx="5" fill="#6cc5d6"/>
+            <rect x="306.1" y="72" width="55.4" height="22" rx="5" fill="#6cc5d6"/>
+            <rect x="421.1" y="72" width="62.3" height="22" rx="5" fill="#6cc5d6"/>
+            <rect x="566.6" y="72" width="41.6" height="22" rx="5" fill="#6cc5d6"/>
+            <!-- Deep -->
+            <rect x="34.6" y="108" width="55.4" height="22" rx="5" fill="#4f6df5"/>
+            <rect x="243.8" y="108" width="62.3" height="22" rx="5" fill="#4f6df5"/>
+            <rect x="525.0" y="108" width="41.6" height="22" rx="5" fill="#4f6df5"/>
+          </svg>
+          <div class="axis mono">
+            <span style="left:0%">11:14 PM</span>
+            <span style="left:35.9%">2:00 AM</span>
+            <span style="left:58.7%">3:45 AM</span>
+            <span style="left:100%">6:56 AM</span>
+          </div>
+          <div class="legend">
+            <div><span class="k"><i class="dot" style="background:#4f6df5"></i>Deep</span><span class="figure">1h 55m</span></div>
+            <div><span class="k"><i class="dot" style="background:#6cc5d6"></i>Light</span><span class="figure">3h 45m</span></div>
+            <div><span class="k"><i class="dot" style="background:#b08bf2"></i>REM</span><span class="figure">1h 43m</span></div>
+            <div><span class="k"><i class="dot" style="background:#f08a6b"></i>Awake</span><span class="figure">19m</span></div>
+          </div>
+        </section>
+
+        <section class="card s7">
+          <div class="card-h">
+            <p class="card-t">Last 7 nights</p>
+            <span class="card-m mono">Avg 7.1h</span>
+          </div>
+          <div class="bars mono">
+            <div class="bar-col"><span class="v">6.1h</span><div class="bar" style="height:98px"></div></div>
+            <div class="bar-col"><span class="v">7.2h</span><div class="bar" style="height:115px"></div></div>
+            <div class="bar-col"><span class="v">5.9h</span><div class="bar" style="height:94px"></div></div>
+            <div class="bar-col"><span class="v">8.0h</span><div class="bar" style="height:128px"></div></div>
+            <div class="bar-col"><span class="v">6.8h</span><div class="bar" style="height:109px"></div></div>
+            <div class="bar-col"><span class="v">8.2h</span><div class="bar" style="height:131px"></div></div>
+            <div class="bar-col"><span class="v is-last">7.7h</span><div class="bar is-last" style="height:123px"></div></div>
+          </div>
+          <div class="days">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+        </section>
+
+        <section class="card s5">
+          <div class="card-h">
+            <p class="card-t">Bedtime consistency</p>
+            <span class="card-m">Last 7 nights</span>
+          </div>
+          <p class="figure bed-big">±38 min</p>
+          <div class="pair">
+            <div><span class="label">Target</span><span class="figure">11:00 PM</span></div>
+            <div><span class="label">Average</span><span class="figure">11:38 PM</span></div>
+          </div>
+        </section>
+
+        <section class="card s12">
+          <div class="card-h">
+            <p class="card-t">Tips for you</p>
+            <div class="tips-actions">
+              <button class="btn-ghost" type="button">View all tips</button>
+              <button class="btn-ghost" type="button">Share</button>
+            </div>
+          </div>
+          <ul class="tips">
+            <li>Get morning sunlight within 30 min of waking</li>
+            <li>Put screens away 1 hour before bed</li>
+            <li>Cut caffeine after 2 PM</li>
+            <li>Try 4-7-8 breathing to fall asleep faster</li>
+          </ul>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

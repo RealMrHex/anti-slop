@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beacon, on-call scheduling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #15130f;
+    --surface: #1d1a14;
+    --surface-2: #2a261d;
+    --line: rgba(242, 236, 224, 0.08);
+    --line-2: rgba(242, 236, 224, 0.16);
+    --text: #f2ece0;
+    --text-2: #b8ae9a;
+    --text-3: #8a8170;
+    --accent: #f2a93b;
+    --on-accent: #15130f;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* Navigation */
+  .nav { max-width: 1200px; margin: 0 auto; height: 80px; padding: 0 32px; display: flex; align-items: center; gap: 40px; }
+  .brand { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 500; }
+  .links { display: flex; gap: 24px; margin-left: auto; font-size: 15px; color: var(--text-2); }
+  .links a:hover, .login:hover { color: var(--text); }
+  .nav-end { display: flex; align-items: center; gap: 24px; }
+  .login { font-size: 15px; color: var(--text-2); }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 20px; border-radius: 10px; font-size: 15px; font-weight: 500; border: 1px solid transparent; transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease; }
+  .btn-primary { background: var(--accent); color: var(--on-accent); }
+  .btn-primary:hover { background: #f6b855; }
+  .btn-ghost { border-color: var(--line-2); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--text-3); }
+  .btn-sm { height: 36px; padding: 0 16px; }
+  .btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 64px; align-items: center; padding-top: 64px; padding-bottom: 96px; min-height: 680px; }
+  .eyebrow { font-size: 14px; color: var(--text-2); margin-bottom: 16px; }
+  h1 { font-size: 56px; font-weight: 500; line-height: 1.05; letter-spacing: -0.02em; }
+  .lede { margin-top: 24px; font-size: 18px; line-height: 1.6; color: var(--text-2); max-width: 520px; }
+  .actions { display: flex; gap: 12px; margin-top: 32px; }
+  .meta { margin-top: 32px; font-size: 13px; color: var(--text-3); }
+
+  /* Product preview */
+  .preview { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+  .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+  .label { font-size: 13px; color: var(--text-3); }
+  .title { font-size: 18px; font-weight: 500; margin-top: 4px; }
+  .now { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-2); background: var(--surface-2); border-radius: 8px; padding: 6px 10px; white-space: nowrap; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+
+  .grid { display: grid; row-gap: 8px; }
+  .r { display: grid; grid-template-columns: 112px repeat(7, 1fr); column-gap: 4px; align-items: center; min-height: 32px; }
+  .r.head { min-height: 20px; margin-bottom: 4px; }
+  .grid .head { font-size: 12px; color: var(--text-3); text-align: center; }
+  .grid .who { font-size: 14px; color: var(--text-2); white-space: nowrap; }
+  .bar { height: 32px; border-radius: 8px; background: var(--surface-2); }
+  .bar-live { background: var(--accent); color: var(--on-accent); display: flex; align-items: center; padding: 0 12px; font-size: 13px; font-weight: 500; }
+  .bar-thin { height: 8px; border-radius: 4px; background: var(--line-2); }
+
+  .footer { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .value { font-size: 15px; margin-top: 4px; }
+
+  /* Features */
+  .features { max-width: 1200px; margin: 0 auto; padding: 64px 32px 96px; display: grid; grid-template-columns: 5fr 7fr; gap: 64px; border-top: 1px solid var(--line); }
+  h2 { font-size: 32px; font-weight: 500; line-height: 1.15; letter-spacing: -0.01em; }
+  .intro p { margin-top: 12px; color: var(--text-2); max-width: 360px; }
+  .items { list-style: none; }
+  .items li { display: grid; grid-template-columns: 40px 1fr; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+  .items li:first-child { border-top: 1px solid var(--line); }
+  .icon { width: 40px; height: 40px; border-radius: 10px; background: var(--surface); display: grid; place-items: center; color: var(--text-2); }
+  .icon svg { width: 18px; height: 18px; }
+  .items h3 { font-size: 18px; font-weight: 500; }
+  .items p { margin-top: 4px; color: var(--text-2); }
+
+  @media (max-width: 900px) {
+    .wrap, .nav, .features { padding-left: 20px; padding-right: 20px; }
+    .links { display: none; }
+    .hero, .features { grid-template-columns: 1fr; gap: 40px; }
+    .hero { padding-top: 40px; padding-bottom: 64px; min-height: 0; }
+    h1 { font-size: 40px; }
+    .r { grid-template-columns: 88px repeat(7, 1fr); }
+    .grid .who { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="#" aria-label="Beacon home">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M9 9h6l2 12H7L9 9Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      <circle cx="12" cy="5" r="2" fill="var(--accent)"/>
+      <path d="M4 5h2M18 5h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <span>Beacon</span>
+  </a>
+  <nav class="links" aria-label="Primary">
+    <a href="#">Features</a>
+    <a href="#">Pricing</a>
+    <a href="#">Docs</a>
+  </nav>
+  <div class="nav-end">
+    <a class="login" href="#">Log in</a>
+    <a class="btn btn-primary btn-sm" href="#">Start free</a>
+  </div>
+</header>
+
+<main class="wrap hero">
+  <div>
+    <p class="eyebrow">Smart escalations are now live</p>
+    <h1>On-call rotations that always reach a person</h1>
+    <p class="lede">Rotations, escalations and handoffs in one schedule, so every alert has an owner and nobody waits on a page that no one sees.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="#">Start free</a>
+      <a class="btn btn-ghost" href="#">Watch demo</a>
+    </div>
+    <p class="meta mono">Release 2026-11-05</p>
+  </div>
+
+  <figure class="preview" aria-label="Weekly on-call schedule preview">
+    <div class="card-head">
+      <div>
+        <p class="label">Platform on-call</p>
+        <p class="title">Week of 9 November</p>
+      </div>
+      <span class="now"><span class="dot"></span>Tomas Ruiz on call</span>
+    </div>
+
+    <div class="grid">
+      <div class="r head">
+        <span></span>
+        <span class="head mono">Mon</span>
+        <span class="head mono">Tue</span>
+        <span class="head mono">Wed</span>
+        <span class="head mono">Thu</span>
+        <span class="head mono">Fri</span>
+        <span class="head mono">Sat</span>
+        <span class="head mono">Sun</span>
+      </div>
+
+      <div class="r">
+        <span class="who">Priya Nair</span>
+        <div class="bar" style="grid-column: 2 / span 2"></div>
+      </div>
+
+      <div class="r">
+        <span class="who">Tomas Ruiz</span>
+        <div class="bar bar-live mono" style="grid-column: 4 / span 2">Now</div>
+      </div>
+
+      <div class="r">
+        <span class="who">Ana Lindqvist</span>
+        <div class="bar" style="grid-column: 6 / span 3"></div>
+      </div>
+
+      <div class="r">
+        <span class="who">Kwame Osei</span>
+        <div class="bar-thin" style="grid-column: 2 / span 7" aria-label="Backup all week"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div>
+        <p class="label">Next handoff</p>
+        <p class="value mono">Thu 18:00 to Ana</p>
+      </div>
+      <div>
+        <p class="label">Handoff note</p>
+        <p class="value">Deploy freeze until Friday</p>
+      </div>
+    </div>
+  </figure>
+</main>
+
+<section class="features">
+  <div class="intro">
+    <h2>One schedule for rotations, escalations and handoffs</h2>
+    <p>Each part reads from the same calendar, so a change to one shows up everywhere it matters.</p>
+  </div>
+  <ul class="items">
+    <li>
+      <span class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      </span>
+      <div>
+        <h3>Rotations</h3>
+        <p>Set the schedule once and let shifts repeat without manual edits.</p>
+      </div>
+    </li>
+    <li>
+      <span class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      </span>
+      <div>
+        <h3>Escalations</h3>
+        <p>If an alert is not acknowledged, it moves on to the next person in line.</p>
+      </div>
+    </li>
+    <li>
+      <span class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
+      </span>
+      <div>
+        <h3>Handoffs</h3>
+        <p>Notes travel with the pager to the next engineer on call.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+</body>
+</html>

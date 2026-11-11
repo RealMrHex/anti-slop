@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harbor Team Board</title>
+<style>
+:root{
+  --bg:#f4f1ea; --surface:#fffdf9; --col:#ebe7dd; --ink:#1d2421; --ink-2:#55605a; --line:#d9d4c7;
+  --accent:#1d6b57; --accent-ink:#fff; --accent-soft:#dcece5;
+  --todo:#6b7280; --doing:#b45309; --review:#6d4bb5; --done:#1d6b57;
+  --p-high:#b3261e; --p-med:#8a5a00; --p-low:#4b5563;
+  --r-sm:6px; --r:12px; --r-lg:16px;
+  --sh:0 1px 2px rgba(40,35,20,.08),0 1px 0 rgba(40,35,20,.04);
+  --sh-lift:0 8px 22px rgba(40,35,20,.18);
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+  --font:ui-rounded,"SF Pro Rounded","Avenir Next",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--font);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #0b57d0;outline-offset:2px}
+.wrap{max-width:1360px;margin:0 auto;padding:var(--s5) var(--s5) var(--s6)}
+
+header.top{display:flex;flex-wrap:wrap;gap:var(--s4) var(--s5);align-items:flex-end;justify-content:space-between;margin-bottom:var(--s5)}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+h1{margin:2px 0 var(--s3);font-size:30px;line-height:1.15;letter-spacing:-.01em}
+.progress{display:flex;align-items:center;gap:var(--s3);color:var(--ink-2);font-size:14px}
+.bar{width:220px;max-width:50vw;height:10px;background:var(--col);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s ease}
+.progress b{color:var(--ink)}
+
+.tools{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center}
+.people{display:flex;gap:var(--s1);align-items:center}
+.chip{border:2px solid transparent;background:none;border-radius:99px;padding:2px;cursor:pointer;display:grid;place-items:center}
+.chip[aria-pressed=true]{border-color:var(--ink)}
+.chip:hover .av{transform:translateY(-1px)}
+.allbtn{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;cursor:pointer;font-size:14px;min-height:36px}
+.allbtn[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;transition:transform .15s}
+.av.sm{width:24px;height:24px;font-size:11px}
+.btn{border:0;background:var(--accent);color:var(--accent-ink);padding:9px 16px;min-height:40px;border-radius:99px;font-weight:600;cursor:pointer;box-shadow:var(--sh);transition:background .15s,transform .1s}
+.btn:hover{background:#17584a}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn.ghost:hover{background:var(--col)}
+
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s4);align-items:start}
+.column{background:var(--col);border-radius:var(--r-lg);padding:var(--s3);min-height:200px;transition:outline-color .15s,background .15s;outline:2px dashed transparent;outline-offset:-2px}
+.column.over{outline-color:var(--accent);background:#e1e7dc}
+.col-head{display:flex;align-items:center;gap:var(--s2);padding:var(--s1) var(--s2) var(--s3)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.col-head h2{margin:0;font-size:15px;font-weight:700}
+.count{margin-left:auto;background:var(--surface);border-radius:99px;padding:0 9px;font-size:13px;font-weight:600;color:var(--ink-2);min-width:26px;text-align:center}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--s2);min-height:60px}
+.empty{color:var(--ink-2);font-size:14px;text-align:center;padding:var(--s5) var(--s3);border:1px dashed var(--line);border-radius:var(--r)}
+
+.card{background:var(--surface);border-radius:var(--r);padding:var(--s3) var(--s3) var(--s2);box-shadow:var(--sh);border:1px solid rgba(40,35,20,.06);cursor:grab;transition:box-shadow .15s,transform .15s}
+.card:hover{box-shadow:0 4px 12px rgba(40,35,20,.12)}
+.card.dragging{opacity:.45}
+.card h3{margin:0 0 var(--s2);font-size:15px;font-weight:600;line-height:1.35}
+.meta{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center;font-size:12.5px;color:var(--ink-2)}
+.tag{background:var(--accent-soft);color:#14503f;border-radius:var(--r-sm);padding:1px 8px;font-weight:600}
+.tag.design{background:#efe3f7;color:#52307a}
+.tag.bug{background:#fbe3e0;color:#8c1d16}
+.tag.ops{background:#e3ecf8;color:#1d4577}
+.pri{font-weight:600}
+.pri.high{color:var(--p-high)} .pri.med{color:var(--p-med)} .pri.low{color:var(--p-low)}
+.due.late{color:var(--p-high);font-weight:600}
+.foot{display:flex;align-items:center;gap:var(--s2);margin-top:var(--s3);border-top:1px solid #efebe0;padding-top:var(--s2)}
+.foot .who{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2);margin-right:auto}
+.mv{width:32px;height:32px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:15px;line-height:1;display:grid;place-items:center}
+.mv:hover:not(:disabled){background:var(--accent-soft);border-color:var(--accent)}
+.mv:disabled{opacity:.35;cursor:default}
+.del{border:0;background:none;color:var(--ink-2);cursor:pointer;font-size:12.5px;padding:6px 6px;border-radius:var(--r-sm);text-decoration:underline;text-underline-offset:2px}
+.del:hover{color:var(--p-high)}
+
+dialog{border:0;border-radius:var(--r-lg);padding:0;width:min(440px,calc(100vw - 32px));box-shadow:var(--sh-lift);background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(29,36,33,.45)}
+dialog form{padding:var(--s5);display:grid;gap:var(--s4)}
+dialog h2{margin:0;font-size:20px}
+label{display:grid;gap:6px;font-weight:600;font-size:14px}
+input,select{border:1px solid #9a9486;border-radius:var(--r-sm);padding:9px 10px;background:#fff;min-height:40px;font-weight:400}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.actions{display:flex;justify-content:flex-end;gap:var(--s2);margin-top:var(--s1)}
+.err{color:var(--p-high);font-size:13px;font-weight:500;min-height:1em;margin:-8px 0 0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+@media (max-width:1100px){.board{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){
+  .wrap{padding:var(--s4) 16px var(--s5)}
+  .board{grid-template-columns:1fr}
+  h1{font-size:26px}
+  .row{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Sprint 14 · Nov 3 – Nov 14</div>
+      <h1>Harbor team board</h1>
+      <div class="progress" aria-live="polite">
+        <div class="bar" role="img" id="barLabel"><i id="barFill"></i></div>
+        <span id="progText"></span>
+      </div>
+    </div>
+    <div class="tools">
+      <div class="people" id="people" role="group" aria-label="Filter by teammate"></div>
+      <button class="btn" id="addBtn" type="button">+ New task</button>
+    </div>
+  </header>
+
+  <main class="board" id="board"></main>
+  <p class="sr" id="live" role="status" aria-live="polite"></p>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <form method="dialog" id="form" novalidate>
+    <h2 id="dlgTitle">New task</h2>
+    <label>Title
+      <input id="fTitle" name="title" required maxlength="90" autocomplete="off" placeholder="e.g. Fix invoice PDF margins">
+    </label>
+    <p class="err" id="fErr" role="alert"></p>
+    <div class="row">
+      <label>Assignee <select id="fWho"></select></label>
+      <label>Column <select id="fCol"></select></label>
+    </div>
+    <div class="row">
+      <label>Type
+        <select id="fTag"><option>Feature</option><option>Bug</option><option>Design</option><option>Ops</option></select>
+      </label>
+      <label>Priority
+        <select id="fPri"><option value="high">High</option><option value="med" selected>Medium</option><option value="low">Low</option></select>
+      </label>
+    </div>
+    <label>Due date <input type="date" id="fDue"></label>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="cancel">Cancel</button>
+      <button type="submit" class="btn">Add task</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const COLS=[
+  {id:'todo',name:'To do',c:'var(--todo)'},
+  {id:'doing',name:'In progress',c:'var(--doing)'},
+  {id:'review',name:'In review',c:'var(--review)'},
+  {id:'done',name:'Done',c:'var(--done)'}
+];
+const TEAM=[
+  {id:'MO',name:'Maya Okafor',color:'#1d6b57'},
+  {id:'TL',name:'Tomás Lindqvist',color:'#9a4d1c'},
+  {id:'PS',name:'Priya Shah',color:'#6d4bb5'},
+  {id:'JB',name:'Jonas Becker',color:'#2b5f8f'}
+];
+const KEY='harbor-board-v1';
+const seed=[
+  {t:'Invoice PDF cuts off the last line item',w:'TL',g:'Bug',p:'high',d:'2026-11-11',c:'doing'},
+  {t:'Draft onboarding emails for trial users',w:'MO',g:'Feature',p:'med',d:'2026-11-13',c:'todo'},
+  {t:'Redesign empty states for the reports tab',w:'PS',g:'Design',p:'med',d:'2026-11-12',c:'review'},
+  {t:'Rotate staging database credentials',w:'JB',g:'Ops',p:'high',d:'2026-11-08',c:'todo'},
+  {t:'CSV export for project timesheets',w:'TL',g:'Feature',p:'med',d:'2026-11-14',c:'doing'},
+  {t:'Dark-mode contrast pass on settings',w:'PS',g:'Design',p:'low',d:'',c:'todo'},
+  {t:'Upgrade Node runtime in CI image',w:'JB',g:'Ops',p:'low',d:'2026-11-07',c:'done'},
+  {t:'Search ignores accented characters',w:'MO',g:'Bug',p:'med',d:'2026-11-10',c:'review'},
+  {t:'Write release notes for 3.8',w:'MO',g:'Feature',p:'low',d:'2026-11-05',c:'done'}
+].map((x,i)=>({id:'s'+i,title:x.t,who:x.w,tag:x.g,pri:x.p,due:x.d,col:x.c}));
+
+let tasks; try{tasks=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!Array.isArray(tasks))tasks=seed;
+let filter=null, dragId=null;
+const TODAY='2026-11-10';
+const $=s=>document.querySelector(s);
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(tasks))}catch(e){}};
+const person=id=>TEAM.find(p=>p.id===id)||TEAM[0];
+const esc=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=d=>new Date(d+'T00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+const PRI={high:'High',med:'Medium',low:'Low'};
+
+function renderPeople(){
+  const el=$('#people');
+  el.innerHTML='<button class="allbtn" type="button" data-p="" aria-pressed="'+(filter===null)+'">Everyone</button>'+
+    TEAM.map(p=>`<button class="chip" type="button" data-p="${p.id}" aria-pressed="${filter===p.id}" aria-label="${p.name}" title="${p.name}"><span class="av" style="background:${p.color}" aria-hidden="true">${p.id}</span></button>`).join('');
+}
+function card(t,i){
+  const p=person(t.who), ci=COLS.findIndex(c=>c.id===t.col);
+  const late=t.due&&t.due<TODAY&&t.col!=='done';
+  return `<li class="card" draggable="true" data-id="${t.id}">
+    <h3>${esc(t.title)}</h3>
+    <div class="meta">
+      <span class="tag ${t.tag.toLowerCase()}">${t.tag}</span>
+      <span class="pri ${t.pri}">${PRI[t.pri]}</span>
+      ${t.due?`<span class="due ${late?'late':''}">${late?'Overdue · ':'Due '}${fmt(t.due)}</span>`:''}
+    </div>
+    <div class="foot">
+      <span class="who"><span class="av sm" style="background:${p.color}" aria-hidden="true">${p.id}</span>${p.name.split(' ')[0]}</span>
+      <button class="del" type="button" data-act="del" aria-label="Delete task: ${esc(t.title)}">Delete</button>
+      <button class="mv" type="button" data-act="back" aria-label="Move back to ${ci>0?COLS[ci-1].name:''}: ${esc(t.title)}" ${ci===0?'disabled':''}>←</button>
+      <button class="mv" type="button" data-act="fwd" aria-label="Move forward to ${ci<3?COLS[ci+1].name:''}: ${esc(t.title)}" ${ci===3?'disabled':''}>→</button>
+    </div>
+  </li>`;
+}
+function render(){
+  renderPeople();
+  $('#board').innerHTML=COLS.map(c=>{
+    const all=tasks.filter(t=>t.col===c.id);
+    const list=all.filter(t=>!filter||t.who===filter);
+    return `<section class="column" data-col="${c.id}" aria-labelledby="h-${c.id}">
+      <div class="col-head"><span class="dot" style="--c:${c.c}"></span><h2 id="h-${c.id}">${c.name}</h2><span class="count" aria-label="${list.length} tasks">${list.length}</span></div>
+      <ul class="list">${list.length?list.map(card).join(''):`<li class="empty">${filter?'Nothing here for this person.':c.id==='done'?'Finished tasks land here.':'Drop a task here or add one.'}</li>`}</ul>
+    </section>`}).join('');
+  const done=tasks.filter(t=>t.col==='done').length, pct=tasks.length?Math.round(done/tasks.length*100):0;
+  $('#barFill').style.width=pct+'%';
+  $('#barLabel').setAttribute('aria-label',pct+' percent complete');
+  $('#progText').innerHTML=`<b>${done} of ${tasks.length}</b> tasks done`;
+}
+function move(id,col,focusAct){
+  const t=tasks.find(x=>x.id===id); if(!t||t.col===col)return;
+  t.col=col; save(); render();
+  $('#live').textContent=`Moved "${t.title}" to ${COLS.find(c=>c.id===col).name}`;
+  if(focusAct){const b=document.querySelector(`[data-id="${id}"] [data-act="${focusAct}"]:not(:disabled)`)||document.querySelector(`[data-id="${id}"] .mv:not(:disabled)`);b&&b.focus()}
+}
+const board=$('#board');
+board.addEventListener('click',e=>{
+  const b=e.target.closest('button[data-act]'); if(!b)return;
+  const id=b.closest('.card').dataset.id, t=tasks.find(x=>x.id===id), i=COLS.findIndex(c=>c.id===t.col);
+  if(b.dataset.act==='fwd')move(id,COLS[i+1].id,'fwd');
+  else if(b.dataset.act==='back')move(id,COLS[i-1].id,'back');
+  else if(confirm(`Delete "${t.title}"?`)){tasks=tasks.filter(x=>x.id!==id);save();render();$('#live').textContent='Task deleted'}
+});
+board.addEventListener('dragstart',e=>{const c=e.target.closest('.card');if(!c)return;dragId=c.dataset.id;c.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',dragId)});
+board.addEventListener('dragend',()=>{dragId=null;document.querySelectorAll('.dragging,.over').forEach(n=>n.classList.remove('dragging','over'))});
+board.addEventListener('dragover',e=>{const c=e.target.closest('.column');if(!c||!dragId)return;e.preventDefault();document.querySelectorAll('.over').forEach(n=>n!==c&&n.classList.remove('over'));c.classList.add('over')});
+board.addEventListener('drop',e=>{const c=e.target.closest('.column');if(!c||!dragId)return;e.preventDefault();move(dragId,c.dataset.col)});
+$('#people').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;filter=b.dataset.p||null;render();document.querySelector(`#people [data-p="${filter||''}"]`).focus()});
+
+const dlg=$('#dlg');
+$('#fWho').innerHTML=TEAM.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+$('#fCol').innerHTML=COLS.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+$('#addBtn').onclick=()=>{$('#form').reset();$('#fErr').textContent='';dlg.showModal();$('#fTitle').focus()};
+$('#cancel').onclick=()=>dlg.close();
+$('#form').addEventListener('submit',e=>{
+  const title=$('#fTitle').value.trim();
+  if(!title){e.preventDefault();$('#fErr').textContent='Give the task a title.';$('#fTitle').focus();return}
+  tasks.push({id:'n'+Date.now(),title,who:$('#fWho').value,tag:$('#fTag').value,pri:$('#fPri').value,due:$('#fDue').value,col:$('#fCol').value});
+  save();render();$('#live').textContent='Task added';
+});
+render();
+</script>
+</body>
+</html>

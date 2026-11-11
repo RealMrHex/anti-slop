@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MetricFlow — Analytics Dashboard</title>
+  <meta name="description" content="MetricFlow helps businesses monitor revenue, traffic, conversions, and customer activity." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Syne', 'system-ui', 'sans-serif'],
+            sans: ['Manrope', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            ink: '#13202B',
+            mist: '#F3F6F8',
+            fog: '#E4EBEF',
+            teal: { DEFAULT: '#0F766E', soft: '#CCFBF1', deep: '#115E59' },
+            coral: '#C45C4A',
+            lime: '#3F7A4D',
+          },
+          boxShadow: {
+            panel: '0 1px 0 rgba(19,32,43,0.06), 0 12px 32px rgba(19,32,43,0.06)',
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.6/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --ink: #13202B;
+      --mist: #F3F6F8;
+      --teal: #0F766E;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Manrope, system-ui, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 0% -10%, rgba(15,118,110,0.10), transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, rgba(196,92,74,0.07), transparent 50%),
+        linear-gradient(180deg, #F7FAFC 0%, #EEF3F6 100%);
+      color: var(--ink);
+    }
+    .font-display { font-family: Syne, system-ui, sans-serif; }
+    .grain {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    }
+    .nav-item.active {
+      background: #13202B;
+      color: #fff;
+    }
+    .nav-item.active svg { stroke: #5EEAD4; }
+    .sidebar-open { transform: translateX(0) !important; }
+    .overlay-open { opacity: 1 !important; pointer-events: auto !important; }
+    details[open] summary .chevron { transform: rotate(180deg); }
+    .panel-enter { animation: rise 0.45s ease both; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .kpi:nth-child(1) { animation-delay: 0.05s; }
+    .kpi:nth-child(2) { animation-delay: 0.1s; }
+    .kpi:nth-child(3) { animation-delay: 0.15s; }
+    .kpi:nth-child(4) { animation-delay: 0.2s; }
+    .kpi, .panel-enter { transition: box-shadow .2s ease, transform .2s ease, border-color .2s ease; }
+    .kpi:hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(19,32,43,0.06), 0 18px 40px rgba(19,32,43,0.10); }
+    .kpi { position: relative; overflow: hidden; }
+    .kpi::before { content:''; position:absolute; left:0; right:0; top:0; height:3px; background: var(--accent, #0F766E); opacity:.85; }
+    .kpi:nth-child(2) { --accent:#315F9B; } .kpi:nth-child(3) { --accent:#B86A1C; } .kpi:nth-child(4) { --accent:#C45C4A; }
+    .chip { display:inline-flex; align-items:center; gap:.25rem; padding:.15rem .5rem; border-radius:999px; font-size:.75rem; font-weight:700; }
+    .chip-up { background:#E3F3E8; color:#2F6B3E; } .chip-down { background:#FDECEC; color:#B04434; }
+    aside { background-image: linear-gradient(180deg, #13202B 0%, #0E1922 100%); }
+    :focus-visible { outline: 2px solid #0F766E; outline-offset: 2px; }
+    thead th { text-transform: uppercase; letter-spacing: .08em; font-size: .7rem; }
+    @media (prefers-reduced-motion: reduce) {
+      .panel-enter, .kpi { animation: none !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen antialiased">
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[100] focus:bg-ink focus:text-white focus:px-4 focus:py-2 focus:rounded-md">Skip to content</a>
+
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="fixed inset-0 z-40 bg-ink/40 opacity-0 pointer-events-none transition-opacity lg:hidden" aria-hidden="true"></div>
+
+  <div class="min-h-screen lg:grid lg:grid-cols-[260px_1fr]">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-[260px] -translate-x-full lg:translate-x-0 lg:static transition-transform duration-300 ease-out bg-ink text-white flex flex-col" aria-label="Primary">
+      <div class="px-5 pt-6 pb-4 border-b border-white/10">
+        <div class="flex items-center justify-between gap-3">
+          <a href="#overview" class="flex items-center gap-3 group" data-nav="overview">
+            <span class="grid place-items-center h-10 w-10 rounded-xl bg-teal text-white shadow-sm" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 15l3-4 3 2 5-7"/></svg>
+            </span>
+            <span>
+              <span class="block font-display text-xl font-700 tracking-tight leading-none">MetricFlow</span>
+              <span class="block text-[11px] uppercase tracking-[0.18em] text-white/50 mt-1">Analytics</span>
+            </span>
+          </a>
+          <button type="button" id="close-sidebar" class="lg:hidden p-2 rounded-lg hover:bg-white/10" aria-label="Close navigation">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <nav class="flex-1 px-3 py-5 space-y-1" aria-label="Dashboard">
+        <button type="button" class="nav-item active w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors hover:bg-white/10" data-nav="overview" aria-current="page">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+          Overview
+        </button>
+        <button type="button" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white" data-nav="analytics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16V9"/><path d="M12 16v-5"/><path d="M16 16V7"/></svg>
+          Analytics
+        </button>
+        <button type="button" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white" data-nav="customers">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Customers
+        </button>
+        <button type="button" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white" data-nav="reports">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>
+          Reports
+        </button>
+        <button type="button" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white" data-nav="settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9c.2.7.8 1.2 1.5 1.3H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+          Settings
+        </button>
+      </nav>
+
+      <div class="p-4 m-3 rounded-2xl bg-white/5 border border-white/10">
+        <p class="text-xs text-white/50 uppercase tracking-wider mb-2">Workspace</p>
+        <p class="text-sm font-semibold">Northwind Commerce</p>
+        <p class="text-xs text-white/55 mt-1">Pro plan · 4 seats</p>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="min-w-0 flex flex-col">
+      <header class="sticky top-0 z-30 backdrop-blur-md bg-white/75 border-b border-ink/8">
+        <div class="px-4 sm:px-6 lg:px-8 py-3.5 flex items-center gap-3">
+          <button type="button" id="open-sidebar" class="lg:hidden p-2 rounded-xl border border-ink/10 bg-white hover:bg-mist" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+
+          <div class="min-w-0 flex-1">
+            <p class="text-[11px] uppercase tracking-[0.16em] text-ink/45">MetricFlow</p>
+            <h1 id="page-title" class="font-display text-xl sm:text-2xl font-700 tracking-tight truncate">Overview</h1>
+          </div>
+
+          <div class="hidden sm:flex items-center gap-2">
+            <label for="date-range" class="sr-only">Date range</label>
+            <select id="date-range" class="appearance-none rounded-xl border border-ink/10 bg-white px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal/40">
+              <option value="7d">Last 7 days</option>
+              <option value="30d" selected>Last 30 days</option>
+              <option value="90d">Last 90 days</option>
+              <option value="12m">Last 12 months</option>
+            </select>
+          </div>
+
+          <div class="relative">
+            <button type="button" id="notif-btn" class="relative p-2 rounded-xl border border-ink/10 bg-white hover:bg-mist" aria-label="Notifications" aria-expanded="false" aria-controls="notif-panel">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+              <span class="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-coral" aria-hidden="true"></span>
+            </button>
+            <div id="notif-panel" class="hidden absolute right-0 mt-2 w-80 max-w-[90vw] rounded-2xl border border-ink/10 bg-white shadow-panel p-2 z-50" role="region" aria-label="Notification list">
+              <p class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-ink/45">Notifications</p>
+              <ul class="space-y-1">
+                <li class="rounded-xl px-3 py-2.5 hover:bg-mist">
+                  <p class="text-sm font-medium">Revenue spike detected</p>
+                  <p class="text-xs text-ink/55">Checkout conversion up 18% vs yesterday</p>
+                </li>
+                <li class="rounded-xl px-3 py-2.5 hover:bg-mist">
+                  <p class="text-sm font-medium">Weekly report ready</p>
+                  <p class="text-xs text-ink/55">Northwind Commerce · exported 12 min ago</p>
+                </li>
+                <li class="rounded-xl px-3 py-2.5 hover:bg-mist">
+                  <p class="text-sm font-medium">3 customers churned</p>
+                  <p class="text-xs text-ink/55">Review retention playbook</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="relative">
+            <button type="button" id="profile-btn" class="flex items-center gap-2 rounded-xl border border-ink/10 bg-white pl-1.5 pr-2.5 py-1.5 hover:bg-mist" aria-label="User menu" aria-expanded="false" aria-controls="profile-panel">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80" alt="" width="32" height="32" class="h-8 w-8 rounded-lg object-cover" />
+              <span class="hidden md:block text-left leading-tight">
+                <span class="block text-sm font-semibold">Maya Chen</span>
+                <span class="block text-[11px] text-ink/50">Admin</span>
+              </span>
+            </button>
+            <div id="profile-panel" class="hidden absolute right-0 mt-2 w-56 rounded-2xl border border-ink/10 bg-white shadow-panel p-2 z-50" role="menu">
+              <button type="button" class="w-full text-left rounded-xl px-3 py-2 text-sm hover:bg-mist" role="menuitem">View profile</button>
+              <button type="button" class="w-full text-left rounded-xl px-3 py-2 text-sm hover:bg-mist" role="menuitem">Billing</button>
+              <button type="button" class="w-full text-left rounded-xl px-3 py-2 text-sm hover:bg-mist text-coral" role="menuitem">Sign out</button>
+            </div>
+          </div>
+        </div>
+        <div class="sm:hidden px-4 pb-3">
+          <label for="date-range-mobile" class="sr-only">Date range</label>
+          <select id="date-range-mobile" class="w-full appearance-none rounded-xl border border-ink/10 bg-white px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal/40">
+            <option value="7d">Last 7 days</option>
+            <option value="30d" selected>Last 30 days</option>
+            <option value="90d">Last 90 days</option>
+            <option value="12m">Last 12 months</option>
+          </select>
+        </div>
+      </header>
+
+      <main id="main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <!-- Overview section -->
+        <section id="view-overview" class="space-y-6" aria-labelledby="page-title">
+          <!-- KPI cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <article class="kpi panel-enter rounded-2xl bg-white border border-ink/8 p-5 shadow-panel">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-sm font-medium text-ink/60">Total Revenue</p>
+                  <p id="kpi-revenue" class="mt-2 font-display text-[1.9rem] font-700 tracking-tight tabular-nums">$48,290</p>
+                </div>
+                <span class="grid place-items-center h-10 w-10 rounded-xl bg-teal-soft text-teal-deep" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </span>
+              </div>
+              <p class="mt-4 flex items-center gap-2 text-sm"><span class="chip chip-up"><span aria-hidden="true">↑</span> <span id="kpi-revenue-delta">+12.8%</span></span> <span class="text-ink/50">vs prior period</span></p>
+            </article>
+
+            <article class="kpi panel-enter rounded-2xl bg-white border border-ink/8 p-5 shadow-panel">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-sm font-medium text-ink/60">Active Users</p>
+                  <p id="kpi-users" class="mt-2 font-display text-[1.9rem] font-700 tracking-tight tabular-nums">12,840</p>
+                </div>
+                <span class="grid place-items-center h-10 w-10 rounded-xl bg-[#E8F0FE] text-[#315F9B]" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </span>
+              </div>
+              <p class="mt-4 flex items-center gap-2 text-sm"><span class="chip chip-up"><span aria-hidden="true">↑</span> <span id="kpi-users-delta">+8.2%</span></span> <span class="text-ink/50">vs prior period</span></p>
+            </article>
+
+            <article class="kpi panel-enter rounded-2xl bg-white border border-ink/8 p-5 shadow-panel">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-sm font-medium text-ink/60">Conversion Rate</p>
+                  <p id="kpi-conversion" class="mt-2 font-display text-[1.9rem] font-700 tracking-tight tabular-nums">3.24%</p>
+                </div>
+                <span class="grid place-items-center h-10 w-10 rounded-xl bg-[#FFF4E5] text-[#B86A1C]" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </span>
+              </div>
+              <p class="mt-4 flex items-center gap-2 text-sm"><span class="chip chip-up"><span aria-hidden="true">↑</span> <span id="kpi-conversion-delta">+1.4%</span></span> <span class="text-ink/50">vs prior period</span></p>
+            </article>
+
+            <article class="kpi panel-enter rounded-2xl bg-white border border-ink/8 p-5 shadow-panel">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-sm font-medium text-ink/60">Average Order Value</p>
+                  <p id="kpi-aov" class="mt-2 font-display text-[1.9rem] font-700 tracking-tight tabular-nums">$86.50</p>
+                </div>
+                <span class="grid place-items-center h-10 w-10 rounded-xl bg-[#FDECEC] text-coral" aria-hidden="true">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                </span>
+              </div>
+              <p class="mt-4 flex items-center gap-2 text-sm"><span class="chip chip-down"><span aria-hidden="true">↓</span> <span id="kpi-aov-delta">-2.1%</span></span> <span class="text-ink/50">vs prior period</span></p>
+            </article>
+          </div>
+
+          <!-- Charts row -->
+          <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+            <section class="panel-enter xl:col-span-2 rounded-2xl bg-white border border-ink/8 p-5 sm:p-6 shadow-panel" aria-labelledby="revenue-heading">
+              <div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+                <div>
+                  <h2 id="revenue-heading" class="font-display text-lg font-700">Revenue analytics</h2>
+                  <p class="text-sm text-ink/55 mt-1">Monthly revenue for the past 12 months</p>
+                </div>
+                <div class="inline-flex rounded-xl border border-ink/10 p-1 bg-mist" role="group" aria-label="Chart metric">
+                  <button type="button" class="chart-toggle px-3 py-1.5 text-xs font-semibold rounded-lg bg-ink text-white" data-metric="revenue">Revenue</button>
+                  <button type="button" class="chart-toggle px-3 py-1.5 text-xs font-semibold rounded-lg text-ink/60 hover:text-ink" data-metric="orders">Orders</button>
+                </div>
+              </div>
+              <div class="h-72 sm:h-80">
+                <canvas id="revenueChart" aria-label="Revenue over the last 12 months" role="img"></canvas>
+              </div>
+            </section>
+
+            <section class="panel-enter rounded-2xl bg-white border border-ink/8 p-5 sm:p-6 shadow-panel" aria-labelledby="traffic-heading">
+              <h2 id="traffic-heading" class="font-display text-lg font-700">Traffic sources</h2>
+              <p class="text-sm text-ink/55 mt-1 mb-4">Where sessions originated</p>
+              <div class="h-44 relative">
+                <canvas id="trafficChart" aria-label="Traffic sources breakdown" role="img"></canvas>
+              </div>
+              <ul class="mt-4 space-y-3" id="traffic-legend">
+                <li class="flex items-center justify-between gap-3 text-sm">
+                  <span class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-sm bg-teal" aria-hidden="true"></span>Organic</span>
+                  <span class="font-semibold tabular-nums">42%</span>
+                </li>
+                <li class="flex items-center justify-between gap-3 text-sm">
+                  <span class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-sm bg-[#315F9B]" aria-hidden="true"></span>Direct</span>
+                  <span class="font-semibold tabular-nums">28%</span>
+                </li>
+                <li class="flex items-center justify-between gap-3 text-sm">
+                  <span class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-sm bg-[#B86A1C]" aria-hidden="true"></span>Social</span>
+                  <span class="font-semibold tabular-nums">18%</span>
+                </li>
+                <li class="flex items-center justify-between gap-3 text-sm">
+                  <span class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-sm bg-[#7C6BC4]" aria-hidden="true"></span>Referral</span>
+                  <span class="font-semibold tabular-nums">12%</span>
+                </li>
+              </ul>
+            </section>
+          </div>
+
+          <!-- Table + insights -->
+          <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+            <section class="panel-enter xl:col-span-2 rounded-2xl bg-white border border-ink/8 shadow-panel overflow-hidden" aria-labelledby="transactions-heading">
+              <div class="px-5 sm:px-6 py-5 flex items-center justify-between gap-3 border-b border-ink/8">
+                <div>
+                  <h2 id="transactions-heading" class="font-display text-lg font-700">Recent transactions</h2>
+                  <p class="text-sm text-ink/55 mt-1">Latest successful checkouts</p>
+                </div>
+                <button type="button" id="export-btn" class="text-sm font-semibold text-teal-deep rounded-lg border border-teal/25 px-3 py-1.5 hover:bg-teal-soft/50 transition-colors">Export CSV</button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full min-w-[640px] text-left text-sm">
+                  <thead class="bg-mist text-ink/60">
+                    <tr>
+                      <th scope="col" class="px-5 sm:px-6 py-3 font-medium">Customer</th>
+                      <th scope="col" class="px-5 sm:px-6 py-3 font-medium">Product</th>
+                      <th scope="col" class="px-5 sm:px-6 py-3 font-medium">Amount</th>
+                      <th scope="col" class="px-5 sm:px-6 py-3 font-medium">Status</th>
+                      <th scope="col" class="px-5 sm:px-6 py-3 font-medium">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="transactions-body" class="divide-y divide-ink/6"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel-enter rounded-2xl border border-ink/8 bg-ink text-white p-5 sm:p-6 shadow-panel relative overflow-hidden" aria-labelledby="insights-heading">
+              <div class="absolute inset-0 grain opacity-40 pointer-events-none" aria-hidden="true"></div>
+              <div class="relative">
+                <p class="text-[11px] uppercase tracking-[0.18em] text-teal-soft/80">Insights</p>
+                <h2 id="insights-heading" class="font-display text-xl font-700 mt-2">What moved the needle</h2>
+                <ul class="mt-5 space-y-4">
+                  <li class="rounded-xl bg-white/5 border border-white/10 p-3.5">
+                    <p class="text-sm font-semibold">Organic search driving 42% of sessions</p>
+                    <p class="text-xs text-white/60 mt-1">Blog posts on pricing comparisons contributed most referrals this week.</p>
+                  </li>
+                  <li class="rounded-xl bg-white/5 border border-white/10 p-3.5">
+                    <p class="text-sm font-semibold">AOV dipped 2.1%</p>
+                    <p class="text-xs text-white/60 mt-1">More entry-level SKUs in cart. Bundle offers could lift ticket size.</p>
+                  </li>
+                  <li class="rounded-xl bg-white/5 border border-white/10 p-3.5">
+                    <p class="text-sm font-semibold">Peak checkout window: 7–9 PM</p>
+                    <p class="text-xs text-white/60 mt-1">Schedule email campaigns 45 minutes before the surge.</p>
+                  </li>
+                </ul>
+                <button type="button" id="insight-action" class="mt-5 w-full rounded-xl bg-teal hover:bg-teal-deep transition-colors px-4 py-2.5 text-sm font-semibold">Open full insight report</button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- Alternate nav views -->
+        <section id="view-analytics" class="hidden space-y-4" aria-label="Analytics">
+          <div class="rounded-2xl bg-white border border-ink/8 p-6 shadow-panel">
+            <h2 class="font-display text-2xl font-700">Analytics workspace</h2>
+            <p class="text-ink/60 mt-2 max-w-2xl">Deep-dive funnels, cohort retention, and channel attribution live here. Switch back to Overview for the live KPI board.</p>
+            <div class="mt-6 grid sm:grid-cols-3 gap-4">
+              <div class="rounded-xl bg-mist p-4"><p class="text-xs text-ink/50">Bounce rate</p><p class="font-display text-2xl font-700 mt-1">31.4%</p></div>
+              <div class="rounded-xl bg-mist p-4"><p class="text-xs text-ink/50">Sessions</p><p class="font-display text-2xl font-700 mt-1">184.2k</p></div>
+              <div class="rounded-xl bg-mist p-4"><p class="text-xs text-ink/50">Pages / session</p><p class="font-display text-2xl font-700 mt-1">3.8</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-customers" class="hidden space-y-4" aria-label="Customers">
+          <div class="rounded-2xl bg-white border border-ink/8 p-6 shadow-panel">
+            <h2 class="font-display text-2xl font-700">Customers</h2>
+            <p class="text-ink/60 mt-2">12,840 active users across 48 countries. Top segment: returning shoppers (61%).</p>
+          </div>
+        </section>
+
+        <section id="view-reports" class="hidden space-y-4" aria-label="Reports">
+          <div class="rounded-2xl bg-white border border-ink/8 p-6 shadow-panel">
+            <h2 class="font-display text-2xl font-700">Reports</h2>
+            <p class="text-ink/60 mt-2">Scheduled exports for revenue, cohorts, and traffic are ready every Monday at 08:00.</p>
+          </div>
+        </section>
+
+        <section id="view-settings" class="hidden space-y-4" aria-label="Settings">
+          <div class="rounded-2xl bg-white border border-ink/8 p-6 shadow-panel">
+            <h2 class="font-display text-2xl font-700">Settings</h2>
+            <p class="text-ink/60 mt-2">Manage workspace seats, billing, and notification preferences for MetricFlow.</p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="px-4 sm:px-6 lg:px-8 py-4 text-xs text-ink/45 border-t border-ink/8">
+        © 2026 MetricFlow · Built for Northwind Commerce
+      </footer>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-5 right-5 z-[60] hidden rounded-xl bg-ink text-white px-4 py-3 text-sm shadow-panel" role="status" aria-live="polite"></div>
+
+  <script>
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const chartData = {
+      revenue: [31200, 28950, 34110, 36840, 35220, 40150, 42890, 41560, 44920, 46210, 47180, 48290],
+      orders: [420, 398, 455, 490, 472, 530, 560, 548, 590, 610, 625, 648]
+    };
+
+    const rangeMultipliers = {
+      '7d': 0.22,
+      '30d': 1,
+      '90d': 2.85,
+      '12m': 11.4
+    };
+
+    const baseKpis = {
+      revenue: { value: 48290, format: 'money', delta: 12.8 },
+      users: { value: 12840, format: 'int', delta: 8.2 },
+      conversion: { value: 3.24, format: 'pct', delta: 1.4 },
+      aov: { value: 86.5, format: 'money', delta: -2.1 }
+    };
+
+    const transactions = [
+      { name: 'Elena Vargas', email: 'elena@brightco.io', product: 'Pro Annual', amount: 948, status: 'Paid', date: 'Nov 9, 2026' },
+      { name: 'Jonah Reeves', email: 'j.reeves@orbit.studio', product: 'Growth Monthly', amount: 129, status: 'Paid', date: 'Nov 9, 2026' },
+      { name: 'Priya Nair', email: 'priya@lumenlabs.com', product: 'Team Seat Add-on', amount: 48, status: 'Refunded', date: 'Nov 8, 2026' },
+      { name: 'Marcus Holt', email: 'marcus@fieldnote.app', product: 'Pro Annual', amount: 948, status: 'Paid', date: 'Nov 8, 2026' },
+      { name: 'Sofia Berg', email: 'sofia@nordframe.se', product: 'Starter Monthly', amount: 49, status: 'Pending', date: 'Nov 7, 2026' },
+      { name: 'Kenji Sato', email: 'kenji@tokyopixel.jp', product: 'Growth Monthly', amount: 129, status: 'Paid', date: 'Nov 7, 2026' },
+      { name: 'Amina Diallo', email: 'amina@sahelcraft.co', product: 'Enterprise', amount: 2400, status: 'Paid', date: 'Nov 6, 2026' },
+      { name: 'Liam O’Connor', email: 'liam@riverbank.ie', product: 'Pro Monthly', amount: 89, status: 'Paid', date: 'Nov 6, 2026' }
+    ];
+
+    const titles = {
+      overview: 'Overview',
+      analytics: 'Analytics',
+      customers: 'Customers',
+      reports: 'Reports',
+      settings: 'Settings'
+    };
+
+    function formatValue(value, type) {
+      if (type === 'money') return '$' + value.toLocaleString('en-US', { minimumFractionDigits: value % 1 ? 2 : 0, maximumFractionDigits: 2 });
+      if (type === 'pct') return value.toFixed(2) + '%';
+      return Math.round(value).toLocaleString('en-US');
+    }
+
+    function formatDelta(delta) {
+      const sign = delta > 0 ? '+' : '';
+      return sign + delta.toFixed(1) + '%';
+    }
+
+    function statusBadge(status) {
+      const map = {
+        Paid: 'bg-teal-soft text-teal-deep',
+        Pending: 'bg-[#FFF4E5] text-[#B86A1C]',
+        Refunded: 'bg-[#FDECEC] text-coral'
+      };
+      return `<span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${map[status] || 'bg-mist'}">${status}</span>`;
+    }
+
+    function renderTransactions() {
+      const body = document.getElementById('transactions-body');
+      body.innerHTML = transactions.map(t => `
+        <tr class="hover:bg-teal-soft/30 transition-colors">
+          <td class="px-5 sm:px-6 py-3.5">
+            <div class="font-medium">${t.name}</div>
+            <div class="text-xs text-ink/50">${t.email}</div>
+          </td>
+          <td class="px-5 sm:px-6 py-3.5 whitespace-nowrap">${t.product}</td>
+          <td class="px-5 sm:px-6 py-3.5 font-semibold tabular-nums">$${t.amount.toLocaleString('en-US')}</td>
+          <td class="px-5 sm:px-6 py-3.5">${statusBadge(t.status)}</td>
+          <td class="px-5 sm:px-6 py-3.5 text-ink/60 whitespace-nowrap">${t.date}</td>
+        </tr>
+      `).join('');
+    }
+
+    function updateKpis(range) {
+      const m = rangeMultipliers[range] || 1;
+      const jitter = range === '30d' ? 1 : (0.96 + (range.length * 0.01));
+      document.getElementById('kpi-revenue').textContent = formatValue(baseKpis.revenue.value * m * jitter, 'money');
+      document.getElementById('kpi-users').textContent = formatValue(baseKpis.users.value * Math.sqrt(m) * jitter, 'int');
+      document.getElementById('kpi-conversion').textContent = formatValue(baseKpis.conversion.value * (range === '7d' ? 1.08 : 1), 'pct');
+      document.getElementById('kpi-aov').textContent = formatValue(baseKpis.aov.value * (range === '12m' ? 0.97 : 1), 'money');
+      document.getElementById('kpi-revenue-delta').textContent = formatDelta(baseKpis.revenue.delta);
+      document.getElementById('kpi-users-delta').textContent = formatDelta(baseKpis.users.delta);
+      document.getElementById('kpi-conversion-delta').textContent = formatDelta(baseKpis.conversion.delta);
+      document.getElementById('kpi-aov-delta').textContent = formatDelta(baseKpis.aov.delta);
+    }
+
+    let revenueChart;
+    let currentMetric = 'revenue';
+    function buildCharts() {
+      const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+      const gradient = revenueCtx.createLinearGradient(0, 0, 0, 320);
+      gradient.addColorStop(0, 'rgba(15,118,110,0.28)');
+      gradient.addColorStop(1, 'rgba(15,118,110,0.02)');
+
+      revenueChart = new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+          labels: months,
+          datasets: [{
+            label: 'Revenue',
+            data: chartData.revenue,
+            borderColor: '#0F766E',
+            backgroundColor: gradient,
+            borderWidth: 2.5,
+            pointRadius: 0,
+            pointHoverRadius: 6,
+            pointHoverBorderWidth: 3,
+            pointHoverBorderColor: '#fff',
+            pointBackgroundColor: '#0F766E',
+            fill: true,
+            tension: 0.35
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#13202B', padding: 10, cornerRadius: 10, displayColors: false,
+              callbacks: {
+                label: (ctx) => {
+                  const v = ctx.parsed.y;
+                  return ctx.dataset.label === 'Orders' ? ` ${v} orders` : ` $${v.toLocaleString()}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: { grid: { display: false }, border: { display: false }, ticks: { color: '#5B6B76' } },
+            y: {
+              border: { display: false },
+              grid: { color: 'rgba(19,32,43,0.06)', tickDash: [3,3] },
+              ticks: {
+                color: '#5B6B76',
+                callback: (v) => currentMetric === 'orders' ? v : '$' + (v/1000) + 'k'
+              }
+            }
+          }
+        }
+      });
+
+      new Chart(document.getElementById('trafficChart').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Organic', 'Direct', 'Social', 'Referral'],
+          datasets: [{
+            data: [42, 28, 18, 12],
+            backgroundColor: ['#0F766E', '#315F9B', '#B86A1C', '#7C6BC4'],
+            borderWidth: 3,
+            borderColor: '#fff',
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '68%',
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function setChartMetric(metric) {
+      document.querySelectorAll('.chart-toggle').forEach(btn => {
+        const active = btn.dataset.metric === metric;
+        btn.classList.toggle('bg-ink', active);
+        btn.classList.toggle('text-white', active);
+        btn.classList.toggle('text-ink/60', !active);
+      });
+      currentMetric = metric;
+      revenueChart.data.datasets[0].label = metric === 'revenue' ? 'Revenue' : 'Orders';
+      revenueChart.data.datasets[0].data = chartData[metric];
+      revenueChart.data.datasets[0].borderColor = metric === 'revenue' ? '#0F766E' : '#315F9B';
+      revenueChart.data.datasets[0].pointBackgroundColor = metric === 'revenue' ? '#0F766E' : '#315F9B';
+      revenueChart.update();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.remove('hidden');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toast.classList.add('hidden'), 2400);
+    }
+
+    function setSidebar(open) {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      const openBtn = document.getElementById('open-sidebar');
+      sidebar.classList.toggle('sidebar-open', open);
+      overlay.classList.toggle('overlay-open', open);
+      openBtn.setAttribute('aria-expanded', String(open));
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+
+    function navigate(view) {
+      Object.keys(titles).forEach(key => {
+        const el = document.getElementById('view-' + key);
+        if (el) el.classList.toggle('hidden', key !== view);
+      });
+      document.getElementById('page-title').textContent = titles[view];
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        const active = btn.dataset.nav === view;
+        btn.classList.toggle('active', active);
+        btn.classList.toggle('text-white/70', !active);
+        if (active) btn.setAttribute('aria-current', 'page');
+        else btn.removeAttribute('aria-current');
+      });
+      setSidebar(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function syncDateRange(value, sourceId) {
+      ['date-range', 'date-range-mobile'].forEach(id => {
+        if (id !== sourceId) document.getElementById(id).value = value;
+      });
+      updateKpis(value);
+      showToast('Date range updated to ' + document.getElementById(sourceId).selectedOptions[0].text);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTransactions();
+      buildCharts();
+      updateKpis('30d');
+
+      document.getElementById('open-sidebar').addEventListener('click', () => setSidebar(true));
+      document.getElementById('close-sidebar').addEventListener('click', () => setSidebar(false));
+      document.getElementById('sidebar-overlay').addEventListener('click', () => setSidebar(false));
+
+      document.querySelectorAll('[data-nav]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          navigate(el.dataset.nav);
+        });
+      });
+
+      document.querySelectorAll('.chart-toggle').forEach(btn => {
+        btn.addEventListener('click', () => setChartMetric(btn.dataset.metric));
+      });
+
+      document.getElementById('date-range').addEventListener('change', (e) => syncDateRange(e.target.value, 'date-range'));
+      document.getElementById('date-range-mobile').addEventListener('change', (e) => syncDateRange(e.target.value, 'date-range-mobile'));
+
+      const notifBtn = document.getElementById('notif-btn');
+      const notifPanel = document.getElementById('notif-panel');
+      const profileBtn = document.getElementById('profile-btn');
+      const profilePanel = document.getElementById('profile-panel');
+
+      notifBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = notifPanel.classList.toggle('hidden') === false;
+        notifBtn.setAttribute('aria-expanded', String(open));
+        profilePanel.classList.add('hidden');
+        profileBtn.setAttribute('aria-expanded', 'false');
+      });
+
+      profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = profilePanel.classList.toggle('hidden') === false;
+        profileBtn.setAttribute('aria-expanded', String(open));
+        notifPanel.classList.add('hidden');
+        notifBtn.setAttribute('aria-expanded', 'false');
+      });
+
+      document.addEventListener('click', () => {
+        notifPanel.classList.add('hidden');
+        profilePanel.classList.add('hidden');
+        notifBtn.setAttribute('aria-expanded', 'false');
+        profileBtn.setAttribute('aria-expanded', 'false');
+      });
+
+      document.getElementById('export-btn').addEventListener('click', () => {
+        showToast('CSV export started');
+      });
+
+      document.getElementById('insight-action').addEventListener('click', () => {
+        navigate('reports');
+        showToast('Opening insight report');
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setSidebar(false);
+      });
+    });
+  </script>
+</body>
+</html>

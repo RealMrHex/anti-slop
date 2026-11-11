@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dozer | Sleep overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #161513;
+    --sidebar: #12110f;
+    --card: #1c1a18;
+    --raised: #262421;
+    --bar: #3a352d;
+    --hair: rgba(239, 233, 222, 0.08);
+    --text: #efe9de;
+    --text2: #aaa398;
+    --muted: #8f887c;
+    --accent: #e9c58f;
+    --accent-ink: #1c1a18;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --sans: 'Instrument Sans', system-ui, sans-serif;
+    --serif: 'Instrument Serif', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 22px;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; }
+  p, h1, h2, h3, ul { margin: 0; }
+  ul { padding: 0; list-style: none; }
+
+  .ico {
+    width: 16px; height: 16px; flex: none;
+    fill: none; stroke: currentColor; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* Layout */
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  .sidebar {
+    background: var(--sidebar);
+    border-right: 1px solid var(--hair);
+    padding: 24px 16px;
+    display: flex; flex-direction: column;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 8px; height: 32px; margin-bottom: 32px;
+    font-weight: 500; font-size: 16px;
+  }
+  .nav { display: flex; flex-direction: column; gap: 4px; }
+  .nav a {
+    display: flex; align-items: center; gap: 10px;
+    height: 36px; padding: 0 10px; border-radius: 8px;
+    color: var(--text2); font-size: 14px; font-weight: 400;
+    transition: background-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .nav a:hover { background: var(--raised); color: var(--text); }
+  .nav a[aria-current="page"] { background: var(--raised); color: var(--text); font-weight: 500; }
+  .nav .meta { margin-left: auto; font-size: 12px; color: var(--muted); }
+  .sidebar-foot {
+    margin-top: auto; display: flex; align-items: center; gap: 10px;
+    padding: 12px 8px 0; border-top: 1px solid var(--hair);
+    font-size: 14px; color: var(--text2);
+  }
+  .avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--raised); color: var(--text);
+    display: grid; place-items: center; font-size: 13px; font-weight: 500;
+  }
+
+  .page { padding: 32px; min-width: 0; }
+  .page-inner { animation: rise 360ms var(--ease) both; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .head {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;
+    margin-bottom: 24px;
+  }
+  .eyebrow { font-size: 13px; color: var(--muted); }
+  .title {
+    font-family: var(--serif); font-weight: 400;
+    font-size: 40px; line-height: 44px; letter-spacing: -0.02em;
+    margin-top: 4px;
+  }
+
+  .btn {
+    height: 40px; padding: 0 16px; border-radius: 10px; border: 1px solid transparent;
+    font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: background-color 160ms var(--ease), transform 120ms var(--ease);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { background: #f0d4a4; }
+  .btn-secondary { background: var(--raised); color: var(--text); border-color: var(--hair); }
+  .btn-secondary:hover { background: #2e2b27; }
+  .btn:focus-visible, .nav a:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px;
+  }
+  .span-4 { grid-column: span 4; }
+  .span-8 { grid-column: span 8; }
+  .span-12 { grid-column: span 12; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    padding: 24px;
+    min-width: 0;
+  }
+  .card-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+    margin-bottom: 20px;
+  }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--text); }
+  .card-note { font-size: 13px; color: var(--muted); }
+
+  /* Last night */
+  .score-row { display: flex; align-items: center; gap: 28px; }
+  .ring { position: relative; width: 144px; height: 144px; flex: none; }
+  .ring svg { width: 144px; height: 144px; transform: rotate(-90deg); display: block; }
+  .ring-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .ring-value { font-size: 48px; line-height: 48px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .ring-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .stats { display: grid; gap: 16px; }
+  .stat-label { display: block; font-size: 13px; color: var(--text2); }
+  .stat-value { display: block; font-size: 24px; line-height: 28px; font-weight: 500; font-variant-numeric: tabular-nums; }
+
+  /* Hypnogram */
+  .hypno { width: 100%; height: auto; display: block; overflow: visible; }
+  .hypno .grid-line { stroke: var(--hair); stroke-width: 1; }
+  .hypno .row-label { fill: var(--muted); font-size: 12px; font-family: var(--sans); }
+  .hypno .axis-label { fill: var(--muted); font-size: 12px; font-family: var(--sans); }
+  .hypno .trace { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+
+  /* Bars */
+  .bars {
+    height: 184px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 16px; align-items: end;
+  }
+  .bar-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .bar-val { font-size: 13px; color: var(--text2); margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+  .bar { width: 100%; max-width: 44px; border-radius: 6px 6px 2px 2px; background: var(--bar); }
+  .bar.is-last { background: var(--accent); }
+  .bar-day { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+  /* Consistency */
+  .spread { font-size: 40px; line-height: 44px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .sub { font-size: 14px; color: var(--text2); margin-top: 8px; }
+  .meter { position: relative; height: 6px; margin-top: 28px; border-radius: 3px; background: var(--raised); }
+  .meter-range { position: absolute; top: 0; bottom: 0; left: 25%; width: 63.3%; border-radius: 3px; background: var(--bar); }
+  .meter-avg { position: absolute; top: -5px; bottom: -5px; left: 56.7%; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--text); }
+  .meter-axis { display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* Tips */
+  .tips { display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; }
+  .tips li {
+    padding: 14px 0; border-top: 1px solid var(--hair);
+    font-size: 14px; line-height: 20px; color: var(--text);
+  }
+  .tips-foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+  /* Narrow screens */
+  @media (max-width: 900px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .sidebar { border-right: 0; border-bottom: 1px solid var(--hair); padding: 16px; }
+    .brand { margin-bottom: 12px; }
+    .nav { flex-direction: row; overflow-x: auto; }
+    .nav a { flex: none; }
+    .sidebar-foot { display: none; }
+    .page { padding: 24px 16px; }
+    .head { flex-direction: column; align-items: flex-start; }
+    .title { font-size: 36px; line-height: 40px; }
+    .grid > * { grid-column: 1 / -1; }
+    .tips { grid-template-columns: 1fr; }
+    .bars { height: 160px; gap: 8px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-inner { animation: none; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>
+      Dozer
+    </div>
+    <nav class="nav" aria-label="Main">
+      <a href="#" aria-current="page"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Overview</a>
+      <a href="#"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Sleep log</a>
+      <a href="#"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 7 13.5 15.5 8.5 10.5 2 17"/><path d="M16 7h6v6"/></svg>Insights</a>
+      <a href="#"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.2 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg>Coach <span class="meta">Pro</span></a>
+      <a href="#"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/></svg>Settings</a>
+    </nav>
+    <div class="sidebar-foot">
+      <span class="avatar" aria-hidden="true">A</span>
+      Alex
+    </div>
+  </aside>
+
+  <main class="page">
+    <div class="page-inner">
+
+      <header class="head">
+        <div>
+          <p class="eyebrow">Monday, 9 November 2026</p>
+          <h1 class="title">Sleep overview</h1>
+        </div>
+        <button class="btn btn-primary" type="button">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>
+          Start sleep mode
+        </button>
+      </header>
+
+      <div class="grid">
+
+        <section class="card span-4" aria-labelledby="t-night">
+          <div class="card-head"><h2 class="card-title" id="t-night">Last night</h2></div>
+          <div class="score-row">
+            <div class="ring" role="img" aria-label="Sleep score 87 out of 100">
+              <svg viewBox="0 0 144 144" aria-hidden="true">
+                <circle cx="72" cy="72" r="66" fill="none" stroke="var(--raised)" stroke-width="6"/>
+                <circle cx="72" cy="72" r="66" fill="none" stroke="var(--text)" stroke-width="6" stroke-linecap="round" stroke-dasharray="360.8 414.7"/>
+              </svg>
+              <div class="ring-center" aria-hidden="true">
+                <span class="ring-value">87</span>
+                <span class="ring-label">Score</span>
+              </div>
+            </div>
+            <div class="stats">
+              <p><span class="stat-label">Time asleep</span><span class="stat-value">7h 42m</span></p>
+              <p><span class="stat-label">Fell asleep in</span><span class="stat-value">12 min</span></p>
+              <p><span class="stat-label">Wake-ups</span><span class="stat-value">3</span></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card span-8" aria-labelledby="t-stages">
+          <div class="card-head">
+            <h2 class="card-title" id="t-stages">Sleep stages</h2>
+            <span class="card-note num">11:14 PM to 6:56 AM</span>
+          </div>
+          <svg class="hypno" viewBox="0 0 661 230" role="img" aria-label="Sleep stages across the night, from 11:14 PM to 6:56 AM. Three short awake periods, between 12:30 and 3:45 AM and later.">
+            <line class="grid-line" x1="64" y1="20" x2="661" y2="20"/>
+            <line class="grid-line" x1="64" y1="72" x2="661" y2="72"/>
+            <line class="grid-line" x1="64" y1="124" x2="661" y2="124"/>
+            <line class="grid-line" x1="64" y1="176" x2="661" y2="176"/>
+            <text class="row-label" x="0" y="24">Awake</text>
+            <text class="row-label" x="0" y="76">REM</text>
+            <text class="row-label" x="0" y="128">Light</text>
+            <text class="row-label" x="0" y="180">Deep</text>
+            <path class="trace" d="M64.0 20L79.5 20L79.5 124L131.2 124L131.2 176L186.8 176L186.8 20L198.4 20L198.4 124L257.8 124L257.8 72L294.0 72L294.0 124L309.5 124L309.5 176L340.5 176L340.5 124L350.9 124L350.9 20L369.0 20L369.0 124L402.6 124L402.6 72L451.7 72L451.7 124L526.6 124L526.6 20L536.9 20L536.9 72L593.8 72L593.8 124L627.4 124L627.4 72L661.0 72"/>
+            <text class="axis-label" x="64" y="222">11:14 PM</text>
+            <text class="axis-label" x="162" y="222" text-anchor="middle">12:30 AM</text>
+            <text class="axis-label" x="278" y="222" text-anchor="middle">2:00 AM</text>
+            <text class="axis-label" x="414" y="222" text-anchor="middle">3:45 AM</text>
+            <text class="axis-label" x="661" y="222" text-anchor="end">6:56 AM</text>
+          </svg>
+        </section>
+
+        <section class="card span-8" aria-labelledby="t-week">
+          <div class="card-head">
+            <h2 class="card-title" id="t-week">Last 7 nights</h2>
+            <span class="card-note num">Average 7.1 h</span>
+          </div>
+          <div class="bars" role="img" aria-label="Hours asleep, Monday to Sunday: 6.2, 7.4, 5.9, 7.8, 6.6, 8.4, 7.7. Sunday is last night.">
+            <div class="bar-col" aria-hidden="true"><span class="bar-val">6.2</span><div class="bar" style="height:103px"></div><span class="bar-day">Mon</span></div>
+            <div class="bar-col" aria-hidden="true"><span class="bar-val">7.4</span><div class="bar" style="height:123px"></div><span class="bar-day">Tue</span></div>
+            <div class="bar-col" aria-hidden="true"><span class="bar-val">5.9</span><div class="bar" style="height:98px"></div><span class="bar-day">Wed</span></div>
+            <div class="bar-col" aria-hidden="true"><span class="bar-val">7.8</span><div class="bar" style="height:130px"></div><span class="bar-day">Thu</span></div>
+            <div class="bar-col" aria-hidden="true"><span class="bar-val">6.6</span><div class="bar" style="height:110px"></div><span class="bar-day">Fri</span></div>
+            <div class="bar-col" aria-hidden="true"><span class="bar-val">8.4</span><div class="bar" style="height:140px"></div><span class="bar-day">Sat</span></div>
+            <div class="bar-col" aria-hidden="true"><span class="bar-val">7.7</span><div class="bar is-last" style="height:128px"></div><span class="bar-day">Sun</span></div>
+          </div>
+        </section>
+
+        <section class="card span-4" aria-labelledby="t-bed">
+          <div class="card-head"><h2 class="card-title" id="t-bed">Bedtime consistency</h2></div>
+          <p class="spread">±38 min</p>
+          <p class="sub num">Target 11:00 PM · Average 11:38 PM</p>
+          <div class="meter" aria-hidden="true">
+            <div class="meter-range"></div>
+            <div class="meter-avg"></div>
+          </div>
+          <div class="meter-axis" aria-hidden="true"><span>10:30 PM</span><span>12:30 AM</span></div>
+        </section>
+
+        <section class="card span-12" aria-labelledby="t-tips">
+          <div class="card-head"><h2 class="card-title" id="t-tips">Tips</h2></div>
+          <ul class="tips">
+            <li>Get morning sunlight within 30 minutes of waking</li>
+            <li>Put screens away an hour before bed</li>
+            <li>Cut caffeine after 2 PM</li>
+            <li>Try 4-7-8 breathing to fall asleep faster</li>
+          </ul>
+          <div class="tips-foot">
+            <button class="btn btn-secondary" type="button">View all tips</button>
+            <button class="btn btn-secondary" type="button">Share</button>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

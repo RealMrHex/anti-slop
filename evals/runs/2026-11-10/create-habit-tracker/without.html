@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Streaks - Home</title>
+<style>
+:root{
+  --bg:#f4f1ff; --card:#ffffff; --ink:#1c1633; --muted:#6b6485; --line:#e4dff5;
+  --accent:#6d4aff; --accent-ink:#fff; --hot:#ff6a3d; --ok:#14b86a; --soft:#ece7ff;
+  --shadow:0 6px 20px rgba(60,40,140,.08);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#120f22; --card:#1d1936; --ink:#f3f0ff; --muted:#a39cc4; --line:#2d2850; --accent:#8f74ff; --accent-ink:#120f22; --soft:#2a2450; --shadow:none;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;padding:20px 16px 110px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{font-size:26px;line-height:1.15;margin:0;letter-spacing:-.02em}
+.sub{margin:2px 0 0;color:var(--muted);font-size:14px}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:800;flex:none}
+.streak{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:700;font-size:14px;margin-top:10px}
+.streak svg{width:16px;height:16px;fill:var(--hot)}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:18px 0}
+.day{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 0;text-align:center;font-size:12px;color:var(--muted)}
+.day b{display:block;font-size:16px;color:var(--ink);margin-top:2px}
+.day i{display:block;width:6px;height:6px;border-radius:50%;margin:5px auto 0;background:var(--line)}
+.day.done i{background:var(--ok)}
+.day.today{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.day.today b{color:var(--accent-ink)}
+.day.today i{background:var(--accent-ink);opacity:.5}
+.hero{display:flex;align-items:center;gap:18px;background:var(--card);border-radius:24px;padding:18px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.ring{position:relative;width:96px;height:96px;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:10;stroke-linecap:round}
+.ring .t{stroke:var(--soft)}
+.ring .p{stroke:var(--accent);stroke-dasharray:264;stroke-dashoffset:264;transition:stroke-dashoffset .5s ease}
+.ring span{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;font-size:20px}
+.hero h2{margin:0 0 4px;font-size:18px}
+.hero p{margin:0;color:var(--muted);font-size:14px}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:26px 2px 10px}
+.sec h3{margin:0;font-size:18px}
+.sec span{color:var(--muted);font-size:14px}
+ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.habit{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;color:inherit;font:inherit;cursor:pointer;box-shadow:var(--shadow);min-height:68px;transition:transform .1s}
+.habit:active{transform:scale(.98)}
+.emoji{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;flex:none;background:var(--soft)}
+.txt{flex:1;min-width:0}
+.txt strong{display:block;font-size:16px}
+.txt small{color:var(--muted);font-size:13px}
+.check{width:32px;height:32px;border-radius:50%;border:2px solid var(--muted);display:grid;place-items:center;flex:none;transition:.2s}
+.check svg{width:18px;height:18px;stroke:var(--accent-ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0}
+.habit[aria-pressed=true] .check{background:var(--ok);border-color:var(--ok)}
+.habit[aria-pressed=true] .check svg{opacity:1;stroke:#fff}
+.habit[aria-pressed=true] .txt strong{text-decoration:line-through;text-decoration-thickness:2px;opacity:.6}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.quote{margin-top:22px;padding:16px;border-radius:18px;background:var(--soft);font-size:14px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:8px 16px calc(8px + env(safe-area-inset-bottom))}
+nav div{max-width:480px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr auto 1fr 1fr;align-items:center;gap:4px}
+nav a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:var(--muted);text-decoration:none;padding:6px 0;min-height:44px}
+nav a[aria-current]{color:var(--accent);font-weight:700}
+nav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.add{width:56px;height:56px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);font-size:30px;line-height:1;cursor:pointer;margin-top:-26px;box-shadow:0 6px 16px rgba(109,74,255,.45)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header>
+    <div>
+      <h1 id="greet">Hey, Alex</h1>
+      <p class="sub" id="date"></p>
+      <div class="streak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4-3 5-3 9a3 3 0 0 0 6 0c0-1-.5-2-1-3 3 1 5 4 5 7a7 7 0 0 1-14 0c0-6 6-7 7-13z"/></svg><span id="streakN">12</span>-day streak</div>
+    </div>
+    <div class="avatar" aria-hidden="true">A</div>
+  </header>
+
+  <div class="week" id="week" aria-label="This week"></div>
+
+  <section class="hero" aria-live="polite">
+    <div class="ring">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><circle class="t" cx="50" cy="50" r="42"/><circle class="p" id="arc" cx="50" cy="50" r="42"/></svg>
+      <span id="pct">0%</span>
+    </div>
+    <div>
+      <h2 id="msgH">Let's get going</h2>
+      <p id="msgP">Tap a habit to check it off.</p>
+    </div>
+  </section>
+
+  <div class="sec"><h3>Today</h3><span id="count"></span></div>
+  <ul id="list"></ul>
+
+  <div class="quote">Small wins add up. Showing up on a bad day counts double.</div>
+</main>
+
+<nav aria-label="Main">
+  <div>
+    <a href="#" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8v10H3z"/></svg>Home</a>
+    <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Stats</a>
+    <button class="add" type="button" aria-label="Add a new habit" id="add">+</button>
+    <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M8 13l-2 8 6-3 6 3-2-8"/></svg>Badges</a>
+    <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-4 3-6 7-6s7 2 7 6M17 5a3.5 3.5 0 0 1 0 7M22 20c0-3-2-5-4-5.5"/></svg>Crew</a>
+  </div>
+</nav>
+
+<script>
+var habits=[
+  {e:"💧",n:"Drink 8 glasses of water",s:"5 of 8 so far",d:false,c:9,bg:"#d9efff"},
+  {e:"📚",n:"Read for 20 minutes",s:"Before bed",d:true,c:12,bg:"#ffe9c9"},
+  {e:"🏃",n:"Move for 30 minutes",s:"Walk, skate, anything",d:false,c:4,bg:"#d8f6e4"},
+  {e:"📵",n:"Phone down by 10pm",s:"Wind down",d:false,c:3,bg:"#f2dcff"},
+  {e:"😴",n:"Sleep 8 hours",s:"Lights out 10:30",d:false,c:6,bg:"#dfe2ff"}
+];
+var list=document.getElementById("list");
+function render(){
+  list.innerHTML="";
+  habits.forEach(function(h,i){
+    var li=document.createElement("li");
+    var b=document.createElement("button");
+    b.className="habit";b.type="button";b.setAttribute("aria-pressed",h.d);
+    b.innerHTML='<span class="emoji" aria-hidden="true" style="background:'+h.bg+'">'+h.e+'</span><span class="txt"><strong>'+h.n+'</strong><small>'+h.c+' day streak &middot; '+h.s+'</small></span><span class="check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span>';
+    b.onclick=function(){h.d=!h.d;h.c+=h.d?1:-1;render();};
+    li.appendChild(b);list.appendChild(li);
+  });
+  var done=habits.filter(function(h){return h.d}).length,t=habits.length,p=Math.round(done/t*100);
+  document.getElementById("pct").textContent=p+"%";
+  document.getElementById("arc").style.strokeDashoffset=264-264*done/t;
+  document.getElementById("count").textContent=done+" of "+t+" done";
+  var H=document.getElementById("msgH"),P=document.getElementById("msgP");
+  if(done===t){H.textContent="Perfect day!";P.textContent="All habits done. Your streak lives on.";}
+  else if(done===0){H.textContent="Let's get going";P.textContent="Tap a habit to check it off.";}
+  else{H.textContent="Nice, keep rolling";P.textContent=(t-done)+" more to keep your streak alive.";}
+  document.getElementById("streakN").textContent=done===t?13:12;
+  var wk=document.querySelector(".day.today");if(wk)wk.classList.toggle("done",done===t);
+}
+var now=new Date(),names=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],w=document.getElementById("week");
+var hr=now.getHours();
+document.getElementById("greet").textContent=(hr<12?"Morning":hr<18?"Hey":"Evening")+", Alex";
+document.getElementById("date").textContent=now.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"});
+for(var k=-now.getDay();k<7-now.getDay();k++){
+  var d=new Date(now);d.setDate(now.getDate()+k);
+  var el=document.createElement("div");
+  el.className="day"+(k===0?" today":k<0?" done":"");
+  el.innerHTML=names[d.getDay()]+"<b>"+d.getDate()+"</b><i></i>";
+  w.appendChild(el);
+}
+document.getElementById("add").onclick=function(){alert("New habit flow goes here");};
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact and Appointment Request</title>
+<style>
+  :root {
+    --bg: #f1f7f6;
+    --surface: #ffffff;
+    --ink: #17302f;
+    --muted: #4d6665;
+    --line: #d5e3e1;
+    --accent: #0d6b66;
+    --accent-dark: #0a524e;
+    --accent-tint: #e1f1ef;
+    --focus: #0b5cd5;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 2px rgba(23, 48, 47, .06), 0 8px 24px rgba(23, 48, 47, .07);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Avenir Next", "Segoe UI", Candara, "Gill Sans", system-ui, sans-serif;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--bg);
+  }
+  header {
+    background: var(--accent);
+    color: #fff;
+    padding: 40px 0 76px;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+  header .wrap { padding: 0 24px; }
+  header p { margin: 0 0 6px; font-size: .9rem; letter-spacing: .08em; text-transform: uppercase; color: #cfe9e6; }
+  h1 { font-size: clamp(1.8rem, 4vw + .5rem, 2.8rem); line-height: 1.1; margin: 0; font-weight: 700; letter-spacing: -.01em; }
+  main.wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 24px;
+    padding: 0 24px 56px;
+    margin-top: -44px;
+    align-items: start;
+  }
+  .stack { display: grid; gap: 24px; }
+  section.card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px;
+  }
+  h2 { font-size: 1.25rem; line-height: 1.25; margin: 0 0 16px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; vertical-align: top; padding: 9px 0; border-bottom: 1px solid var(--line); font-weight: normal; }
+  tr:last-child th, tr:last-child td { border-bottom: 0; }
+  th { color: var(--muted); padding-right: 16px; white-space: nowrap; width: 1%; }
+  .hours td { font-variant-numeric: tabular-nums; }
+  .hours tr.today th, .hours tr.today td { background: var(--accent-tint); color: var(--ink); font-weight: 600; }
+  .hours tr.today th { padding-left: 10px; border-radius: 6px 0 0 6px; }
+  .hours tr.today td { padding-right: 10px; border-radius: 0 6px 6px 0; }
+  .note { font-size: .9rem; color: var(--muted); margin: 12px 0 0; }
+  .lede { margin: -8px 0 8px; }
+  form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 16px; margin-top: 16px; }
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .field.full { grid-column: 1 / -1; }
+  label { font-weight: 600; font-size: .95rem; }
+  input, select, textarea {
+    width: 100%;
+    padding: 11px 12px;
+    font: inherit;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid #8aa3a1;
+    border-radius: var(--radius-sm);
+  }
+  textarea { height: 110px; resize: vertical; }
+  input:hover, select:hover, textarea:hover { border-color: var(--accent); }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    border-color: var(--focus);
+  }
+  button {
+    justify-self: start;
+    padding: 13px 26px;
+    font: inherit;
+    font-weight: 700;
+    color: #fff;
+    background: var(--accent);
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  button:hover { background: var(--accent-dark); }
+  button:active { transform: translateY(1px); }
+  #msg { margin-top: 16px; font-weight: 600; color: var(--accent-dark); }
+  #msg:empty { display: none; }
+  #msg { padding: 12px 14px; background: var(--accent-tint); border-radius: var(--radius-sm); }
+  @media (max-width: 800px) {
+    main.wrap { grid-template-columns: 1fr; padding: 0 16px 40px; }
+    header { padding: 28px 0 64px; }
+    header .wrap { padding: 0 16px; }
+    section.card { padding: 22px 18px; }
+  }
+  @media (max-width: 520px) {
+    form { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { button { transition: none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p>Contact and appointments</p>
+    <h1>[Clinic Name] Dental</h1>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="stack">
+    <section class="card">
+      <h2>Contact</h2>
+      <table>
+        <tr><th scope="row">Address</th><td>[Street address], [City], [State] [ZIP]</td></tr>
+        <tr><th scope="row">Phone</th><td>[Phone number]</td></tr>
+        <tr><th scope="row">Email</th><td>[Email address]</td></tr>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Hours</h2>
+      <table class="hours" id="hours">
+        <tr><th scope="row">Monday</th><td>8:00 AM - 5:00 PM</td></tr>
+        <tr><th scope="row">Tuesday</th><td>8:00 AM - 5:00 PM</td></tr>
+        <tr><th scope="row">Wednesday</th><td>8:00 AM - 5:00 PM</td></tr>
+        <tr><th scope="row">Thursday</th><td>8:00 AM - 7:00 PM</td></tr>
+        <tr><th scope="row">Friday</th><td>8:00 AM - 1:00 PM</td></tr>
+        <tr><th scope="row">Saturday</th><td>Closed</td></tr>
+        <tr><th scope="row">Sunday</th><td>Closed</td></tr>
+      </table>
+      <p class="note">Hours are placeholders. Confirm before publishing.</p>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Request an Appointment</h2>
+    <p class="note lede">This form is a first draft. It does not send anything yet.</p>
+
+    <form id="apptForm">
+      <div class="field full">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" autocomplete="name" required>
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone number</label>
+        <input type="tel" id="phone" name="phone" autocomplete="tel" required>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" autocomplete="email">
+      </div>
+
+      <div class="field full">
+        <label for="reason">Reason for visit</label>
+        <select id="reason" name="reason" required>
+          <option value="">-- Select --</option>
+          <option>Cleaning or checkup</option>
+          <option>Toothache or pain</option>
+          <option>Filling or crown</option>
+          <option>Whitening</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="preferred">Preferred date</label>
+        <input type="date" id="preferred" name="preferred">
+      </div>
+
+      <div class="field">
+        <label for="time">Preferred time of day</label>
+        <select id="time" name="time">
+          <option>No preference</option>
+          <option>Morning</option>
+          <option>Afternoon</option>
+          <option>Evening</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <label for="notes">Additional notes</label>
+        <textarea id="notes" name="notes"></textarea>
+      </div>
+
+      <div class="field full">
+        <button type="submit">Request appointment</button>
+      </div>
+    </form>
+
+    <div id="msg" role="status"></div>
+  </section>
+</main>
+
+<script>
+  document.getElementById('apptForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('msg').textContent =
+      'Thanks. Your request was noted. We will contact you to confirm. (Draft: nothing was sent.)';
+    this.reset();
+  });
+
+  // Highlight today's row in the hours table.
+  (function () {
+    var rows = document.querySelectorAll('#hours tr');
+    var i = (new Date().getDay() + 6) % 7; // Monday = 0
+    if (rows[i]) { rows[i].classList.add('today'); rows[i].querySelector('th').setAttribute('aria-current', 'date'); }
+  })();
+</script>
+
+</body>
+</html>

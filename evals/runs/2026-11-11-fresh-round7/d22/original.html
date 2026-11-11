@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Postbox Content Calendar</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #a7f3d0 0%, #ddd6fe 100%); min-height: 100vh; }
+  .glow-mint { box-shadow: 0 10px 30px rgba(16, 185, 129, 0.45); }
+  .glow-lav { box-shadow: 0 10px 30px rgba(139, 92, 246, 0.45); }
+  .tilt { transition: transform .3s ease, box-shadow .3s ease; }
+  .tilt:hover { transform: scale(1.06) rotate(-2deg); box-shadow: 0 18px 40px rgba(236, 72, 153, 0.5); }
+  .float { animation: floaty 3s ease-in-out infinite; }
+  .pulse-dot { animation: pulsey 1.5s ease-in-out infinite; }
+  @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  @keyframes pulsey { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  .grad-btn { background: linear-gradient(90deg, #f472b6, #a78bfa, #60a5fa); transition: transform .2s; }
+  .grad-btn:hover { transform: scale(1.12); }
+  .col-1 { background: linear-gradient(120deg, #f43f5e, #fb923c); }
+  .col-2 { background: linear-gradient(120deg, #eab308, #84cc16); }
+  .col-3 { background: linear-gradient(120deg, #06b6d4, #3b82f6); }
+  .col-4 { background: linear-gradient(120deg, #a855f7, #ec4899); }
+  .col-5 { background: linear-gradient(120deg, #14b8a6, #22d3ee); }
+  .avatar { background: linear-gradient(135deg, #f0abfc, #818cf8); }
+</style>
+</head>
+<body class="text-slate-800">
+<div class="flex h-[900px] w-[1280px]">
+
+  <aside class="w-[212px] bg-white/70 backdrop-blur p-[18px] flex flex-col gap-[7px] border-r border-white">
+    <div class="text-2xl font-black text-violet-600 mb-[22px] float">📬 Postbox</div>
+    <div class="text-[11px] uppercase tracking-[0.2em] font-black text-slate-500 mt-[6px]">Workspace</div>
+    <a class="rounded-xl px-3 py-2 bg-gradient-to-r from-pink-400 to-violet-400 text-white font-extrabold">📅 Calendar</a>
+    <a class="rounded-xl px-3 py-2 font-extrabold hover:bg-white">✏️ Drafts</a>
+    <a class="rounded-xl px-3 py-2 font-extrabold hover:bg-white">📊 Analytics</a>
+    <a class="rounded-xl px-3 py-2 font-extrabold hover:bg-white">🔗 Channels</a>
+    <div class="text-[11px] uppercase tracking-[0.2em] font-black text-slate-500 mt-[14px]">Team</div>
+    <a class="rounded-xl px-3 py-2 font-extrabold hover:bg-white">👥 Members</a>
+    <a class="rounded-xl px-3 py-2 font-extrabold hover:bg-white">⚙️ Settings</a>
+    <div class="mt-auto rounded-2xl p-[14px] bg-gradient-to-br from-amber-200 to-pink-200 glow-lav">
+      <span class="text-[10px] font-black bg-violet-600 text-white rounded-full px-2 py-[2px]">PRO</span>
+      <p class="text-xs font-bold mt-[7px]">🚀 Unlock 10x reach!!</p>
+      <p class="text-[11px] mt-[5px]">Trusted by 50,000+ teams worldwide</p>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-[22px] flex flex-col gap-[15px]">
+
+    <header class="flex items-center justify-between rounded-3xl bg-white/80 px-[21px] py-[15px] glow-mint">
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.25em] font-black text-emerald-600">✨ Content Calendar</p>
+        <h1 class="text-[26px] font-black mt-[3px]">Week of Nov 9 to 15 🎉</h1>
+      </div>
+      <div class="flex items-center gap-[9px]">
+        <select class="rounded-full border-2 border-pink-300 px-4 py-[7px] font-extrabold bg-white"><option>All Channels 🌈</option><option>Instagram 📸</option><option>LinkedIn 💼</option></select>
+        <select class="rounded-full border-2 border-violet-300 px-4 py-[7px] font-extrabold bg-white"><option>All Authors 👀</option><option>Mia</option><option>Jordan</option></select>
+        <button class="grad-btn rounded-full px-5 py-[9px] text-white font-black glow-lav">+ NEW POST 🚀</button>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-4 gap-[13px]">
+      <div class="tilt rounded-2xl bg-white p-[15px] glow-mint">
+        <p class="text-[10px] uppercase tracking-[0.2em] font-black text-emerald-600">📅 Scheduled</p>
+        <p class="text-[34px] font-black mt-[4px]">14</p>
+      </div>
+      <div class="tilt rounded-2xl bg-white p-[15px] glow-lav">
+        <p class="text-[10px] uppercase tracking-[0.2em] font-black text-violet-600">✏️ Drafts</p>
+        <p class="text-[34px] font-black mt-[4px]">7</p>
+      </div>
+      <div class="tilt rounded-2xl bg-white p-[15px] glow-mint">
+        <p class="text-[10px] uppercase tracking-[0.2em] font-black text-sky-600">🎯 Published</p>
+        <p class="text-[34px] font-black mt-[4px]">23!</p>
+      </div>
+      <div class="tilt rounded-2xl bg-white p-[15px] glow-lav">
+        <p class="text-[10px] uppercase tracking-[0.2em] font-black text-pink-600">🔥 Needs Approval</p>
+        <p class="text-[34px] font-black mt-[4px] pulse-dot">5 ⚡</p>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-5 gap-[11px] flex-1">
+
+      <div class="flex flex-col gap-[9px]">
+        <div class="col-1 rounded-2xl px-3 py-[9px] text-white text-center font-black uppercase tracking-[0.15em] text-sm">Mon 9/11 💖</div>
+        <div class="tilt rounded-2xl bg-white p-[11px] glow-lav">
+          <span class="text-[10px] font-black uppercase bg-pink-500 text-white rounded-full px-2 py-[2px]">Instagram</span>
+          <p class="text-[12px] font-bold mt-[5px]">10:00am · Big news!!! Our new feature is HERE 🎉</p>
+          <div class="flex items-center justify-between mt-[7px]">
+            <span class="avatar w-[24px] h-[24px] rounded-full text-[10px] font-black text-white flex items-center justify-center">MK</span>
+            <span class="text-[10px] font-black bg-emerald-400 text-white rounded-full px-2 py-[2px]">✅ Approved</span>
+          </div>
+        </div>
+        <div class="tilt rounded-2xl bg-white p-[11px] glow-mint">
+          <span class="text-[10px] font-black uppercase bg-sky-500 text-white rounded-full px-2 py-[2px]">LinkedIn</span>
+          <p class="text-[12px] font-bold mt-[5px]">2pm — World-class insights you CAN'T miss 🚀</p>
+          <div class="flex items-center justify-between mt-[7px]">
+            <span class="avatar w-[24px] h-[24px] rounded-full text-[10px] font-black text-white flex items-center justify-center">JD</span>
+            <span class="text-[10px] font-black bg-amber-400 text-white rounded-full px-2 py-[2px]">📝 Draft</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-[9px]">
+        <div class="col-2 rounded-2xl px-3 py-[9px] text-white text-center font-black uppercase tracking-[0.15em] text-sm">Tue 10/11 ⭐</div>
+        <div class="tilt rounded-2xl bg-white p-[11px] glow-mint">
+          <span class="text-[10px] font-black uppercase bg-violet-500 text-white rounded-full px-2 py-[2px]">TikTok</span>
+          <p class="text-[12px] font-bold mt-[5px]">9:30 AM – Game-changing tips!! 🤯🔥</p>
+          <div class="flex items-center justify-between mt-[7px]">
+            <span class="avatar w-[24px] h-[24px] rounded-full text-[10px] font-black text-white flex items-center justify-center">AS</span>
+            <span class="text-[10px] font-black bg-rose-400 text-white rounded-full px-2 py-[2px]">⏳ Review</span>
+          </div>
+        </div>
+        <div class="tilt rounded-2xl bg-white p-[11px] glow-lav">
+          <span class="text-[10px] font-black uppercase bg-emerald-500 text-white rounded-full px-2 py-[2px]">X</span>
+          <p class="text-[12px] font-bold mt-[5px]">Nov 10, 4:15pm: Trust us, it's the BEST 💯</p>
+          <div class="flex items-center justify-between mt-[7px]">
+            <span class="avatar w-[24px] h-[24px] rounded-full text-[10px] font-black text-white flex items-center justify-center">MK</span>
+            <span class="text-[10px] font-black bg-sky-400 text-white rounded-full px-2 py-[2px]">📤 Scheduled</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-[9px]">
+        <div class="col-3 rounded-2xl px-3 py-[9px] text-white text-center font-black uppercase tracking-[0.15em] text-sm">Wed 11/11 🌟</div>
+        <div class="tilt rounded-2xl bg-white p-[11px] glow-lav">
+          <span class="text-[10px] font-black uppercase bg-amber-500 text-white rounded-full px-2 py-[2px]">Facebook</span>
+          <p class="text-[12px] font-bold mt-[5px]">11:00 — Join 1M+ creators!! Don't miss out 🙌</p>
+          <div class="flex items-center justify-between mt-[7px]">
+            <span class="avatar w-[24px] h-[24px] rounded-full text-[10px] font-black text-white flex items-center justify-center">JD</span>
+            <span class="text-[10px] font-black bg-emerald-400 text-white rounded-full px-2 py-[2px]">✅ Approved</span>
+          </div>
+        </div>
+        <div class="tilt rounded-2xl bg-white p-[11px] glow-mint">
+          <span class="text-[10px] font-black uppercase bg-pink-500 text-white rounded-full px-2 py-[2px]">Instagram</span>
+          <p class="text-[12px] font-bold mt-[5px]">5:45pm - #1 rated tool, guaranteed results! ✨</p>
+          <div class="flex items-center justify-between mt-[7px]">
+            <span class="avatar w-[24px] h-[24px] rounded-full text-[10px] font-black text-white flex items-center justify-center">AS</span>
+            <span class="text-[10px] font-black bg-rose-400 text-white rounded-full px-2 py-[2px]">⏳ Review</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-[9px]">
+        <div class="col-4 rounded-2xl px-3 py-[9px] text-white text-center font-black uppercase tracking-[0.15em] text-sm">Thu 12/11 🔥</div>
+        <div class="tilt rounded-2xl bg-white p-[11px] glow-mint">
+          <span class="text-[10px] font-black uppercase bg-sky-500 text-white rounded-full px-2 py-[2px]">LinkedIn</span>
+          <p class="text-[12px] font-bold mt-[5px]">Nov 12 · 8:00am — Thrilled to announce!!! 🎊</p>
+          <div class="flex items-center justify-between mt-[7px]">
+            <span class="avatar w-[24px] h-[24px] rounded-full text-[10px] font-black text-white flex items-center justify-center">JD</span>
+            <span class="text-[10px] font-black bg-violet-400 text-white rounded-full px-2 py-[2px]">🎯 Published</span>
+          </div>
+        </div>
+        <div class="tilt rounded-2xl bg-white p-[11px] glow-lav">
+          <span class="text-[10px] font-black uppercase bg-violet-500 text-white rounded-full px-2 py-[2px]">TikTok</span>
+          <p class="text-[12px] font-bold mt-[5px]">3PM: Watch this VIRAL hack!! 😱</p>
+          <div class="flex items-center justify-between mt-[7px]">
+            <span class="avatar w-[24px] h-[24px] rounded-full text-[10px] font-black text-white flex items-center justify-center">MK</span>
+            <span class="text-[10px] font-black bg-amber-400 text-white rounded-full px-2 py-[2px]">📝 Draft</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-[9px]">
+        <div class="col-5 rounded-2xl px-3 py-[9px] text-white text-center font-black uppercase tracking-[0.15em] text-sm">Fri 13/11 🎈</div>
+        <div class="tilt rounded-2xl bg-white p-[11px] glow-lav">
+          <span class="text-[10px] font-black uppercase bg-emerald-500 text-white rounded-full px-2 py-[2px]">X</span>
+          <p class="text-[12px] font-bold mt-[5px]">9am — Weekend vibes incoming!!! 🌞🙌</p>
+          <div class="flex items-center justify-between mt-[7px]">
+            <span class="avatar w-[24px] h-[24px] rounded-full text-[10px] font-black text-white flex items-center justify-center">AS</span>
+            <span class="text-[10px] font-black bg-emerald-400 text-white rounded-full px-2 py-[2px]">✅ Approved</span>
+          </div>
+        </div>
+        <div class="tilt rounded-2xl bg-white p-[11px] glow-mint">
+          <span class="text-[10px] font-black uppercase bg-pink-500 text-white rounded-full px-2 py-[2px]">Instagram</span>
+          <p class="text-[12px] font-bold mt-[5px]">Nov 13 · 6:30 PM — Our BEST campaign ever!! 💎</p>
+          <div class="flex items-center justify-between mt-[7px]">
+            <span class="avatar w-[24px] h-[24px] rounded-full text-[10px] font-black text-white flex items-center justify-center">JD</span>
+            <span class="text-[10px] font-black bg-sky-400 text-white rounded-full px-2 py-[2px]">📤 Scheduled</span>
+          </div>
+        </div>
+        <div class="tilt rounded-2xl bg-white p-[11px] glow-mint">
+          <span class="text-[10px] font-black uppercase bg-amber-500 text-white rounded-full px-2 py-[2px]">Facebook</span>
+          <p class="text-[12px] font-bold mt-[5px]">4:00pm — Limited time!!! Act NOW 🚨</p>
+          <div class="flex items-center justify-between mt-[7px]">
+            <span class="avatar w-[24px] h-[24px] rounded-full text-[10px] font-black text-white flex items-center justify-center">MK</span>
+            <span class="text-[10px] font-black bg-rose-400 text-white rounded-full px-2 py-[2px]">⏳ Review</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</div>
+</body>
+</html>

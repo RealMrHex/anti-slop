@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pocketbook - Split bills with your flatmates</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --page: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --line: rgba(31, 27, 22, 0.08);
+      --line-strong: rgba(31, 27, 22, 0.16);
+      --ink: #1f1b16;
+      --ink2: #5e554a;
+      --ink3: #6f665a;
+      --accent: #b45309;
+      --accent-hover: #9a4507;
+      --accent-ink: #92400e;
+      --pos: #15803d;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --serif: 'Instrument Serif', Georgia, serif;
+      --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      background: var(--page);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Navigation */
+    .nav {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .wordmark {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      font-size: 15px;
+      color: var(--ink2);
+    }
+    .links a { transition: color 160ms var(--ease); }
+    .links a:hover { color: var(--ink); }
+    .links .login { color: var(--ink); font-weight: 500; }
+    .menu-btn {
+      display: none;
+      height: 36px;
+      padding: 0 12px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: transparent;
+      font: inherit;
+      font-size: 14px;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      padding: 48px 0 64px;
+    }
+    .eyebrow {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink2);
+    }
+    h1 {
+      margin: 16px 0 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 68px;
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      max-width: 14ch;
+    }
+    .sub {
+      margin: 20px 0 0;
+      max-width: 36rem;
+      font-size: 18px;
+      line-height: 28px;
+      color: var(--ink2);
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn.primary { background: var(--accent); color: #ffffff; }
+    .btn.primary:hover { background: var(--accent-hover); }
+    .btn.secondary {
+      background: var(--raised);
+      border-color: var(--line);
+      color: var(--ink);
+    }
+    .btn.secondary:hover { background: #e7e0d3; }
+    .btn.ink { background: var(--ink); color: var(--card); }
+    .btn.ink:hover { background: #3a342c; }
+
+    .stores {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .store {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 152px;
+      height: 52px;
+      padding: 0 16px;
+      border-radius: 10px;
+      background: var(--ink);
+      color: var(--card);
+      transition: background-color 160ms var(--ease);
+    }
+    .store:hover { background: #3a342c; }
+    .store .small {
+      font-size: 12px;
+      line-height: 1.2;
+      opacity: 0.72;
+    }
+    .store .name {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    /* Receipt preview */
+    .visual {
+      margin: 0;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .receipt {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      padding: 24px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 1px 2px rgba(31, 27, 22, 0.05), 0 8px 24px rgba(31, 27, 22, 0.06);
+    }
+    .rhead {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--ink2);
+    }
+    .mono {
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .rname {
+      margin-top: 20px;
+      font-size: 16px;
+      color: var(--ink2);
+    }
+    .rtotal {
+      margin-top: 4px;
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 1.1;
+    }
+    .rmeta {
+      margin: 8px 0 0;
+      font-size: 14px;
+      color: var(--ink3);
+    }
+    .shares {
+      list-style: none;
+      margin: 20px 0 0;
+      padding: 0;
+      border-top: 1px solid var(--line);
+    }
+    .shares li {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      height: 48px;
+      border-bottom: 1px solid var(--line);
+    }
+    .shares li:last-child { border-bottom: 0; }
+    .av {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--raised);
+      color: var(--ink2);
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .who { font-size: 15px; }
+    .val {
+      font-size: 14px;
+      color: var(--ink2);
+    }
+    .val.pos { color: var(--pos); }
+
+    .tear {
+      position: relative;
+      margin: 20px -24px 0;
+      border-top: 1px dashed var(--line-strong);
+    }
+    .tear::before,
+    .tear::after {
+      content: "";
+      position: absolute;
+      top: -8px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--page);
+    }
+    .tear::before { left: -8px; }
+    .tear::after { right: -8px; }
+
+    .owe {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .owe-label {
+      margin: 0;
+      font-size: 14px;
+      color: var(--ink2);
+    }
+    .owe-amount {
+      margin: 2px 0 0;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--accent-ink);
+    }
+
+    /* Footer strip */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .page .hero { flex: 1; }
+    .foot {
+      display: flex;
+      gap: 24px;
+      padding: 20px 0 32px;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+      color: var(--ink3);
+    }
+
+    /* One entrance on load */
+    .rise {
+      animation: rise 420ms var(--ease) both;
+    }
+    .rise.d1 { animation-delay: 60ms; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* Smaller screens */
+    @media (max-width: 880px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 48px;
+        padding: 32px 0 48px;
+      }
+      h1 { font-size: 52px; }
+      .visual { justify-content: flex-start; }
+    }
+
+    @media (max-width: 640px) {
+      .wrap { padding: 0 16px; }
+      .links .hide-sm { display: none; }
+      .menu-btn { display: inline-flex; align-items: center; }
+      h1 { font-size: 40px; }
+      .sub { font-size: 17px; }
+      .actions .btn { flex: 1 1 auto; }
+      .store { flex: 1 1 152px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rise { animation: none; }
+      .btn:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap page">
+    <header class="nav">
+      <a class="wordmark" href="#">Pocketbook</a>
+      <nav class="links" aria-label="Main">
+        <a class="hide-sm" href="#">Features</a>
+        <a class="hide-sm" href="#">Reviews</a>
+        <a class="hide-sm" href="#">Pricing</a>
+        <a class="login" href="#">Log in</a>
+        <button class="menu-btn" type="button">Menu</button>
+      </nav>
+    </header>
+
+    <main class="hero">
+      <div class="copy rise">
+        <p class="eyebrow">For flatmates and housemates</p>
+        <h1>Split bills with your flatmates, without the chasing</h1>
+        <p class="sub">Log a bill in seconds, split it instantly, see who owes whom, and settle up with one tap.</p>
+        <div class="actions">
+          <a class="btn primary" href="#">Start splitting free</a>
+          <a class="btn secondary" href="#">Watch demo</a>
+        </div>
+        <div class="stores">
+          <a class="store" href="#"><span class="small">Download on the</span><span class="name">App Store</span></a>
+          <a class="store" href="#"><span class="small">Get it on</span><span class="name">Google Play</span></a>
+        </div>
+      </div>
+
+      <figure class="visual rise d1">
+        <article class="receipt" aria-label="Electricity bill, $84.20, split four ways">
+          <div class="rhead">
+            <span>Flat 4B</span>
+            <span class="mono">March 2026</span>
+          </div>
+          <p class="rname">Electricity</p>
+          <p class="rtotal mono">$84.20</p>
+          <p class="rmeta">Paid by Maya on 12 March, split 4 ways</p>
+
+          <ul class="shares">
+            <li>
+              <span class="av">M</span>
+              <span class="who">Maya</span>
+              <span class="val pos mono">+$63.15</span>
+            </li>
+            <li>
+              <span class="av">J</span>
+              <span class="who">Jonas</span>
+              <span class="val mono">−$21.05</span>
+            </li>
+            <li>
+              <span class="av">R</span>
+              <span class="who">Ren</span>
+              <span class="val mono">−$21.05</span>
+            </li>
+            <li>
+              <span class="av">T</span>
+              <span class="who">Tom</span>
+              <span class="val mono">−$21.05</span>
+            </li>
+          </ul>
+
+          <div class="tear" aria-hidden="true"></div>
+
+          <div class="owe">
+            <div>
+              <p class="owe-label">Ren owes Maya</p>
+              <p class="owe-amount mono">$21.05</p>
+            </div>
+            <a class="btn ink" href="#">Settle up</a>
+          </div>
+        </article>
+      </figure>
+    </main>
+
+    <footer class="foot">
+      <span>Free forever</span>
+      <span>No ads</span>
+    </footer>
+  </div>
+
+</body>
+</html>

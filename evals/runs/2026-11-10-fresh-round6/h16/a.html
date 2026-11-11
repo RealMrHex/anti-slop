@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tidewater | Surf forecasts for the beaches you save</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Ink ramp, tinted toward night water */
+      --bg: #0b0d14;
+      --surface: #11141c;
+      --raised: #1a1e28;
+      --hairline: rgba(238, 240, 245, 0.08);
+      --text: #eef0f5;
+      --text-2: #a3a9b8;
+      --text-3: #7a8296;
+      /* One accent, the colour of shallow water */
+      --accent: #5fd0c0;
+      --on-accent: #04211d;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* Navigation */
+    .nav {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; }
+    .nav-links { display: flex; align-items: center; gap: 32px; font-size: 14px; color: var(--text-2); }
+    .nav-links a { transition: color 160ms var(--ease); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links .login { color: var(--text-2); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background-color 160ms var(--ease), color 160ms var(--ease), border-color 160ms var(--ease);
+    }
+    .btn-primary { background: var(--accent); color: var(--on-accent); }
+    .btn-primary:hover { background: #7ddccf; }
+    .btn-secondary { background: var(--raised); color: var(--text); border: 1px solid var(--hairline); }
+    .btn-secondary:hover { border-color: rgba(238, 240, 245, 0.16); }
+    .btn:focus-visible, .nav-links a:focus-visible, .eyebrow:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-small { height: 36px; padding: 0 16px; font-size: 14px; }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      gap: 64px;
+      align-items: center;
+      min-height: calc(100vh - 72px);
+      padding: 64px 0;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: 14px;
+      color: var(--accent);
+      border-radius: 4px;
+    }
+    .eyebrow:hover { text-decoration: underline; text-underline-offset: 4px; }
+    h1 {
+      margin-top: 16px;
+      font-size: 64px;
+      line-height: 1.05;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      text-wrap: balance;
+    }
+    .lede {
+      margin-top: 24px;
+      max-width: 30rem;
+      font-size: 19px;
+      line-height: 1.5;
+      color: var(--text-2);
+    }
+    .actions { margin-top: 40px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .meta { margin-top: 24px; font-size: 13px; color: var(--text-3); }
+
+    /* Product preview: the one bright moment */
+    .preview {
+      background: var(--surface);
+      border: 1px solid var(--hairline);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .preview-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+    }
+    .preview-title { font-size: 15px; font-weight: 500; }
+    .preview-date { font-size: 13px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+    .stats {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .stat-label { font-size: 13px; color: var(--text-2); }
+    .stat-value {
+      margin-top: 4px;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .chart { margin-top: 24px; width: 100%; height: auto; display: block; }
+    .chart text {
+      font-family: 'IBM Plex Mono', ui-monospace, monospace;
+      font-size: 12px;
+      fill: var(--text-3);
+    }
+    .chart .window-label { fill: var(--accent); }
+    .legend {
+      margin-top: 16px;
+      display: flex;
+      gap: 24px;
+      font-size: 13px;
+      color: var(--text-3);
+      flex-wrap: wrap;
+    }
+    .legend span { display: inline-flex; align-items: center; gap: 8px; }
+    .swatch { width: 16px; height: 2px; background: var(--accent); display: inline-block; }
+    .swatch.dashed { background: none; border-top: 2px dashed var(--text-3); height: 0; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 48px; min-height: 0; padding: 48px 0 64px; }
+      h1 { font-size: 44px; }
+    }
+    @media (max-width: 768px) {
+      .wrap { padding: 0 16px; }
+      .nav-links a:not(.btn) { display: none; }
+      .nav-links { gap: 0; }
+      h1 { font-size: 40px; }
+      .stats { grid-template-columns: 1fr; gap: 16px; }
+      .stat-value { font-size: 22px; }
+      .preview { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="nav">
+      <a class="logo" href="#" aria-label="Tidewater home">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#5fd0c0" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M2 8c2.4-2.4 5.2-2.4 7.6 0s5.2 2.4 7.6 0"/>
+          <path d="M2 14c2.4-2.4 5.2-2.4 7.6 0s5.2 2.4 7.6 0"/>
+        </svg>
+        <span>Tidewater</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Beaches</a>
+        <a href="#" class="login">Log in</a>
+        <a href="#" class="btn btn-primary btn-small">Start free</a>
+      </nav>
+    </header>
+
+    <main class="hero">
+      <div>
+        <a class="eyebrow" href="#">Wave Forecast v2.0 is live</a>
+        <h1>Surf forecasts for the beaches you save</h1>
+        <p class="lede">Wave height, wind and tide times for all your saved beaches in one place. Find your best window and catch every swell.</p>
+        <div class="actions">
+          <a href="#" class="btn btn-primary">Get started</a>
+          <a href="#" class="btn btn-secondary">Watch demo</a>
+        </div>
+        <p class="meta">Updated Nov 10, 2026</p>
+      </div>
+
+      <figure class="preview">
+        <div class="preview-head">
+          <p class="preview-title">Ocean Point</p>
+          <p class="preview-date">Today, Nov 10</p>
+        </div>
+
+        <div class="stats">
+          <div>
+            <p class="stat-label">Wave height</p>
+            <p class="stat-value">4.5 ft</p>
+          </div>
+          <div>
+            <p class="stat-label">Wind</p>
+            <p class="stat-value">12 kts</p>
+          </div>
+          <div>
+            <p class="stat-label">Best window</p>
+            <p class="stat-value">6:30&ndash;9:00 am</p>
+          </div>
+        </div>
+
+        <svg class="chart" viewBox="0 0 580 230" role="img" aria-label="Wave height from 5am to 12pm, peaking near 7am inside a best window from 6:30 to 9:00am, with tide shown as a dashed line">
+          <!-- Grid -->
+          <g stroke="rgba(238,240,245,0.06)" stroke-width="1">
+            <line x1="40" y1="40" x2="540" y2="40"/>
+            <line x1="40" y1="90" x2="540" y2="90"/>
+            <line x1="40" y1="140" x2="540" y2="140"/>
+            <line x1="40" y1="190" x2="540" y2="190"/>
+          </g>
+
+          <!-- Best window band -->
+          <rect x="147" y="40" width="179" height="150" fill="rgba(95,208,192,0.10)"/>
+          <text class="window-label" x="236" y="30" text-anchor="middle">Best window</text>
+
+          <!-- Tide, secondary series -->
+          <path d="M40 140 C 75 120, 90 110, 111 110 S 160 88, 183 88 S 230 116, 254 118 S 310 160, 326 160 S 380 126, 397 128 S 440 102, 468 100 S 520 116, 540 118"
+                fill="none" stroke="#7a8296" stroke-width="1.5" stroke-dasharray="4 4" stroke-linecap="round"/>
+
+          <!-- Wave height, the one accent -->
+          <path d="M40 85 C 70 80, 90 76, 111 75 S 140 66, 147 65 S 170 60, 183 60 S 230 66, 254 70 S 300 84, 326 90 S 380 106, 397 110 S 450 126, 468 130 S 510 142, 540 145 L 540 190 L 40 190 Z"
+                fill="rgba(95,208,192,0.12)"/>
+          <path d="M40 85 C 70 80, 90 76, 111 75 S 140 66, 147 65 S 170 60, 183 60 S 230 66, 254 70 S 300 84, 326 90 S 380 106, 397 110 S 450 126, 468 130 S 510 142, 540 145"
+                fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="183" cy="60" r="4" fill="var(--accent)"/>
+
+          <!-- X axis -->
+          <text x="111" y="212" text-anchor="middle">6am</text>
+          <text x="254" y="212" text-anchor="middle">8am</text>
+          <text x="397" y="212" text-anchor="middle">10am</text>
+          <text x="540" y="212" text-anchor="middle">12pm</text>
+        </svg>
+
+        <figcaption class="legend">
+          <span><i class="swatch"></i>Wave height</span>
+          <span><i class="swatch dashed"></i>Tide</span>
+        </figcaption>
+      </figure>
+    </main>
+  </div>
+</body>
+</html>

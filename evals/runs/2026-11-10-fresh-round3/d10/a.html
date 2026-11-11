@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lingua - Course Progress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #161513;
+    --deep: #12110f;
+    --card: #1c1a18;
+    --raised: #262421;
+    --hair: rgba(239, 233, 222, 0.08);
+    --text: #efe9de;
+    --text2: #aaa398;
+    --muted: #8a847a;
+    --accent: #e9a23b;
+    --accent-hover: #f0b153;
+    --accent-ink: #1a1408;
+    --pos: #4cc38a;
+    --neg: #e5484d;
+    --bar: #3b3731;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, p { margin: 0; font-weight: 400; }
+  button { font: inherit; }
+  a { color: inherit; }
+  .num { font-variant-numeric: tabular-nums; }
+  .ic {
+    width: 18px; height: 18px; flex-shrink: 0;
+    fill: none; stroke: currentColor; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* Layout */
+  .app { display: flex; min-height: 100vh; }
+
+  .side {
+    width: 256px; flex-shrink: 0;
+    background: var(--deep);
+    border-right: 1px solid var(--hair);
+    padding: 24px 16px;
+    display: flex; flex-direction: column; gap: 32px;
+  }
+  .brand { font-size: 18px; font-weight: 600; padding: 0 12px; }
+  .nav { display: flex; flex-direction: column; gap: 4px; }
+  .nav a {
+    display: flex; align-items: center; gap: 12px;
+    height: 36px; padding: 0 12px;
+    border-radius: 10px;
+    color: var(--text2); text-decoration: none; font-weight: 500; font-size: 14px;
+    transition: background-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .nav a:hover { background: rgba(239, 233, 222, 0.05); color: var(--text); }
+  .nav a.on {
+    background: var(--raised); color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  .side-foot {
+    margin-top: auto;
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    padding: 16px;
+  }
+  .side-foot .title { font-weight: 500; font-size: 14px; }
+  .side-foot .sub { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+  .main {
+    flex: 1; min-width: 0;
+    padding: 32px;
+    display: flex; flex-direction: column; gap: 24px;
+    max-width: 1440px;
+    animation: rise 400ms var(--ease) both;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  h1 { font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; line-height: 1.1; }
+  .tools { display: flex; align-items: center; gap: 12px; }
+  .icon-btn {
+    position: relative;
+    width: 36px; height: 36px; border-radius: 10px;
+    display: grid; place-items: center;
+    background: var(--card); border: 1px solid var(--hair);
+    color: var(--text2); cursor: pointer;
+    transition: background-color 160ms var(--ease);
+  }
+  .icon-btn:hover { background: var(--raised); color: var(--text); }
+  .icon-btn .dot {
+    position: absolute; top: 8px; right: 9px;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--text);
+  }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--raised); border: 1px solid var(--hair);
+    font-size: 13px; font-weight: 500; color: var(--text2);
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .label { font-size: 13px; color: var(--text2); }
+  .fig { font-size: 32px; font-weight: 500; line-height: 1; margin-top: 12px; font-variant-numeric: tabular-nums; }
+  .meta { font-size: 13px; color: var(--text2); margin-top: 8px; font-variant-numeric: tabular-nums; }
+  .meter { height: 6px; border-radius: 99px; background: var(--raised); overflow: hidden; margin-top: 12px; }
+  .meter i { display: block; height: 100%; border-radius: 99px; }
+  .meter.goal i { background: var(--accent); }
+  .meter.unit i { background: var(--text); }
+
+  .split { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 16px; }
+  .split-b { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; }
+
+  .unit { display: flex; flex-direction: column; gap: 20px; }
+  .unit h2 { font-size: 22px; font-weight: 500; line-height: 1.25; margin-top: 4px; }
+  .unit .meter { margin-top: 0; }
+
+  .path { list-style: none; margin: 0; padding: 0; position: relative; display: flex; flex-direction: column; gap: 4px; }
+  .path::before {
+    content: ""; position: absolute;
+    left: 24px; top: 20px; bottom: 20px;
+    width: 1px; background: var(--hair);
+  }
+  .step {
+    position: relative;
+    display: flex; align-items: center; gap: 12px;
+    height: 48px; padding: 0 12px;
+    border-radius: 10px;
+  }
+  .step.now { background: var(--raised); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+  .node {
+    position: relative; z-index: 1;
+    width: 24px; height: 24px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--card); border: 1px solid var(--hair);
+    color: var(--muted);
+  }
+  .node .ic { width: 14px; height: 14px; }
+  .step.done .node { background: rgba(76, 195, 138, 0.14); border-color: transparent; color: var(--pos); }
+  .step.now .node { border-color: var(--accent); color: var(--accent); }
+  .step .name { flex: 1; min-width: 0; font-size: 14px; }
+  .step .state { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .step.done .state { color: var(--pos); }
+  .step.now .state { color: var(--text); font-weight: 500; }
+  .step.lock { color: var(--muted); }
+  .step.lock .name { color: var(--text2); }
+
+  .btn {
+    height: 40px; padding: 0 18px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border-radius: 10px;
+    border: 1px solid var(--hair);
+    background: var(--raised); color: var(--text);
+    font-size: 14px; font-weight: 500;
+    cursor: pointer;
+    transition: background-color 160ms var(--ease);
+  }
+  .btn:hover { background: #2e2b27; }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn:focus-visible, .nav a:focus-visible, .icon-btn:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  .btn-start { align-self: flex-start; margin-top: auto; }
+
+  .events { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .event { padding: 16px; border-radius: 10px; background: var(--raised); }
+  .event b { display: block; font-weight: 500; font-size: 15px; }
+  .event span { display: block; margin-top: 4px; font-size: 13px; color: var(--text2); font-variant-numeric: tabular-nums; }
+  .card.upcoming { display: flex; flex-direction: column; }
+  .card.upcoming .btn { margin-top: auto; width: 100%; }
+  .card.upcoming .btn { margin-top: 16px; }
+  .card.upcoming .events { margin-bottom: auto; }
+
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .plot {
+    height: 180px; margin-top: 20px;
+    display: flex; align-items: flex-end; gap: 12px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; }
+  .col .v { font-size: 12px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+  .col i { display: block; background: var(--bar); border-radius: 6px 6px 0 0; }
+  .col.peak .v { color: var(--text); }
+  .col.peak i { background: var(--accent); }
+  .days { display: flex; gap: 12px; margin-top: 8px; }
+  .days span { flex: 1; text-align: center; font-size: 12px; color: var(--muted); }
+
+  .vocab-list { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  .vocab-list li {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 40px; padding: 0 12px; border-radius: 10px;
+    font-size: 14px;
+  }
+  .vocab-list li:hover { background: rgba(239, 233, 222, 0.03); }
+  .dot-s { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .s-strong { background: var(--pos); }
+  .s-learning { background: var(--text2); }
+  .s-due { background: var(--neg); }
+  .legend { display: flex; gap: 16px; margin-top: 12px; font-size: 12px; color: var(--muted); }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+
+  @media (max-width: 960px) {
+    .app { flex-direction: column; }
+    .side { width: 100%; gap: 16px; padding: 16px; }
+    .nav { flex-direction: row; overflow-x: auto; }
+    .side-foot { display: none; }
+    .main { padding: 16px; }
+    h1 { font-size: 32px; }
+    .stats, .split, .split-b { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .main { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand">Lingua</div>
+    <nav class="nav">
+      <a class="on" href="#">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+        Home
+      </a>
+      <a href="#">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v15H6.5A2.5 2.5 0 0 0 4 19.5z"/><path d="M4 19.5V21h16"/></svg>
+        My courses
+      </a>
+      <a href="#">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/></svg>
+        Review
+      </a>
+      <a href="#">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg>
+        Leaderboard
+      </a>
+      <a href="#">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M18 18h2"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="side-foot">
+      <p class="title">Lingua Pro</p>
+      <p class="sub">Upgrade to unlock the full course</p>
+      <button class="btn" style="width:100%; margin-top:12px">Upgrade</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <h1>Course progress</h1>
+      <div class="tools">
+        <button class="icon-btn" aria-label="Notifications">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+          <span class="dot"></span>
+        </button>
+        <div class="avatar">AL</div>
+      </div>
+    </header>
+
+    <div class="stats">
+      <div class="card">
+        <p class="label">Day streak</p>
+        <p class="fig">47</p>
+        <p class="meta">Your longest streak</p>
+      </div>
+      <div class="card">
+        <p class="label">Daily goal</p>
+        <p class="fig">15 of 20 min</p>
+        <div class="meter goal"><i style="width:75%"></i></div>
+        <p class="meta">5 min to go</p>
+      </div>
+      <div class="card">
+        <p class="label">Level</p>
+        <p class="fig">B1</p>
+        <p class="meta">1,240 XP &middot; 3,500 to next level</p>
+      </div>
+    </div>
+
+    <div class="split">
+      <section class="card unit">
+        <div class="head">
+          <div>
+            <p class="label">Current unit</p>
+            <h2>Unit 3: Ordering food and drinks</h2>
+          </div>
+        </div>
+        <div>
+          <div class="meter unit"><i style="width:50%"></i></div>
+          <p class="meta" style="margin-top:8px">3 of 6 lessons complete</p>
+        </div>
+        <ol class="path">
+          <li class="step done">
+            <span class="node"><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span class="name">Lesson 1 &middot; Greetings at the café</span>
+            <span class="state">Done</span>
+          </li>
+          <li class="step done">
+            <span class="node"><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span class="name">Lesson 2 &middot; Reading the menu</span>
+            <span class="state">Done</span>
+          </li>
+          <li class="step done">
+            <span class="node"><svg class="ic" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span class="name">Lesson 3 &middot; Asking for the bill</span>
+            <span class="state">Done</span>
+          </li>
+          <li class="step now">
+            <span class="node"><svg class="ic" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg></span>
+            <span class="name">Lesson 4 &middot; Ordering tacos</span>
+            <span class="state">Continue</span>
+          </li>
+          <li class="step lock">
+            <span class="node"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+            <span class="name">Lesson 5 &middot; Drinks and desserts</span>
+            <span class="state">Locked</span>
+          </li>
+          <li class="step lock">
+            <span class="node"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+            <span class="name">Lesson 6 &middot; Unit test</span>
+            <span class="state">Locked</span>
+          </li>
+        </ol>
+        <button class="btn btn-primary btn-start">Start lesson 4</button>
+      </section>
+
+      <section class="card upcoming">
+        <p class="label">Upcoming</p>
+        <div class="events">
+          <div class="event">
+            <b>Live class with Ana</b>
+            <span>12 Nov &middot; 6:30 pm</span>
+          </div>
+          <div class="event">
+            <b>Weekly quiz</b>
+            <span>14 Nov &middot; 9:00 am</span>
+          </div>
+          <div class="event">
+            <b>Speaking club</b>
+            <span>14 Nov &middot; 7:00 pm</span>
+          </div>
+        </div>
+        <button class="btn">See all</button>
+      </section>
+    </div>
+
+    <div class="split-b">
+      <section class="card">
+        <p class="label">Minutes practised this week</p>
+        <div class="head" style="margin-top:12px; justify-content:flex-start; gap:16px; align-items:baseline">
+          <span class="fig" style="margin-top:0">312 min</span>
+          <span class="meta" style="margin-top:0">2x last week</span>
+        </div>
+        <div class="plot">
+          <div class="col"><span class="v">34</span><i style="height:71px"></i></div>
+          <div class="col"><span class="v">52</span><i style="height:108px"></i></div>
+          <div class="col"><span class="v">24</span><i style="height:50px"></i></div>
+          <div class="col"><span class="v">60</span><i style="height:125px"></i></div>
+          <div class="col"><span class="v">44</span><i style="height:92px"></i></div>
+          <div class="col peak"><span class="v">72</span><i style="height:150px"></i></div>
+          <div class="col"><span class="v">26</span><i style="height:54px"></i></div>
+        </div>
+        <div class="days">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="head">
+          <p class="label">Vocabulary review</p>
+          <button class="btn" style="height:32px; padding:0 14px; font-size:13px">Review now</button>
+        </div>
+        <ul class="vocab-list">
+          <li><span>la manzana</span><span class="dot-s s-strong" aria-hidden="true"></span></li>
+          <li><span>el perro</span><span class="dot-s s-strong" aria-hidden="true"></span></li>
+          <li><span>el café</span><span class="dot-s s-learning" aria-hidden="true"></span></li>
+          <li><span>la casa</span><span class="dot-s s-learning" aria-hidden="true"></span></li>
+          <li><span>el sol</span><span class="dot-s s-due" aria-hidden="true"></span></li>
+          <li><span>leer</span><span class="dot-s s-due" aria-hidden="true"></span></li>
+        </ul>
+        <div class="legend">
+          <span><i class="dot-s s-strong"></i>Strong</span>
+          <span><i class="dot-s s-learning"></i>Learning</span>
+          <span><i class="dot-s s-due"></i>Due</span>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

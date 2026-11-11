@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Streaks - Today</title>
+<style>
+:root{
+  --bg:#15122e; --bg2:#1e1a42; --surface:#272257; --surface-hi:#312b6b;
+  --text:#f6f3ff; --muted:#b9b3e0; --line:#3b3580;
+  --lime:#c8f542; --lime-ink:#1a2200;
+  --pink:#ff7ab6; --sky:#5cc8ff; --amber:#ffb84d; --violet:#a98bff; --mint:#4fe3b0;
+  --r-s:12px; --r-m:20px; --r-l:28px;
+  --shadow:0 8px 24px rgba(5,3,25,.35);
+  --font:ui-rounded,"SF Pro Rounded","Avenir Next","Nunito","Segoe UI",system-ui,sans-serif;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;
+}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.4;min-height:100vh;
+  background-image:radial-gradient(900px 420px at 80% -10%,rgba(169,139,255,.28),transparent 60%),radial-gradient(600px 400px at -10% 30%,rgba(255,122,182,.12),transparent 60%);
+  background-repeat:no-repeat}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid var(--lime);outline-offset:3px;border-radius:8px}
+.app{max-width:520px;margin:0 auto;padding:var(--s5) 16px 112px}
+
+/* header */
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s5)}
+.hello p{color:var(--muted);font-size:.9rem;font-weight:600}
+.hello h1{font-size:1.75rem;line-height:1.1;font-weight:800;letter-spacing:-.02em;margin-top:2px}
+.me{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--amber));display:grid;place-items:center;font-weight:800;color:#2b0a1c;font-size:1.05rem;box-shadow:var(--shadow)}
+
+/* hero */
+.hero{background:linear-gradient(145deg,#3a2f8f,#2a2370 60%,#251f5e);border-radius:var(--r-l);padding:var(--s5);display:grid;grid-template-columns:132px 1fr;gap:var(--s5);align-items:center;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
+.ring{position:relative;width:132px;height:132px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .track{stroke:rgba(255,255,255,.14)}
+.ring .bar{stroke:var(--lime);stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.3,1.3,.5,1)}
+.ring .num{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring .num b{font-size:2.3rem;font-weight:800;line-height:1;letter-spacing:-.03em}
+.ring .num span{font-size:.78rem;color:var(--muted);font-weight:700;margin-top:2px}
+.streak .big{display:flex;align-items:baseline;gap:6px}
+.streak .flame{font-size:1.6rem;align-self:center}
+.streak .n{font-size:3rem;font-weight:800;line-height:1;letter-spacing:-.04em;color:var(--lime)}
+.streak .u{font-weight:700;color:var(--text)}
+.streak p{color:var(--muted);font-size:.9rem;margin-top:var(--s2);font-weight:600}
+.streak p strong{color:var(--text)}
+
+/* week */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:var(--s4) 0 var(--s5)}
+.day{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 0;border-radius:var(--r-s);background:var(--bg2);font-size:.72rem;font-weight:700;color:var(--muted)}
+.day i{font-style:normal;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:.8rem;background:var(--surface);color:var(--muted)}
+.day.done i{background:var(--lime);color:var(--lime-ink)}
+.day.part i{background:transparent;border:2px solid var(--lime);color:var(--lime)}
+.day.today{background:var(--surface-hi);color:var(--text);outline:2px solid var(--violet);outline-offset:-2px}
+.day.future i{background:transparent;border:2px dashed var(--line);color:transparent}
+
+/* list */
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--s3)}
+.sec h2{font-size:1.2rem;font-weight:800;letter-spacing:-.01em}
+.sec span{color:var(--muted);font-size:.85rem;font-weight:700}
+.habits{list-style:none;padding:0;display:grid;gap:var(--s3)}
+.habit{--c:var(--lime);display:flex;align-items:center;gap:var(--s4);width:100%;text-align:left;background:var(--surface);border-radius:var(--r-m);padding:14px 16px 14px 14px;min-height:76px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.06);transition:transform .12s,background .2s}
+.habit:hover{background:var(--surface-hi)}
+.habit:active{transform:scale(.98)}
+.ico{flex:none;width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:1.5rem;background:color-mix(in srgb,var(--c) 22%,transparent)}
+.txt{flex:1;min-width:0}
+.txt b{display:block;font-size:1.02rem;font-weight:800}
+.txt small{display:block;color:var(--muted);font-size:.84rem;font-weight:600;margin-top:2px}
+.txt small em{font-style:normal;color:var(--c);font-weight:800}
+.check{flex:none;width:36px;height:36px;border-radius:50%;border:2.5px solid var(--muted);display:grid;place-items:center;transition:all .2s}
+.check svg{width:20px;height:20px;stroke:var(--lime-ink);stroke-width:3.5;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .25s .05s}
+.habit[aria-pressed=true]{background:color-mix(in srgb,var(--c) 16%,var(--surface))}
+.habit[aria-pressed=true] .check{background:var(--c);border-color:var(--c);animation:pop .35s}
+.habit[aria-pressed=true] .check svg{stroke-dashoffset:0}
+.habit[aria-pressed=true] .txt b{text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:rgba(255,255,255,.45)}
+@keyframes pop{50%{transform:scale(1.25)}}
+
+.add{margin-top:var(--s4);width:100%;min-height:52px;border-radius:var(--r-m);border:2px dashed var(--line);color:var(--muted);font-weight:800;transition:all .15s}
+.add:hover{border-color:var(--violet);color:var(--text)}
+
+/* tabs */
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:0 16px calc(12px + env(safe-area-inset-bottom));pointer-events:none}
+.tabs nav{pointer-events:auto;display:flex;width:100%;max-width:488px;background:rgba(39,34,87,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,.45)}
+.tabs a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border-radius:22px;color:var(--muted);text-decoration:none;font-size:.72rem;font-weight:800;min-height:56px;justify-content:center}
+.tabs a span{font-size:1.25rem;line-height:1}
+.tabs a:hover{color:var(--text)}
+.tabs a[aria-current=page]{background:var(--lime);color:var(--lime-ink)}
+
+@media (max-width:360px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center}.streak .big{justify-content:center}}
+@media (min-width:900px){
+  .app{max-width:960px;padding-top:40px;display:grid;grid-template-columns:1fr 1fr;column-gap:32px;align-items:start}
+  .top{grid-column:1/-1}
+  .left{grid-column:1}.right{grid-column:2}
+  .tabs nav{max-width:520px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="top">
+    <div class="hello"><p id="date">Tuesday, 10 Nov</p><h1>Hey Maya, let's go</h1></div>
+    <div class="me" aria-label="Maya's profile">M</div>
+  </header>
+
+  <div class="left">
+    <section class="hero" aria-label="Today's progress">
+      <div class="ring" role="img" aria-label="Habits done today">
+        <svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="52" fill="none" stroke-width="12"/><circle class="bar" id="bar" cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+        <div class="num"><b id="count">0/5</b><span>done today</span></div>
+      </div>
+      <div class="streak">
+        <div class="big"><span class="flame" aria-hidden="true">🔥</span><span class="n" id="streak">12</span><span class="u">day streak</span></div>
+        <p id="msg">Finish everything to keep it alive.</p>
+      </div>
+    </section>
+
+    <div class="week" role="list" aria-label="This week">
+      <div class="day done" role="listitem"><span>Thu</span><i>✓</i></div>
+      <div class="day done" role="listitem"><span>Fri</span><i>✓</i></div>
+      <div class="day part" role="listitem"><span>Sat</span><i>4</i></div>
+      <div class="day done" role="listitem"><span>Sun</span><i>✓</i></div>
+      <div class="day done" role="listitem"><span>Mon</span><i>✓</i></div>
+      <div class="day today" role="listitem" aria-current="date"><span>Today</span><i id="todaydot">·</i></div>
+      <div class="day future" role="listitem"><span>Wed</span><i></i></div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="sec"><h2>Today's habits</h2><span id="left">5 to go</span></div>
+    <ul class="habits" id="list"></ul>
+    <button class="add" type="button">+ New habit</button>
+  </div>
+</main>
+
+<div class="tabs"><nav aria-label="Main">
+  <a href="#" aria-current="page"><span aria-hidden="true">🏠</span>Today</a>
+  <a href="#"><span aria-hidden="true">📈</span>Progress</a>
+  <a href="#"><span aria-hidden="true">👯</span>Crew</a>
+  <a href="#"><span aria-hidden="true">🏆</span>Rewards</a>
+</nav></div>
+
+<script>
+const habits=[
+ {n:"Drink 2L of water",s:"6 days",i:"💧",c:"var(--sky)",d:false},
+ {n:"Phone off by 10:30pm",s:"3 days",i:"🌙",c:"var(--violet)",d:false},
+ {n:"20 min of reading",s:"9 days",i:"📖",c:"var(--amber)",d:true},
+ {n:"Practice guitar",s:"12 days",i:"🎸",c:"var(--pink)",d:false},
+ {n:"Walk or stretch",s:"4 days",i:"🏃",c:"var(--mint)",d:true}
+];
+const list=document.getElementById('list');
+habits.forEach((h,k)=>{
+  const li=document.createElement('li');
+  li.innerHTML=`<button type="button" class="habit" style="--c:${h.c}" aria-pressed="${h.d}">
+   <span class="ico" aria-hidden="true">${h.i}</span>
+   <span class="txt"><b>${h.n}</b><small><em>${h.s}</em> in a row</small></span>
+   <span class="check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></button>`;
+  const b=li.firstChild;
+  b.addEventListener('click',()=>{h.d=!h.d;b.setAttribute('aria-pressed',h.d);update();});
+  list.appendChild(li);
+});
+function update(){
+  const done=habits.filter(h=>h.d).length,t=habits.length,C=326.7;
+  document.getElementById('bar').style.strokeDashoffset=C*(1-done/t);
+  document.getElementById('count').textContent=done+'/'+t;
+  const all=done===t;
+  document.getElementById('streak').textContent=all?13:12;
+  document.getElementById('left').textContent=all?'All done':(t-done)+' to go';
+  document.getElementById('msg').innerHTML=all?'<strong>Day 13 locked in.</strong> Nice one.':(t-done===1?'<strong>One more</strong> and today counts.':'Finish all '+t+' to extend your streak.');
+  document.getElementById('todaydot').textContent=all?'✓':done;
+  document.querySelector('.day.today').classList.toggle('done',all);
+}
+update();
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ember & Oak — Fresh Coffee Bean Subscription</title>
+<style>
+:root{--bg:#faf5ee;--ink:#2a1d15;--muted:#6f5e52;--accent:#b4531f;--dark:#241812;--card:#fff;--line:#e6dacb}
+*{box-sizing:border-box;margin:0}
+body{font-family:Georgia,"Times New Roman",serif;background:var(--bg);color:var(--ink);line-height:1.6}
+.sans,nav,button,.btn,h3,.tag,label{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
+.logo{font-family:Georgia,serif;font-size:1.4rem;font-weight:bold}
+nav a{color:var(--ink);text-decoration:none;margin-left:24px;font-size:.95rem}
+.btn{display:inline-block;background:var(--accent);color:#fff;padding:14px 28px;border-radius:999px;text-decoration:none;font-weight:600;border:0;font-size:1rem;cursor:pointer}
+.btn:hover{background:#963f13}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:56px 0 80px}
+.tag{color:var(--accent);font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+h1{font-size:clamp(2.4rem,5vw,4rem);line-height:1.08;margin:14px 0 20px}
+.lead{font-size:1.2rem;color:var(--muted);max-width:30em}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.bag{aspect-ratio:1;border-radius:32px;background:radial-gradient(circle at 30% 25%,#d98b52,#7a3a17 60%,#3a1c0c);display:grid;place-items:center;position:relative;overflow:hidden}
+.bag svg{width:70%}
+section{padding:72px 0}
+h2{font-size:clamp(1.8rem,3.5vw,2.5rem);margin-bottom:12px}
+.sub{color:var(--muted);margin-bottom:40px;max-width:36em}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px}
+.card h3{font-size:1.1rem;margin-bottom:8px}
+.card p{color:var(--muted);font-size:.98rem}
+.num{font-family:sans-serif;color:var(--accent);font-weight:700;font-size:.9rem;margin-bottom:12px}
+.dark{background:var(--dark);color:#f3e8da}
+.dark .sub,.dark .card p{color:#c9b8a6}
+.dark .card{background:#33241b;border-color:#4a362a}
+.price{font-size:2.4rem;font-weight:bold;margin:8px 0}
+.price small{font-size:1rem;font-weight:normal;color:#c9b8a6}
+.card ul{list-style:none;padding:0;margin:16px 0 24px;font-family:-apple-system,Arial,sans-serif;font-size:.95rem}
+.card li{padding:6px 0;border-top:1px solid #4a362a}
+.card.pop{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.card .btn{width:100%;text-align:center}
+blockquote{font-size:1.25rem;font-style:italic}
+blockquote span{display:block;font-style:normal;font-family:sans-serif;font-size:.9rem;color:var(--muted);margin-top:12px}
+details{border-top:1px solid var(--line);padding:18px 0}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:bold;font-family:-apple-system,Arial,sans-serif}
+details p{color:var(--muted);margin-top:8px}
+.final{text-align:center}
+.final .cta{justify-content:center}
+footer{padding:32px 0;color:var(--muted);font-size:.9rem;font-family:sans-serif;text-align:center}
+@media(max-width:800px){
+.hero{grid-template-columns:1fr;padding-top:24px;gap:32px}
+.grid{grid-template-columns:1fr}
+nav a.hide{display:none}
+section{padding:52px 0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav><div class="logo">Ember &amp; Oak</div><div><a class="hide" href="#how">How it works</a><a class="hide" href="#plans">Plans</a><a href="#plans">Subscribe</a></div></nav>
+<header class="hero">
+<div>
+<div class="tag">Roasted to order · Shipped within 48 hours</div>
+<h1>Better coffee, landing on your doorstep.</h1>
+<p class="lead">Small-batch beans from farms we know by name, roasted the week they ship. Pick your roast, set your pace, skip or cancel anytime.</p>
+<div class="cta"><a class="btn" href="#plans">Start with 20% off</a><a class="btn ghost" href="#how">See how it works</a></div>
+</div>
+<div class="bag" role="img" aria-label="Illustration of a coffee bean">
+<svg viewBox="0 0 200 200"><ellipse cx="100" cy="100" rx="62" ry="82" transform="rotate(30 100 100)" fill="#2a140a"/><path d="M70 40 C120 80 80 120 130 160" stroke="#d98b52" stroke-width="7" fill="none" stroke-linecap="round"/></svg>
+</div>
+</header>
+</div>
+
+<section id="how"><div class="wrap">
+<h2>Three steps to a better morning</h2>
+<p class="sub">No clutter, no commitment. Just fresh beans on your schedule.</p>
+<div class="grid">
+<div class="card"><div class="num">01</div><h3>Tell us how you brew</h3><p>Espresso, pour-over, French press? Answer four quick questions and we match you with beans you'll love.</p></div>
+<div class="card"><div class="num">02</div><h3>We roast and ship</h3><p>Your beans are roasted the week they leave us, sealed in a one-way valve bag to lock in flavor.</p></div>
+<div class="card"><div class="num">03</div><h3>Sip, rate, adjust</h3><p>Tell us what you think and we fine-tune. Pause, skip or change your plan in two clicks.</p></div>
+</div></div></section>
+
+<section class="dark" id="plans"><div class="wrap">
+<h2>Pick your pace</h2>
+<p class="sub">Free shipping on every plan. Prices per delivery.</p>
+<div class="grid">
+<div class="card"><h3>Daily Drinker</h3><div class="price">$16 <small>/ 12 oz</small></div><p>One bag, perfect for one or two cups a day.</p><ul><li>Choose your roast</li><li>Every 2 or 4 weeks</li><li>Free shipping</li></ul><a class="btn ghost" style="color:#f3e8da;border-color:#f3e8da" href="#start">Choose plan</a></div>
+<div class="card pop"><h3>Household</h3><div class="price">$29 <small>/ 2 × 12 oz</small></div><p>Two bags: one favorite, one surprise single-origin.</p><ul><li>Rotating guest roasts</li><li>Every 2 or 4 weeks</li><li>Free shipping + tasting notes</li></ul><a class="btn" href="#start">Choose plan</a></div>
+<div class="card"><h3>Explorer</h3><div class="price">$44 <small>/ 3 × 12 oz</small></div><p>For the curious. Three rare lots, each with a story.</p><ul><li>Limited micro-lots</li><li>Monthly</li><li>Free shipping + brew guide</li></ul><a class="btn ghost" style="color:#f3e8da;border-color:#f3e8da" href="#start">Choose plan</a></div>
+</div></div></section>
+
+<section><div class="wrap">
+<div class="grid">
+<div class="card"><blockquote>“I stopped buying supermarket beans the first week. The difference is silly.”<span>Maya R., pour-over person</span></blockquote></div>
+<div class="card"><blockquote>“Skipping a month takes ten seconds. That's why I've stayed two years.”<span>Dan K., espresso nerd</span></blockquote></div>
+<div class="card"><blockquote>“The tasting notes finally taught me what I actually like.”<span>Priya S., French press</span></blockquote></div>
+</div></div></section>
+
+<section><div class="wrap" style="max-width:720px">
+<h2>Questions</h2><p class="sub">Short answers to the usual ones.</p>
+<details><summary>How fresh are the beans?</summary><p>Roasted within a few days of shipping, never sitting on a shelf.</p></details>
+<details><summary>Can I skip or cancel?</summary><p>Yes, anytime from your account. No fees, no phone calls.</p></details>
+<details><summary>Whole bean or ground?</summary><p>Either. Choose whole bean, or tell us your grind size and we'll handle it.</p></details>
+<details><summary>Is it ethically sourced?</summary><p>We buy direct or through traceable importers and pay above Fair Trade minimums.</p></details>
+</div></section>
+
+<section class="final" id="start"><div class="wrap">
+<h2>Your first bag is 20% off</h2>
+<p class="sub" style="margin-inline:auto">Join thousands of people who never run out of good coffee.</p>
+<div class="cta"><a class="btn" href="#plans">Start my subscription</a></div>
+</div></section>
+<footer>© 2026 Ember &amp; Oak Coffee Roasters · A fictional brand for demonstration</footer>
+</body>
+</html>

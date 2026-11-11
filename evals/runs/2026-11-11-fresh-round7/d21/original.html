@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wrenchly Jobs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #0f172a; }
+    .glow-orange { box-shadow: 0 0 32px 4px rgba(249, 115, 22, 0.45); }
+    .glow-purple { box-shadow: 0 0 32px 4px rgba(168, 85, 247, 0.45); }
+    .glow-pill { box-shadow: 0 0 18px 2px rgba(251, 146, 60, 0.6); }
+    .gradient-text { background: linear-gradient(90deg, #fb923c, #c084fc, #f472b6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .float { animation: float 3s ease-in-out infinite; }
+    .pulse-dot { animation: pulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  </style>
+</head>
+<body class="min-h-screen text-slate-200 relative overflow-hidden">
+  <div class="absolute -top-40 -left-32 w-[520px] h-[520px] rounded-full bg-orange-500 opacity-20 blur-3xl"></div>
+  <div class="absolute top-1/3 right-[-140px] w-[480px] h-[480px] rounded-full bg-purple-600 opacity-25 blur-3xl"></div>
+
+  <div class="relative flex h-[900px] w-[1280px]">
+    <!-- Sidebar -->
+    <aside class="w-[248px] bg-slate-900/80 border-r border-slate-700/60 backdrop-blur-xl p-[22px] flex flex-col">
+      <div class="flex items-center gap-3 mb-[34px]">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-400 to-pink-500 glow-orange flex items-center justify-center text-lg">🔧</div>
+        <div>
+          <p class="font-black text-white text-lg tracking-tight">Wrenchly</p>
+          <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-purple-300">PRO</span>
+        </div>
+      </div>
+
+      <p class="text-[11px] font-extrabold uppercase tracking-[0.25em] text-slate-500 mb-3">Menu</p>
+      <nav class="flex flex-col gap-2 text-sm font-bold">
+        <a href="#" class="flex items-center gap-3 px-4 py-[11px] rounded-2xl bg-gradient-to-r from-orange-500 to-purple-600 text-white glow-purple">🏠 Dashboard</a>
+        <a href="#" class="flex items-center gap-3 px-4 py-[11px] rounded-2xl text-slate-300 hover:bg-slate-800">🚗 Vehicles</a>
+        <a href="#" class="flex items-center gap-3 px-4 py-[11px] rounded-2xl text-slate-300 hover:bg-slate-800">🧑‍🔧 Mechanics</a>
+        <a href="#" class="flex items-center gap-3 px-4 py-[11px] rounded-2xl text-slate-300 hover:bg-slate-800">💰 Invoices <span class="ml-auto text-[10px] font-black bg-pink-500 text-white px-2 py-0.5 rounded-full">NEW</span></a>
+        <a href="#" class="flex items-center gap-3 px-4 py-[11px] rounded-2xl text-slate-300 hover:bg-slate-800">📦 Parts</a>
+        <a href="#" class="flex items-center gap-3 px-4 py-[11px] rounded-2xl text-slate-300 hover:bg-slate-800">⚙️ Settings</a>
+      </nav>
+
+      <div class="mt-auto rounded-2xl bg-gradient-to-br from-purple-600/40 to-orange-500/30 border border-purple-400/30 p-4 float">
+        <p class="font-black text-white">🚀 Go Unlimited!</p>
+        <p class="text-xs text-slate-300 mt-1">#1 rated shop software in the galaxy, trusted by 10,000+ garages!!</p>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-[30px] flex flex-col gap-[22px] overflow-hidden">
+      <header class="flex items-start justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Tue, 11/11/2026</p>
+          <h1 class="text-[32px] font-black text-white mt-1">Hey Alex 👋 <span class="gradient-text">Let's crush it today!!</span></h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2 w-[260px] bg-slate-800/70 border border-slate-600 rounded-full px-4 py-2.5">
+            <span>🔍</span>
+            <input type="text" placeholder="Search anything..." class="bg-transparent outline-none text-sm w-full placeholder:text-slate-500" />
+          </div>
+          <button class="px-6 py-2.5 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-white font-black glow-pill transition-transform duration-300 hover:scale-110">+ New Job ✨</button>
+        </div>
+      </header>
+
+      <!-- Stat cards -->
+      <section class="grid grid-cols-4 gap-[18px]">
+        <div class="rounded-3xl bg-slate-800/60 border border-slate-700 p-[18px] transition-transform duration-300 hover:scale-105">
+          <div class="flex items-center justify-between">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-xl">🚗</div>
+            <span class="glow-pill bg-orange-500 text-white text-xs font-black px-3 py-1 rounded-full">+12%!!</span>
+          </div>
+          <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-slate-400 mt-4">Cars In Today</p>
+          <p class="text-4xl font-black gradient-text mt-1">24</p>
+        </div>
+        <div class="rounded-3xl bg-slate-800/60 border border-slate-700 p-[18px] transition-transform duration-300 hover:scale-105">
+          <div class="flex items-center justify-between">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-yellow-300 to-orange-500 flex items-center justify-center text-xl">🛠️</div>
+            <span class="glow-pill bg-orange-500 text-white text-xs font-black px-3 py-1 rounded-full">+8%!!</span>
+          </div>
+          <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-slate-400 mt-4">In Progress</p>
+          <p class="text-4xl font-black gradient-text mt-1">11</p>
+        </div>
+        <div class="rounded-3xl bg-slate-800/60 border border-slate-700 p-[18px] transition-transform duration-300 hover:scale-105">
+          <div class="flex items-center justify-between">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-purple-700 flex items-center justify-center text-xl">📦</div>
+            <span class="glow-pill bg-orange-500 text-white text-xs font-black px-3 py-1 rounded-full">+3%!!</span>
+          </div>
+          <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-slate-400 mt-4">Waiting For Parts</p>
+          <p class="text-4xl font-black gradient-text mt-1">6</p>
+        </div>
+        <div class="rounded-3xl bg-slate-800/60 border border-slate-700 p-[18px] transition-transform duration-300 hover:scale-105">
+          <div class="flex items-center justify-between">
+            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-xl">✅</div>
+            <span class="glow-pill bg-orange-500 text-white text-xs font-black px-3 py-1 rounded-full">+25%!!</span>
+          </div>
+          <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-slate-400 mt-4">Ready For Pickup</p>
+          <p class="text-4xl font-black gradient-text mt-1">9</p>
+        </div>
+      </section>
+
+      <div class="flex gap-[22px] flex-1 min-h-0">
+        <!-- Jobs table -->
+        <section class="flex-1 rounded-3xl bg-slate-800/50 border border-slate-700 p-[20px] overflow-hidden">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-black text-white">🔥 Today's Jobs</h2>
+            <span class="text-xs font-bold text-purple-300">Updated 2:15pm</span>
+          </div>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 border-b border-slate-700">
+                <th class="py-3 pr-3">Job #</th>
+                <th class="py-3 pr-3">Customer</th>
+                <th class="py-3 pr-3">Vehicle</th>
+                <th class="py-3 pr-3">Work</th>
+                <th class="py-3 pr-3">Mechanic</th>
+                <th class="py-3 pr-3">Status</th>
+                <th class="py-3 text-right">Estimate</th>
+              </tr>
+            </thead>
+            <tbody class="font-semibold text-slate-200">
+              <tr class="border-b border-slate-700/60"><td class="py-3 pr-3 text-orange-300">#WR-1041</td><td class="pr-3">Jordan Blake</td><td class="pr-3">2019 Honda Civic</td><td class="pr-3">Brake pads!</td><td class="pr-3">Marco</td><td class="pr-3"><span class="bg-emerald-400 text-slate-900 font-black text-xs px-3 py-1 rounded-full">READY 🎉</span></td><td class="text-right">$320.00</td></tr>
+              <tr class="border-b border-slate-700/60"><td class="py-3 pr-3 text-orange-300">#WR-1042</td><td class="pr-3">Priya Natarajan</td><td class="pr-3">2016 Ford F-150</td><td class="pr-3">Oil change + tires</td><td class="pr-3">Dev</td><td class="pr-3"><span class="bg-sky-400 text-slate-900 font-black text-xs px-3 py-1 rounded-full">IN PROGRESS 🔧</span></td><td class="text-right">$1,140</td></tr>
+              <tr class="border-b border-slate-700/60"><td class="py-3 pr-3 text-orange-300">#WR-1043</td><td class="pr-3">Sam O'Connor</td><td class="pr-3">2021 Tesla Model 3</td><td class="pr-3">Suspension check</td><td class="pr-3">Ana</td><td class="pr-3"><span class="bg-pink-400 text-slate-900 font-black text-xs px-3 py-1 rounded-full">WAITING PARTS ⏳</span></td><td class="text-right">$580.5</td></tr>
+              <tr class="border-b border-slate-700/60"><td class="py-3 pr-3 text-orange-300">#WR-1044</td><td class="pr-3">Lena Fischer</td><td class="pr-3">2014 BMW 320i</td><td class="pr-3">Engine diagnostic</td><td class="pr-3">Marco</td><td class="pr-3"><span class="bg-sky-400 text-slate-900 font-black text-xs px-3 py-1 rounded-full">IN PROGRESS 🔧</span></td><td class="text-right">$212.00</td></tr>
+              <tr class="border-b border-slate-700/60"><td class="py-3 pr-3 text-orange-300">#WR-1045</td><td class="pr-3">Tomás Ruiz</td><td class="pr-3">2018 Jeep Wrangler</td><td class="pr-3">Alignment!!</td><td class="pr-3">Dev</td><td class="pr-3"><span class="bg-emerald-400 text-slate-900 font-black text-xs px-3 py-1 rounded-full">READY 🎉</span></td><td class="text-right">$95.00</td></tr>
+              <tr class="border-b border-slate-700/60"><td class="py-3 pr-3 text-orange-300">#WR-1046</td><td class="pr-3">Hannah Lee</td><td class="pr-3">2020 Subaru Outback</td><td class="pr-3">Timing belt</td><td class="pr-3">Ana</td><td class="pr-3"><span class="bg-pink-400 text-slate-900 font-black text-xs px-3 py-1 rounded-full">WAITING PARTS ⏳</span></td><td class="text-right">$860.00</td></tr>
+              <tr class="border-b border-slate-700/60"><td class="py-3 pr-3 text-orange-300">#WR-1047</td><td class="pr-3">Omar Haddad</td><td class="pr-3">2012 Toyota Camry</td><td class="pr-3">AC recharge</td><td class="pr-3">Marco</td><td class="pr-3"><span class="bg-sky-400 text-slate-900 font-black text-xs px-3 py-1 rounded-full">IN PROGRESS 🔧</span></td><td class="text-right">$150.5</td></tr>
+              <tr><td class="py-3 pr-3 text-orange-300">#WR-1048</td><td class="pr-3">Grace Kim</td><td class="pr-3">2023 Hyundai Kona</td><td class="pr-3">Battery swap</td><td class="pr-3">Dev</td><td class="pr-3"><span class="bg-emerald-400 text-slate-900 font-black text-xs px-3 py-1 rounded-full">READY 🎉</span></td><td class="text-right">$189.00</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Parts side panel -->
+        <aside class="w-[300px] rounded-3xl bg-gradient-to-b from-purple-700/40 to-slate-900/70 border border-purple-400/30 p-[20px] glow-purple">
+          <h2 class="text-lg font-black text-white">📦 Parts On Order</h2>
+          <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-purple-200 mt-1">5 items incoming!</p>
+          <ul class="mt-[18px] flex flex-col gap-3 text-sm">
+            <li class="flex items-center justify-between rounded-2xl bg-slate-900/60 px-4 py-[12px]"><span class="font-bold">🛞 All-season tires</span><span class="text-xs font-black text-orange-300">Tue</span></li>
+            <li class="flex items-center justify-between rounded-2xl bg-slate-900/60 px-4 py-[12px]"><span class="font-bold">🧱 Brake rotors (x2)</span><span class="text-xs font-black text-orange-300">Wed</span></li>
+            <li class="flex items-center justify-between rounded-2xl bg-slate-900/60 px-4 py-[12px]"><span class="font-bold">⏱️ Timing belt kit</span><span class="text-xs font-black text-orange-300">11/12</span></li>
+            <li class="flex items-center justify-between rounded-2xl bg-slate-900/60 px-4 py-[12px]"><span class="font-bold">🔋 12V battery</span><span class="text-xs font-black text-orange-300">Thu</span></li>
+            <li class="flex items-center justify-between rounded-2xl bg-slate-900/60 px-4 py-[12px]"><span class="font-bold">❄️ AC compressor</span><span class="text-xs font-black text-orange-300">Fri 11.14</span></li>
+          </ul>
+          <button class="mt-[22px] w-full py-3 rounded-full bg-gradient-to-r from-orange-500 to-purple-600 text-white font-black glow-orange transition-transform duration-300 hover:scale-110">Track All Parts 🚚</button>
+          <div class="mt-4 flex items-center gap-2 text-xs font-bold text-emerald-300">
+            <span class="pulse-dot w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            Live updates!!
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

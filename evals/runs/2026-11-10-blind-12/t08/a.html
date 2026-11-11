@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mara Lindqvist — Photographer</title>
+<meta name="description" content="Mara Lindqvist is a freelance photographer working in landscape, portrait and editorial commissions.">
+<style>
+:root{
+  --paper:#f3ede3; --paper-2:#e9e1d3; --ink:#1d1a17; --ink-2:#5a534b; --line:#d6ccbb;
+  --accent:#b4471f; --accent-ink:#8e3412; --night:#181513; --night-text:#efe7da;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Avenir Next","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2.5rem;--s5:4rem;--s6:7rem;
+  --r:4px;
+  --gut:clamp(1.25rem,4vw,3rem);
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font:1.0625rem/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:2px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 var(--gut)}
+.skip{position:absolute;left:-999px;top:0;background:var(--ink);color:var(--paper);padding:.75rem 1rem;z-index:10}
+.skip:focus{left:var(--gut)}
+
+/* header */
+header{padding:var(--s3) 0}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--s3)}
+.mark{font:600 .8rem/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;text-decoration:none}
+nav ul{list-style:none;padding:0;display:flex;gap:clamp(1rem,3vw,2.25rem);font-size:.95rem}
+nav a{text-decoration:none;padding:.5rem 0;display:inline-block;border-bottom:1px solid transparent;transition:border-color .2s,color .2s}
+nav a:hover{border-color:var(--accent);color:var(--accent-ink)}
+
+/* hero */
+.hero{padding:var(--s4) 0 var(--s5)}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:end}
+.eyebrow{font:600 .75rem/1.4 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:var(--s3)}
+h1{font:400 clamp(2.9rem,7.2vw,6.2rem)/.98 var(--serif);letter-spacing:-.02em;text-wrap:balance}
+h1 em{font-style:italic;color:var(--accent)}
+.lede{margin-top:var(--s3);max-width:30rem;font-size:1.2rem;color:var(--ink-2)}
+.cta{margin-top:var(--s4);display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center}
+.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 1.6rem;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600;font-size:.95rem;border-radius:var(--r);transition:background .2s,transform .2s}
+.btn:hover{background:var(--accent-ink)}
+.btn:active{transform:translateY(1px)}
+.link{font-weight:600;font-size:.95rem;text-decoration:none;border-bottom:1.5px solid var(--accent);padding:.5rem 0}
+.link:hover{color:var(--accent-ink)}
+
+/* the special thing: a framed print with a mat, caption, and a contact strip */
+.print{position:relative}
+.print figure{background:#fbf8f2;padding:clamp(.9rem,2vw,1.6rem) clamp(.9rem,2vw,1.6rem) 0;box-shadow:0 1px 2px rgba(29,26,23,.15),0 18px 40px -12px rgba(29,26,23,.35);transform:rotate(1.2deg);transition:transform .5s}
+.print:hover figure{transform:rotate(0)}
+.print svg{display:block;width:100%;height:auto;aspect-ratio:4/5}
+.print figcaption{display:flex;justify-content:space-between;gap:1rem;font-size:.8rem;color:var(--ink-2);padding:.9rem 0 1.1rem;letter-spacing:.02em}
+.print figcaption b{font-family:var(--serif);font-weight:400;font-style:italic;font-size:1rem;color:var(--ink)}
+
+/* strip of facts */
+.facts{border-block:1px solid var(--line);padding:var(--s3) 0}
+.facts ul{list-style:none;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3)}
+.facts li{font-size:.9rem;color:var(--ink-2)}
+.facts strong{display:block;font:400 1.5rem/1.2 var(--serif);color:var(--ink)}
+
+/* section heads */
+section{padding:var(--s6) 0 0}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:var(--s3);margin-bottom:var(--s4);flex-wrap:wrap}
+h2{font:400 clamp(2rem,4.2vw,3.2rem)/1.05 var(--serif);letter-spacing:-.015em}
+.sec-head p{color:var(--ink-2);max-width:26rem}
+
+/* work grid */
+.work{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--s3) var(--s3)}
+.work figure{grid-column:span 4}
+.work figure.wide{grid-column:span 8}
+.work figure.tall{grid-row:span 1}
+.frame{display:block;overflow:hidden;border-radius:var(--r);background:var(--paper-2);position:relative}
+.frame svg{display:block;width:100%;height:100%;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.work figure:hover svg{transform:scale(1.04)}
+.r45{aspect-ratio:4/5}.r32{aspect-ratio:3/2}.r85{aspect-ratio:8/5}
+.work figure.wide .frame{aspect-ratio:auto;height:100%}
+.work figure.wide{display:flex;flex-direction:column}
+.work figure.wide .frame{flex:1;min-height:0}
+.work figcaption{display:flex;justify-content:space-between;gap:1rem;padding-top:.7rem;font-size:.85rem;color:var(--ink-2)}
+.work figcaption b{font:400 1.1rem/1.3 var(--serif);color:var(--ink)}
+.work figcaption span:last-child{white-space:nowrap}
+
+/* about */
+.about{display:grid;grid-template-columns:5fr 6fr;gap:clamp(2rem,6vw,6rem);align-items:center}
+.about .frame{aspect-ratio:1/1}
+.about p+p{margin-top:var(--s2)}
+.about h2{margin-bottom:var(--s3)}
+.about p{color:var(--ink-2);max-width:34rem}
+.about p.big{font:400 1.45rem/1.4 var(--serif);color:var(--ink)}
+
+/* services */
+.dark{background:var(--night);color:var(--night-text);margin-top:var(--s6);padding:var(--s6) 0}
+.dark h2{color:var(--night-text)}
+.dark .sec-head p{color:#bdb3a4}
+.services{list-style:none;padding:0;border-top:1px solid #3a342e}
+.services li{display:grid;grid-template-columns:3rem 1fr 1.3fr auto;gap:var(--s3);align-items:baseline;padding:var(--s3) 0;border-bottom:1px solid #3a342e}
+.services .n{font:italic 1rem var(--serif);color:#e08a62}
+.services h3{font:400 1.7rem/1.2 var(--serif)}
+.services p{color:#bdb3a4;font-size:.98rem}
+.services .p{font-size:.85rem;color:#bdb3a4;white-space:nowrap}
+
+/* contact */
+.contact{padding:var(--s6) 0}
+.contact .wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(2rem,6vw,6rem);align-items:start}
+.contact h2{font-size:clamp(2.4rem,5.5vw,4.4rem)}
+.contact h2 em{color:var(--accent)}
+form{display:grid;gap:var(--s2)}
+label{display:grid;gap:.4rem;font-size:.85rem;font-weight:600;letter-spacing:.02em}
+input,textarea,select{font:inherit;font-weight:400;color:var(--ink);background:#fbf8f2;border:1px solid #8c8374;border-radius:var(--r);padding:.8rem .9rem;min-height:48px;width:100%}
+textarea{min-height:120px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:3px solid var(--accent);outline-offset:1px;border-color:var(--ink)}
+form .btn{border:0;cursor:pointer;justify-content:center;font:600 .95rem var(--sans)}
+.mail{margin-top:var(--s3);color:var(--ink-2)}
+.mail a{color:var(--ink);font-weight:600}
+
+footer{border-top:1px solid var(--line);padding:var(--s3) 0 var(--s4);font-size:.85rem;color:var(--ink-2)}
+footer .wrap{display:flex;justify-content:space-between;gap:var(--s2);flex-wrap:wrap}
+footer ul{list-style:none;padding:0;display:flex;gap:var(--s3)}
+footer a{padding:.4rem 0;display:inline-block}
+
+@media (max-width:900px){
+  .hero-grid,.about,.contact .wrap{grid-template-columns:1fr}
+  .print{max-width:460px}
+  .facts ul{grid-template-columns:1fr 1fr}
+  .work figure,.work figure.wide{grid-column:span 6}
+  .work figure.wide{grid-column:span 12}
+  .work figure.wide .frame{aspect-ratio:8/5;height:auto}
+  .services li{grid-template-columns:2.2rem 1fr;gap:.4rem var(--s2)}
+  .services p,.services .p{grid-column:2}
+}
+@media (max-width:560px){
+  nav ul{gap:1rem;font-size:.9rem}
+  .mark{font-size:.7rem}
+  .work figure,.work figure.wide{grid-column:span 12}
+  section{padding-top:var(--s5)}
+  .dark{padding:var(--s5) 0;margin-top:var(--s5)}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;scroll-behavior:auto!important}
+  .print figure{transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#work">Skip to work</a>
+
+<header>
+  <div class="wrap">
+    <a class="mark" href="#top">Mara Lindqvist</a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Commissions</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Freelance photographer · Based in Gothenburg</p>
+        <h1>Quiet light, <em>patiently</em> waited for.</h1>
+        <p class="lede">I photograph coastlines, small towns and the people who live in them, for magazines, studios and families who want pictures that feel like the day did.</p>
+        <div class="cta">
+          <a class="btn" href="#contact">Book a shoot</a>
+          <a class="link" href="#work">See selected work</a>
+        </div>
+      </div>
+      <div class="print">
+        <figure>
+          <svg viewBox="0 0 400 500" role="img" aria-label="Placeholder illustration of a rocky coast at dusk with a low orange sun over calm water" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="h-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f3b57"/><stop offset=".45" stop-color="#b66a5a"/><stop offset=".7" stop-color="#f0b073"/><stop offset="1" stop-color="#f8d9a0"/></linearGradient>
+              <radialGradient id="h-sun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff3d2"/><stop offset=".25" stop-color="#ffd48a" stop-opacity=".85"/><stop offset="1" stop-color="#ffb26a" stop-opacity="0"/></radialGradient>
+              <linearGradient id="h-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9a56f"/><stop offset=".4" stop-color="#7d6a7a"/><stop offset="1" stop-color="#2a3148"/></linearGradient>
+            </defs>
+            <rect width="400" height="500" fill="url(#h-sky)"/>
+            <circle cx="250" cy="288" r="150" fill="url(#h-sun)"/>
+            <path d="M0 150 Q120 120 230 150 T400 140 V250 H0Z" fill="#fff" opacity=".07"/>
+            <rect y="298" width="400" height="202" fill="url(#h-sea)"/>
+            <g stroke="#ffd9a0" stroke-linecap="round" opacity=".7"><path d="M225 310h50" stroke-width="3"/><path d="M215 322h72" stroke-width="2.5"/><path d="M232 336h40" stroke-width="2"/><path d="M205 352h95" stroke-width="2" opacity=".6"/><path d="M225 372h56" stroke-width="1.5" opacity=".5"/></g>
+            <path d="M0 410 L40 392 L82 402 L128 372 L170 400 L196 438 L150 470 L0 500Z" fill="#1c1a22"/>
+            <path d="M400 430 L350 418 L318 440 L296 500 H400Z" fill="#17151c"/>
+            <path d="M128 372 L150 380 L132 392Z" fill="#f0b073" opacity=".35"/>
+          </svg>
+          <figcaption><b>Skärgård, 21:14</b><span>Placeholder frame</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+
+  <div class="facts">
+    <div class="wrap">
+      <ul>
+        <li><strong>12 years</strong>behind the camera</li>
+        <li><strong>Editorial &amp; commercial</strong>and private commissions</li>
+        <li><strong>Film &amp; digital</strong>35 mm, medium format</li>
+        <li><strong>Nordics, travelling</strong>further on request</li>
+      </ul>
+    </div>
+  </div>
+
+  <section id="work" aria-labelledby="work-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="work-h">Selected work</h2>
+        <p>Five recent frames from ongoing series. Placeholder artwork stands in until the real photographs are dropped in.</p>
+      </div>
+      <div class="work">
+
+        <figure class="wide">
+          <div class="frame">
+            <svg viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder illustration of layered blue mountain ridges in morning fog">
+              <defs><linearGradient id="m-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfd9dc"/><stop offset="1" stop-color="#f1ece1"/></linearGradient></defs>
+              <rect width="800" height="500" fill="url(#m-sky)"/>
+              <circle cx="590" cy="130" r="38" fill="#fff8e6" opacity=".9"/>
+              <path d="M0 260 L110 190 L190 240 L300 150 L420 250 L520 200 L640 260 L800 190 V500H0Z" fill="#a9b8c0"/>
+              <path d="M0 320 L90 270 L200 320 L330 240 L450 330 L580 270 L700 330 L800 280 V500H0Z" fill="#7f95a3"/>
+              <rect y="300" width="800" height="50" fill="#f1ece1" opacity=".45"/>
+              <path d="M0 390 L120 340 L260 400 L400 330 L540 410 L680 350 L800 400 V500H0Z" fill="#52697a"/>
+              <rect y="370" width="800" height="40" fill="#f1ece1" opacity=".4"/>
+              <path d="M0 450 L160 420 L320 460 L480 425 L640 465 L800 430 V500H0Z" fill="#2d3e4c"/>
+            </svg>
+          </div>
+          <figcaption><span><b>Fjällen, before the sun</b><br>Jämtland</span><span>2024</span></figcaption>
+        </figure>
+
+        <figure>
+          <div class="frame r45">
+            <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder illustration of a portrait silhouette lit from the side against a warm wall">
+              <defs>
+                <linearGradient id="p-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9a37a"/><stop offset="1" stop-color="#7a4a38"/></linearGradient>
+                <linearGradient id="p-face" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f2c9a3"/><stop offset=".55" stop-color="#b57a56"/><stop offset="1" stop-color="#4a2c24"/></linearGradient>
+              </defs>
+              <rect width="400" height="500" fill="url(#p-bg)"/>
+              <rect x="0" y="0" width="120" height="500" fill="#f4d9b8" opacity=".25"/>
+              <path d="M40 500 C50 410 110 385 200 385 C290 385 350 410 360 500Z" fill="#2b2220"/>
+              <rect x="176" y="330" width="48" height="70" fill="url(#p-face)"/>
+              <ellipse cx="200" cy="260" rx="72" ry="88" fill="url(#p-face)"/>
+              <path d="M126 250 C120 160 190 140 240 160 C285 178 285 230 272 262 C262 210 220 190 160 205 C140 212 132 230 126 250Z" fill="#241714"/>
+            </svg>
+          </div>
+          <figcaption><span><b>Ingrid, Tuesday</b><br>Portrait</span><span>2025</span></figcaption>
+        </figure>
+
+        <figure>
+          <div class="frame r45">
+            <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder illustration of a rainy night street with lit windows reflected on wet pavement">
+              <defs><linearGradient id="s-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#10131c"/><stop offset=".62" stop-color="#232a3c"/><stop offset="1" stop-color="#0d0f15"/></linearGradient></defs>
+              <rect width="400" height="500" fill="url(#s-bg)"/>
+              <rect x="20" y="70" width="150" height="270" fill="#171b27"/><rect x="190" y="30" width="190" height="310" fill="#1b2030"/>
+              <g fill="#f4b45e"><rect x="40" y="100" width="26" height="36"/><rect x="100" y="160" width="26" height="36" opacity=".6"/><rect x="40" y="220" width="26" height="36" opacity=".85"/><rect x="215" y="70" width="30" height="40"/><rect x="290" y="130" width="30" height="40" opacity=".7"/><rect x="215" y="200" width="30" height="40" opacity=".5"/><rect x="330" y="230" width="30" height="40"/></g>
+              <rect x="0" y="340" width="400" height="160" fill="#10131b"/>
+              <g fill="#f4b45e" opacity=".35"><rect x="38" y="350" width="30" height="110"/><rect x="215" y="350" width="34" height="120"/><rect x="328" y="350" width="34" height="130"/></g>
+              <g fill="#e8e0d0"><circle cx="150" cy="330" r="3"/><rect x="149" y="330" width="2" height="40"/></g>
+              <circle cx="150" cy="330" r="22" fill="#f4b45e" opacity=".18"/>
+            </svg>
+          </div>
+          <figcaption><span><b>Wet Linnégatan</b><br>Street</span><span>2023</span></figcaption>
+        </figure>
+
+        <figure>
+          <div class="frame r45">
+            <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder illustration of tall pine trunks with beams of light in a forest">
+              <defs><linearGradient id="f-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9d9a8"/><stop offset="1" stop-color="#4d6240"/></linearGradient></defs>
+              <rect width="400" height="500" fill="url(#f-bg)"/>
+              <g fill="#fff6c9" opacity=".22"><path d="M120 0h40L260 500H150Z"/><path d="M230 0h26L380 500H300Z"/></g>
+              <g fill="#26301f"><rect x="30" width="22" height="500"/><rect x="95" width="14" height="500" opacity=".7"/><rect x="170" width="26" height="500"/><rect x="262" width="16" height="500" opacity=".75"/><rect x="330" width="30" height="500"/></g>
+              <rect y="400" width="400" height="100" fill="#1f2a1a" opacity=".6"/>
+            </svg>
+          </div>
+          <figcaption><span><b>Kungsbacka pines</b><br>Landscape</span><span>2024</span></figcaption>
+        </figure>
+
+        <figure>
+          <div class="frame r45">
+            <svg viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder illustration of sand dunes with long shadows under a pale sky">
+              <defs><linearGradient id="d-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6e2c4"/><stop offset="1" stop-color="#f3b98a"/></linearGradient></defs>
+              <rect width="800" height="500" fill="url(#d-sky)"/>
+              <path d="M0 300 C140 230 260 250 380 300 S640 330 800 250 V500H0Z" fill="#d98e5d"/>
+              <path d="M0 360 C150 300 300 330 420 380 S660 400 800 340 V500H0Z" fill="#b8683f"/>
+              <path d="M180 320 C250 300 330 330 420 380 L300 380Z" fill="#7a3d28" opacity=".55"/>
+              <path d="M0 440 C200 400 400 450 800 410 V500H0Z" fill="#8a4a30"/>
+            </svg>
+          </div>
+          <figcaption><span><b>Dune, long shadow</b><br>Skåne</span><span>2022</span></figcaption>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="about" aria-labelledby="about-h">
+    <div class="wrap about">
+      <div class="frame">
+        <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder illustration of a camera on a tripod at the water's edge">
+          <defs><linearGradient id="a-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5d3b5"/><stop offset="1" stop-color="#b9a98c"/></linearGradient></defs>
+          <rect width="400" height="400" fill="url(#a-bg)"/>
+          <rect y="270" width="400" height="130" fill="#6b7d86"/>
+          <rect y="270" width="400" height="3" fill="#f6efe0"/>
+          <g stroke="#1d1a17" stroke-width="5" stroke-linecap="round"><path d="M200 210 L150 330"/><path d="M200 210 L250 330"/><path d="M200 210 L200 340"/></g>
+          <rect x="165" y="160" width="70" height="46" rx="5" fill="#1d1a17"/>
+          <circle cx="200" cy="183" r="15" fill="#3b3733"/><circle cx="200" cy="183" r="8" fill="#6b7d86"/><circle cx="196" cy="179" r="2.5" fill="#fff" opacity=".8"/>
+          <rect x="176" y="150" width="20" height="10" rx="2" fill="#1d1a17"/>
+        </svg>
+      </div>
+      <div>
+        <h2 id="about-h">I wait, then I press the shutter once.</h2>
+        <p class="big">Most of my best frames come from standing in the same place far longer than is reasonable.</p>
+        <p>I started on my father's secondhand Pentax and never really stopped. Today I split my year between commissioned editorial and portrait work and a long-running series on the Swedish west coast.</p>
+        <p>Clients usually hear from me within two working days. I shoot to a brief but leave room for whatever the light decides to do.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="dark" id="services">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Commissions</h2>
+        <p>Fees depend on usage and travel. Every quote is written, itemised, and sent before anything is booked.</p>
+      </div>
+      <ul class="services">
+        <li><span class="n">01</span><h3>Editorial</h3><p>Features, interviews and location stories for print and web, shot to a brief.</p><span class="p">By day rate</span></li>
+        <li><span class="n">02</span><h3>Portraits</h3><p>Natural-light portraits for people and small teams, in your space or mine.</p><span class="p">From a half day</span></li>
+        <li><span class="n">03</span><h3>Places &amp; Hospitality</h3><p>Interiors, restaurants and guesthouses photographed the way a guest would remember them.</p><span class="p">Per project</span></li>
+        <li><span class="n">04</span><h3>Prints</h3><p>Archival pigment prints from the series above, signed and numbered.</p><span class="p">Enquire for sizes</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="contact" id="contact" aria-labelledby="contact-h">
+    <div class="wrap">
+      <div>
+        <h2 id="contact-h">Have a <em>light</em> in mind?</h2>
+        <p class="mail">Tell me about the job and the dates. Or write directly: <a href="mailto:hello@example.com">hello@example.com</a></p>
+      </div>
+      <form onsubmit="event.preventDefault();this.querySelector('button').textContent='Thanks, I will reply within two days';">
+        <label>Your name<input name="name" autocomplete="name" required></label>
+        <label>Email<input type="email" name="email" autocomplete="email" required></label>
+        <label>What kind of shoot?
+          <select name="type"><option>Editorial</option><option>Portrait</option><option>Place or hospitality</option><option>Prints</option><option>Something else</option></select>
+        </label>
+        <label>Tell me more<textarea name="msg"></textarea></label>
+        <button class="btn" type="submit">Send enquiry</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Mara Lindqvist. Name, text and artwork are placeholders.</span>
+    <ul><li><a href="#top">Back to top</a></li><li><a href="#contact">Contact</a></li></ul>
+  </div>
+</footer>
+</body>
+</html>

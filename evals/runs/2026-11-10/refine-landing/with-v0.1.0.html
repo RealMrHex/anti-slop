@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tallyo</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Inter, sans-serif; color: #2e2e42; background: #fff; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+                     clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .nav { position: sticky; top: 0; display: flex; flex-wrap: wrap; justify-content: space-between; padding: 17px 43px;
+         background: rgba(255,255,255,.92); backdrop-filter: blur(18px); border-radius: 28px; margin: 13px; }
+  .nav a { color: #2e2e42; margin-left: 22px; text-decoration: none; }
+  .hero { text-align: center; padding: 160px 20px;
+          background: linear-gradient(135deg, #7c3aed 0%, #2563eb 100%); }
+  .hero h1 { font-size: clamp(2.25rem, 1.25rem + 5vw, 4rem); font-weight: 800; line-height: 1.15; margin: 0;
+             color: #fff; text-wrap: balance; }
+  .hero p { color: #fff; font-size: 18px; }
+  .btn { display: inline-block; padding: 12px 28px; border: 2px solid #fff; border-radius: 28px; font: inherit; font-weight: 700;
+         text-decoration: none; color: #4c1d95; background: #fff; transition: background-color .15s; cursor: pointer; }
+  .btn:hover { background: #f3e8ff; }
+  .btn-secondary { color: #fff; background: transparent; }
+  .btn-secondary:hover { background: rgba(0,0,0,.2); }
+  .btn:focus-visible, .signup input:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  .signup { margin-top: 31px; }
+  .signup input { padding: 14px; border: 1px solid #ede9fe; border-radius: 28px; font: inherit; }
+  .stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 32px 61px; padding: 90px 20px; }
+  .stat { font-size: 44px; font-weight: 800; color: #7c3aed; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 27px; padding: 150px 40px; }
+  .card { padding: 34px; border-radius: 28px; background: #fff; border: 1px solid #e5e7eb;
+          box-shadow: 0 4px 16px rgba(46,46,66,.08); }
+  .card h2 { font-size: 22px; font-weight: 800; color: #7c3aed; margin: 9px 0; }
+  .card p { font-size: 15px; }
+  @media (max-width: 600px) { .nav { padding: 17px 20px; } }
+</style>
+</head>
+<body>
+  <nav class="nav" id="glass-nav">
+    <b>Tallyo</b>
+    <div><a href="/features">Features</a><a href="/pricing">Pricing</a><a href="/login">Log in</a></div>
+  </nav>
+
+  <main>
+  <div class="hero" id="hero">
+    <h1 id="hero-title">Supercharge Your Workflow</h1>
+    <p>The next-generation, all-in-one platform that seamlessly unlocks your potential.</p>
+    <a class="btn" id="cta-primary" href="/signup">Get Started</a>
+    <a class="btn btn-secondary" id="cta-secondary" href="/demo">Learn More</a>
+    <form class="signup" id="signup-form" action="/signup" method="post">
+      <label class="visually-hidden" for="signup-email">Email address</label>
+      <input id="signup-email" type="text" name="email" autocomplete="email" placeholder="Enter your email">
+      <button class="btn btn-secondary" type="submit">Submit</button>
+    </form>
+  </div>
+
+  <div class="stats" id="fake-stats">
+    <div class="stat">10k+</div>
+    <div class="stat">99.9%</div>
+    <div class="stat">24/7</div>
+  </div>
+
+  <div class="grid" id="feature-grid">
+    <div class="card"><span aria-hidden="true">⚡</span><h2>Fast</h2><p>Blazing fast performance for modern teams.</p></div>
+    <div class="card"><span aria-hidden="true">🔒</span><h2>Secure</h2><p>Enterprise-grade security you can trust.</p></div>
+    <div class="card"><span aria-hidden="true">🚀</span><h2>Scalable</h2><p>Scales effortlessly as you grow.</p></div>
+  </div>
+  </main>
+</body>
+</html>

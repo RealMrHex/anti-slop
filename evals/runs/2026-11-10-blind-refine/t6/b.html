@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Send Money</title>
+<style>
+  :root {
+    --ink: #10201f; --muted: #5b6b69; --line: #d9e1df; --bg: #e9efed;
+    --deep: #0d3b37; --deep-2: #14524c; --accent: #0f7a6d; --accent-d: #0b6358;
+    --tint: #f1f6f5; --err: #b3261e; --ok: #0b6b3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  .screen {
+    max-width: 420px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 40px rgba(13,59,55,.12);
+  }
+  .top {
+    background: linear-gradient(160deg, var(--deep-2), var(--deep) 70%);
+    color: #fff;
+    padding: 20px 20px 28px;
+    border-radius: 0 0 28px 28px;
+  }
+  h1 { font-size: 26px; line-height: 1.15; font-weight: 700; letter-spacing: -.02em; margin: 6px 0 22px; }
+  .top label { color: rgba(255,255,255,.72); margin: 0 0 8px; }
+  .top select {
+    background-color: rgba(255,255,255,.12);
+    border-color: rgba(255,255,255,.28);
+    color: #fff;
+    font-weight: 600;
+  }
+  .top select option { color: var(--ink); }
+  .top select:focus-visible { outline-color: #fff; }
+  .balance { font-size: 14px; color: rgba(255,255,255,.8); margin-top: 10px; font-variant-numeric: tabular-nums; }
+  .body { padding: 8px 20px 24px; flex: 1; display: flex; flex-direction: column; }
+  label { display: block; font-size: 13px; font-weight: 600; letter-spacing: .01em; color: var(--muted); margin: 20px 0 8px; }
+  select, input, textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 16px;
+    padding: 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ink);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  select {
+    appearance: none; -webkit-appearance: none;
+    padding-right: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 16px center;
+  }
+  input::placeholder, textarea::placeholder { color: #82908e; }
+  input:hover, textarea:hover { border-color: #b4c3c0; }
+  input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible {
+    outline: 3px solid rgba(15,122,109,.45); outline-offset: 2px; border-color: var(--accent);
+  }
+  textarea { resize: none; height: 76px; line-height: 1.4; }
+  .amount-wrap {
+    position: relative;
+    background: var(--tint);
+    border-radius: 16px;
+    padding: 6px 0;
+  }
+  .amount-wrap span {
+    position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+    color: var(--accent); font-size: 34px; font-weight: 600;
+  }
+  .amount-wrap input {
+    padding: 14px 16px 14px 44px;
+    font-size: 40px; font-weight: 700; letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
+    border-color: transparent; background: transparent; border-radius: 16px;
+  }
+  .amount-wrap input:hover { border-color: transparent; }
+  .amount-wrap:focus-within { box-shadow: 0 0 0 2px var(--accent); background: #fff; }
+  .amount-wrap input:focus-visible { outline: none; }
+  .error { color: var(--err); font-size: 13px; font-weight: 500; min-height: 18px; margin-top: 6px; }
+  .spacer { flex: 1; }
+  button {
+    width: 100%;
+    font: inherit;
+    font-size: 17px;
+    font-weight: 650;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    background: var(--accent);
+    color: #fff;
+    margin-top: 20px;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(15,122,109,.28);
+    transition: background .15s, transform .1s;
+  }
+  button:hover { background: var(--accent-d); }
+  button:active { transform: scale(.985); }
+  button:disabled { background: #a9c9c4; box-shadow: none; cursor: default; transform: none; }
+  #review-panel {
+    display: none; margin-top: 20px; padding: 16px;
+    background: var(--tint); border: 1px solid var(--line); border-radius: 16px;
+  }
+  #review-panel .row { padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 15px; gap: 16px; }
+  #review-panel .row span:first-child { color: var(--muted); }
+  #review-panel .row span:last-child { font-weight: 600; text-align: right; overflow-wrap: anywhere; }
+  #review-panel .row:nth-child(3) { font-size: 17px; }
+  #review-panel .row:nth-child(3) span:last-child { font-size: 22px; font-variant-numeric: tabular-nums; }
+  .row { display: flex; justify-content: space-between; }
+  .actions { display: flex; gap: 10px; }
+  .actions button { background: #fff; color: var(--ink); border: 1.5px solid var(--line); box-shadow: none; flex: 1; }
+  .actions button:hover { background: var(--bg); }
+  .actions button.primary { background: var(--accent); color: #fff; border-color: var(--accent); flex: 2; box-shadow: 0 6px 16px rgba(15,122,109,.28); }
+  .actions button.primary:hover { background: var(--accent-d); }
+  #sent-msg { font-weight: 600; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="screen">
+  <form id="transfer-form" novalidate>
+  <div class="top">
+    <h1>Send Money</h1>
+    <label for="from">From</label>
+    <select id="from">
+      <option value="checking" data-balance="2450.00">Checking ••4421</option>
+      <option value="savings" data-balance="10120.55">Savings ••9087</option>
+    </select>
+    <div class="balance" id="balance"></div>
+  </div>
+  <div class="body">
+
+    <label for="recipient">Recipient</label>
+    <input id="recipient" type="text" placeholder="Name, email, or phone">
+
+    <label for="amount">Amount</label>
+    <div class="amount-wrap">
+      <span>$</span>
+      <input id="amount" type="text" inputmode="decimal" placeholder="0.00">
+    </div>
+    <div class="error" id="amount-error"></div>
+
+    <label for="note">Note (optional)</label>
+    <textarea id="note" maxlength="140" placeholder="What's this for?"></textarea>
+
+    <button type="button" id="review-btn">Review</button>
+
+  <div id="review-panel">
+    <div class="row"><span>From</span><span id="r-from"></span></div>
+    <div class="row"><span>To</span><span id="r-to"></span></div>
+    <div class="row"><span>Amount</span><span id="r-amount"></span></div>
+    <div class="row"><span>Note</span><span id="r-note"></span></div>
+    <div class="actions">
+      <button type="button" id="edit-btn">Edit</button>
+      <button type="button" id="send-btn" class="primary">Send</button>
+    </div>
+    <div id="sent-msg" style="margin-top:12px;color:#0b6b3a;"></div>
+  </div>
+
+  <div class="spacer"></div>
+  </div>
+  </form>
+</div>
+
+<script>
+  (function () {
+    var form = document.getElementById('transfer-form');
+    var fromSel = document.getElementById('from');
+    var balanceEl = document.getElementById('balance');
+    var recipient = document.getElementById('recipient');
+    var amount = document.getElementById('amount');
+    var amountErr = document.getElementById('amount-error');
+    var note = document.getElementById('note');
+    var reviewBtn = document.getElementById('review-btn');
+    var panel = document.getElementById('review-panel');
+
+    function selectedBalance() {
+      var opt = fromSel.options[fromSel.selectedIndex];
+      return parseFloat(opt.getAttribute('data-balance'));
+    }
+
+    function showBalance() {
+      balanceEl.textContent = 'Available: $' + selectedBalance().toFixed(2);
+    }
+
+    function validate() {
+      var ok = true;
+      amountErr.textContent = '';
+      var raw = amount.value.trim();
+      var val = parseFloat(raw);
+      if (!recipient.value.trim()) { ok = false; }
+      if (!/^\d+(\.\d{1,2})?$/.test(raw) || !(val > 0)) {
+        amountErr.textContent = 'Enter a valid amount greater than 0.';
+        ok = false;
+      } else if (val > selectedBalance()) {
+        amountErr.textContent = 'Amount exceeds available balance.';
+        ok = false;
+      }
+      return ok;
+    }
+
+    function fmt(n) { return '$' + Number(n).toFixed(2); }
+
+    fromSel.addEventListener('change', showBalance);
+
+    reviewBtn.addEventListener('click', function () {
+      if (!recipient.value.trim()) {
+        alert('Please enter a recipient.');
+        return;
+      }
+      if (!validate()) return;
+      document.getElementById('r-from').textContent = fromSel.options[fromSel.selectedIndex].text;
+      document.getElementById('r-to').textContent = recipient.value.trim();
+      document.getElementById('r-amount').textContent = fmt(parseFloat(amount.value));
+      document.getElementById('r-note').textContent = note.value.trim() || '-';
+      document.getElementById('sent-msg').textContent = '';
+      panel.style.display = 'block';
+      reviewBtn.disabled = true;
+    });
+
+    document.getElementById('edit-btn').addEventListener('click', function () {
+      panel.style.display = 'none';
+      reviewBtn.disabled = false;
+    });
+
+    document.getElementById('send-btn').addEventListener('click', function () {
+      document.getElementById('sent-msg').textContent = 'Transfer of ' +
+        document.getElementById('r-amount').textContent + ' submitted (demo only).';
+    });
+
+    showBalance();
+  })();
+</script>
+</body>
+</html>

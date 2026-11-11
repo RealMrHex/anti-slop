@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team members · Quillnote</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Newsreader:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --page: #0b0d14;
+      --side: #07080d;
+      --card: #11141c;
+      --raised: #1a1e28;
+      --line: rgba(238, 240, 245, 0.08);
+      --ink: #eef0f5;
+      --ink-2: #a3a9b8;
+      --ink-3: #7a8296;
+      --accent: #4fc3b3;
+      --track: #232836;
+      --sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font: 14px/20px var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, p, ul, table { margin: 0; }
+    h2 { font-weight: 500; }
+    input, select, button { font: inherit; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .app { display: grid; grid-template-columns: 248px 1fr; min-height: 100vh; }
+
+    /* Sidebar */
+    .side {
+      background: var(--side);
+      border-right: 1px solid var(--line);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      padding: 4px 8px 12px;
+      font-size: 16px; line-height: 1; font-weight: 500;
+    }
+    .brand svg { width: 18px; height: 18px; color: var(--accent); flex: none; }
+    .nav-label {
+      font-size: 12px; line-height: 16px; color: var(--ink-3);
+      padding: 16px 8px 8px;
+    }
+    .nav { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+    .nav a {
+      display: flex; align-items: center; gap: 10px;
+      height: 34px; padding: 0 10px; border-radius: 8px;
+      color: var(--ink-2); text-decoration: none;
+      transition: background-color 150ms var(--ease), color 150ms var(--ease);
+    }
+    .nav a:hover { color: var(--ink); background: rgba(238, 240, 245, 0.04); }
+    .nav a[aria-current="page"] {
+      color: var(--ink); font-weight: 500;
+      background: var(--raised);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+    .nav svg {
+      width: 16px; height: 16px; flex: none;
+      fill: none; stroke: currentColor; stroke-width: 1.5;
+      stroke-linecap: round; stroke-linejoin: round;
+      color: var(--ink-3);
+    }
+    .nav a[aria-current="page"] svg { color: var(--ink-2); }
+    .nav .tag { margin-left: auto; font-size: 11px; color: var(--ink-3); }
+
+    /* Main */
+    .main { padding: 32px 40px 48px; min-width: 0; }
+    .main > * + * { margin-top: 16px; }
+    .page-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      gap: 24px; flex-wrap: wrap; margin-bottom: 28px;
+    }
+    .main > .page-head + * { margin-top: 0; }
+    h1 {
+      font-family: var(--serif); font-weight: 400;
+      font-size: 36px; line-height: 1.15; letter-spacing: 0; color: var(--ink);
+    }
+    .sub { margin-top: 6px; color: var(--ink-2); font-size: 15px; line-height: 22px; }
+
+    .search {
+      display: flex; align-items: center; gap: 8px;
+      width: 260px; height: 36px; padding: 0 12px;
+      border-radius: 10px; background: var(--raised);
+      box-shadow: inset 0 0 0 1px var(--line); color: var(--ink-3);
+    }
+    .search svg {
+      width: 16px; height: 16px; flex: none;
+      fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round;
+    }
+    .search input {
+      flex: 1; min-width: 0; border: 0; background: transparent; outline: 0;
+      color: var(--ink); font-size: 14px;
+    }
+    .search input::placeholder { color: var(--ink-3); }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px;
+    }
+    .card-title {
+      font-size: 15px; line-height: 1.3; font-weight: 500;
+      display: flex; align-items: baseline; gap: 8px;
+      margin-bottom: 16px;
+    }
+    .count {
+      font-size: 13px; font-weight: 400; color: var(--ink-3);
+      font-variant-numeric: tabular-nums;
+    }
+    .meta { margin-top: 12px; font-size: 13px; line-height: 20px; color: var(--ink-3); }
+
+    /* Seats: the one drawn thing */
+    .seats-top {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      gap: 16px; flex-wrap: wrap;
+    }
+    .seats-label { font-size: 13px; color: var(--ink-2); margin-bottom: 8px; }
+    .figure {
+      font-size: 32px; line-height: 1; font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+    .figure span {
+      font-size: 14px; font-weight: 400; color: var(--ink-2); margin-left: 6px;
+    }
+    .note { font-size: 13px; color: var(--ink-2); }
+    .seat-bar {
+      display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px;
+      margin-top: 20px;
+    }
+    .seat-bar span { height: 12px; border-radius: 3px; background: var(--track); }
+    .seat-bar span.on { background: var(--accent); }
+
+    /* Layout */
+    .split { display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; align-items: start; }
+    .split > * + * { margin-top: 0; }
+
+    .invite { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field.grow { flex: 1; min-width: 200px; }
+    .field label { font-size: 13px; color: var(--ink-2); }
+    .field input, .field select {
+      height: 40px; padding: 0 12px;
+      border-radius: 10px; border: 1px solid var(--line);
+      background: var(--raised); color: var(--ink); font-size: 14px;
+    }
+    .field input::placeholder { color: var(--ink-3); }
+    .field select { padding-right: 28px; }
+    .btn-primary {
+      height: 40px; padding: 0 16px; border: 0; border-radius: 10px;
+      background: var(--ink); color: var(--page); font-weight: 500;
+      cursor: pointer;
+      transition: background-color 150ms var(--ease), transform 120ms var(--ease);
+    }
+    .btn-primary:hover { background: #ffffff; }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-quiet {
+      height: 32px; padding: 0 12px; border-radius: 8px;
+      border: 1px solid var(--line); background: var(--raised);
+      color: var(--ink-2); font-size: 13px; cursor: pointer;
+      transition: color 150ms var(--ease);
+    }
+    .btn-quiet:hover { color: var(--ink); }
+    .btn-quiet:active { transform: scale(0.98); }
+
+    .list { list-style: none; padding: 0; }
+    .list li {
+      display: flex; justify-content: space-between; align-items: center;
+      min-height: 44px; border-top: 1px solid var(--line);
+    }
+    .list li:first-child { border-top: 0; }
+    .list .email { font-weight: 500; }
+    .role { font-size: 13px; color: var(--ink-2); }
+
+    /* Members table */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 680px; font-size: 14px; }
+    th {
+      text-align: left; font-size: 12px; font-weight: 400; color: var(--ink-3);
+      padding: 0 16px 10px 0; white-space: nowrap;
+    }
+    th:last-child { text-align: right; padding-right: 0; }
+    td {
+      padding: 12px 16px 12px 0; border-top: 1px solid var(--line);
+      color: var(--ink-2); white-space: nowrap;
+    }
+    td:last-child { text-align: right; padding-right: 0; }
+    tbody tr { transition: background-color 150ms var(--ease); }
+    tbody tr:hover td { background: rgba(238, 240, 245, 0.02); }
+    .person { display: flex; align-items: center; gap: 12px; color: var(--ink); font-weight: 500; }
+    .avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex: none;
+      display: grid; place-items: center;
+      background: var(--raised); box-shadow: inset 0 0 0 1px var(--line);
+      font-size: 12px; font-weight: 500; color: var(--ink-2);
+    }
+
+    /* Phone */
+    @media (max-width: 860px) {
+      .app { grid-template-columns: 1fr; }
+      .side {
+        flex-direction: row; flex-wrap: wrap; align-items: center;
+        gap: 8px; padding: 14px 16px;
+      }
+      .brand { padding: 0 12px 0 0; }
+      .nav-label { display: none; }
+      .nav { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+      .nav a { height: 32px; }
+      .nav .tag { display: none; }
+      .main { padding: 24px 16px 40px; }
+      .main > * + * { margin-top: 12px; }
+      .page-head { margin-bottom: 20px; }
+      h1 { font-size: 30px; }
+      .search { width: 100%; }
+      .split { grid-template-columns: 1fr; gap: 12px; }
+      .card { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="side">
+      <div class="brand">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.5 3.5c-6.5.5-11.5 5-13.5 9.5l4 4c4.5-2 9-7 9.5-13.5z" fill="currentColor" />
+          <path d="M3 21l6.5-6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+        <span>Quillnote</span>
+      </div>
+
+      <p class="nav-label">Settings</p>
+      <nav aria-label="Settings">
+        <ul class="nav">
+          <li><a href="#" aria-current="page">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Team members
+          </a></li>
+          <li><a href="#">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2h16v20l-3-2-2 2-2-2-2 2-2-2-2 2-3-2z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+            Billing
+          </a></li>
+          <li><a href="#">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Security
+          </a></li>
+          <li><a href="#">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0V8zM12 17v5"/></svg>
+            Integrations
+            <span class="tag">New</span>
+          </a></li>
+          <li><a href="#">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0 0 18c1.2 0 1.8-.9 1.5-2s.4-2 1.5-2H18a3 3 0 0 0 3-3c0-4.4-4-11-9-11z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="12" cy="7" r="1"/><circle cx="16.5" cy="10.5" r="1"/></svg>
+            Appearance
+          </a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="page-head">
+        <div>
+          <h1>Team members</h1>
+          <p class="sub">Invite people to your workspace and set what they can do.</p>
+        </div>
+        <label class="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <span class="sr-only">Search members</span>
+          <input type="search" placeholder="Search" />
+        </label>
+      </header>
+
+      <section class="card" aria-labelledby="seats-title">
+        <div class="seats-top">
+          <div>
+            <p class="seats-label" id="seats-title">Seats</p>
+            <p class="figure">9<span>of 12 seats used</span></p>
+          </div>
+          <p class="note">3 seats left. Need more? Upgrade any time.</p>
+        </div>
+        <div class="seat-bar" role="img" aria-label="9 of 12 seats used">
+          <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span>
+          <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span>
+          <span class="on"></span><span></span><span></span><span></span>
+        </div>
+        <p class="meta">Last billed 3 Nov 2026</p>
+      </section>
+
+      <div class="split">
+        <section class="card" aria-labelledby="invite-title">
+          <h2 class="card-title" id="invite-title">Invite by email</h2>
+          <form class="invite" onsubmit="event.preventDefault(); this.querySelector('input').value='';">
+            <div class="field grow">
+              <label for="invite-email">Email address</label>
+              <input id="invite-email" type="email" placeholder="teammate@company.com" />
+            </div>
+            <div class="field">
+              <label for="invite-role">Role</label>
+              <select id="invite-role">
+                <option>Admin</option>
+                <option>Editor</option>
+                <option>Viewer</option>
+              </select>
+            </div>
+            <button type="submit" class="btn-primary">Send invite</button>
+          </form>
+          <p class="meta">Invites expire after 7 days.</p>
+        </section>
+
+        <section class="card" aria-labelledby="pending-title">
+          <h2 class="card-title" id="pending-title">Pending invitations <span class="count">3</span></h2>
+          <ul class="list">
+            <li><span class="email">priya@studio.io</span><span class="role">Editor</span></li>
+            <li><span class="email">marco.v@gmail.com</span><span class="role">Viewer</span></li>
+            <li><span class="email">Jo_Kim@corp.co</span><span class="role">Admin</span></li>
+          </ul>
+          <p class="meta">Sent 2 Nov, 9 Nov and 4 Nov 2026</p>
+        </section>
+      </div>
+
+      <section class="card" aria-labelledby="members-title">
+        <h2 class="card-title" id="members-title">All members <span class="count">8</span></h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Last active</th>
+                <th scope="col"><span class="sr-only">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="person"><span class="avatar">AR</span>Alex R.</div></td>
+                <td>armin@quillnote.app</td>
+                <td>Owner</td>
+                <td>Just now</td>
+                <td><button class="btn-quiet">Edit<span class="sr-only"> Alex R.</span></button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">SL</span>Sofia Lang</div></td>
+                <td>sofia@quillnote.app</td>
+                <td>Admin</td>
+                <td>2 hrs ago</td>
+                <td><button class="btn-quiet">Edit<span class="sr-only"> Sofia Lang</span></button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">DK</span>Dev Kapoor</div></td>
+                <td>dev.k@quillnote.app</td>
+                <td>Editor</td>
+                <td>Yesterday, 4:12 pm</td>
+                <td><button class="btn-quiet">Edit<span class="sr-only"> Dev Kapoor</span></button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">MO</span>Mina Okafor</div></td>
+                <td>mina@quillnote.app</td>
+                <td>Manager</td>
+                <td>3 Nov 2026</td>
+                <td><button class="btn-quiet">Edit<span class="sr-only"> Mina Okafor</span></button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">TR</span>Tomás Ruiz</div></td>
+                <td>tomas.r@quillnote.app</td>
+                <td>Support</td>
+                <td>8 Nov 2026</td>
+                <td><button class="btn-quiet">Edit<span class="sr-only"> Tomás Ruiz</span></button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">NW</span>Nadia Walsh</div></td>
+                <td>nadia@quillnote.app</td>
+                <td>Editor</td>
+                <td>5 days ago</td>
+                <td><button class="btn-quiet">Edit<span class="sr-only"> Nadia Walsh</span></button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">HB</span>Hiro Band</div></td>
+                <td>hiro.b@quillnote.app</td>
+                <td>Viewer</td>
+                <td>28 Oct 2026</td>
+                <td><button class="btn-quiet">Edit<span class="sr-only"> Hiro Band</span></button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">EC</span>Elif Can</div></td>
+                <td>elif@quillnote.app</td>
+                <td>Guest</td>
+                <td>2 Oct 2026</td>
+                <td><button class="btn-quiet">Edit<span class="sr-only"> Elif Can</span></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

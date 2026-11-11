@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deskwise | Support Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #161513;
+    --deep: #12110f;
+    --card: #1c1a18;
+    --raised: #262421;
+    --text: #efe9de;
+    --text2: #aaa398;
+    --muted: #8a847a;
+    --hair: rgba(239, 233, 222, 0.08);
+    --accent: #e8a33d;
+    --pos: #4cc38a;
+    --neg: #e5484d;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button, input, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .icon { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; display: inline-block; }
+  .dot.neg { background: var(--neg); color: var(--neg); }
+  .dot.pos { background: var(--pos); color: var(--pos); }
+
+  .app {
+    display: grid;
+    grid-template-columns: 232px minmax(320px, 360px) 1fr;
+    height: 100vh;
+    min-height: 640px;
+  }
+
+  /* Sidebar */
+  .side {
+    background: var(--deep);
+    border-right: 1px solid var(--hair);
+    padding: 20px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-height: 0;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; font-size: 17px; font-weight: 600; }
+  .label { font-size: 12px; color: var(--muted); margin: 0 0 8px 10px; }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    height: 36px; padding: 0 10px; border-radius: 8px;
+    color: var(--text2); font-size: 14px;
+    transition: background-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .nav-item:hover { background: var(--raised); color: var(--text); }
+  .nav-item[aria-current="page"] { background: var(--raised); color: var(--text); }
+  .nav-item .count { margin-left: auto; font-size: 12px; color: var(--muted); }
+  .nav-item .count.key { color: var(--accent); }
+  .side-foot {
+    margin-top: auto;
+    border-top: 1px solid var(--hair);
+    padding: 16px 10px 0;
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 13px; color: var(--text2);
+  }
+  .side-foot .icon { margin-top: 2px; color: var(--muted); }
+
+  /* Ticket list */
+  .list { background: var(--bg); border-right: 1px solid var(--hair); display: flex; flex-direction: column; min-height: 0; }
+  .list-head { padding: 28px 20px 16px; display: flex; flex-direction: column; gap: 16px; }
+  .title { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 28px; line-height: 1.15; margin: 0; }
+  .sub { font-size: 13px; color: var(--text2); margin: 4px 0 0; }
+  .search {
+    display: flex; align-items: center; gap: 8px;
+    height: 36px; padding: 0 12px; border-radius: 10px;
+    background: var(--card); border: 1px solid var(--hair); color: var(--muted);
+  }
+  .search:focus-within { border-color: rgba(232, 163, 61, 0.5); }
+  .search input { flex: 1; min-width: 0; background: transparent; border: 0; outline: none; font-size: 14px; color: var(--text); }
+  .search input::placeholder { color: var(--muted); }
+
+  .tickets { flex: 1; min-height: 0; overflow: auto; padding: 0 8px 16px; }
+  .ticket {
+    display: grid; grid-template-columns: 32px 1fr; gap: 12px;
+    padding: 12px; border-radius: 10px;
+    transition: background-color 160ms var(--ease);
+  }
+  .ticket:hover { background: var(--card); }
+  .ticket[aria-current="true"] { background: var(--raised); }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--hair);
+    display: grid; place-items: center;
+    font-size: 12px; font-weight: 500; color: var(--text2);
+  }
+  .avatar.lg { width: 44px; height: 44px; font-size: 14px; color: var(--text); }
+  .t-body { min-width: 0; }
+  .t-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .t-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .t-time { font-size: 12px; color: var(--text2); flex: none; }
+  .t-subject { font-size: 14px; font-weight: 500; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .t-preview { font-size: 13px; color: var(--text2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 22px; padding: 0 8px; border-radius: 6px;
+    border: 1px solid var(--hair); font-size: 12px; color: var(--text2);
+  }
+
+  /* Open ticket */
+  .main { display: flex; flex-direction: column; min-height: 0; padding: 24px 32px; gap: 20px; }
+  .ticket-head {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;
+    padding-bottom: 20px; border-bottom: 1px solid var(--hair);
+  }
+  .who { display: flex; gap: 16px; align-items: center; min-width: 0; }
+  h1 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 32px; line-height: 1.1; margin: 0; }
+  .meta { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text2); padding-top: 8px; flex: none; }
+
+  .thread { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 16px; padding: 4px 0; }
+  .msg {
+    max-width: 560px; padding: 14px 16px; border-radius: 14px;
+    border: 1px solid var(--hair); background: var(--card);
+  }
+  .msg.them { align-self: flex-start; border-bottom-left-radius: 4px; }
+  .msg.me { align-self: flex-end; background: var(--raised); border-bottom-right-radius: 4px; }
+  .msg-meta { display: flex; gap: 8px; align-items: baseline; font-size: 13px; color: var(--text2); }
+  .msg-meta strong { font-weight: 500; color: var(--text); }
+  .msg-meta .mono { font-size: 12px; }
+  .msg p { margin: 6px 0 0; font-size: 15px; line-height: 1.55; }
+
+  .composer {
+    border: 1px solid var(--hair); background: var(--card); border-radius: 14px;
+    padding: 12px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .composer:focus-within { border-color: rgba(232, 163, 61, 0.4); }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 30px; padding: 0 10px; border-radius: 8px;
+    border: 1px solid var(--hair); background: var(--raised);
+    font-size: 13px; color: var(--text); cursor: pointer;
+    transition: border-color 160ms var(--ease);
+  }
+  .chip:hover { border-color: rgba(239, 233, 222, 0.16); }
+  .chip .icon { color: var(--text2); }
+  textarea {
+    width: 100%; height: 72px; resize: none; outline: none;
+    background: transparent; border: 0; padding: 4px 4px 0;
+    font-size: 14px; line-height: 1.55;
+  }
+  textarea::placeholder { color: var(--muted); }
+  .composer-foot { display: flex; justify-content: flex-end; }
+  .send {
+    height: 36px; padding: 0 16px; border: 0; border-radius: 10px;
+    background: var(--text); color: var(--bg);
+    font-weight: 500; font-size: 14px; cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transition: opacity 160ms var(--ease);
+  }
+  .send:hover { opacity: 0.9; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+
+  @media (max-width: 960px) {
+    .app { grid-template-columns: minmax(0, 1fr); height: auto; min-height: 100vh; }
+    .side { flex-direction: column; gap: 12px; padding: 16px; min-width: 0; }
+    .label { display: none; }
+    .nav { flex-direction: row; flex-wrap: wrap; gap: 4px; width: 100%; }
+    .nav-item { flex: 1 1 auto; }
+    .nav-item .count { margin-left: 4px; }
+    .side-foot { display: none; }
+    .list { border-right: 0; border-bottom: 1px solid var(--hair); max-height: 60vh; min-width: 0; }
+    .main { padding: 20px 16px; min-height: 70vh; min-width: 0; }
+    .thread { min-width: 0; }
+    .msg { max-width: 100%; }
+    .search { min-width: 0; }
+    .ticket-head { flex-direction: column; gap: 12px; }
+    h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="side">
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect width="22" height="22" rx="6" fill="#e8a33d"/><path d="M5 12.5h3.2l1.3 2h3l1.3-2H17" fill="none" stroke="#161513" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Deskwise</span>
+    </div>
+    <div>
+      <p class="label">Workspace</p>
+      <nav class="nav" aria-label="Inbox views">
+        <a href="#" class="nav-item" aria-current="page">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+          <span>Inbox</span><span class="count key mono">12</span>
+        </a>
+        <a href="#" class="nav-item">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+          <span>Assigned to me</span><span class="count mono">7</span>
+        </a>
+        <a href="#" class="nav-item">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.1 2.18a10 10 0 0 1 3.8 0"/><path d="M13.9 21.82a10 10 0 0 1-3.8 0"/><path d="M17.61 3.72a10 10 0 0 1 2.69 2.7"/><path d="M2.18 13.9a10 10 0 0 1 0-3.8"/><path d="M20.28 17.61a10 10 0 0 1-2.7 2.69"/><path d="M21.82 10.1a10 10 0 0 1 0 3.8"/><path d="M3.72 6.39a10 10 0 0 1 2.7-2.69"/><path d="M6.39 20.28a10 10 0 0 1-2.69-2.7"/></svg>
+          <span>Unassigned</span><span class="count mono">3</span>
+        </a>
+        <a href="#" class="nav-item">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <span>Closed</span><span class="count mono">148</span>
+        </a>
+      </nav>
+    </div>
+    <div class="side-foot">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/></svg>
+      <span>Smart replies are ready</span>
+    </div>
+  </aside>
+
+  <!-- Ticket list -->
+  <section class="list" aria-label="Tickets">
+    <div class="list-head">
+      <div>
+        <h2 class="title">Inbox</h2>
+        <p class="sub">12 open, 3 unassigned</p>
+      </div>
+      <label class="search">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search</span>
+        <input type="search" placeholder="Search">
+      </label>
+    </div>
+
+    <div class="tickets">
+      <a href="#" class="ticket" aria-current="true">
+        <div class="avatar">MR</div>
+        <div class="t-body">
+          <div class="t-top"><span class="t-name">Maria Rossi</span><span class="t-time">2m ago</span></div>
+          <div class="t-subject">Login loop after password reset</div>
+          <div class="t-preview">I reset my password and now I keep getting...</div>
+          <div class="tags"><span class="tag"><i class="dot neg"></i>Urgent</span><span class="tag">Auth</span></div>
+        </div>
+      </a>
+
+      <a href="#" class="ticket">
+        <div class="avatar">JK</div>
+        <div class="t-body">
+          <div class="t-top"><span class="t-name">James Kim</span><span class="t-time">14:05</span></div>
+          <div class="t-subject">Invoice shows wrong VAT</div>
+          <div class="t-preview">Hi, the VAT on invoice #4471 looks off...</div>
+          <div class="tags"><span class="tag"><i class="dot neg"></i>Urgent</span><span class="tag">Billing</span></div>
+        </div>
+      </a>
+
+      <a href="#" class="ticket">
+        <div class="avatar">AL</div>
+        <div class="t-body">
+          <div class="t-top"><span class="t-name">Aisha Lewis</span><span class="t-time">Yesterday</span></div>
+          <div class="t-subject">Can't export CSV</div>
+          <div class="t-preview">Export button spins forever on big...</div>
+          <div class="tags"><span class="tag">Bug</span></div>
+        </div>
+      </a>
+
+      <a href="#" class="ticket">
+        <div class="avatar">DO</div>
+        <div class="t-body">
+          <div class="t-top"><span class="t-name">David Okafor</span><span class="t-time">09:41</span></div>
+          <div class="t-subject">Feature request: dark mode</div>
+          <div class="t-preview">Would love a dark theme for late shifts</div>
+          <div class="tags"><span class="tag">High</span><span class="tag">Idea</span></div>
+        </div>
+      </a>
+
+      <a href="#" class="ticket">
+        <div class="avatar">SP</div>
+        <div class="t-body">
+          <div class="t-top"><span class="t-name">Sofia Pereira</span><span class="t-time">3m ago</span></div>
+          <div class="t-subject">Team seats not syncing</div>
+          <div class="t-preview">We added 4 seats but only 2 show up</div>
+          <div class="tags"><span class="tag">Medium</span><span class="tag">Teams</span></div>
+        </div>
+      </a>
+
+      <a href="#" class="ticket">
+        <div class="avatar">TN</div>
+        <div class="t-body">
+          <div class="t-top"><span class="t-name">Tom Nguyen</span><span class="t-time">Mon</span></div>
+          <div class="t-subject">Webhook retries?</div>
+          <div class="t-preview">Do failed webhooks get retried automatically</div>
+          <div class="tags"><span class="tag">Low</span><span class="tag">API</span></div>
+        </div>
+      </a>
+
+      <a href="#" class="ticket">
+        <div class="avatar">EB</div>
+        <div class="t-body">
+          <div class="t-top"><span class="t-name">Elena Brandt</span><span class="t-time">11:20</span></div>
+          <div class="t-subject">Thanks so much</div>
+          <div class="t-preview">Issue fixed, appreciate the quick help</div>
+          <div class="tags"><span class="tag"><i class="dot pos"></i>Resolved</span></div>
+        </div>
+      </a>
+
+      <a href="#" class="ticket">
+        <div class="avatar">RP</div>
+        <div class="t-body">
+          <div class="t-top"><span class="t-name">Raj Patel</span><span class="t-time">2 days ago</span></div>
+          <div class="t-subject">Locked out of account</div>
+          <div class="t-preview">Two-factor app got wiped, help pls</div>
+          <div class="tags"><span class="tag"><i class="dot neg"></i>Urgent</span><span class="tag">Security</span></div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Open ticket -->
+  <main class="main">
+    <header class="ticket-head">
+      <div class="who">
+        <div class="avatar lg">MR</div>
+        <div>
+          <h1>Login loop after password reset</h1>
+          <p class="meta mono">#DW-20417 · Opened 2m ago</p>
+        </div>
+      </div>
+      <span class="status"><i class="dot pos"></i>Open</span>
+    </header>
+
+    <div class="thread">
+      <div class="msg them">
+        <div class="msg-meta"><strong>Maria Rossi</strong><span class="mono">2m ago</span></div>
+        <p>I reset my password and now I keep getting bounced back to the login screen. Tried three browsers already.</p>
+      </div>
+      <div class="msg me">
+        <div class="msg-meta"><strong>Sam</strong><span class="mono">14:05</span></div>
+        <p>Hi Maria, sorry about that. Let's get this sorted. Can you clear your cookies for deskwise.app?</p>
+      </div>
+      <div class="msg them">
+        <div class="msg-meta"><strong>Maria Rossi</strong><span class="mono">Yesterday</span></div>
+        <p>Did that, still looping. Any update?</p>
+      </div>
+    </div>
+
+    <div class="composer">
+      <div class="chips">
+        <button type="button" class="chip">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.94 15.5A2 2 0 0 0 8.5 14.06l-6.14-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/></svg>
+          Smart reply
+        </button>
+        <button type="button" class="chip">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>
+          Friendly
+        </button>
+        <button type="button" class="chip">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          Attach
+        </button>
+      </div>
+      <label class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)" for="reply">Reply</label>
+      <textarea id="reply" placeholder="Write a reply"></textarea>
+      <div class="composer-foot">
+        <button type="button" class="send">Send reply</button>
+      </div>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

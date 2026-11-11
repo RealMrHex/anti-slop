@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Now Playing</title>
+<style>
+:root{
+  --bg:#1b1226; --bg-glow:#5a2a4a; --surface:rgba(255,255,255,.08);
+  --text:#fbf3ea; --text-2:#cdbfd0; --accent:#ffb347; --accent-ink:#2a1500;
+  --played:#ffb347; --unplayed:rgba(255,243,234,.28);
+  --r-sm:12px; --r-lg:28px; --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+  --font:ui-rounded,"SF Pro Rounded","Avenir Next",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{
+  font-family:var(--font);color:var(--text);background:var(--bg);
+  display:flex;justify-content:center;
+}
+.screen{
+  width:100%;max-width:430px;min-height:100dvh;position:relative;overflow:hidden;
+  padding:max(var(--s4),env(safe-area-inset-top)) var(--s5) max(var(--s4),env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;
+  background:
+    radial-gradient(120% 60% at 50% 18%, var(--bg-glow) 0%, transparent 70%),
+    linear-gradient(180deg,#2a1633 0%, var(--bg) 70%);
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;display:grid;place-items:center;border-radius:50%;
+  transition:transform .12s ease, background-color .15s ease, opacity .15s}
+button:hover{background:var(--surface)}
+button:active{transform:scale(.92)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+svg{display:block}
+.ico{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+header{display:flex;align-items:center;justify-content:space-between;height:48px}
+header button{width:44px;height:44px}
+.from{text-align:center;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);line-height:1.35}
+.from b{display:block;font-size:14px;letter-spacing:0;text-transform:none;color:var(--text);font-weight:600}
+
+.art-wrap{margin:var(--s4) 0 var(--s5);position:relative;display:grid;place-items:center}
+.art{
+  width:100%;aspect-ratio:1;border-radius:var(--r-lg);overflow:hidden;
+  box-shadow:0 24px 48px -12px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.06);
+  transition:transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.playing .art{transform:scale(1)}
+.paused .art{transform:scale(.92)}
+
+.meta{display:flex;align-items:center;gap:var(--s3)}
+.meta div.t{flex:1;min-width:0}
+h1{font-size:26px;line-height:1.15;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.artist{margin-top:var(--s1);font-size:16px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.like{width:48px;height:48px;flex:none}
+.like svg{transition:transform .2s}
+.like[aria-pressed="true"]{color:var(--accent)}
+.like[aria-pressed="true"] svg{fill:currentColor;animation:pop .3s ease}
+@keyframes pop{50%{transform:scale(1.3)}}
+
+.scrub{margin-top:var(--s5)}
+.wave{position:relative;height:56px}
+.bars{position:absolute;inset:0;display:flex;align-items:center;gap:3px}
+.bars i{flex:1;border-radius:2px;background:var(--unplayed);min-height:4px}
+.bars i.on{background:var(--played)}
+.wave input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.wave:focus-within{outline:3px solid var(--accent);outline-offset:4px;border-radius:6px}
+.times{display:flex;justify-content:space-between;margin-top:var(--s2);font-size:13px;color:var(--text-2);font-variant-numeric:tabular-nums}
+
+.controls{display:flex;align-items:center;justify-content:space-between;margin-top:var(--s4)}
+.controls button{width:52px;height:52px;color:var(--text)}
+.controls .side{color:var(--text-2)}
+.controls .side[aria-pressed="true"]{color:var(--accent)}
+.controls .side[aria-pressed="true"]::after{content:"";width:4px;height:4px;border-radius:50%;background:var(--accent);position:absolute;margin-top:34px}
+.controls .side{position:relative}
+.controls .skip svg{width:32px;height:32px;fill:currentColor;stroke:none}
+.play{width:80px!important;height:80px!important;background:var(--accent);color:var(--accent-ink)!important;box-shadow:0 10px 28px -6px rgba(255,179,71,.55)}
+.play:hover{background:#ffc067}
+.play svg{width:34px;height:34px;fill:currentColor;stroke:none}
+
+footer{margin-top:auto;padding-top:var(--s4);display:flex;justify-content:space-between;align-items:center}
+footer button{width:44px;height:44px;color:var(--text-2)}
+.device{display:flex;align-items:center;gap:var(--s2);font-size:13px;color:var(--accent);padding:0 var(--s2)}
+.device span{width:8px;height:8px;border-radius:50%;background:currentColor}
+
+[hidden]{display:none!important}
+@media (max-height:760px){
+  .art-wrap{margin:var(--s2) 0 var(--s4)} .art{width:min(100%,300px)} .scrub{margin-top:var(--s4)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<main class="screen paused" id="screen">
+  <header>
+    <button aria-label="Minimise player"><svg class="ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+    <div class="from">Playing from album<b>Low Tide Radio</b></div>
+    <button aria-label="More options"><svg class="ico" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="19" cy="12" r="1" fill="currentColor"/></svg></button>
+  </header>
+
+  <div class="art-wrap">
+    <div class="art" role="img" aria-label="Album cover: a low orange sun over layered purple waves">
+      <svg viewBox="0 0 400 400" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3b1d5a"/><stop offset=".55" stop-color="#d9546b"/><stop offset="1" stop-color="#ffb347"/>
+          </linearGradient>
+          <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0c9"/><stop offset="1" stop-color="#ffb347"/></linearGradient>
+        </defs>
+        <rect width="400" height="400" fill="url(#sky)"/>
+        <circle cx="200" cy="215" r="82" fill="url(#sun)"/>
+        <path d="M0 250 Q50 232 100 250 T200 250 T300 250 T400 250 V400 H0Z" fill="#7a2f64"/>
+        <path d="M0 285 Q50 265 100 285 T200 285 T300 285 T400 285 V400 H0Z" fill="#552a73"/>
+        <path d="M0 320 Q50 302 100 320 T200 320 T300 320 T400 320 V400 H0Z" fill="#3a2060"/>
+        <path d="M0 355 Q50 340 100 355 T200 355 T300 355 T400 355 V400 H0Z" fill="#251445"/>
+        <g stroke="#fff0c9" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"><path d="M165 262h70"/><path d="M175 272h50" /></g>
+        <text x="24" y="44" font-family="ui-rounded,system-ui,sans-serif" font-size="15" font-weight="700" letter-spacing="3" fill="#fff0c9" fill-opacity=".85">NOVA ÅKESSON</text>
+      </svg>
+    </div>
+  </div>
+
+  <section class="meta" aria-label="Current track">
+    <div class="t">
+      <h1>Salt in the Static</h1>
+      <p class="artist">Nova Åkesson</p>
+    </div>
+    <button class="like" id="like" aria-pressed="false" aria-label="Like this song"><svg class="ico" viewBox="0 0 24 24" width="28" height="28" style="width:28px;height:28px"><path d="M12 20.5s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.8a4.3 4.3 0 0 1 7.5 2.7c0 5.4-7.5 10-7.5 10z"/></svg></button>
+  </section>
+
+  <section class="scrub">
+    <div class="wave" id="wave">
+      <div class="bars" id="bars" aria-hidden="true"></div>
+      <input type="range" id="seek" min="0" max="213" value="0" step="1" aria-label="Seek">
+    </div>
+    <div class="times"><span id="cur">0:00</span><span>-<span id="rem">3:33</span></span></div>
+  </section>
+
+  <div class="controls">
+    <button class="side" id="shuffle" aria-pressed="false" aria-label="Shuffle"><svg class="ico" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></button>
+    <button class="skip" aria-label="Previous track"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9.5 12z"/></svg></button>
+    <button class="play" id="play" aria-label="Play"><svg viewBox="0 0 24 24" id="play-ico"><path d="M8 5v14l11-7z"/></svg></button>
+    <button class="skip" aria-label="Next track"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg></button>
+    <button class="side" id="repeat" aria-pressed="false" aria-label="Repeat"><svg class="ico" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/></svg></button>
+  </div>
+
+  <footer>
+    <button class="device" style="width:auto;border-radius:22px" aria-label="Output device: Kitchen speaker"><span></span>Kitchen speaker</button>
+    <div style="display:flex;gap:4px">
+      <button aria-label="Lyrics"><svg class="ico" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h13"/></svg></button>
+      <button aria-label="Queue"><svg class="ico" viewBox="0 0 24 24"><path d="M3 6h13M3 12h13M3 18h7M18 14v6l4-3z"/></svg></button>
+    </div>
+  </footer>
+</main>
+
+<script>
+(function(){
+  var DUR=213, t=0, timer=null, N=56;
+  var screen=document.getElementById('screen'), bars=document.getElementById('bars'),
+      seek=document.getElementById('seek'), cur=document.getElementById('cur'),
+      rem=document.getElementById('rem'), play=document.getElementById('play'),
+      ico=document.getElementById('play-ico');
+  // deterministic pseudo-waveform
+  var s=7, hs=[];
+  for(var i=0;i<N;i++){ s=(s*9301+49297)%233280; var r=s/233280;
+    var env=.45+.55*Math.sin(Math.PI*(i/N))*(.6+.4*Math.sin(i/3.1));
+    hs.push(Math.max(.12,Math.min(1,env*(.55+.45*r)))); }
+  hs.forEach(function(h){var b=document.createElement('i');b.style.height=(h*100)+'%';bars.appendChild(b);});
+  var els=bars.children;
+  function fmt(n){return Math.floor(n/60)+':'+String(Math.floor(n%60)).padStart(2,'0');}
+  function render(){
+    var on=Math.round(t/DUR*N);
+    for(var i=0;i<N;i++) els[i].classList.toggle('on',i<on);
+    seek.value=t; cur.textContent=fmt(t); rem.textContent=fmt(DUR-t);
+    seek.setAttribute('aria-valuetext',fmt(t)+' of '+fmt(DUR));
+  }
+  function setPlaying(p){
+    screen.classList.toggle('playing',p); screen.classList.toggle('paused',!p);
+    play.setAttribute('aria-label',p?'Pause':'Play');
+    ico.innerHTML=p?'<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>':'<path d="M8 5v14l11-7z"/>';
+    clearInterval(timer);
+    if(p) timer=setInterval(function(){ t=Math.min(DUR,t+1); render(); if(t>=DUR) setPlaying(false); },1000);
+  }
+  play.addEventListener('click',function(){ if(t>=DUR) t=0; setPlaying(screen.classList.contains('paused')); render(); });
+  seek.addEventListener('input',function(){ t=+seek.value; render(); });
+  document.getElementById('like').addEventListener('click',function(e){
+    var b=e.currentTarget, on=b.getAttribute('aria-pressed')!=='true';
+    b.setAttribute('aria-pressed',on); b.setAttribute('aria-label',on?'Unlike this song':'Like this song');
+  });
+  ['shuffle','repeat'].forEach(function(id){
+    var b=document.getElementById(id);
+    b.addEventListener('click',function(){ b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true'); });
+  });
+  t=64; render(); // start partway in
+})();
+</script>
+</body>
+</html>

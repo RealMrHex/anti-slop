@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atmos – Weather, clearly</title>
+<meta name="description" content="Atmos: current conditions, hourly and 7-day forecasts for San Francisco, Tokyo, London and New York.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] } } } };
+</script>
+<style>
+  body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; transition: background 0.8s ease; background: #1e3a5f; }
+  body[data-sky="day"]   { background: linear-gradient(160deg,#2f6fb5 0%,#5b9bd5 45%,#a9cdea 100%) fixed; }
+  body[data-sky="cloud"] { background: linear-gradient(160deg,#4a5d78 0%,#7a8ea8 50%,#b4c1d1 100%) fixed; }
+  body[data-sky="rain"]  { background: linear-gradient(160deg,#27364b 0%,#43556e 55%,#6f819a 100%) fixed; }
+  body[data-sky="night"] { background: linear-gradient(160deg,#0b1430 0%,#1b2a55 55%,#364a7e 100%) fixed; }
+  .glass { background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  .glass-strong { background: rgba(255,255,255,.2); }
+  .scroll-x { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.4) transparent; }
+  .scroll-x::-webkit-scrollbar { height: 8px; }
+  .scroll-x::-webkit-scrollbar-thumb { background: rgba(255,255,255,.35); border-radius: 8px; }
+  .seg[aria-pressed="true"] { background: #fff; color: #17294a; }
+  .city[aria-checked="true"] { background: #fff; color: #17294a; }
+  :focus-visible { outline: 3px solid #fde68a; outline-offset: 2px; border-radius: 10px; }
+  .fade { animation: fade .5s ease both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .fade { animation: none; } body { transition: none; } }
+  .bar { background: linear-gradient(90deg,#7dd3fc,#fde68a,#fb923c); }
+</style>
+</head>
+<body class="min-h-screen overflow-x-hidden text-white antialiased" data-sky="day">
+<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:bg-white focus:text-slate-900 focus:px-3 focus:py-2 focus:rounded-lg z-50">Skip to content</a>
+
+<header class="max-w-6xl mx-auto px-4 sm:px-6 pt-5">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <a href="#" class="flex items-center gap-2 text-xl font-extrabold tracking-tight" aria-label="Atmos home">
+      <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><circle cx="12" cy="12" r="6" fill="#fde68a"/><path d="M10 25a5 5 0 0 1 1-9.9 7 7 0 0 1 13.4 1.6A4.2 4.2 0 0 1 24 25z" fill="#fff"/></svg>
+      Atmos
+    </a>
+    <div class="flex flex-wrap items-center gap-3">
+      <div class="relative">
+        <label for="citySelect" class="sr-only">Select city</label>
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <select id="citySelect" class="glass appearance-none rounded-full pl-9 pr-9 py-2 text-sm font-semibold cursor-pointer">
+        </select>
+        <svg class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div role="group" aria-label="Temperature unit" class="glass rounded-full p-1 flex text-sm font-bold">
+        <button type="button" class="seg rounded-full px-3.5 py-1.5" data-unit="C" aria-pressed="true">°C</button>
+        <button type="button" class="seg rounded-full px-3.5 py-1.5" data-unit="F" aria-pressed="false">°F</button>
+      </div>
+    </div>
+  </div>
+
+  <nav aria-label="Cities" class="mt-4">
+    <div role="radiogroup" aria-label="Quick city picker" id="cityChips" class="flex gap-2 overflow-x-auto scroll-x pb-1"></div>
+  </nav>
+</header>
+
+<main id="main" class="[&>*]:min-w-0 max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+  <!-- Overview -->
+  <section aria-labelledby="overview-h" class="min-w-0 glass rounded-3xl p-6 sm:p-8 lg:p-10 grid lg:grid-cols-5 gap-8 items-center fade" id="overview">
+    <div class="lg:col-span-3">
+      <h1 id="overview-h" class="text-lg sm:text-xl font-semibold text-white/90"><span id="cityName">San Francisco</span>, <span id="country" class="text-white/70">United States</span></h1>
+      <p class="text-sm text-white/75 mt-1"><time id="localTime" aria-live="off">--</time> <span class="text-white/50">·</span> <span id="tzName"></span></p>
+      <div class="flex items-center gap-4 sm:gap-6 mt-5">
+        <div id="bigIcon" class="shrink-0 w-24 h-24 sm:w-32 sm:h-32" aria-hidden="true"></div>
+        <div>
+          <p class="font-extrabold leading-none tracking-tighter text-7xl sm:text-8xl lg:text-9xl" aria-live="polite"><span id="temp">19</span><span class="align-top text-4xl sm:text-5xl font-bold text-white/80">°</span></p>
+          <p id="cond" class="mt-2 text-xl sm:text-2xl font-semibold">Partly Cloudy</p>
+        </div>
+      </div>
+      <p class="mt-5 flex flex-wrap gap-x-5 gap-y-1 text-base sm:text-lg">
+        <span><span class="text-white/70">High</span> <strong id="hi" class="font-bold">22°</strong></span>
+        <span><span class="text-white/70">Low</span> <strong id="lo" class="font-bold">14°</strong></span>
+        <span><span class="text-white/70">Feels like</span> <strong id="feelsTop" class="font-bold">18°</strong></span>
+      </p>
+    </div>
+    <div class="lg:col-span-2 glass-strong rounded-2xl p-5">
+      <h2 class="text-xs uppercase tracking-widest text-white/70 font-bold">Today at a glance</h2>
+      <p id="summary" class="mt-2 text-base sm:text-lg leading-relaxed"></p>
+      <div class="mt-4 pt-4 border-t border-white/20 text-sm text-white/80" id="tip"></div>
+    </div>
+  </section>
+
+  <!-- Hourly -->
+  <section aria-labelledby="hourly-h" class="glass rounded-3xl p-5 sm:p-6">
+    <div class="flex items-baseline justify-between mb-4">
+      <h2 id="hourly-h" class="text-lg font-bold">24-hour forecast</h2>
+      <span class="text-xs text-white/70">Scroll for more →</span>
+    </div>
+    <ol id="hourly" class="flex gap-2 overflow-x-auto scroll-x pb-3 -mx-1 px-1 list-none" tabindex="0" aria-label="Hourly forecast, scrollable"></ol>
+  </section>
+
+  <div class="grid lg:grid-cols-5 gap-6">
+    <!-- Daily -->
+    <section aria-labelledby="daily-h" class="glass rounded-3xl p-5 sm:p-6 lg:col-span-3">
+      <h2 id="daily-h" class="text-lg font-bold mb-3">7-day forecast</h2>
+      <ul id="daily" class="divide-y divide-white/15"></ul>
+    </section>
+
+    <!-- Details -->
+    <section aria-labelledby="details-h" class="lg:col-span-2">
+      <h2 id="details-h" class="text-lg font-bold mb-3 px-1">Weather details</h2>
+      <dl id="details" class="grid grid-cols-2 gap-3"></dl>
+    </section>
+  </div>
+</main>
+
+<footer class="max-w-6xl mx-auto px-4 sm:px-6 pb-10 text-xs text-white/70">
+  <p>Atmos · Forecast data shown is sample data for demonstration.</p>
+</footer>
+
+<script>
+(() => {
+  // ---------- Icons ----------
+  const I = {
+    sun: `<svg viewBox="0 0 64 64"><g stroke="#fde68a" stroke-width="4" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>`<line x1="32" y1="6" x2="32" y2="12" transform="rotate(${a} 32 32)"/>`).join('')}</g><circle cx="32" cy="32" r="12" fill="#fcd34d"/></svg>`,
+    moon: `<svg viewBox="0 0 64 64"><path d="M40 10a22 22 0 1 0 14 38A18 18 0 0 1 40 10z" fill="#e2e8f0"/></svg>`,
+    partly: `<svg viewBox="0 0 64 64"><g stroke="#fde68a" stroke-width="3.5" stroke-linecap="round">${[0,45,90,135,180,270,315].map(a=>`<line x1="24" y1="4" x2="24" y2="9" transform="rotate(${a} 24 22)"/>`).join('')}</g><circle cx="24" cy="22" r="10" fill="#fcd34d"/><path d="M20 54a10 10 0 0 1 2-19.8 14 14 0 0 1 26.8 3.2A8.4 8.4 0 0 1 48 54z" fill="#fff"/></svg>`,
+    pnight: `<svg viewBox="0 0 64 64"><path d="M32 6a14 14 0 1 0 14 22A11 11 0 0 1 32 6z" fill="#e2e8f0"/><path d="M20 54a10 10 0 0 1 2-19.8 14 14 0 0 1 26.8 3.2A8.4 8.4 0 0 1 48 54z" fill="#cbd5e1"/></svg>`,
+    cloud: `<svg viewBox="0 0 64 64"><path d="M16 50a12 12 0 0 1 2-23.8 16 16 0 0 1 30.6 4A10 10 0 0 1 48 50z" fill="#fff"/></svg>`,
+    rain: `<svg viewBox="0 0 64 64"><path d="M16 40a11 11 0 0 1 2-21.8 15 15 0 0 1 28.6 3.8A9 9 0 0 1 46 40z" fill="#e2e8f0"/><g stroke="#7dd3fc" stroke-width="4" stroke-linecap="round"><line x1="20" y1="46" x2="17" y2="55"/><line x1="32" y1="46" x2="29" y2="55"/><line x1="44" y1="46" x2="41" y2="55"/></g></svg>`,
+    fog: `<svg viewBox="0 0 64 64"><path d="M16 36a11 11 0 0 1 2-21.8 15 15 0 0 1 28.6 3.8A9 9 0 0 1 46 36z" fill="#e2e8f0"/><g stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".85"><line x1="12" y1="45" x2="52" y2="45"/><line x1="18" y1="53" x2="46" y2="53"/></g></svg>`
+  };
+  const ic = (k, cls='') => `<span class="inline-block ${cls}" aria-hidden="true">${I[k]}</span>`;
+  const full = s => s.replace('<svg','<svg width="100%" height="100%"');
+
+  // ---------- Data (all temps in °C, wind km/h, visibility km) ----------
+  // hourly: temps for 24 hours starting at local midnight (index = hour of day), plus icon codes
+  const DATA = {
+    sf: {
+      name:'San Francisco', country:'United States', tz:'America/Los_Angeles', tzLabel:'Pacific Time',
+      temp:19, cond:'Partly Cloudy', icon:'partly', hi:22, lo:14, feels:18,
+      humidity:64, wind:12, windDir:'WSW', uv:5, vis:10, sunrise:'6:42 AM', sunset:'7:28 PM', sunH:[6.7,19.47],
+      summary:'Marine layer clears by late morning, leaving mild sun and passing clouds. A light westerly breeze picks up after lunch.',
+      tip:'Layers recommended: cool near the water, warm inland.',
+      hourly:[14,14,14,14,14,15,15,16,17,18,19,20,21,22,22,22,21,20,19,17,16,15,15,14],
+      hIcons:'nnnnnnpppppppppppppnnnnn'.split('').map((c,i)=>i),
+      sky:['n','n','n','n','n','n','c','c','p','p','p','p','p','s','s','p','p','p','p','p','n','n','n','n'],
+      daily:[['Partly Cloudy','partly',22,14,10],['Sunny','sun',24,15,0],['Sunny','sun',25,15,0],['Cloudy','cloud',21,14,10],['Light Rain','rain',18,13,60],['Partly Cloudy','partly',20,13,20],['Sunny','sun',23,14,0]]
+    },
+    tokyo: {
+      name:'Tokyo', country:'Japan', tz:'Asia/Tokyo', tzLabel:'Japan Standard Time',
+      temp:24, cond:'Mostly Sunny', icon:'sun', hi:27, lo:19, feels:26,
+      humidity:58, wind:9, windDir:'SE', uv:7, vis:12, sunrise:'5:48 AM', sunset:'5:21 PM', sunH:[5.8,17.35],
+      summary:'Warm and bright with high clouds drifting in this evening. Humidity stays moderate; no rain expected today.',
+      tip:'UV is high around noon. Sunscreen advised.',
+      hourly:[19,19,19,19,19,20,21,22,23,24,25,26,27,27,27,26,25,24,23,22,21,21,20,20],
+      sky:['n','n','n','n','n','c','s','s','s','s','s','s','s','s','p','p','p','p','p','n','n','n','n','n'],
+      daily:[['Mostly Sunny','sun',27,19,5],['Partly Cloudy','partly',26,19,15],['Rain','rain',22,18,80],['Light Rain','rain',21,17,55],['Cloudy','cloud',23,17,20],['Sunny','sun',26,18,0],['Sunny','sun',28,19,0]]
+    },
+    london: {
+      name:'London', country:'United Kingdom', tz:'Europe/London', tzLabel:'UK Time',
+      temp:11, cond:'Light Rain', icon:'rain', hi:13, lo:8, feels:9,
+      humidity:82, wind:19, windDir:'SW', uv:2, vis:7, sunrise:'7:05 AM', sunset:'4:24 PM', sunH:[7.08,16.4],
+      summary:'Grey and damp with light showers on and off through the afternoon. Brighter spells possible after dark.',
+      tip:'Take an umbrella; gusts up to 30 km/h.',
+      hourly:[8,8,8,8,8,8,9,9,10,10,11,12,12,13,13,12,12,11,10,10,9,9,8,8],
+      sky:['c','c','c','c','c','c','r','r','r','r','r','r','r','r','r','c','c','c','c','c','c','c','c','c'],
+      daily:[['Light Rain','rain',13,8,70],['Cloudy','cloud',12,7,30],['Partly Cloudy','partly',14,7,10],['Rain','rain',11,8,80],['Cloudy','cloud',12,6,25],['Fog','fog',10,5,15],['Partly Cloudy','partly',13,6,10]]
+    },
+    ny: {
+      name:'New York', country:'United States', tz:'America/New_York', tzLabel:'Eastern Time',
+      temp:14, cond:'Mostly Cloudy', icon:'cloud', hi:16, lo:9, feels:12,
+      humidity:55, wind:22, windDir:'NW', uv:3, vis:16, sunrise:'6:39 AM', sunset:'4:42 PM', sunH:[6.65,16.7],
+      summary:'Cloud cover holds most of the day with a brisk northwest wind. Dry conditions, turning clear and cold tonight.',
+      tip:'Windy by the river; it feels cooler than the thermometer says.',
+      hourly:[9,9,9,9,9,10,10,11,12,13,14,15,15,16,16,16,15,14,13,12,11,11,10,10],
+      sky:['n','n','n','n','n','c','c','c','c','c','c','c','c','c','c','c','c','p','p','n','n','n','n','n'],
+      daily:[['Mostly Cloudy','cloud',16,9,10],['Sunny','sun',17,8,0],['Sunny','sun',18,10,0],['Partly Cloudy','partly',17,11,20],['Rain','rain',14,10,75],['Showers','rain',13,8,50],['Partly Cloudy','partly',15,7,10]]
+    }
+  };
+  const ORDER = ['sf','tokyo','london','ny'];
+
+  // ---------- State ----------
+  let city = 'sf', unit = 'C', clock = null;
+  try { const s = localStorage.getItem('atmos'); if (s) { const o = JSON.parse(s); if (DATA[o.city]) city = o.city; if (o.unit==='F') unit='F'; } } catch(e){}
+
+  const $ = id => document.getElementById(id);
+  const cv = c => unit === 'C' ? Math.round(c) : Math.round(c * 9/5 + 32);
+  const t = c => cv(c) + '°';
+  const wind = k => unit === 'C' ? `${k} km/h` : `${Math.round(k*0.621)} mph`;
+  const dist = k => unit === 'C' ? `${k} km` : `${Math.round(k*0.621)} mi`;
+
+  const iconFor = s => ({n:'moon', c:'cloud', p:'partly', s:'sun', r:'rain'})[s];
+
+  function hourInTz(tz, d = new Date()) {
+    const parts = new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'numeric',minute:'numeric',hour12:false}).formatToParts(d);
+    const h = +parts.find(p=>p.type==='hour').value % 24, m = +parts.find(p=>p.type==='minute').value;
+    return {h, m};
+  }
+  function fmtHour(h) { const x = ((h%24)+24)%24; return x===0?'12 AM':x<12?`${x} AM`:x===12?'12 PM':`${x-12} PM`; }
+
+  function isNight(c, h) { const [r,s] = c.sunH; const x = h + 0.5; return x < r || x > s; }
+
+  function skyFor(c, h) {
+    if (isNight(c, h)) return 'night';
+    if (c.icon === 'rain') return 'rain';
+    if (c.icon === 'cloud') return 'cloud';
+    return 'day';
+  }
+
+  // ---------- Render ----------
+  function render() {
+    const c = DATA[city];
+    const {h} = hourInTz(c.tz);
+    document.body.dataset.sky = skyFor(c, h);
+    document.title = `${t(c.temp)}${unit} ${c.name} – Atmos`;
+
+    $('cityName').textContent = c.name;
+    $('country').textContent = c.country;
+    $('tzName').textContent = c.tzLabel;
+    $('temp').textContent = cv(c.temp);
+    $('cond').textContent = c.cond;
+    $('hi').textContent = t(c.hi) + unit;
+    $('lo').textContent = t(c.lo) + unit;
+    $('feelsTop').textContent = t(c.feels) + unit;
+    $('bigIcon').innerHTML = full(isNight(c,h) && c.icon==='sun' ? I.moon : isNight(c,h) && c.icon==='partly' ? I.pnight : I[c.icon]);
+    $('summary').textContent = c.summary;
+    $('tip').textContent = c.tip;
+
+    // Hourly: next 24 hours starting at current local hour
+    const hrs = [];
+    for (let i = 0; i < 24; i++) {
+      const hh = (h + i) % 24;
+      let ico = iconFor(c.sky[hh]);
+      if (i === 0) ico = isNight(c,h) && c.icon==='sun' ? 'moon' : isNight(c,h) && c.icon==='partly' ? 'pnight' : c.icon;
+      else if (c.sky[hh]==='p' && isNight(c,hh)) ico = 'pnight';
+      else if (c.sky[hh]==='s' && isNight(c,hh)) ico = 'moon';
+      const temp = i === 0 ? c.temp : c.hourly[hh];
+      const pop = c.sky[hh] === 'r' ? 70 : 0;
+      hrs.push(`<li class="shrink-0 w-[4.5rem] text-center rounded-2xl py-3 px-1 ${i===0?'glass-strong ring-1 ring-white/50':'bg-white/5'}">
+        <p class="text-xs font-semibold ${i===0?'':'text-white/80'}">${i===0?'Now':fmtHour(hh)}</p>
+        ${ic(ico,'w-9 h-9 my-2')}
+        <p class="text-base font-bold">${t(temp)}</p>
+        <p class="text-[11px] text-sky-200 h-4">${pop?pop+'%':''}</p>
+      </li>`);
+    }
+    $('hourly').innerHTML = hrs.join('');
+    $('hourly').querySelectorAll('svg').forEach(s=>{s.setAttribute('width','100%');s.setAttribute('height','100%');});
+
+    // Daily
+    const lows = c.daily.map(d=>d[3]), highs = c.daily.map(d=>d[2]);
+    const mn = Math.min(...lows), mx = Math.max(...highs), span = mx - mn || 1;
+    const now = new Date();
+    $('daily').innerHTML = c.daily.map((d,i) => {
+      const dt = new Date(now.getTime() + i*864e5);
+      const name = i===0 ? 'Today' : new Intl.DateTimeFormat('en-US',{timeZone:c.tz,weekday:'short'}).format(dt);
+      const left = (d[3]-mn)/span*100, width = (d[2]-d[3])/span*100;
+      return `<li class="grid grid-cols-[3.2rem_2.25rem_1fr] sm:grid-cols-[4rem_2.5rem_7rem_1fr] items-center gap-x-3 gap-y-1 py-3">
+        <span class="font-semibold text-sm sm:text-base">${name}</span>
+        ${ic(d[1],'w-8 h-8 sm:w-9 sm:h-9')}
+        <span class="hidden sm:block text-sm text-white/85 truncate">${d[0]}${d[4]>=30?` <span class="text-sky-200 text-xs">${d[4]}%</span>`:''}</span>
+        <span class="flex items-center gap-2 sm:gap-3 min-w-0">
+          <span class="w-9 text-right text-sm text-white/75 tabular-nums">${t(d[3])}</span>
+          <span class="relative flex-1 h-1.5 rounded-full bg-white/20" role="img" aria-label="Range ${t(d[3])} to ${t(d[2])}"><span class="bar absolute h-full rounded-full" style="left:${left}%;width:${Math.max(width,8)}%"></span></span>
+          <span class="w-9 text-sm font-bold tabular-nums">${t(d[2])}</span>
+        </span>
+      </li>`;
+    }).join('');
+    $('daily').querySelectorAll('svg').forEach(s=>{s.setAttribute('width','100%');s.setAttribute('height','100%');});
+
+    // Details
+    const uvLabel = c.uv<=2?'Low':c.uv<=5?'Moderate':c.uv<=7?'High':'Very high';
+    const items = [
+      ['Humidity', c.humidity+'%', c.humidity>70?'Muggy':c.humidity>45?'Comfortable':'Dry', 'M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z'],
+      ['Wind', wind(c.wind), `From ${c.windDir}`, 'M3 8h11a3 3 0 1 0-3-3M3 14h15a3 3 0 1 1-3 3M3 11h7'],
+      ['UV Index', c.uv, uvLabel, 'M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z'],
+      ['Visibility', dist(c.vis), c.vis>=10?'Clear view':c.vis>=5?'Moderate':'Reduced', 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z'],
+      ['Feels like', t(c.feels)+unit, c.feels<c.temp?'Cooler than actual':c.feels>c.temp?'Warmer than actual':'Same as actual', 'M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z'],
+      ['Sunrise', c.sunrise, 'Local time', 'M4 18h16M12 6v6M8 10l4-4 4 4M7 18a5 5 0 0 1 10 0'],
+      ['Sunset', c.sunset, 'Local time', 'M4 18h16M12 12V6M8 8l4 4 4-4M7 18a5 5 0 0 1 10 0']
+    ];
+    $('details').innerHTML = items.map((x,i) => `<div class="glass rounded-2xl p-4 ${i===4?'col-span-2':''}">
+      <dt class="flex items-center gap-2 text-xs uppercase tracking-wider text-white/75 font-bold"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${x[3]}"/></svg>${x[0]}</dt>
+      <dd class="mt-2 text-2xl font-extrabold">${x[1]}</dd>
+      <dd class="text-xs text-white/70 mt-0.5">${x[2]}</dd>
+    </div>`).join('') + `<div class="glass rounded-2xl p-4 col-span-2">
+      <p class="text-xs uppercase tracking-wider text-white/75 font-bold">Daylight</p>
+      <div class="relative mt-3 h-2 rounded-full bg-white/20"><div class="bar absolute h-full rounded-full" style="left:${c.sunH[0]/24*100}%;width:${(c.sunH[1]-c.sunH[0])/24*100}%"></div><div class="absolute -top-1 w-4 h-4 rounded-full bg-white shadow" style="left:calc(${(h+hourInTz(c.tz).m/60)/24*100}% - 8px)" title="Now"></div></div>
+      <div class="flex justify-between text-xs text-white/75 mt-2"><span>${c.sunrise}</span><span>${c.sunset}</span></div>
+    </div>`;
+
+    // controls
+    $('citySelect').value = city;
+    document.querySelectorAll('.city').forEach(b => b.setAttribute('aria-checked', b.dataset.city === city));
+    document.querySelectorAll('.seg').forEach(b => b.setAttribute('aria-pressed', b.dataset.unit === unit));
+    // degree symbol next to big temp shows unit
+    updateClock();
+  }
+
+  function updateClock() {
+    const c = DATA[city];
+    $('localTime').textContent = new Intl.DateTimeFormat('en-US',{timeZone:c.tz,weekday:'long',hour:'numeric',minute:'2-digit'}).format(new Date());
+  }
+
+  // ---------- Controls ----------
+  const sel = $('citySelect');
+  sel.innerHTML = ORDER.map(k=>`<option value="${k}">${DATA[k].name}</option>`).join('');
+  $('cityChips').innerHTML = ORDER.map(k=>`<button type="button" role="radio" aria-checked="false" data-city="${k}" class="city glass rounded-full px-4 py-1.5 text-sm font-semibold whitespace-nowrap">${DATA[k].name} <span class="opacity-70 font-medium ml-1" data-chip="${k}"></span></button>`).join('');
+
+  function setCity(k) { city = k; save(); render(); }
+  function save() { try { localStorage.setItem('atmos', JSON.stringify({city, unit})); } catch(e){} }
+  sel.addEventListener('change', e => setCity(e.target.value));
+  $('cityChips').addEventListener('click', e => { const b = e.target.closest('.city'); if (b) setCity(b.dataset.city); });
+  $('cityChips').addEventListener('keydown', e => {
+    if (!['ArrowRight','ArrowLeft'].includes(e.key)) return;
+    const i = ORDER.indexOf(city), n = ORDER[(i + (e.key==='ArrowRight'?1:ORDER.length-1)) % ORDER.length];
+    setCity(n); document.querySelector(`.city[data-city="${n}"]`).focus(); e.preventDefault();
+  });
+  document.querySelectorAll('.seg').forEach(b => b.addEventListener('click', () => { unit = b.dataset.unit; save(); render(); chips(); }));
+
+  function chips() { ORDER.forEach(k => { const el = document.querySelector(`[data-chip="${k}"]`); if (el) el.textContent = t(DATA[k].temp) ; }); }
+
+  // fix: unit label after temperature
+  const origRender = render;
+  chips();
+  render();
+  // small unit suffix next to degree mark
+  const deg = document.querySelector('#overview .align-top');
+  const patch = () => { deg.textContent = '°' + unit; };
+  patch();
+  document.querySelectorAll('.seg').forEach(b => b.addEventListener('click', patch));
+
+  setInterval(updateClock, 15000);
+})();
+</script>
+</body>
+</html>

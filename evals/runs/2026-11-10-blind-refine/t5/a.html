@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurora Wireless Headphones</title>
+<style>
+  :root {
+    --bg: #fafaf8;
+    --surface: #ffffff;
+    --ink: #1b1c1f;
+    --muted: #62656c;
+    --line: #e4e3df;
+    --accent: #2f5bd8;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    margin: 0; padding: 32px 20px 64px;
+    color: var(--ink); background: var(--bg);
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .product, .wrap { max-width: 980px; margin: 0 auto; }
+  .product { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+
+  .image {
+    aspect-ratio: 1 / 1; border-radius: 20px;
+    background: radial-gradient(circle at 50% 40%, #ffffff 0%, #ecebe6 100%);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .image svg { width: 62%; height: auto; }
+  .image svg .shell { transition: fill .2s; }
+
+  .info { padding-top: 8px; }
+  .eyebrow { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+  h1 { font-size: 36px; line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 12px; }
+  .price { font-size: 26px; font-weight: 600; margin: 0 0 20px; }
+  .description { color: var(--muted); font-size: 16px; margin: 0 0 28px; max-width: 46ch; }
+
+  .label { font-size: 14px; font-weight: 600; display: block; margin: 0 0 10px; }
+  .label span { font-weight: 400; color: var(--muted); }
+  #swatches { display: flex; gap: 12px; margin-bottom: 28px; }
+  .swatch {
+    width: 36px; height: 36px; border-radius: 50%; padding: 0; cursor: pointer;
+    border: 1px solid rgba(0,0,0,.18);
+    box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px transparent;
+    transition: box-shadow .15s;
+  }
+  .swatch:hover { box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--line); }
+  .swatch.selected { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--ink); }
+  .swatch:focus-visible, button.add:focus-visible, .qty:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+  .buy { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+  .qty-field { width: 84px; }
+  .qty {
+    width: 100%; height: 52px; padding: 0 12px; font: inherit; font-size: 16px;
+    border: 1px solid #c9c8c3; border-radius: var(--radius); background: var(--surface); color: var(--ink);
+  }
+  button.add {
+    flex: 1 1 180px; height: 52px; padding: 0 24px; font: inherit; font-size: 16px; font-weight: 600;
+    cursor: pointer; background: var(--ink); color: #fff; border: none; border-radius: var(--radius);
+    transition: background .15s, transform .05s;
+  }
+  button.add:hover { background: #33353b; }
+  button.add:active { transform: translateY(1px); }
+  #message { margin-top: 14px; min-height: 22px; font-size: 14px; color: #1d6b3a; }
+  .cart { font-size: 14px; color: var(--muted); padding-top: 14px; margin-top: 14px; border-top: 1px solid var(--line); }
+  .cart span { color: var(--ink); font-weight: 600; }
+
+  .wrap { margin-top: 64px; }
+  .wrap h2 { font-size: 20px; letter-spacing: -0.01em; margin: 0 0 12px; }
+  table.specs { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; border-style: hidden; box-shadow: 0 0 0 1px var(--line); }
+  table.specs td { border-bottom: 1px solid var(--line); padding: 14px 20px; vertical-align: top; }
+  table.specs tr:last-child td { border-bottom: none; }
+  table.specs td:first-child { font-weight: 600; width: 32%; color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 760px) {
+    body { padding: 20px 16px 48px; }
+    .product { grid-template-columns: 1fr; gap: 28px; }
+    h1 { font-size: 28px; }
+    .wrap { margin-top: 44px; }
+    table.specs td { padding: 12px 14px; }
+    table.specs td:first-child { width: 38%; }
+  }
+</style>
+</head>
+<body>
+<div class="product">
+  <div class="image" role="img" aria-label="Aurora Wireless Headphones">
+    <svg viewBox="0 0 200 200" fill="none" aria-hidden="true">
+      <path d="M45 120V100a55 55 0 0 1 110 0v20" stroke="#8a8c92" stroke-width="9" stroke-linecap="round"/>
+      <rect class="shell" id="cupL" x="30" y="105" width="34" height="62" rx="15" fill="#111"/>
+      <rect class="shell" id="cupR" x="136" y="105" width="34" height="62" rx="15" fill="#111"/>
+    </svg>
+  </div>
+  <div class="info">
+    <p class="eyebrow">Wireless &middot; Noise cancelling</p>
+    <h1>Aurora Wireless Headphones</h1>
+    <p class="price" id="price">$129.00</p>
+    <p class="description">Over-ear wireless headphones with active noise cancellation, up to 30 hours of battery life, and soft memory-foam ear cushions for all-day comfort.</p>
+
+    <span class="label">Colour: <span id="colourName">Midnight Black</span></span>
+    <div id="swatches">
+      <button class="swatch selected" style="background:#111" data-name="Midnight Black" aria-label="Midnight Black"></button>
+      <button class="swatch" style="background:#f5f5f0" data-name="Cloud White" aria-label="Cloud White"></button>
+      <button class="swatch" style="background:#7a9cc6" data-name="Sky Blue" aria-label="Sky Blue"></button>
+      <button class="swatch" style="background:#c0505a" data-name="Rose Red" aria-label="Rose Red"></button>
+    </div>
+
+    <div class="buy">
+      <div class="qty-field">
+        <label class="label" for="qty">Quantity</label>
+        <input class="qty" type="number" id="qty" value="1" min="1" max="10">
+      </div>
+      <button class="add" id="addBtn">Add to cart</button>
+    </div>
+    <div id="message" role="status" aria-live="polite"></div>
+    <div class="cart">Cart: <span id="cartCount">0</span> item(s)</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <h2>Specifications</h2>
+  <table class="specs">
+    <tr><td>Connectivity</td><td>Bluetooth 5.3</td></tr>
+    <tr><td>Battery life</td><td>Up to 30 hours (ANC off), 22 hours (ANC on)</td></tr>
+    <tr><td>Charging</td><td>USB-C, 10 min quick charge for 3 hours of playback</td></tr>
+    <tr><td>Driver size</td><td>40 mm dynamic drivers</td></tr>
+    <tr><td>Frequency response</td><td>20 Hz to 20 kHz</td></tr>
+    <tr><td>Weight</td><td>265 g</td></tr>
+    <tr><td>Warranty</td><td>2 years</td></tr>
+  </table>
+</div>
+
+<script>
+  var selectedColour = "Midnight Black";
+  var cartCount = 0;
+
+  var swatches = document.querySelectorAll(".swatch");
+  for (var i = 0; i < swatches.length; i++) {
+    swatches[i].addEventListener("click", function () {
+      for (var j = 0; j < swatches.length; j++) {
+        swatches[j].classList.remove("selected");
+      }
+      this.classList.add("selected");
+      selectedColour = this.getAttribute("data-name");
+      document.getElementById("colourName").textContent = selectedColour;
+      var fill = this.style.background;
+      document.getElementById("cupL").setAttribute("fill", fill);
+      document.getElementById("cupR").setAttribute("fill", fill);
+    });
+  }
+
+  document.getElementById("addBtn").addEventListener("click", function () {
+    var qty = parseInt(document.getElementById("qty").value, 10);
+    if (isNaN(qty) || qty < 1) {
+      qty = 1;
+    }
+    cartCount += qty;
+    document.getElementById("cartCount").textContent = cartCount;
+    document.getElementById("message").textContent = "Added " + qty + " x " + selectedColour + " to cart.";
+  });
+</script>
+</body>
+</html>

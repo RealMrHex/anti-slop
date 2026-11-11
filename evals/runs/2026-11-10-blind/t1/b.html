@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>API Usage Dashboard</title>
+<style>
+:root{
+  --bg:#f6f7f9;--card:#fff;--ink:#14181f;--mute:#5b6472;--line:#e3e6eb;
+  --req:#2f6fed;--err:#d6402f;--ok:#1f8a5b;--warn:#c27a06;--track:#e9ecf1;
+  --p50:#8fb0f5;--p95:#2f6fed;--p99:#1a3f94;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0f1218;--card:#171b23;--ink:#e8ebf0;--mute:#9099a8;--line:#272d38;
+  --req:#5b93ff;--err:#ff6b58;--ok:#3ccf91;--warn:#f0a93a;--track:#262c37;
+  --p50:#3f5f9e;--p95:#5b93ff;--p99:#b5cdff;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1160px;margin:0 auto;padding:24px 16px 48px}
+header{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;margin-bottom:20px}
+h1{font-size:20px;margin:0}
+.sub{color:var(--mute);font-size:13px;margin-top:2px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;background:var(--card);overflow:hidden}
+.seg button{border:0;background:none;color:var(--mute);padding:7px 14px;font:inherit;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.seg button:focus-visible{outline:2px solid var(--req);outline-offset:-2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.kpi .l{color:var(--mute);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.kpi .v{font-size:28px;font-weight:650;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.kpi .d{font-size:12px;color:var(--mute)}
+.good{color:var(--ok)}.bad{color:var(--err)}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px}
+h2{font-size:14px;margin:0 0 2px}
+.legend{display:flex;gap:14px;color:var(--mute);font-size:12px;margin:4px 0 8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto}
+svg text{fill:var(--mute);font-size:11px;font-family:inherit}
+.meter{height:12px;background:var(--track);border-radius:6px;overflow:hidden;margin:14px 0 8px}
+.meter div{height:100%;border-radius:6px;background:var(--ok)}
+.big{font-size:26px;font-weight:650;font-variant-numeric:tabular-nums}
+.rows{margin-top:14px;border-top:1px solid var(--line)}
+.rows div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);color:var(--mute)}
+.rows b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;white-space:nowrap}
+th{color:var(--mute);font-weight:500;font-size:12px}
+th:first-child,td:first-child{text-align:left}
+td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+.m{font-size:11px;color:var(--mute);margin-right:6px;font-family:inherit}
+.bar{display:inline-block;height:8px;border-radius:4px;background:var(--p95);vertical-align:middle;margin-left:8px}
+.pill{padding:2px 8px;border-radius:99px;font-size:12px;background:var(--track)}
+.pill.bad{background:color-mix(in srgb,var(--err) 18%,transparent)}
+.pill.warn{background:color-mix(in srgb,var(--warn) 22%,transparent);color:var(--warn)}
+@media(max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
+@media(max-width:400px){.kpi .v{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><h1>API usage</h1><div class="sub">Production key <code>pk_live_…4f2a</code> · Team plan · updated <span id="upd"></span></div></div>
+    <div class="seg" role="group" aria-label="Time range">
+      <button data-r="24h">24 hours</button><button data-r="7d" aria-pressed="true">7 days</button><button data-r="30d">30 days</button>
+    </div>
+  </header>
+
+  <section class="kpis" id="kpis" aria-label="Summary"></section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Requests and errors</h2>
+      <div class="legend"><span><i style="background:var(--req)"></i>Requests</span><span><i style="background:var(--err)"></i>Errors (4xx/5xx, own scale; hover bars for exact counts)</span></div>
+      <svg id="chart" viewBox="0 0 720 260" role="img" aria-label="Requests and errors over time"></svg>
+    </div>
+    <div class="card">
+      <h2>Monthly quota</h2>
+      <div class="sub">Resets Dec 1 · 21 days left</div>
+      <div class="big" id="qpct"></div>
+      <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="qbar"><div id="qfill"></div></div>
+      <div class="sub" id="qtxt"></div>
+      <div class="rows" id="qrows"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Latency and errors by endpoint</h2>
+    <div class="legend"><span>Latency in ms; bar shows p95</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>Endpoint</th><th>Requests</th><th>Error rate</th><th>p50</th><th>p95</th><th>p99</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table></div>
+  </section>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const fmt=n=>n>=1e6?(n/1e6).toFixed(2)+"M":n>=1e3?(n/1e3).toFixed(1)+"k":String(Math.round(n));
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const R={ "24h":{n:24,unit:"h",lab:i=>`${(i+1)%24||24}:00`,scale:1/7,step:4},
+          "7d":{n:7,unit:"d",lab:i=>["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][i],scale:1,step:1},
+          "30d":{n:30,unit:"d",lab:i=>"Nov "+(i-19<1?"-":i-19),scale:4.2,step:5}};
+const EP=[["POST /v1/completions",.34,.9,310,720,1480],["GET /v1/models",.21,.1,18,42,95],
+ ["POST /v1/embeddings",.19,.4,64,160,410],["GET /v1/usage",.11,.2,35,88,210],
+ ["POST /v1/files",.09,2.9,220,640,1900],["DELETE /v1/files/{id}",.06,1.4,41,120,330]];
+function data(k){
+  seed=11;const r=R[k],pts=[];
+  for(let i=0;i<r.n;i++){
+    const wave=1+.35*Math.sin(i/(k==="24h"?3.8:1.1)+1)+(rnd()-.5)*.2;
+    const req=Math.round(1.52e6/7*r.scale*wave*(k==="24h"?7/24*1.0:1)*(k==="30d"?1/4.2*1:1)*(k==="24h"?1:1));
+    const rate=.011+.006*rnd()+(i===Math.floor(r.n*.62)?.02:0);
+    pts.push({req,err:Math.round(req*rate)});
+  }
+  return pts;
+}
+function render(k){
+  const r=R[k],d=data(k);
+  const total=d.reduce((a,p)=>a+p.req,0),errs=d.reduce((a,p)=>a+p.err,0);
+  const rate=errs/total*100;
+  const kp=[["Requests",fmt(total),"+8.4% vs prior period","good"],
+            ["Error rate",rate.toFixed(2)+"%","+0.21 pts vs prior period","bad"],
+            ["p95 latency","412 ms","−6.0% vs prior period","good"],
+            ["Active keys","14","2 added this period",""]];
+  $("#kpis").innerHTML=kp.map(x=>`<div class="card kpi"><div class="l">${x[0]}</div><div class="v">${x[1]}</div><div class="d ${x[3]}">${x[2]}</div></div>`).join("");
+  // chart
+  const W=720,H=260,L=44,B=26,T=10,pw=W-L-8,ph=H-B-T;
+  const max=Math.max(...d.map(p=>p.req))*1.1, emax=Math.max(...d.map(p=>p.err))*1.25;
+  const bw=pw/d.length;let s="";
+  for(let g=0;g<=4;g++){const y=T+ph-ph*g/4;s+=`<line x1="${L}" x2="${W-8}" y1="${y}" y2="${y}" stroke="var(--line)"/><text x="${L-6}" y="${y+4}" text-anchor="end">${fmt(max*g/4)}</text>`}
+  d.forEach((p,i)=>{const h=ph*p.req/max,x=L+i*bw+bw*.15;
+    s+=`<rect x="${x}" y="${T+ph-h}" width="${bw*.7}" height="${h}" rx="2" fill="var(--req)" opacity=".85"><title>${r.lab(i)}: ${p.req.toLocaleString()} requests, ${p.err.toLocaleString()} errors</title></rect>`;
+    if(i%r.step===0)s+=`<text x="${x+bw*.35}" y="${H-8}" text-anchor="middle">${r.lab(i)}</text>`});
+  const line=d.map((p,i)=>`${i?"L":"M"}${L+i*bw+bw/2},${T+ph-ph*.55*p.err/emax}`).join("");
+  s+=`<path d="${line}" fill="none" stroke="var(--err)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  $("#chart").innerHTML=s;
+  // table
+  const mx=Math.max(...EP.map(e=>e[4]));
+  $("#tb").innerHTML=EP.map(e=>{const c=e[2]>2?"bad":e[2]>1?"warn":"";
+    return `<tr><td>${e[0]}</td><td>${fmt(total*e[1])}</td><td><span class="pill ${c}">${e[2].toFixed(1)}%</span></td><td>${e[3]}</td><td>${e[4]}<span class="bar" style="width:${e[4]/mx*70}px"></span></td><td>${e[5]}</td></tr>`}).join("");
+}
+// quota (account-level, independent of range)
+const used=7.12e6,cap=10e6,pct=used/cap*100;
+$("#qpct").textContent=pct.toFixed(1)+"%";
+$("#qfill").style.width=pct+"%";
+if(pct>85)$("#qfill").style.background="var(--err)";else if(pct>70)$("#qfill").style.background="var(--warn)";
+$("#qbar").setAttribute("aria-valuenow",pct.toFixed(1));
+$("#qtxt").textContent=`${(used/1e6).toFixed(2)}M of ${(cap/1e6).toFixed(0)}M requests used`;
+$("#qrows").innerHTML=[["Remaining",fmt(cap-used)],["Daily average",fmt(used/10)],["Projected at reset","9.4M"],["Rate limit","600 req/min"]].map(x=>`<div><span>${x[0]}</span><b>${x[1]}</b></div>`).join("");
+$("#upd").textContent=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".seg button").forEach(x=>x.setAttribute("aria-pressed",x===b));render(b.dataset.r)});
+render("7d");
+</script>
+</body>
+</html>

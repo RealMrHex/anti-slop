@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deskwise | Support Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0f0f10;      /* sidebar */
+    --bg: #141415;           /* page and list */
+    --card: #19191b;         /* message and composer surfaces */
+    --raised: #232325;       /* selected row, active nav, avatars, inputs */
+    --hairline: rgba(237, 237, 237, 0.08);
+    --text: #ededed;
+    --text-2: #a1a1a6;
+    --text-3: #85858b;
+    --accent: #e9b25f;       /* amber, used on one figure and one selection rule */
+    --negative: #e5484d;
+    --positive: #4cc38a;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --font: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 20px;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid rgba(233, 178, 95, 0.6); outline-offset: 2px; }
+
+  .icon {
+    width: 16px; height: 16px; flex: none;
+    fill: none; stroke: currentColor; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .muted { color: var(--text-3); }
+  .secondary { color: var(--text-2); }
+
+  /* Shell */
+  .shell {
+    display: grid;
+    grid-template-columns: 232px 352px minmax(0, 1fr);
+    height: 100vh;
+    min-height: 720px;
+    width: 100%;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--bg-deep);
+    border-right: 1px solid var(--hairline);
+    padding: 20px 12px;
+    display: flex;
+    flex-direction: column;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 12px; height: 32px;
+    font-size: 16px; font-weight: 500; letter-spacing: 0;
+  }
+  .brand-mark {
+    width: 16px; height: 16px; border-radius: 4px; background: var(--text);
+  }
+  .group-label {
+    font-size: 12px; line-height: 16px; color: var(--text-3);
+    padding: 0 12px; margin: 24px 0 8px;
+  }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex; align-items: center; gap: 10px;
+    height: 36px; padding: 0 12px; border-radius: 8px;
+    color: var(--text-2); text-decoration: none;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .nav a:hover { background: var(--raised); color: var(--text); }
+  .nav a[aria-current="page"] {
+    background: var(--raised); color: var(--text);
+    box-shadow: inset 0 0 0 1px var(--hairline), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+  .nav .label { flex: 1; min-width: 0; }
+  .nav .count { font-size: 13px; color: var(--text-3); }
+  .nav .count.accent { color: var(--accent); }
+
+  /* List */
+  .list-pane {
+    background: var(--bg);
+    border-right: 1px solid var(--hairline);
+    display: flex; flex-direction: column; min-height: 0;
+  }
+  .list-head { padding: 20px 16px 12px; }
+  .list-title { font-size: 16px; font-weight: 500; margin: 0 0 12px; line-height: 24px; }
+  .search {
+    display: flex; align-items: center; gap: 8px;
+    height: 36px; padding: 0 12px;
+    border: 1px solid var(--hairline); border-radius: 10px;
+    background: var(--card);
+    color: var(--text-3);
+  }
+  .search input {
+    flex: 1; min-width: 0; background: transparent; border: 0; outline: none;
+    color: var(--text); font-size: 14px;
+  }
+  .search input::placeholder { color: var(--text-3); }
+  .search:focus-within { border-color: rgba(237, 237, 237, 0.16); }
+
+  .tickets { flex: 1; overflow: hidden; }
+  .ticket {
+    position: relative;
+    display: grid; grid-template-columns: 32px 1fr; gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--hairline);
+    cursor: pointer;
+    transition: background-color 150ms var(--ease);
+  }
+  .ticket:hover { background: var(--card); }
+  .ticket[aria-selected="true"] { background: var(--raised); }
+  .ticket[aria-selected="true"]::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 2px; background: var(--accent);
+  }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--raised);
+    display: grid; place-items: center;
+    font-size: 12px; font-weight: 500; color: var(--text-2);
+  }
+  .ticket[aria-selected="true"] .avatar { background: var(--bg); }
+  .row-top {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+  }
+  .who { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .when { font-size: 12px; color: var(--text-3); white-space: nowrap; }
+  .subject {
+    margin-top: 2px; font-size: 14px; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .preview {
+    margin-top: 2px; font-size: 13px; color: var(--text-3);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .meta {
+    margin-top: 8px; display: flex; align-items: center; gap: 12px;
+    font-size: 12px; color: var(--text-3);
+  }
+  .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-3); flex: none; }
+  .dot.urgent { background: var(--negative); }
+  .dot.resolved { background: var(--positive); }
+
+  /* Main */
+  .main { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--bg); }
+  .ticket-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .ticket-id { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .ticket-id .avatar { width: 40px; height: 40px; font-size: 14px; }
+  .ticket-title { margin: 0; font-size: 20px; line-height: 28px; font-weight: 500; }
+  .ticket-meta { margin-top: 2px; font-size: 13px; color: var(--text-3); }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); white-space: nowrap; }
+
+  .thread {
+    flex: 1; min-height: 0; overflow: hidden;
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .message { max-width: 560px; }
+  .message.agent { align-self: flex-end; }
+  .message-head { font-size: 12px; color: var(--text-3); margin-bottom: 8px; }
+  .message-head b { font-weight: 500; color: var(--text-2); }
+  .bubble {
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--hairline);
+    font-size: 14px; line-height: 22px;
+  }
+  .message.agent .bubble { background: var(--raised); border-color: transparent; }
+
+  .composer {
+    border-top: 1px solid var(--hairline);
+    padding: 16px 24px 20px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .tools { display: flex; gap: 8px; }
+  .tool {
+    display: inline-flex; align-items: center; gap: 6px;
+    height: 32px; padding: 0 12px; border-radius: 8px;
+    background: transparent; border: 1px solid var(--hairline);
+    color: var(--text-2); font-size: 13px;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .tool:hover { background: var(--raised); color: var(--text); }
+  .reply {
+    width: 100%; height: 88px; resize: none;
+    padding: 12px 16px; border-radius: 12px;
+    background: var(--card); border: 1px solid var(--hairline);
+    outline: none; font-size: 14px; line-height: 20px;
+  }
+  .reply::placeholder { color: var(--text-3); }
+  .reply:focus { border-color: rgba(237, 237, 237, 0.16); }
+  .send-row { display: flex; justify-content: flex-end; }
+  .send {
+    height: 36px; padding: 0 16px; border-radius: 10px; border: 0;
+    background: var(--text); color: var(--bg);
+    font-weight: 500; font-size: 14px;
+    transition: background-color 150ms var(--ease);
+  }
+  .send:hover { background: #d6d6d8; }
+  .send:active { transform: scale(0.98); }
+
+  @media (max-width: 1100px) {
+    .shell { grid-template-columns: 200px 300px minmax(0, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span>Deskwise</div>
+
+    <div class="group-label">Workspace</div>
+    <nav class="nav" aria-label="Views">
+      <a href="#" aria-current="page">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+        <span class="label">Inbox</span>
+        <span class="count num accent">12</span>
+      </a>
+      <a href="#">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+        <span class="label">Assigned to me</span>
+        <span class="count num">7</span>
+      </a>
+      <a href="#">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/></svg>
+        <span class="label">Unassigned</span>
+        <span class="count num">3</span>
+      </a>
+      <a href="#">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>
+        <span class="label">Closed</span>
+        <span class="count num">148</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Ticket list -->
+  <section class="list-pane" aria-label="Tickets">
+    <div class="list-head">
+      <h2 class="list-title">Inbox</h2>
+      <label class="search">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="text" placeholder="Search" aria-label="Search tickets">
+      </label>
+    </div>
+
+    <div class="tickets" role="listbox" aria-label="Ticket list">
+      <div class="ticket" role="option" aria-selected="true" tabindex="0">
+        <div class="avatar">MR</div>
+        <div>
+          <div class="row-top"><span class="who">Maria Rossi</span><span class="when">2m ago</span></div>
+          <div class="subject">Login loop after password reset</div>
+          <div class="preview">I reset my password and now I keep getting...</div>
+          <div class="meta"><span><i class="dot urgent"></i>Urgent</span><span>Auth</span></div>
+        </div>
+      </div>
+
+      <div class="ticket" role="option" aria-selected="false" tabindex="0">
+        <div class="avatar">JK</div>
+        <div>
+          <div class="row-top"><span class="who">James Kim</span><span class="when">14:05</span></div>
+          <div class="subject">Invoice shows wrong VAT</div>
+          <div class="preview">Hi, the VAT on invoice #4471 looks off...</div>
+          <div class="meta"><span><i class="dot urgent"></i>Urgent</span><span>Billing</span></div>
+        </div>
+      </div>
+
+      <div class="ticket" role="option" aria-selected="false" tabindex="0">
+        <div class="avatar">AL</div>
+        <div>
+          <div class="row-top"><span class="who">Aisha Lewis</span><span class="when">Yesterday</span></div>
+          <div class="subject">Can't export CSV</div>
+          <div class="preview">Export button spins forever on big...</div>
+          <div class="meta"><span>Bug</span></div>
+        </div>
+      </div>
+
+      <div class="ticket" role="option" aria-selected="false" tabindex="0">
+        <div class="avatar">DO</div>
+        <div>
+          <div class="row-top"><span class="who">David Okafor</span><span class="when">09:41</span></div>
+          <div class="subject">Feature request: dark mode</div>
+          <div class="preview">Would love a dark theme for late shifts</div>
+          <div class="meta"><span>High</span><span>Idea</span></div>
+        </div>
+      </div>
+
+      <div class="ticket" role="option" aria-selected="false" tabindex="0">
+        <div class="avatar">SP</div>
+        <div>
+          <div class="row-top"><span class="who">Sofia Pereira</span><span class="when">3m ago</span></div>
+          <div class="subject">Team seats not syncing</div>
+          <div class="preview">We added 4 seats but only 2 show up</div>
+          <div class="meta"><span>Medium</span><span>Teams</span></div>
+        </div>
+      </div>
+
+      <div class="ticket" role="option" aria-selected="false" tabindex="0">
+        <div class="avatar">TN</div>
+        <div>
+          <div class="row-top"><span class="who">Tom Nguyen</span><span class="when">Mon</span></div>
+          <div class="subject">Webhook retries?</div>
+          <div class="preview">Do failed webhooks get retried automatically</div>
+          <div class="meta"><span>Low</span><span>API</span></div>
+        </div>
+      </div>
+
+      <div class="ticket" role="option" aria-selected="false" tabindex="0">
+        <div class="avatar">EB</div>
+        <div>
+          <div class="row-top"><span class="who">Elena Brandt</span><span class="when">11:20</span></div>
+          <div class="subject">Thanks so much</div>
+          <div class="preview">Issue fixed, appreciate the quick help</div>
+          <div class="meta"><span><i class="dot resolved"></i>Resolved</span></div>
+        </div>
+      </div>
+
+      <div class="ticket" role="option" aria-selected="false" tabindex="0">
+        <div class="avatar">RP</div>
+        <div>
+          <div class="row-top"><span class="who">Raj Patel</span><span class="when">2 days ago</span></div>
+          <div class="subject">Locked out of account</div>
+          <div class="preview">Two-factor app got wiped, help pls</div>
+          <div class="meta"><span><i class="dot urgent"></i>Urgent</span><span>Security</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Open ticket -->
+  <main class="main">
+    <header class="ticket-head">
+      <div class="ticket-id">
+        <div class="avatar">MR</div>
+        <div>
+          <h1 class="ticket-title">Login loop after password reset</h1>
+          <div class="ticket-meta"><span class="num">#DW-20417</span> · Opened 2m ago</div>
+        </div>
+      </div>
+      <span class="status"><i class="dot resolved"></i>Open</span>
+    </header>
+
+    <div class="thread">
+      <article class="message">
+        <div class="message-head"><b>Maria Rossi</b> · 2m ago</div>
+        <div class="bubble">I reset my password and now I keep getting bounced back to the login screen. Tried three browsers already.</div>
+      </article>
+
+      <article class="message agent">
+        <div class="message-head"><b>Sam</b> · 14:05</div>
+        <div class="bubble">Hi Maria, sorry about that. Let's get this sorted. Can you clear your cookies for deskwise.app?</div>
+      </article>
+
+      <article class="message">
+        <div class="message-head"><b>Maria Rossi</b> · Yesterday</div>
+        <div class="bubble">Did that, still looping. Any update?</div>
+      </article>
+    </div>
+
+    <div class="composer">
+      <div class="tools">
+        <button class="tool" type="button">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01"/></svg>
+          Smart reply
+        </button>
+        <button class="tool" type="button">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+          Friendly
+        </button>
+        <button class="tool" type="button">
+          <svg class="icon" viewBox="0 0 24 24"><path d="m21 11-8.5 8.5a5 5 0 0 1-7-7L14 4a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3L15 7"/></svg>
+          Attach
+        </button>
+      </div>
+      <textarea class="reply" placeholder="Type a reply" aria-label="Reply"></textarea>
+      <div class="send-row">
+        <button class="send" type="button">Send reply</button>
+      </div>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

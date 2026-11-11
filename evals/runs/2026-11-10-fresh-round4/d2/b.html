@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>Sprintly - Mobile app v3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --page: #f5f7fa;
+      --card: #ffffff;
+      --raised: #eceff4;
+      --hairline: rgba(17, 24, 39, 0.08);
+      --text: #111827;
+      --text-2: #4b5565;
+      --text-3: #6b7487;
+      --dot: #9aa3b5;
+      --track: #e3e8f0;
+      --accent: #2452d6;
+      --pos: #16a34a;
+      --neg: #dc2626;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --sans: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
+      --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      font-family: var(--sans);
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--text);
+      background: var(--page);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input { font: inherit; color: inherit; }
+    h1, h2, h3, p { margin: 0; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+    .i {
+      width: 16px; height: 16px; flex: none;
+      fill: none; stroke: currentColor; stroke-width: 1.5;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .mono, time, .count, .tag-row span, .tiles-meta { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+    /* Layout */
+    .app {
+      display: grid;
+      grid-template-columns: 256px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--page);
+      border-right: 1px solid var(--hairline);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 17px; font-weight: 500; letter-spacing: 0;
+      padding: 0 8px; height: 36px; margin-bottom: 20px;
+    }
+    .mark {
+      width: 24px; height: 24px; border-radius: 6px; background: var(--accent);
+      display: grid; place-items: center; flex: none;
+    }
+    .group-label {
+      font-size: 12px; font-weight: 500; color: var(--text-2);
+      padding: 0 8px; margin: 24px 0 8px;
+    }
+    .nav { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+    .nav a {
+      display: flex; align-items: center; gap: 10px;
+      height: 34px; padding: 0 10px; border-radius: 8px;
+      color: var(--text-2); text-decoration: none;
+      transition: background-color 160ms var(--ease), color 160ms var(--ease);
+    }
+    .nav a .i { color: var(--text-3); }
+    .nav a:hover { background: rgba(17, 24, 39, 0.04); color: var(--text); }
+    .nav a[aria-current="page"] {
+      background: var(--card); color: var(--text); font-weight: 500;
+      box-shadow: 0 0 0 1px var(--hairline), 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    .nav a[aria-current="page"] .i { color: var(--accent); }
+    .nav .count { margin-left: auto; font-size: 12px; color: var(--text-3); }
+
+    .team { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+    .team li { display: flex; align-items: center; gap: 10px; height: 34px; padding: 0 10px; color: var(--text); }
+    .av {
+      width: 24px; height: 24px; border-radius: 999px; flex: none;
+      background: var(--track); color: var(--text-2);
+      font-family: var(--mono); font-size: 10px; font-weight: 500;
+      display: grid; place-items: center; letter-spacing: 0;
+    }
+    .team .av { width: 28px; height: 28px; font-size: 11px; }
+
+    .tip {
+      margin-top: auto; padding: 14px 10px 0;
+      border-top: 1px solid var(--hairline);
+      font-size: 13px; line-height: 18px; color: var(--text-2);
+    }
+
+    /* Main */
+    .main {
+      padding: 28px 32px 24px;
+      display: flex; flex-direction: column; gap: 20px;
+      min-width: 0;
+      animation: rise 360ms var(--ease) both;
+    }
+    .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    h1 { font-size: 28px; line-height: 1.15; font-weight: 500; letter-spacing: 0; }
+    .sub { margin-top: 4px; font-size: 14px; color: var(--text-2); }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      height: 36px; padding: 0 14px; border: 0; border-radius: 8px;
+      background: var(--accent); color: #fff;
+      font-size: 14px; font-weight: 500; cursor: pointer; flex: none;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transition: background-color 160ms var(--ease), transform 160ms var(--ease);
+    }
+    .btn-primary:hover { background: #1d47bf; }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .toolbar .label { font-size: 13px; color: var(--text-2); margin-right: 4px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 32px; padding: 0 10px; border: 0; border-radius: 8px;
+      background: var(--card); color: var(--text);
+      box-shadow: 0 0 0 1px var(--hairline);
+      font-size: 13px; cursor: pointer;
+      transition: background-color 160ms var(--ease);
+    }
+    .chip .i { color: var(--text-3); width: 14px; height: 14px; }
+    .chip:hover { background: #fbfcfd; }
+    .search { position: relative; margin-left: auto; }
+    .search .i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-3); }
+    .search input {
+      width: 220px; height: 32px; padding: 0 10px 0 32px;
+      border: 0; border-radius: 8px; background: var(--card);
+      box-shadow: 0 0 0 1px var(--hairline);
+      font-size: 13px;
+    }
+    .search input::placeholder { color: var(--text-3); }
+
+    /* Sprint progress: the one drawn thing on the screen */
+    .sprint {
+      background: var(--card); border-radius: 14px;
+      box-shadow: 0 0 0 1px var(--hairline), 0 1px 2px rgba(0, 0, 0, 0.05);
+      padding: 20px 24px;
+      display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 32px; align-items: center;
+    }
+    .sprint-figure p.kicker { font-size: 13px; color: var(--text-2); }
+    .big { font-size: 32px; line-height: 1; font-weight: 500; margin-top: 8px; font-variant-numeric: tabular-nums; }
+    .tiles { display: grid; grid-template-columns: repeat(21, minmax(0, 1fr)); gap: 4px; }
+    .tiles span { height: 28px; border-radius: 4px; background: var(--track); }
+    .tiles span.on { background: var(--accent); }
+    .sprint-meta { display: grid; gap: 8px; justify-items: end; white-space: nowrap; }
+    .sprint-meta p { font-size: 13px; color: var(--text-2); }
+    .sprint-meta .num { font-family: var(--mono); color: var(--text); font-variant-numeric: tabular-nums; }
+    .status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); }
+    .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--dot); flex: none; display: inline-block; }
+    .dot.pos { background: var(--pos); }
+    .dot.neg { background: var(--neg); }
+
+    /* Board */
+    .board {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px; flex: 1; min-height: 0;
+    }
+    .col {
+      display: flex; flex-direction: column; gap: 12px; min-width: 0;
+      background: rgba(17, 24, 39, 0.035); border-radius: 20px; padding: 8px;
+    }
+    .col-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 8px 0; height: 30px;
+    }
+    .col-head h2 { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+    .count { font-size: 12px; color: var(--text-3); }
+    .cards { display: grid; gap: 10px; align-content: start; }
+
+    .card {
+      background: var(--card); border-radius: 12px; padding: 14px;
+      box-shadow: 0 0 0 1px var(--hairline), 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: box-shadow 160ms var(--ease);
+    }
+    .card:hover { box-shadow: 0 0 0 1px rgba(17, 24, 39, 0.14), 0 1px 2px rgba(0, 0, 0, 0.05); }
+    .tag-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .tag-row span { font-size: 12px; color: var(--text-3); }
+    .card h3 { font-size: 15px; font-weight: 500; line-height: 1.35; }
+    .card-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+    time { font-size: 12px; color: var(--text-2); }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap;
+    }
+
+    /* Entrance: one short fade and rise */
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* Narrow screens: one column in reading order */
+    @media (max-width: 1100px) {
+      .board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+      .app { grid-template-columns: minmax(0, 1fr); }
+      .sidebar { border-right: 0; border-bottom: 1px solid var(--hairline); }
+      .tip { display: none; }
+      .main { padding: 20px 16px; }
+      .page-head { flex-direction: column; }
+      .search { margin-left: 0; width: 100%; }
+      .search input { width: 100%; }
+      .sprint { grid-template-columns: 1fr; gap: 16px; }
+      .sprint-meta { justify-items: start; }
+      .board { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 14 14"><rect x="2" y="2.5" width="10" height="2" rx="1" fill="#fff"/><rect x="2" y="6" width="7" height="2" rx="1" fill="#fff"/><rect x="2" y="9.5" width="10" height="2" rx="1" fill="#fff"/></svg>
+      </span>
+      Sprintly
+    </div>
+
+    <p class="group-label">Projects</p>
+    <ul class="nav">
+      <li><a href="#" aria-current="page">
+        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+        Mobile app v3 <span class="count">12</span>
+      </a></li>
+      <li><a href="#">
+        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        Web dashboard
+      </a></li>
+      <li><a href="#">
+        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Checkout revamp
+      </a></li>
+      <li><a href="#">
+        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2v7.5a2 2 0 0 1-.2.9L4.7 20.5a1 1 0 0 0 .9 1.5h12.8a1 1 0 0 0 .9-1.5l-5.1-10.1a2 2 0 0 1-.2-.9V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg>
+        Experiments
+      </a></li>
+    </ul>
+
+    <p class="group-label">Team</p>
+    <ul class="team">
+      <li><span class="av">PS</span>Priya Shah</li>
+      <li><span class="av">MK</span>Marco Keller</li>
+      <li><span class="av">JO</span>Jun Okafor</li>
+      <li><span class="av">AL</span>Ana Lima</li>
+    </ul>
+
+    <p class="tip">Keep sprints short and sweet</p>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <header class="page-head">
+      <div>
+        <h1>Mobile app v3</h1>
+        <p class="sub">Sprint ends tomorrow</p>
+      </div>
+      <button class="btn-primary" type="button">
+        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        Add task
+      </button>
+    </header>
+
+    <div class="toolbar">
+      <span class="label">Filters</span>
+      <button class="chip" type="button">Everyone <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <button class="chip" type="button">All labels <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <button class="chip" type="button">Any date <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <label class="search">
+        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="sr-only">Search tasks</span>
+        <input type="search" placeholder="Search" />
+      </label>
+    </div>
+
+    <!-- Sprint progress -->
+    <section class="sprint" aria-label="Sprint progress">
+      <div class="sprint-figure">
+        <p class="kicker">Sprint progress</p>
+        <p class="big">42%</p>
+      </div>
+      <div class="tiles" role="img" aria-label="9 of 21 tasks done">
+        <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="sprint-meta">
+        <p><span class="num">9</span> of <span class="num">21</span> done</p>
+        <p class="status"><span class="dot neg"></span>2 overdue</p>
+      </div>
+    </section>
+
+    <!-- Board -->
+    <section class="board" aria-label="Task board">
+
+      <div class="col">
+        <header class="col-head">
+          <h2><span class="dot"></span>Backlog</h2>
+          <span class="count">3</span>
+        </header>
+        <div class="cards">
+          <article class="card">
+            <div class="tag-row"><span>Feature</span></div>
+            <h3>Onboarding carousel</h3>
+            <div class="card-foot"><span class="av">PS</span><time>Nov 3</time></div>
+          </article>
+          <article class="card">
+            <div class="tag-row"><span>Design</span></div>
+            <h3>Dark mode tokens</h3>
+            <div class="card-foot"><span class="av">MK</span><time>Nov 12</time></div>
+          </article>
+          <article class="card">
+            <div class="tag-row"><span>Infra</span></div>
+            <h3>Push certs renewal</h3>
+            <div class="card-foot"><span class="av">JO</span><time>Tomorrow</time></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="col">
+        <header class="col-head">
+          <h2><span class="dot"></span>In progress</h2>
+          <span class="count">3</span>
+        </header>
+        <div class="cards">
+          <article class="card">
+            <div class="tag-row"><span>Bug</span></div>
+            <h3>Login crash on iOS 19</h3>
+            <div class="card-foot"><span class="av">AL</span><time>Nov 5</time></div>
+          </article>
+          <article class="card">
+            <div class="tag-row"><span>UX</span></div>
+            <h3>Push settings sheet</h3>
+            <div class="card-foot"><span class="av">PS</span><time>Nov 7</time></div>
+          </article>
+          <article class="card">
+            <div class="tag-row"><span>API</span></div>
+            <h3>Cursor pagination v2</h3>
+            <div class="card-foot"><span class="av">MK</span><time>Nov 9</time></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="col">
+        <header class="col-head">
+          <h2><span class="dot"></span>In review</h2>
+          <span class="count">2</span>
+        </header>
+        <div class="cards">
+          <article class="card">
+            <div class="tag-row"><span>Feature</span></div>
+            <h3>Biometric unlock</h3>
+            <div class="card-foot"><span class="av">JO</span><time>Nov 10</time></div>
+          </article>
+          <article class="card">
+            <div class="tag-row"><span>QA</span><span>Tests</span></div>
+            <h3>E2E suite for checkout</h3>
+            <div class="card-foot"><span class="av">AL</span><time>Nov 4</time></div>
+          </article>
+        </div>
+      </div>
+
+      <div class="col">
+        <header class="col-head">
+          <h2><span class="dot pos"></span>Done</h2>
+          <span class="count">3</span>
+        </header>
+        <div class="cards">
+          <article class="card">
+            <div class="tag-row"><span>Done</span></div>
+            <h3>Splash screen refresh</h3>
+            <div class="card-foot"><span class="av">PS</span><time>Nov 1</time></div>
+          </article>
+          <article class="card">
+            <div class="tag-row"><span>Chore</span></div>
+            <h3>Bump RN to 0.85</h3>
+            <div class="card-foot"><span class="av">MK</span><time>Oct 30</time></div>
+          </article>
+          <article class="card">
+            <div class="tag-row"><span>Perf</span></div>
+            <h3>Image cache wins</h3>
+            <div class="card-foot"><span class="av">JO</span><time>Oct 28</time></div>
+          </article>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gridwatch Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep: #12110f;
+    --bg: #161513;
+    --card: #1c1a18;
+    --raised: #262421;
+    --hair: rgba(239, 233, 222, 0.08);
+    --text: #efe9de;
+    --text-2: #aaa398;
+    --text-3: #8a847a;
+    --accent: #f0b048;
+    --pos: #4cc38a;
+    --warn: #b8893f;
+    --neg: #e5484d;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    background: var(--bg);
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; }
+
+  .app {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    width: 1280px;
+    height: 900px;
+    overflow: hidden;
+    animation: enter 400ms var(--ease) both;
+  }
+  @keyframes enter {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Sidebar */
+  .side {
+    background: var(--deep);
+    border-right: 1px solid var(--hair);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 8px;
+    height: 32px;
+    margin-bottom: 24px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .nav { display: flex; flex-direction: column; gap: 4px; }
+  .nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    color: var(--text-2);
+    transition: background-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .nav a svg { width: 18px; height: 18px; flex: none; stroke-width: 1.5; }
+  .nav a:hover { background: rgba(239, 233, 222, 0.04); color: var(--text); }
+  .nav a[aria-current="page"] {
+    background: var(--raised);
+    color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 0 0 1px var(--hair);
+  }
+  .nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Main */
+  .main {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+  h1 { font-size: 28px; line-height: 1.15; font-weight: 500; letter-spacing: -0.01em; }
+  .meta { font-size: 13px; line-height: 20px; color: var(--text-3); }
+
+  .btn {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    border: 1px solid var(--hair);
+    background: var(--raised);
+    color: var(--text);
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transition: background-color 160ms var(--ease);
+  }
+  .btn:hover { background: #2d2b28; }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    padding: 20px;
+    min-width: 0;
+  }
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  h2 { font-size: 16px; line-height: 24px; font-weight: 500; }
+
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .label { font-size: 13px; color: var(--text-2); }
+  .figure {
+    margin-top: 8px;
+    font-size: 32px;
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .figure span { font-size: 16px; color: var(--text-2); margin-left: 4px; letter-spacing: 0; }
+  .figure.accent { color: var(--accent); }
+  .delta { margin-top: 12px; font-size: 13px; color: var(--text-3); }
+
+  /* Chart row */
+  .split {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+  }
+  .live { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-3); }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .live .dot { background: var(--pos); }
+
+  .bars {
+    height: 176px;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .bar {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    background: #3d3a35;
+  }
+  .bar.peak { background: var(--accent); }
+  .axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  .track {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--raised);
+    overflow: hidden;
+    margin: 20px 0 12px;
+  }
+  .track div { height: 100%; background: var(--text); border-radius: 4px; }
+  .battery .figure { font-size: 48px; margin-top: 0; }
+  .battery .figure span { font-size: 20px; margin-left: 2px; }
+  .battery .label { margin-top: 8px; }
+
+  /* Lists */
+  .bottom { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  .list { list-style: none; }
+  .list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 36px;
+    border-top: 1px solid var(--hair);
+    font-size: 14px;
+  }
+  .list li:first-child { border-top: 0; }
+  .list.compact li { height: 32px; }
+  .name { display: flex; align-items: center; gap: 10px; }
+  .status { color: var(--text-2); }
+  .status b { font-weight: 500; color: var(--text); margin-left: 8px; }
+  .dot.ok { background: var(--pos); }
+  .dot.shade { background: var(--warn); }
+  .dot.off { background: var(--text-3); }
+  .date { color: var(--text-2); }
+  .value { font-weight: 500; }
+
+  footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 16a8 8 0 0 1 16 0"/><path d="M12 16l4-5"/>
+      </svg>
+      Gridwatch
+    </div>
+    <nav class="nav" aria-label="Main">
+      <a href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+        Overview
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        My panels
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 11v2M6 10v4M10 10v4"/></svg>
+        Battery
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        History
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16V8M8 12l4-4 4 4"/></svg>
+        Upgrade
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div>
+        <h1>Overview</h1>
+        <p class="meta">Monday 10 November 2026</p>
+      </div>
+      <button class="btn" type="button">Boost solar</button>
+    </header>
+
+    <section class="stats" aria-label="Today">
+      <article class="card">
+        <p class="label">Generated</p>
+        <p class="figure accent">12.4<span>kWh</span></p>
+        <p class="delta">+18% vs yesterday</p>
+      </article>
+      <article class="card">
+        <p class="label">Used</p>
+        <p class="figure">8.1<span>kWh</span></p>
+        <p class="delta">Today</p>
+      </article>
+      <article class="card">
+        <p class="label">Exported</p>
+        <p class="figure">4.3<span>kWh</span></p>
+        <p class="delta">Sent to the grid today</p>
+      </article>
+      <article class="card">
+        <p class="label">Saved</p>
+        <p class="figure">$2.17</p>
+        <p class="delta">Today</p>
+      </article>
+    </section>
+
+    <section class="split">
+      <article class="card">
+        <div class="card-head">
+          <h2>Today's generation</h2>
+          <span class="live"><i class="dot"></i>Live</span>
+        </div>
+        <div class="bars" role="img" aria-label="Generation by hour, peaking mid-day">
+          <div class="bar" style="height:12%"></div>
+          <div class="bar" style="height:22%"></div>
+          <div class="bar" style="height:38%"></div>
+          <div class="bar" style="height:55%"></div>
+          <div class="bar" style="height:71%"></div>
+          <div class="bar" style="height:86%"></div>
+          <div class="bar peak" style="height:100%"></div>
+          <div class="bar" style="height:92%"></div>
+          <div class="bar" style="height:64%"></div>
+          <div class="bar" style="height:33%"></div>
+        </div>
+        <div class="axis">
+          <span>06:00</span><span>08:00</span><span>10:00</span><span>12:00</span><span>14:00</span><span>16:00</span><span>18:00</span>
+        </div>
+      </article>
+
+      <article class="card battery">
+        <div class="card-head"><h2>Battery</h2></div>
+        <p class="figure">78<span>%</span></p>
+        <div class="track" aria-hidden="true"><div style="width:78%"></div></div>
+        <p class="meta">Charged. Full by 4:30pm, 9.6 kWh stored</p>
+      </article>
+    </section>
+
+    <section class="bottom">
+      <article class="card">
+        <div class="card-head">
+          <h2>My panels (5)</h2>
+          <span class="meta">3 of 5 active</span>
+        </div>
+        <ul class="list">
+          <li><span class="name"><i class="dot ok"></i>Panel A1 · Roof east</span><span class="status">Active<b>2.9 kW</b></span></li>
+          <li><span class="name"><i class="dot ok"></i>Panel A2 · Roof east</span><span class="status">Active<b>2.7 kW</b></span></li>
+          <li><span class="name"><i class="dot shade"></i>Panel B1 · Roof west</span><span class="status">Shade<b>1.1 kW</b></span></li>
+          <li><span class="name"><i class="dot ok"></i>Panel B2 · Roof west</span><span class="status">Active<b>2.4 kW</b></span></li>
+          <li><span class="name"><i class="dot off"></i>Panel C1 · Garage</span><span class="status">Offline<b>0.0 kW</b></span></li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <div class="card-head"><h2>Last 7 days</h2></div>
+        <ol class="list compact">
+          <li><span class="date">9 Nov</span><span class="value">11.8 kWh</span></li>
+          <li><span class="date">9 Nov</span><span class="value">9.0 kWh</span></li>
+          <li><span class="date">7 Nov</span><span class="value">13.4 kWh</span></li>
+          <li><span class="date">6 Nov</span><span class="value">10.6 kWh</span></li>
+          <li><span class="date">5 Nov</span><span class="value">7.9 kWh</span></li>
+          <li><span class="date">4 Nov</span><span class="value">12.2 kWh</span></li>
+          <li><span class="date">3 Nov</span><span class="value">8.8 kWh</span></li>
+        </ol>
+      </article>
+    </section>
+
+    <footer>
+      <span>Gridwatch © 2026</span>
+    </footer>
+  </main>
+</div>
+</body>
+</html>

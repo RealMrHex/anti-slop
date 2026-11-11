@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parcelry - Ship Smarter!</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 44px 44px;
+    }
+    .gradient-text {
+      background: linear-gradient(90deg, #c084fc, #818cf8, #38bdf8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .glow-btn {
+      background: linear-gradient(90deg, #a855f7, #6366f1, #3b82f6);
+      box-shadow: 0 0 28px rgba(139, 92, 246, 0.7);
+    }
+    .glow-btn:hover { box-shadow: 0 0 40px rgba(139, 92, 246, 0.9); }
+    .float { animation: floaty 6s ease-in-out infinite; }
+    .pulse-dot { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-18px); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+  </style>
+</head>
+<body class="min-h-screen text-white overflow-hidden" style="background: linear-gradient(135deg, #1e0b3a 0%, #2a1260 45%, #0b1a4a 100%);">
+  <div class="grid-bg absolute inset-0 opacity-40 pointer-events-none"></div>
+  <div class="absolute -top-32 -left-24 w-[520px] h-[520px] rounded-full bg-purple-600/40 blur-3xl pointer-events-none"></div>
+  <div class="absolute top-40 -right-32 w-[460px] h-[460px] rounded-full bg-blue-500/40 blur-3xl pointer-events-none"></div>
+
+  <div class="relative z-10 mx-auto max-w-[1180px] px-6">
+    <nav class="mt-[18px] flex items-center justify-between rounded-full border border-white/20 bg-white/10 backdrop-blur-xl px-[22px] py-[11px]">
+      <div class="flex items-center gap-2 font-black text-lg">
+        <span>📦</span>
+        <span class="gradient-text">Parcelry</span>
+        <span class="ml-1 rounded-full bg-gradient-to-r from-pink-500 to-orange-400 px-2 py-[2px] text-[10px] font-extrabold tracking-widest">NEW</span>
+      </div>
+      <ul class="hidden md:flex items-center gap-7 text-sm font-semibold text-white/80">
+        <li class="hover:text-white cursor-pointer">Features ✨</li>
+        <li class="hover:text-white cursor-pointer">Pricing 💎</li>
+        <li class="hover:text-white cursor-pointer">Integrations 🔗</li>
+        <li class="hover:text-white cursor-pointer">Blog 📝</li>
+      </ul>
+      <div class="flex items-center gap-3">
+        <a class="text-sm font-bold text-white/90 hover:text-white px-3 py-2" href="#">Log in</a>
+        <a class="glow-btn rounded-full px-5 py-[9px] text-sm font-extrabold transition-transform hover:scale-110" href="#">Start Free 🚀</a>
+      </div>
+    </nav>
+
+    <section class="flex flex-col items-center text-center pt-[96px] pb-[60px]">
+      <div class="inline-flex items-center gap-2 rounded-full border border-purple-300/40 bg-purple-400/15 px-4 py-[7px] text-xs font-extrabold uppercase tracking-[0.2em] text-purple-200">
+        <span class="pulse-dot inline-block h-2 w-2 rounded-full bg-green-400"></span>
+        ⚡ Now with PRO AI Routing!
+      </div>
+
+      <h1 class="mt-[26px] text-[78px] font-black leading-[1.02] tracking-tight">
+        Ship <span class="gradient-text">Faster</span>, Sell <span class="gradient-text">More!</span>
+      </h1>
+
+      <p class="mt-[22px] max-w-[640px] text-[19px] font-semibold leading-relaxed text-white/80">
+        🚀 The #1 shipping platform for small online shops! Print labels in seconds, compare courier rates instantly, and delight your customers with automated tracking emails!!
+      </p>
+
+      <div class="mt-[30px] flex items-center gap-4">
+        <a class="glow-btn rounded-full px-[34px] py-[16px] text-base font-black transition-transform hover:scale-110" href="#">Get Started Free 🎉</a>
+        <a class="rounded-full border border-white/30 bg-white/10 px-[30px] py-[16px] text-base font-extrabold backdrop-blur transition-transform hover:scale-110" href="#">Watch Demo ▶️</a>
+      </div>
+
+      <div class="mt-[34px] flex items-center gap-3 text-sm font-bold">
+        <div class="flex text-yellow-300 text-lg tracking-[3px]">★★★★★</div>
+        <span class="text-white/90">Loved by 2,000+ shops!</span>
+        <span class="text-white/50">|</span>
+        <span class="text-white/70">4.9/5 from 1,2k reviews 🏆</span>
+      </div>
+    </section>
+
+    <div class="relative mx-auto mt-[10px] h-[220px] w-[220px]">
+      <div class="float absolute inset-0 rounded-full bg-gradient-to-br from-fuchsia-500 via-purple-500 to-blue-500 blur-[2px] opacity-80 shadow-[0_0_80px_rgba(168,85,247,0.8)]"></div>
+      <div class="float absolute inset-[18px] rounded-full bg-gradient-to-tr from-pink-400/60 to-cyan-300/50 backdrop-blur-md"></div>
+    </div>
+
+    <div class="mt-[38px] flex flex-wrap justify-center gap-x-10 gap-y-3 text-xs font-extrabold uppercase tracking-[0.25em] text-white/60">
+      <span>🏷️ Labels</span>
+      <span>📊 Rate Compare</span>
+      <span>📬 Tracking Emails</span>
+      <span>🌍 Global Shipping</span>
+    </div>
+  </div>
+</body>
+</html>

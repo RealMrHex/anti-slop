@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tallyo</title>
+<meta name="description" content="Tallyo sends your invoices and chases late payments for you, so freelancers get paid without the awkward emails.">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --surface: #ffffff;
+    --ink: #1c1b22;
+    --muted: #55535f;
+    --line: #e4e1d8;
+    --accent: #4338ca;
+    --accent-ink: #ffffff;
+    --accent-soft: #eceafc;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #131217;
+      --surface: #1c1b22;
+      --ink: #f1f0f5;
+      --muted: #b0aebb;
+      --line: #2f2d38;
+      --accent: #a5b4fc;
+      --accent-ink: #14132b;
+      --accent-soft: #25243d;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+         font-size: 16px; line-height: 1.6; color: var(--ink); background: var(--bg); }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  .nav { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .nav .wrap { display: flex; justify-content: space-between; align-items: center; height: 64px; }
+  .brand { font-weight: 800; font-size: 20px; letter-spacing: -.02em; text-decoration: none; }
+  .nav nav { display: flex; gap: 24px; align-items: center; }
+  .nav nav a { color: var(--muted); text-decoration: none; font-size: 15px; padding: 8px 0; }
+  .nav nav a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+
+  .hero { padding: 96px 0 88px; }
+  .hero .wrap { max-width: 760px; }
+  .eyebrow { margin: 0 0 16px; font-size: 14px; font-weight: 600; color: var(--accent); }
+  .hero h1 { font-size: clamp(36px, 6vw, 60px); font-weight: 800; line-height: 1.08;
+             letter-spacing: -.03em; margin: 0 0 20px; }
+  .hero .lede { color: var(--muted); font-size: 19px; line-height: 1.55; margin: 0 0 32px; max-width: 56ch; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px;
+         border: 1px solid transparent; border-radius: var(--radius); font: inherit; font-weight: 600;
+         text-decoration: none; cursor: pointer; transition: background-color .15s, border-color .15s; }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+  .btn-ghost:hover { background: var(--accent-soft); }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+  .signup { margin-top: 40px; padding-top: 32px; border-top: 1px solid var(--line); }
+  .signup label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .signup .row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .signup input { flex: 1 1 240px; min-height: 48px; padding: 0 14px; font: inherit; color: var(--ink);
+                  background: var(--surface); border: 1px solid var(--muted); border-radius: var(--radius); }
+  .signup input::placeholder { color: var(--muted); opacity: .8; }
+  .signup .note { margin: 8px 0 0; font-size: 14px; color: var(--muted); }
+
+  section { padding: 72px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: clamp(26px, 4vw, 36px); line-height: 1.15; letter-spacing: -.02em; margin: 0 0 40px; max-width: 24ch; }
+
+  .steps, .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .steps li, .card { padding: 28px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+  .steps .n { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+              background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 15px; margin-bottom: 16px; }
+  .steps h3, .card h3 { font-size: 19px; line-height: 1.3; margin: 0 0 8px; }
+  .steps p, .card p { margin: 0; color: var(--muted); font-size: 16px; }
+
+  footer { padding: 32px 0 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 760px) {
+    .hero { padding: 56px 0 56px; }
+    .steps, .grid { grid-template-columns: 1fr; }
+    .nav nav { gap: 16px; }
+    section { padding: 56px 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+  <header class="nav" id="glass-nav">
+    <div class="wrap">
+      <a class="brand" href="/">Tallyo</a>
+      <nav aria-label="Main">
+        <a href="/features">Features</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/login">Log in</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero" id="hero">
+      <div class="wrap">
+        <p class="eyebrow">Invoicing for freelancers</p>
+        <h1 id="hero-title">Send the invoice. Tallyo chases the payment.</h1>
+        <p class="lede">Create an invoice in a minute and Tallyo delivers it, then sends polite reminders until it is paid. No more awkward follow-up emails.</p>
+        <div class="actions">
+          <a class="btn btn-primary" id="cta-primary" href="/signup">Start invoicing</a>
+          <a class="btn btn-ghost" id="cta-secondary" href="/demo">See how it works</a>
+        </div>
+        <form class="signup" id="signup-form" action="/signup" method="post">
+          <label for="signup-email">Or start with your email</label>
+          <div class="row">
+            <input id="signup-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+            <button class="btn btn-primary" type="submit">Create account</button>
+          </div>
+          <p class="note">We will email you a link to get set up.</p>
+        </form>
+      </div>
+    </div>
+
+    <section id="fake-stats" aria-labelledby="how-title">
+      <div class="wrap">
+        <h2 id="how-title">From invoice to paid in three steps</h2>
+        <ol class="steps">
+          <li><span class="n">1</span><h3>Create</h3><p>Add your client, line items and due date. Tallyo handles numbering and totals.</p></li>
+          <li><span class="n">2</span><h3>Send</h3><p>The invoice goes straight to your client's inbox with a link to view and pay.</p></li>
+          <li><span class="n">3</span><h3>Get paid</h3><p>If the due date passes, reminders go out on your schedule until payment arrives.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="feature-grid" aria-labelledby="feat-title">
+      <div class="wrap">
+        <h2 id="feat-title">Built for people who bill alone</h2>
+        <div class="grid">
+          <div class="card"><h3>Automatic reminders</h3><p>Set the timing and tone once. Tallyo follows up on overdue invoices so you do not have to.</p></div>
+          <div class="card"><h3>Clear payment status</h3><p>See what is sent, viewed, paid and overdue at a glance, per client.</p></div>
+          <div class="card"><h3>Reusable invoices</h3><p>Duplicate past invoices or set up recurring ones for retainer clients.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">&copy; Tallyo</div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Careers - Example Software Co.</title>
+<style>
+  :root{
+    --paper:#f6f1e7; --card:#fffdf8; --ink:#1d2a26; --muted:#56635d; --line:#ddd5c4;
+    --accent:#1f5c4a; --accent-d:#17463a; --tint:#e4efe8; --sun:#e9b44c;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{font-family:var(--sans);margin:0;color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .hero{background:var(--accent);color:#f3efe3;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;right:-120px;top:-140px;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#2b7a63,#1f5c4a 70%);opacity:.9}
+  .hero::after{content:"";position:absolute;right:90px;bottom:48px;width:56px;height:56px;border-radius:50%;background:var(--sun);opacity:.95}
+  .wrap{max-width:880px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+  .hero .wrap{padding-top:72px;padding-bottom:80px}
+  .eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:#cfe3d8;margin:0 0 20px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(36px,6.4vw,64px);line-height:1.06;letter-spacing:-.02em;margin:0 0 24px;max-width:20ch;text-wrap:balance}
+  .intro{font-size:19px;line-height:1.6;max-width:56ch;margin:0;color:#e6efe8}
+  main{max-width:880px;margin:0 auto;padding:56px 24px 24px}
+  .head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px 24px;flex-wrap:wrap;margin-bottom:24px}
+  h2{font-family:var(--serif);font-size:32px;line-height:1.15;letter-spacing:-.01em;margin:0}
+  .count{margin:6px 0 0;color:var(--muted);font-size:15px}
+  .filter label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+  .filter select{font:inherit;font-size:16px;padding:10px 40px 10px 14px;border:1px solid #bdb4a0;border-radius:10px;color:var(--ink);cursor:pointer;appearance:none;-webkit-appearance:none;
+    background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%231d2a26' stroke-width='2'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center}
+  .job{display:grid;grid-template-columns:1fr auto;gap:6px 24px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-bottom:12px;box-shadow:0 1px 2px rgba(60,50,20,.05);transition:box-shadow .18s,transform .18s,border-color .18s}
+  .job:hover{box-shadow:0 8px 22px rgba(60,50,20,.1);transform:translateY(-2px);border-color:#c9bfa9}
+  .job h3{font-family:var(--serif);font-size:22px;line-height:1.25;margin:0;grid-column:1}
+  .meta{grid-column:1;display:flex;flex-wrap:wrap;gap:6px 8px;font-size:14px;color:var(--muted);margin-top:2px}
+  .meta span{display:inline-flex;align-items:center}
+  .meta .team{background:var(--tint);color:var(--accent-d);font-weight:600;padding:2px 10px;border-radius:99px}
+  .meta .dot{color:#a89f8a}
+  .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .job p{grid-column:1;margin:6px 0 0;max-width:58ch}
+  .job a{grid-column:2;grid-row:1/span 3;align-self:center;font-size:15px;font-weight:600;text-decoration:none;color:#fff;background:var(--accent);padding:11px 22px;border-radius:99px;transition:background .15s}
+  .job a:hover{background:var(--accent-d)}
+  a:focus-visible,select:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+  .empty{display:none;color:var(--muted);padding:24px;border:1px dashed #bdb4a0;border-radius:14px;text-align:center}
+  footer{max-width:880px;margin:24px auto 0;padding:32px 24px 56px;font-size:16px;color:var(--muted);border-top:1px solid var(--line)}
+  footer a{color:var(--accent);font-weight:600}
+  @media (max-width:620px){
+    .hero .wrap{padding-top:48px;padding-bottom:56px}
+    .hero::before{right:-220px;top:-200px}.hero::after{display:none}
+    .intro{font-size:17px}
+    .job{grid-template-columns:1fr;padding:20px}
+    .job a{grid-column:1;grid-row:auto;justify-self:start;margin-top:10px}
+  }
+  @media (prefers-reduced-motion:reduce){.job{transition:none}.job:hover{transform:none}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <p class="eyebrow">Careers</p>
+  <h1>Careers at Example Software Co.</h1>
+  <p class="intro">
+    We are a small team building developer tools for small businesses. We work remotely across time zones,
+    ship often, and care about clear writing and careful engineering. We are always glad to hear from people
+    who want to help us build something useful.
+  </p>
+</div></header>
+
+<main>
+  <div class="head">
+  <div><h2>Open positions</h2><p class="count" id="count" aria-live="polite"></p></div>
+  <div class="filter">
+    <label for="team">Filter by team</label>
+    <select id="team">
+      <option value="all">All teams</option>
+      <option value="Engineering">Engineering</option>
+      <option value="Design">Design</option>
+      <option value="Product">Product</option>
+      <option value="Support">Support</option>
+      <option value="Operations">Operations</option>
+    </select>
+  </div>
+  </div>
+
+  <div id="jobs">
+    <div class="job" data-team="Engineering">
+      <h3>Senior Backend Engineer</h3>
+      <div class="meta"><span class="team"><span class="vh">Team: </span>Engineering</span><span><span class="vh">Location: </span>Remote (Europe)</span><span class="dot" aria-hidden="true">&middot;</span><span><span class="vh">Type: </span>Full-time</span></div>
+      <p>Build and maintain the API and data services that power our product.</p>
+      <a href="mailto:jobs@example.com?subject=Senior%20Backend%20Engineer">Apply</a>
+    </div>
+
+    <div class="job" data-team="Engineering">
+      <h3>Frontend Engineer</h3>
+      <div class="meta"><span class="team"><span class="vh">Team: </span>Engineering</span><span><span class="vh">Location: </span>Remote (Americas)</span><span class="dot" aria-hidden="true">&middot;</span><span><span class="vh">Type: </span>Full-time</span></div>
+      <p>Own the web application UI, from component design to performance.</p>
+      <a href="mailto:jobs@example.com?subject=Frontend%20Engineer">Apply</a>
+    </div>
+
+    <div class="job" data-team="Design">
+      <h3>Product Designer</h3>
+      <div class="meta"><span class="team"><span class="vh">Team: </span>Design</span><span><span class="vh">Location: </span>Berlin, Germany (hybrid)</span><span class="dot" aria-hidden="true">&middot;</span><span><span class="vh">Type: </span>Full-time</span></div>
+      <p>Lead design for onboarding and core workflows, working closely with engineers.</p>
+      <a href="mailto:jobs@example.com?subject=Product%20Designer">Apply</a>
+    </div>
+
+    <div class="job" data-team="Product">
+      <h3>Product Manager</h3>
+      <div class="meta"><span class="team"><span class="vh">Team: </span>Product</span><span><span class="vh">Location: </span>Remote (Worldwide)</span><span class="dot" aria-hidden="true">&middot;</span><span><span class="vh">Type: </span>Full-time</span></div>
+      <p>Set priorities with customers and the team, and write clear specs for what we build next.</p>
+      <a href="mailto:jobs@example.com?subject=Product%20Manager">Apply</a>
+    </div>
+
+    <div class="job" data-team="Support">
+      <h3>Customer Support Specialist</h3>
+      <div class="meta"><span class="team"><span class="vh">Team: </span>Support</span><span><span class="vh">Location: </span>Remote (Americas)</span><span class="dot" aria-hidden="true">&middot;</span><span><span class="vh">Type: </span>Part-time</span></div>
+      <p>Help customers succeed with our tools and turn their feedback into product improvements.</p>
+      <a href="mailto:jobs@example.com?subject=Customer%20Support%20Specialist">Apply</a>
+    </div>
+
+    <div class="job" data-team="Operations">
+      <h3>Operations Coordinator</h3>
+      <div class="meta"><span class="team"><span class="vh">Team: </span>Operations</span><span><span class="vh">Location: </span>Remote (Worldwide)</span><span class="dot" aria-hidden="true">&middot;</span><span><span class="vh">Type: </span>Contract</span></div>
+      <p>Keep finance, billing and internal tooling running smoothly for a growing team.</p>
+      <a href="mailto:jobs@example.com?subject=Operations%20Coordinator">Apply</a>
+    </div>
+  </div>
+
+  <p id="empty" class="empty">No open positions match this team right now.</p>
+
+  <footer>Don't see a role that fits? Send us a note at <a href="mailto:jobs@example.com">jobs@example.com</a>.</footer>
+</main>
+
+<script>
+  (function () {
+    var select = document.getElementById('team');
+    var jobs = document.querySelectorAll('#jobs .job');
+    var empty = document.getElementById('empty');
+
+    function applyFilter() {
+      var team = select.value;
+      var shown = 0;
+      for (var i = 0; i < jobs.length; i++) {
+        var match = team === 'all' || jobs[i].getAttribute('data-team') === team;
+        jobs[i].style.display = match ? '' : 'none';
+        if (match) shown++;
+      }
+      empty.style.display = shown === 0 ? 'block' : 'none';
+      document.getElementById('count').textContent = shown + (shown === 1 ? ' open role' : ' open roles');
+    }
+
+    select.addEventListener('change', applyFilter);
+    applyFilter();
+  })();
+</script>
+</body>
+</html>

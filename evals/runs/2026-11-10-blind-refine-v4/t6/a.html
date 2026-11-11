@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marlow &amp; Finch — Independent Booksellers</title>
+<meta name="description" content="Marlow & Finch is an independent bookshop. Staff picks, events, new arrivals, opening hours and where to find us.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: { paper:'#F4ECDC', paper2:'#EADFC8', ink:'#1B2A22', moss:'#27453A', clay:'#C0532D', ochre:'#D9A441', plum:'#5A2A3C' },
+    fontFamily: { serif:['Fraunces','Georgia','serif'], sans:['"Instrument Sans"','system-ui','sans-serif'] }
+  }}
+}
+</script>
+<style>
+  html{scroll-behavior:smooth}
+  body{background:#F4ECDC;color:#1B2A22;font-family:'Instrument Sans',system-ui,sans-serif}
+  .grain::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.07;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+  .display{font-family:'Fraunces',serif;font-optical-sizing:auto;font-variation-settings:"SOFT" 50;letter-spacing:-.005em;word-spacing:.04em}
+  h1.display,h2.display{letter-spacing:-.02em}
+  h1.display{text-wrap:balance}
+  h3.display{font-weight:500}
+  .rule{border-top:1px solid rgba(27,42,34,.25)}
+  .cover{aspect-ratio:2/3;position:relative;overflow:hidden;border-radius:3px 6px 6px 3px;
+    box-shadow:inset 6px 0 0 rgba(0,0,0,.14), inset -1px 0 0 rgba(255,255,255,.12), 0 14px 24px -12px rgba(27,42,34,.5);
+    background-image:linear-gradient(105deg,rgba(255,255,255,.14) 0,rgba(255,255,255,0) 18%,rgba(0,0,0,.08) 100%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+  .book h3{transition:color .2s}.book:hover h3{color:#C0532D}
+  .book:focus-visible{outline-offset:6px;border-radius:4px}
+  .stat{border-left:2px solid #D9A441;padding-left:.9rem}
+  .stat dd{line-height:1.1}
+  .picks-card{box-shadow:0 18px 30px -18px rgba(0,0,0,.55)}
+  .book:hover .cover{transform:translateY(-8px) rotate(-1.2deg)}
+  .book{transition:opacity .3s, transform .3s}
+  .book.hide{display:none}
+  .chip{border:1px solid #1B2A22;border-radius:999px;padding:.4rem .95rem;font-size:.875rem;transition:all .2s;cursor:pointer;background:transparent}
+  .chip:hover{background:#EADFC8}
+  .chip[aria-pressed="true"]{background:#1B2A22;color:#F4ECDC}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.8rem 1.4rem;border-radius:999px;font-weight:600;transition:transform .2s, background .2s}
+  .btn:hover{transform:translateY(-2px)}
+  .marquee{animation:slide 38s linear infinite;white-space:nowrap}
+  @keyframes slide{to{transform:translateX(-50%)}}
+  .today{background:#27453A;color:#F4ECDC;border-radius:.5rem}
+  .today td{padding-left:.75rem;padding-right:.75rem;font-weight:600}
+  .today td:first-child::after{content:" · today";font-weight:400;opacity:.75;font-size:.85em}
+  @media (prefers-reduced-motion:reduce){.marquee{animation:none}html{scroll-behavior:auto}.cover,.book{transition:none}}
+  a:focus-visible,button:focus-visible{outline:3px solid #D9A441;outline-offset:3px}
+</style>
+</head>
+<body class="antialiased">
+
+<!-- Ticker -->
+<div class="bg-moss text-paper overflow-hidden text-sm py-2 border-b border-ink">
+  <div class="marquee inline-block" aria-hidden="true">
+    <span class="mx-6">Free gift wrapping, always</span><span class="text-ochre">✦</span>
+    <span class="mx-6">Order by 4pm, collect tomorrow</span><span class="text-ochre">✦</span>
+    <span class="mx-6">Second-hand shelf now in the cellar</span><span class="text-ochre">✦</span>
+    <span class="mx-6">Members get 10% off, every day</span><span class="text-ochre">✦</span>
+    <span class="mx-6">Free gift wrapping, always</span><span class="text-ochre">✦</span>
+    <span class="mx-6">Order by 4pm, collect tomorrow</span><span class="text-ochre">✦</span>
+    <span class="mx-6">Second-hand shelf now in the cellar</span><span class="text-ochre">✦</span>
+    <span class="mx-6">Members get 10% off, every day</span><span class="text-ochre">✦</span>
+  </div>
+  <span class="sr-only">Free gift wrapping, click and collect, second-hand shelf in the cellar, members discount.</span>
+</div>
+
+<!-- Header -->
+<header class="sticky top-0 z-30 bg-paper/90 backdrop-blur border-b border-ink/20">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3" aria-label="Marlow &amp; Finch home">
+      <svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="19" fill="#27453A"/>
+        <path d="M11 29V13l9 10 9-10v16" fill="none" stroke="#F4ECDC" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="29" cy="11" r="2.6" fill="#D9A441"/>
+      </svg>
+      <span class="display text-xl font-semibold">Marlow <span class="italic font-light text-clay">&amp;</span> Finch</span>
+    </a>
+    <nav class="hidden md:flex gap-8 text-sm font-medium" aria-label="Primary">
+      <a class="hover:text-clay" href="#picks">Staff picks</a>
+      <a class="hover:text-clay" href="#arrivals">New arrivals</a>
+      <a class="hover:text-clay" href="#events">Events</a>
+      <a class="hover:text-clay" href="#visit">Visit</a>
+    </nav>
+    <a href="#visit" class="btn bg-ink text-paper text-sm !py-2 !px-4 hover:bg-clay">Find us</a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- Hero -->
+<section class="relative grain overflow-hidden">
+  <div class="max-w-6xl mx-auto px-5 pt-14 pb-16 md:pt-20 md:pb-24 grid md:grid-cols-12 gap-10 items-center">
+    <div class="md:col-span-7 relative">
+      <p class="text-sm tracking-[.22em] uppercase text-clay font-semibold mb-5">Independent booksellers · Est. 1987</p>
+      <h1 class="display text-5xl sm:text-6xl lg:text-[5.5rem] leading-[.96] font-medium">
+        Books worth<br>
+        <span class="italic font-light text-moss">staying up</span> for.
+      </h1>
+      <p class="mt-6 text-lg max-w-xl text-ink/80 leading-relaxed">
+        Three crooked floors of fiction, poetry, cookbooks and strange little histories — chosen by people who have actually read them. Come in for ten minutes. Leave three hours later.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="#arrivals" class="btn bg-clay text-paper hover:bg-ink">Browse new arrivals <span aria-hidden="true">→</span></a>
+        <a href="#events" class="btn border border-ink hover:bg-paper2">What's on</a>
+      </div>
+      <dl class="mt-12 grid grid-cols-3 max-w-md gap-6 text-sm">
+        <div class="stat"><dt class="text-ink/70">On the shelves</dt><dd class="display text-4xl">28,000</dd></div>
+        <div class="stat"><dt class="text-ink/70">Resident cats</dt><dd class="display text-4xl">2</dd></div>
+        <div class="stat"><dt class="text-ink/70">Stairs</dt><dd class="display text-4xl">41</dd></div>
+      </dl>
+    </div>
+    <div class="md:col-span-5 relative">
+      <div class="absolute -top-4 -left-4 w-full h-full rounded-t-[999px] rounded-b-2xl bg-ochre" aria-hidden="true"></div>
+      <figure class="relative rounded-t-[999px] rounded-b-2xl overflow-hidden bg-moss aspect-[4/5] shadow-2xl">
+        <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=900&q=80"
+             alt="Tall wooden shelves filled with books in a warmly lit library" class="w-full h-full object-cover" loading="eager">
+      </figure>
+      <div class="absolute -bottom-5 -right-2 sm:right-4 bg-paper border border-ink rounded-full w-28 h-28 grid place-items-center text-center rotate-6 shadow-lg">
+        <span class="display italic text-sm leading-tight px-2">Tea &amp; ginger<br>cake on<br>the 2nd floor</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Staff picks -->
+<section id="picks" class="bg-moss text-paper relative">
+  <div class="max-w-6xl mx-auto px-5 py-20">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-12">
+      <div>
+        <p class="text-sm tracking-[.22em] uppercase text-ochre font-semibold mb-3">Handwritten recommendations</p>
+        <h2 class="display text-4xl md:text-5xl font-medium">Staff picks</h2>
+      </div>
+      <p class="max-w-sm text-paper/75">Each one comes with a card in the bookseller's own scrawl. Ask us about any of them — we'll talk for too long.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <article class="picks-card bg-paper text-ink rounded-lg p-6 flex flex-col gap-5 rotate-[-1deg] hover:rotate-0 transition-transform">
+        <div class="flex gap-4">
+          <div class="cover w-24 shrink-0 bg-clay flex items-end p-2"><span class="display text-paper text-[13px] leading-tight">The Salt Orchard</span></div>
+          <div><h3 class="display text-xl leading-tight">The Salt Orchard</h3><p class="text-sm text-ink/70 mt-0.5">Imogen Ashby</p><p class="text-xs mt-2 uppercase tracking-wider text-clay font-semibold">Novel</p></div>
+        </div>
+        <p class="display italic text-lg leading-snug">"I finished it on the night bus and missed my stop on purpose."</p>
+        <p class="text-sm mt-auto text-ink/70">— Wren, fiction buyer</p>
+      </article>
+      <article class="picks-card bg-ochre text-ink rounded-lg p-6 flex flex-col gap-5 rotate-[.8deg] hover:rotate-0 transition-transform">
+        <div class="flex gap-4">
+          <div class="cover w-24 shrink-0 bg-plum flex items-end p-2"><span class="display text-paper text-[13px] leading-tight">A Field Guide to Quiet</span></div>
+          <div><h3 class="display text-xl leading-tight">A Field Guide to Quiet</h3><p class="text-sm text-ink/70">Tomas Reyes</p><p class="text-xs mt-2 uppercase tracking-wider font-semibold">Nature writing</p></div>
+        </div>
+        <p class="display italic text-lg leading-snug">"Lowered my heart rate and raised my standards for sentences."</p>
+        <p class="text-sm mt-auto text-ink/75">— Odile, owner</p>
+      </article>
+      <article class="picks-card bg-paper text-ink rounded-lg p-6 flex flex-col gap-5 rotate-[-.6deg] hover:rotate-0 transition-transform">
+        <div class="flex gap-4">
+          <div class="cover w-24 shrink-0 bg-moss border border-paper/20 flex items-end p-2"><span class="display text-ochre text-[13px] leading-tight">Ten Thousand Suppers</span></div>
+          <div><h3 class="display text-xl leading-tight">Ten Thousand Suppers</h3><p class="text-sm text-ink/70 mt-0.5">Hana Okafor</p><p class="text-xs mt-2 uppercase tracking-wider text-clay font-semibold">Cookery</p></div>
+        </div>
+        <p class="display italic text-lg leading-snug">"The only cookbook I've ever read in bed. The lentil stew is real."</p>
+        <p class="text-sm mt-auto text-ink/70">— Jun, Saturdays &amp; cellar</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- New arrivals -->
+<section id="arrivals" class="max-w-6xl mx-auto px-5 py-20">
+  <div class="flex flex-wrap items-end justify-between gap-6 mb-8">
+    <div>
+      <p class="text-sm tracking-[.22em] uppercase text-clay font-semibold mb-3">Just unpacked</p>
+      <h2 class="display text-4xl md:text-5xl font-medium">New arrivals</h2>
+    </div>
+    <div class="flex flex-wrap gap-2" role="group" aria-label="Filter by genre" id="filters">
+      <button class="chip" data-genre="all" aria-pressed="true">All</button>
+      <button class="chip" data-genre="fiction" aria-pressed="false">Fiction</button>
+      <button class="chip" data-genre="poetry" aria-pressed="false">Poetry</button>
+      <button class="chip" data-genre="history" aria-pressed="false">History</button>
+      <button class="chip" data-genre="kids" aria-pressed="false">Children's</button>
+    </div>
+  </div>
+  <p id="count" class="text-sm text-ink/60 mb-8" role="status" aria-live="polite"></p>
+
+  <div id="grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
+    <a href="#" class="book block" data-genre="fiction">
+      <div class="cover bg-[#B8452A] p-4 flex flex-col justify-between"><span class="text-[10px] tracking-widest uppercase text-paper/80">A Novel</span><span class="display text-paper text-2xl leading-none">Lanterns for the Drowned Town</span></div>
+      <h3 class="display text-xl mt-4 leading-tight">Lanterns for the Drowned Town</h3><p class="text-sm text-ink/70 mt-0.5">Ria Castellan · £16.99</p>
+    </a>
+    <a href="#" class="book block" data-genre="poetry">
+      <div class="cover bg-ochre p-4 flex flex-col justify-between"><span class="text-[10px] tracking-widest uppercase text-ink/70">Poems</span><span class="display italic text-ink text-3xl leading-none">Small Weather</span></div>
+      <h3 class="display text-xl mt-4 leading-tight">Small Weather</h3><p class="text-sm text-ink/70 mt-0.5">Eilidh Brannock · £10.99</p>
+    </a>
+    <a href="#" class="book block" data-genre="history">
+      <div class="cover bg-ink p-4 flex flex-col justify-between"><span class="text-[10px] tracking-widest uppercase text-ochre">History</span><span class="display text-paper text-2xl leading-none">The Cartographer's Apprentice</span></div>
+      <h3 class="display text-xl mt-4 leading-tight">The Cartographer's Apprentice</h3><p class="text-sm text-ink/70 mt-0.5">Walter Penhale · £25.00</p>
+    </a>
+    <a href="#" class="book block" data-genre="kids">
+      <div class="cover bg-[#3E7C8C] p-4 flex flex-col justify-between"><span class="text-[10px] tracking-widest uppercase text-paper/80">Ages 5–8</span><span class="display text-paper text-3xl leading-none">Bramble &amp; the Moon</span></div>
+      <h3 class="display text-xl mt-4 leading-tight">Bramble &amp; the Moon</h3><p class="text-sm text-ink/70 mt-0.5">Pia Lindqvist · £12.99</p>
+    </a>
+    <a href="#" class="book block" data-genre="fiction">
+      <div class="cover bg-plum p-4 flex flex-col justify-between"><span class="text-[10px] tracking-widest uppercase text-paper/70">A Novel</span><span class="display text-ochre text-2xl leading-none">What the Heron Knew</span></div>
+      <h3 class="display text-xl mt-4 leading-tight">What the Heron Knew</h3><p class="text-sm text-ink/70 mt-0.5">Daniel Achterberg · £14.99</p>
+    </a>
+    <a href="#" class="book block" data-genre="poetry">
+      <div class="cover bg-moss p-4 flex flex-col justify-between"><span class="text-[10px] tracking-widest uppercase text-ochre">Poems</span><span class="display italic text-paper text-3xl leading-none">Salt &amp; Ledger</span></div>
+      <h3 class="display text-xl mt-4 leading-tight">Salt &amp; Ledger</h3><p class="text-sm text-ink/70 mt-0.5">Naveen Kapoor · £11.99</p>
+    </a>
+    <a href="#" class="book block" data-genre="history">
+      <div class="cover bg-paper2 border border-ink/20 p-4 flex flex-col justify-between"><span class="text-[10px] tracking-widest uppercase text-clay">History</span><span class="display text-ink text-2xl leading-none">A Brief History of Ink</span></div>
+      <h3 class="display text-xl mt-4 leading-tight">A Brief History of Ink</h3><p class="text-sm text-ink/70 mt-0.5">Margit Solheim · £22.00</p>
+    </a>
+    <a href="#" class="book block" data-genre="kids">
+      <div class="cover bg-clay p-4 flex flex-col justify-between"><span class="text-[10px] tracking-widest uppercase text-paper/80">Ages 8–12</span><span class="display text-paper text-2xl leading-none">The Lighthouse Cat Club</span></div>
+      <h3 class="display text-xl mt-4 leading-tight">The Lighthouse Cat Club</h3><p class="text-sm text-ink/70 mt-0.5">Fergus Oyelaran · £8.99</p>
+    </a>
+  </div>
+  <p id="empty" class="hidden text-center py-16 display italic text-2xl text-ink/60">Nothing here yet — ask us at the desk.</p>
+</section>
+
+<!-- Events -->
+<section id="events" class="bg-paper2 border-y border-ink/20">
+  <div class="max-w-6xl mx-auto px-5 py-20">
+    <div class="mb-12">
+      <p class="text-sm tracking-[.22em] uppercase text-clay font-semibold mb-3">Evenings upstairs</p>
+      <h2 class="display text-4xl md:text-5xl font-medium">Upcoming events</h2>
+    </div>
+    <ul class="rule">
+      <li class="rule first:border-t-0 grid grid-cols-[84px_1fr] md:grid-cols-[110px_1fr_auto] gap-x-6 gap-y-3 py-7 items-center">
+        <div class="text-center border border-ink rounded-lg py-2 bg-paper"><div class="text-xs uppercase tracking-widest text-clay font-semibold">Nov</div><div class="display text-4xl leading-none">14</div></div>
+        <div><h3 class="display text-2xl">Imogen Ashby in conversation</h3><p class="text-ink/70">On <em>The Salt Orchard</em>, orchards, and unreliable narrators. Signing to follow.</p><p class="text-sm mt-1 text-ink/60">Thursday · 7:00pm · £6, redeemable against the book</p></div>
+        <a href="#" class="btn border border-ink hover:bg-ink hover:text-paper col-span-2 md:col-span-1 justify-center">Reserve a seat</a>
+      </li>
+      <li class="rule grid grid-cols-[84px_1fr] md:grid-cols-[110px_1fr_auto] gap-x-6 gap-y-3 py-7 items-center">
+        <div class="text-center border border-ink rounded-lg py-2 bg-paper"><div class="text-xs uppercase tracking-widest text-clay font-semibold">Nov</div><div class="display text-4xl leading-none">23</div></div>
+        <div><h3 class="display text-2xl">Story Saturday for small people</h3><p class="text-ink/70">Cushions, hot chocolate and Pia Lindqvist reading <em>Bramble &amp; the Moon</em>.</p><p class="text-sm mt-1 text-ink/60">Saturday · 10:30am · Free, ages 3–8</p></div>
+        <a href="#" class="btn border border-ink hover:bg-ink hover:text-paper col-span-2 md:col-span-1 justify-center">Reserve a seat</a>
+      </li>
+      <li class="rule grid grid-cols-[84px_1fr] md:grid-cols-[110px_1fr_auto] gap-x-6 gap-y-3 py-7 items-center">
+        <div class="text-center border border-ink rounded-lg py-2 bg-paper"><div class="text-xs uppercase tracking-widest text-clay font-semibold">Dec</div><div class="display text-4xl leading-none">05</div></div>
+        <div><h3 class="display text-2xl">Open Mic &amp; Mulled Wine</h3><p class="text-ink/70">Five minutes each — poems, paragraphs, pamphlets. Listening is equally welcome.</p><p class="text-sm mt-1 text-ink/60">Thursday · 7:30pm · Pay what you like</p></div>
+        <a href="#" class="btn border border-ink hover:bg-ink hover:text-paper col-span-2 md:col-span-1 justify-center">Reserve a seat</a>
+      </li>
+      <li class="rule border-b border-ink/25 grid grid-cols-[84px_1fr] md:grid-cols-[110px_1fr_auto] gap-x-6 gap-y-3 py-7 items-center">
+        <div class="text-center border border-ink rounded-lg py-2 bg-paper"><div class="text-xs uppercase tracking-widest text-clay font-semibold">Dec</div><div class="display text-4xl leading-none">12</div></div>
+        <div><h3 class="display text-2xl">Late-night Christmas shopping</h3><p class="text-ink/70">We stay open until 9pm with gift-wrapping stations, carols and a very good raffle.</p><p class="text-sm mt-1 text-ink/60">Thursday · 5:00–9:00pm · Drop in</p></div>
+        <a href="#visit" class="btn border border-ink hover:bg-ink hover:text-paper col-span-2 md:col-span-1 justify-center">Plan your visit</a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- Visit -->
+<section id="visit" class="max-w-6xl mx-auto px-5 py-20 grid md:grid-cols-2 gap-14">
+  <div>
+    <p class="text-sm tracking-[.22em] uppercase text-clay font-semibold mb-3">Come in</p>
+    <h2 class="display text-4xl md:text-5xl font-medium mb-8">Opening hours</h2>
+    <table class="w-full text-lg" id="hours">
+      <caption class="sr-only">Opening hours</caption>
+      <tbody>
+        <tr data-day="1" class="rule"><td class="py-3">Monday</td><td class="text-right">10:00 – 18:00</td></tr>
+        <tr data-day="2" class="rule"><td class="py-3">Tuesday</td><td class="text-right">10:00 – 18:00</td></tr>
+        <tr data-day="3" class="rule"><td class="py-3">Wednesday</td><td class="text-right">10:00 – 18:00</td></tr>
+        <tr data-day="4" class="rule"><td class="py-3">Thursday</td><td class="text-right">10:00 – 20:00</td></tr>
+        <tr data-day="5" class="rule"><td class="py-3">Friday</td><td class="text-right">10:00 – 18:00</td></tr>
+        <tr data-day="6" class="rule"><td class="py-3">Saturday</td><td class="text-right">09:30 – 18:00</td></tr>
+        <tr data-day="0" class="rule border-b border-ink/25"><td class="py-3">Sunday</td><td class="text-right">11:00 – 16:00</td></tr>
+      </tbody>
+    </table>
+    <p id="openNow" class="mt-5 inline-flex items-center gap-2 text-sm font-semibold" role="status"></p>
+  </div>
+
+  <div class="relative">
+    <div class="bg-ink text-paper rounded-2xl p-8 md:p-10 h-full flex flex-col">
+      <p class="text-sm tracking-[.22em] uppercase text-ochre font-semibold mb-3">Find us</p>
+      <address class="not-italic display text-3xl leading-snug">
+        14 Gannet Row<br>Old Town Quarter<br>Harbourside, HB2 4LF
+      </address>
+      <svg viewBox="0 0 400 190" class="mt-6 w-full rounded-lg bg-moss" role="img" aria-label="Simplified map: Gannet Row between the station and the harbour">
+        <g fill="none" stroke="#F4ECDC" stroke-opacity=".35" stroke-width="10" stroke-linecap="round">
+          <path d="M-10 60 Q120 70 200 100 T410 120"/>
+          <path d="M80 -10 L120 200"/>
+          <path d="M290 -10 Q270 80 300 200"/>
+        </g>
+        <path d="M-10 160 Q100 140 180 170 T410 160 V200 H-10Z" fill="#3E7C8C" fill-opacity=".7"/>
+        <circle cx="205" cy="98" r="18" fill="#C0532D" fill-opacity=".3"/>
+        <circle cx="205" cy="98" r="8" fill="#C0532D" stroke="#F4ECDC" stroke-width="2"/>
+        <text x="222" y="92" fill="#F4ECDC" font-family="Fraunces, serif" font-size="14" font-style="italic">Marlow &amp; Finch</text>
+        <text x="20" y="182" fill="#F4ECDC" font-size="10" letter-spacing="2" opacity=".8">THE HARBOUR</text>
+      </svg>
+      <ul class="mt-6 space-y-2 text-paper/80 text-sm">
+        <li>3 min walk from Harbourside station</li>
+        <li>Buses 12 &amp; 40 stop at Gannet Row</li>
+        <li>Step-free entrance on the side lane; lift to all floors</li>
+      </ul>
+      <div class="mt-8 flex flex-wrap gap-3 pt-2">
+        <a href="https://maps.google.com/?q=Gannet+Row+Harbourside" class="btn bg-ochre text-ink hover:bg-paper">Get directions</a>
+        <a href="tel:+440000000000" class="btn border border-paper/50 hover:bg-paper/10">Call the shop</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter -->
+<section class="px-5 pb-20">
+  <div class="max-w-6xl mx-auto bg-clay text-paper rounded-3xl px-8 py-14 md:px-16 grid md:grid-cols-2 gap-8 items-center relative overflow-hidden">
+    <div>
+      <h2 class="display text-4xl font-medium leading-tight">One letter a month, <span class="italic font-light">no nonsense.</span></h2>
+      <p class="mt-3 text-paper/85">What we're reading, what's arriving, what's on. Written by a human who smells of paper.</p>
+    </div>
+    <form id="news" class="flex flex-col sm:flex-row gap-3" novalidate>
+      <label for="email" class="sr-only">Email address</label>
+      <input id="email" type="email" required placeholder="you@example.com" class="flex-1 rounded-full px-5 py-3 text-ink bg-paper placeholder:text-ink/50">
+      <button class="btn bg-ink text-paper hover:bg-moss" type="submit">Subscribe</button>
+    </form>
+    <p id="newsMsg" class="md:col-span-2 text-sm -mt-4 min-h-[1.25rem]" role="status"></p>
+  </div>
+</section>
+</main>
+
+<footer class="bg-ink text-paper/80">
+  <div class="max-w-6xl mx-auto px-5 py-12 grid sm:grid-cols-3 gap-8 text-sm">
+    <div>
+      <p class="display text-2xl text-paper">Marlow <span class="italic text-ochre">&amp;</span> Finch</p>
+      <p class="mt-2 max-w-xs">An independent bookshop, owned by the people behind the counter.</p>
+    </div>
+    <div><p class="text-paper font-semibold mb-2">Shop</p><ul class="space-y-1"><li><a class="hover:text-ochre" href="#picks">Staff picks</a></li><li><a class="hover:text-ochre" href="#arrivals">New arrivals</a></li><li><a class="hover:text-ochre" href="#events">Events</a></li></ul></div>
+    <div><p class="text-paper font-semibold mb-2">Say hello</p><ul class="space-y-1"><li>hello@marlowandfinch.example</li><li>14 Gannet Row, Harbourside</li><li>@marlowandfinch</li></ul></div>
+  </div>
+  <div class="border-t border-paper/15 text-center text-xs py-5">© <span id="yr">2026</span> Marlow &amp; Finch Booksellers. Please pet the cats gently.</div>
+</footer>
+
+<script>
+(function(){
+  // Genre filter
+  var chips=[].slice.call(document.querySelectorAll('.chip'));
+  var books=[].slice.call(document.querySelectorAll('#grid .book'));
+  var count=document.getElementById('count'), empty=document.getElementById('empty');
+  var names={all:'all genres',fiction:'fiction',poetry:'poetry',history:'history',kids:"children's books"};
+  function apply(g){
+    var n=0;
+    books.forEach(function(b){var show=g==='all'||b.dataset.genre===g;b.classList.toggle('hide',!show);if(show)n++;});
+    chips.forEach(function(c){c.setAttribute('aria-pressed',c.dataset.genre===g);});
+    count.textContent='Showing '+n+' '+(n===1?'title':'titles')+' in '+names[g];
+    empty.classList.toggle('hidden',n>0);
+  }
+  chips.forEach(function(c){c.addEventListener('click',function(){apply(c.dataset.genre);});});
+  apply('all');
+  books.forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();});});
+
+  // Open now + highlight today
+  var hours={0:[11,16],1:[10,18],2:[10,18],3:[10,18],4:[10,20],5:[10,18],6:[9.5,18]};
+  var now=new Date(), d=now.getDay(), h=now.getHours()+now.getMinutes()/60;
+  var row=document.querySelector('#hours tr[data-day="'+d+'"]');
+  if(row) row.classList.add('today');
+  var r=hours[d], open=h>=r[0]&&h<r[1];
+  var el=document.getElementById('openNow');
+  el.innerHTML='<span class="inline-block w-2.5 h-2.5 rounded-full '+(open?'bg-green-600':'bg-clay')+'"></span>'+(open?'We’re open right now — kettle’s on.':'We’re closed at the moment. See you soon.');
+
+  // Newsletter
+  document.getElementById('news').addEventListener('submit',function(e){
+    e.preventDefault();
+    var v=document.getElementById('email').value.trim(), m=document.getElementById('newsMsg');
+    if(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){m.textContent='Thank you — the next letter is on its way to you.';e.target.reset();}
+    else m.textContent='That doesn’t look like an email address. Try once more?';
+  });
+  document.getElementById('yr').textContent=now.getFullYear();
+})();
+</script>
+</body>
+</html>

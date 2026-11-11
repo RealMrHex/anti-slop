@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>To-Do</title>
+<style>
+  :root {
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --text: #1d1d1f;
+    --muted: #8e8e93;
+    --accent: #2f6fed;
+    --border: #d9d9de;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1c1c1e;
+      --card: #2c2c2e;
+      --text: #f2f2f7;
+      --muted: #8e8e93;
+      --accent: #5b8cff;
+      --border: #3a3a3c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1c1c1e;
+    --card: #2c2c2e;
+    --text: #f2f2f7;
+    --muted: #8e8e93;
+    --accent: #5b8cff;
+    --border: #3a3a3c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+  }
+  .screen {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  header h1 {
+    font-size: 28px;
+    margin: 12px 0 4px;
+  }
+  header p {
+    margin: 0 0 16px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  form.add {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  form.add input[type="text"] {
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+  }
+  form.add button {
+    padding: 12px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  li label {
+    flex: 1;
+    font-size: 16px;
+    cursor: pointer;
+    word-break: break-word;
+  }
+  li.done label {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+  li input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--accent);
+  }
+  li button.del {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+  .empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 24px 0;
+  }
+</style>
+</head>
+<body>
+<div class="screen">
+  <header>
+    <h1>Today</h1>
+    <p id="count"></p>
+  </header>
+
+  <form class="add" id="addForm">
+    <input type="text" id="newTask" placeholder="Add a task" aria-label="New task" autocomplete="off">
+    <button type="submit">Add</button>
+  </form>
+
+  <ul id="list"></ul>
+  <div class="empty" id="empty" hidden>No tasks yet.</div>
+</div>
+
+<script>
+  var tasks = [
+    { id: 1, text: "Buy groceries", done: false },
+    { id: 2, text: "Reply to Sam's email", done: false },
+    { id: 3, text: "Book dentist appointment", done: true }
+  ];
+  var nextId = 4;
+
+  var list = document.getElementById("list");
+  var countEl = document.getElementById("count");
+  var emptyEl = document.getElementById("empty");
+  var form = document.getElementById("addForm");
+  var input = document.getElementById("newTask");
+
+  function render() {
+    list.innerHTML = "";
+    tasks.forEach(function (t) {
+      var li = document.createElement("li");
+      if (t.done) li.className = "done";
+
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = t.done;
+      cb.id = "t" + t.id;
+      cb.addEventListener("change", function () {
+        t.done = cb.checked;
+        render();
+      });
+
+      var label = document.createElement("label");
+      label.htmlFor = "t" + t.id;
+      label.textContent = t.text;
+
+      var del = document.createElement("button");
+      del.className = "del";
+      del.setAttribute("aria-label", "Delete task");
+      del.textContent = "×";
+      del.addEventListener("click", function () {
+        tasks = tasks.filter(function (x) { return x.id !== t.id; });
+        render();
+      });
+
+      li.appendChild(cb);
+      li.appendChild(label);
+      li.appendChild(del);
+      list.appendChild(li);
+    });
+
+    var remaining = tasks.filter(function (t) { return !t.done; }).length;
+    countEl.textContent = remaining + " of " + tasks.length + " remaining";
+    emptyEl.hidden = tasks.length > 0;
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var text = input.value.trim();
+    if (!text) return;
+    tasks.unshift({ id: nextId++, text: text, done: false });
+    input.value = "";
+    render();
+    input.focus();
+  });
+
+  render();
+</script>
+</body>
+</html>

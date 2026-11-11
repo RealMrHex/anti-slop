@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stackhost Billing</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --surface: #ffffff;
+    --surface-2: #eef1f4;
+    --line: #e2e6eb;
+    --text: #141a22;
+    --text-2: #4a5462;
+    --text-3: #6b7480;
+    --accent: #0b6b67;
+    --accent-soft: #e3f1f0;
+    --ok: #2e7d4f;
+    --warn: #8a5a00;
+    --bad: #b42318;
+    --ink: #0e1a1c;
+    --ink-line: #223033;
+    --ink-text: #eef4f3;
+    --ink-muted: #9db3b0;
+    --radius-card: 12px;
+    --radius-control: 8px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1214;
+      --surface: #171b1f;
+      --surface-2: #20262c;
+      --line: #2a3138;
+      --text: #e8ecef;
+      --text-2: #b3bcc5;
+      --text-3: #8d97a2;
+      --accent: #4fc1bb;
+      --accent-soft: #15302f;
+      --ok: #6cc08b;
+      --warn: #e0b04f;
+      --bad: #ff8a80;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1214;
+    --surface: #171b1f;
+    --surface-2: #20262c;
+    --line: #2a3138;
+    --text: #e8ecef;
+    --text-2: #b3bcc5;
+    --text-3: #8d97a2;
+    --accent: #4fc1bb;
+    --accent-soft: #15302f;
+    --ok: #6cc08b;
+    --warn: #e0b04f;
+    --bad: #ff8a80;
+  }
+  html, body { background: var(--bg); color: var(--text); }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .scroll-x { position: relative; max-width: 100%; overflow-x: auto; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    padding: 24px;
+  }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .muted { color: var(--text-3); }
+  .secondary { color: var(--text-2); }
+  .link { color: var(--accent); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; }
+  .link:hover { text-decoration-thickness: 2px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 36px; padding: 0 14px;
+    border-radius: var(--radius-control);
+    font-size: 14px; font-weight: 500;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    transition: background-color 150ms ease, border-color 150ms ease;
+    cursor: pointer;
+  }
+  .btn:hover { background: var(--surface-2); }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--text); color: var(--surface); border-color: var(--text); }
+  .btn-primary:hover { background: var(--text-2); border-color: var(--text-2); }
+  .btn-on-ink { background: #f5f8f8; color: var(--ink); border-color: #f5f8f8; }
+  .btn-on-ink:hover { background: #d9e3e2; border-color: #d9e3e2; }
+  .btn-ghost-ink { background: transparent; color: var(--ink-text); border-color: var(--ink-line); }
+  .btn-ghost-ink:hover { background: #172224; }
+  .nav-link {
+    display: block; padding: 8px 12px; border-radius: var(--radius-control);
+    color: var(--text-2); font-weight: 500;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+  .nav-link:hover { background: var(--surface-2); color: var(--text); }
+  .nav-link[aria-current="page"] { background: var(--surface-2); color: var(--text); font-weight: 600; }
+  .meter-track { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+  .meter-fill { height: 100%; border-radius: 4px; background: var(--text-2); }
+  .meter-fill.is-focus { background: var(--accent); }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; }
+  .dot { width: 8px; height: 8px; border-radius: 999px; background: currentColor; flex: none; }
+  .search {
+    height: 36px; width: 240px; padding: 0 12px;
+    border: 1px solid var(--line); border-radius: var(--radius-control);
+    background: var(--surface); color: var(--text); font: inherit; outline: none;
+  }
+  .search::placeholder { color: var(--text-3); }
+  .search:focus { border-color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  th { font-weight: 500; font-size: 12px; color: var(--text-3); }
+  td, th { text-align: left; padding: 12px 8px; }
+  td.num, th.num { text-align: right; }
+  tbody tr + tr td { border-top: 1px solid var(--line); }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body class="min-h-screen">
+
+<div class="min-h-screen lg:flex min-w-0">
+
+  <aside class="lg:w-60 shrink-0 bg-[var(--surface)] border-b lg:border-b-0 lg:border-r border-[var(--line)] px-4 py-5 lg:px-4 lg:py-6 flex flex-col gap-6">
+    <div class="flex items-center gap-2 px-2">
+      <span class="inline-block w-2.5 h-2.5 rounded-sm bg-[var(--accent)]" aria-hidden="true"></span>
+      <span class="text-[15px] font-semibold tracking-tight">Stackhost</span>
+    </div>
+    <div class="flex flex-col gap-1">
+      <p class="px-3 pb-1 text-[12px] font-medium text-[var(--text-3)]">Settings</p>
+      <nav class="scroll-x flex lg:flex-col gap-1" aria-label="Settings">
+        <a href="#" class="nav-link whitespace-nowrap">Profile</a>
+        <a href="#" class="nav-link whitespace-nowrap">Team</a>
+        <a href="#" class="nav-link whitespace-nowrap" aria-current="page">Billing</a>
+        <a href="#" class="nav-link whitespace-nowrap">API keys</a>
+        <a href="#" class="nav-link whitespace-nowrap">Notifications</a>
+        <a href="#" class="nav-link whitespace-nowrap">Security</a>
+        <a href="#" class="nav-link whitespace-nowrap">Usage logs</a>
+      </nav>
+    </div>
+    <div class="hidden lg:block mt-auto text-[13px] text-[var(--text-2)]">
+      <p>Questions about billing?</p>
+      <a href="#" class="link">Chat with support</a>
+    </div>
+  </aside>
+
+  <main class="flex-1 min-w-0 px-4 py-6 sm:px-8 lg:py-8">
+    <div class="max-w-[1120px] mx-auto flex flex-col gap-6">
+
+      <header class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 class="text-[28px] leading-tight font-semibold tracking-tight">Billing and plans</h1>
+          <p class="mt-1 text-[14px] text-[var(--text-2)]">Manage your subscription</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <input type="text" placeholder="Search" aria-label="Search" class="search">
+          <div class="w-9 h-9 rounded-full bg-[var(--surface-2)] border border-[var(--line)] flex items-center justify-center text-[13px] font-semibold text-[var(--text-2)]" aria-label="Account AR" role="img">AR</div>
+        </div>
+      </header>
+
+      <section class="grid grid-cols-1 gap-6 lg:grid-cols-12 min-w-0">
+
+        <div class="lg:col-span-5 rounded-[var(--radius-card)] bg-[var(--ink)] text-[var(--ink-text)] p-6 flex flex-col">
+          <p class="text-[13px] text-[var(--ink-muted)]">Current plan</p>
+          <h2 class="mt-1 text-[20px] font-semibold">Team plan</h2>
+          <p class="mt-6 text-[56px] leading-none font-semibold tracking-[-0.02em] tabular-nums">$49.00<span class="ml-2 text-[16px] font-normal text-[var(--ink-muted)] tracking-normal">per month</span></p>
+          <p class="mt-4 text-[14px] text-[var(--ink-muted)]">Renews 3 December 2026</p>
+          <div class="mt-auto pt-8 flex flex-wrap gap-3">
+            <button class="btn btn-on-ink">Upgrade plan</button>
+            <button class="btn btn-ghost-ink">Change plan</button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 card">
+          <div class="flex items-baseline justify-between mb-5">
+            <h2 class="card-title">Usage this cycle</h2>
+            <span class="text-[13px] text-[var(--text-3)]">Resets in 23 days</span>
+          </div>
+          <div class="flex flex-col gap-5 text-[14px]">
+            <div>
+              <div class="flex justify-between mb-2"><span>Bandwidth</span><span class="tabular-nums font-medium">73%</span></div>
+              <div class="meter-track" role="meter" aria-label="Bandwidth" aria-valuemin="0" aria-valuemax="100" aria-valuenow="73"><div class="meter-fill" style="width: 73%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2"><span>Storage</span><span class="tabular-nums font-medium">41%</span></div>
+              <div class="meter-track" role="meter" aria-label="Storage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="41"><div class="meter-fill" style="width: 41%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2"><span>Build minutes</span><span class="tabular-nums font-medium">88%</span></div>
+              <div class="meter-track" role="meter" aria-label="Build minutes" aria-valuemin="0" aria-valuemax="100" aria-valuenow="88"><div class="meter-fill is-focus" style="width: 88%"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between mb-2"><span>Seats</span><span class="tabular-nums font-medium">6 of 8 (75%)</span></div>
+              <div class="meter-track" role="meter" aria-label="Seats" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75"><div class="meter-fill" style="width: 75%"></div></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="grid grid-cols-1 gap-6 lg:grid-cols-12 min-w-0">
+
+        <div class="lg:col-span-4 card flex flex-col">
+          <h2 class="card-title mb-5">Payment method</h2>
+          <div class="flex flex-col gap-1">
+            <p class="font-medium">Visa ending in 4242</p>
+            <p class="text-[13px] text-[var(--text-3)] tabular-nums">Expires 08/28</p>
+          </div>
+          <button class="btn mt-5 self-start">Update card</button>
+          <p class="mt-auto pt-6 text-[13px] text-[var(--text-3)]">Billing email <span class="text-[var(--text-2)]">billing@acme-team.io</span></p>
+        </div>
+
+        <div class="lg:col-span-8 card">
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="card-title">Invoices</h2>
+            <a href="#" class="link text-[13px]">View all invoices</a>
+          </div>
+          <div class="scroll-x">
+            <table class="w-full text-[14px] min-w-[560px]">
+              <caption class="sr-only">Invoice history</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Invoice</th>
+                  <th scope="col" class="num">Amount</th>
+                  <th scope="col">Status</th>
+                  <th scope="col" class="num"><span class="sr-only">File</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="tabular-nums">3 Nov 2026</td>
+                  <td class="mono text-[13px] text-[var(--text-2)]">INV-2026-0311</td>
+                  <td class="num tabular-nums">$49.00</td>
+                  <td><span class="status text-[var(--ok)]"><span class="dot"></span><span class="text-[var(--text)]">Paid</span></span></td>
+                  <td class="num"><a href="#" class="link" aria-label="Download invoice INV-2026-0311">Download</a></td>
+                </tr>
+                <tr>
+                  <td class="tabular-nums">3 Oct 2026</td>
+                  <td class="mono text-[13px] text-[var(--text-2)]">INV-2026-1003</td>
+                  <td class="num tabular-nums">$49.00</td>
+                  <td><span class="status text-[var(--ok)]"><span class="dot"></span><span class="text-[var(--text)]">Paid</span></span></td>
+                  <td class="num"><a href="#" class="link" aria-label="Download invoice INV-2026-1003">Download</a></td>
+                </tr>
+                <tr>
+                  <td class="tabular-nums">3 Sep 2026</td>
+                  <td class="mono text-[13px] text-[var(--text-2)]">INV-2026-0903</td>
+                  <td class="num tabular-nums">$49.00</td>
+                  <td><span class="status text-[var(--warn)]"><span class="dot"></span><span class="text-[var(--text)]">Pending</span></span></td>
+                  <td class="num"><a href="#" class="link" aria-label="Download invoice INV-2026-0903">Download</a></td>
+                </tr>
+                <tr>
+                  <td class="tabular-nums">3 Aug 2026</td>
+                  <td class="mono text-[13px] text-[var(--text-2)]">INV-2026-0803</td>
+                  <td class="num tabular-nums">$49.00</td>
+                  <td><span class="status text-[var(--ok)]"><span class="dot"></span><span class="text-[var(--text)]">Paid</span></span></td>
+                  <td class="num"><a href="#" class="link" aria-label="Download invoice INV-2026-0803">Download</a></td>
+                </tr>
+                <tr>
+                  <td class="tabular-nums">3 Jul 2026</td>
+                  <td class="mono text-[13px] text-[var(--text-2)]">INV-2026-0703</td>
+                  <td class="num tabular-nums">$49.00</td>
+                  <td><span class="status text-[var(--bad)]"><span class="dot"></span><span class="text-[var(--text)]">Failed</span></span></td>
+                  <td class="num"><a href="#" class="link" aria-label="Download invoice INV-2026-0703">Download</a></td>
+                </tr>
+                <tr>
+                  <td class="tabular-nums">3 Jun 2026</td>
+                  <td class="mono text-[13px] text-[var(--text-2)]">INV-2026-0603</td>
+                  <td class="num tabular-nums">$49.00</td>
+                  <td><span class="status text-[var(--ok)]"><span class="dot"></span><span class="text-[var(--text)]">Paid</span></span></td>
+                  <td class="num"><a href="#" class="link" aria-label="Download invoice INV-2026-0603">Download</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

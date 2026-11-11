@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sprintly - Mobile app v3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --side: #f1ece3;
+      --column: #efe9df;
+      --card: #fdfbf7;
+      --raised: #ece6da;
+      --hair: rgba(31, 27, 22, 0.08);
+      --hair-strong: rgba(31, 27, 22, 0.16);
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --muted: #7b7266;
+      --accent: #b4531a;
+      --accent-ink: #9c4313;
+      --pos: #15803d;
+      --pos-dot: #16a34a;
+      --neg: #dc2626;
+      --avatar: #e4dccd;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input { font: inherit; color: inherit; }
+    button { background: none; border: 0; cursor: pointer; }
+    svg { display: block; flex-shrink: 0; }
+    .icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+    .app { display: flex; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 256px;
+      flex-shrink: 0;
+      background: var(--side);
+      border-right: 1px solid var(--hair);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; margin-bottom: 32px; }
+    .mark { width: 20px; height: 20px; border-radius: 6px; background: var(--text); position: relative; }
+    .mark::after { content: ""; position: absolute; right: 4px; bottom: 4px; width: 6px; height: 6px; border-radius: 2px; background: var(--accent); }
+    .brand-name { font-size: 16px; font-weight: 500; letter-spacing: 0; }
+
+    .label { font-size: 12px; font-weight: 500; color: var(--muted); padding: 0 8px; margin-bottom: 8px; }
+    .nav { list-style: none; display: flex; flex-direction: column; gap: 2px; margin-bottom: 28px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      height: 36px; padding: 0 8px; border-radius: 8px;
+      color: var(--text-2);
+      transition: background-color 150ms var(--ease), color 150ms var(--ease);
+    }
+    .nav-item:hover { background: var(--card); color: var(--text); }
+    .nav-item .icon { color: var(--muted); }
+    .nav-item.active { background: var(--card); color: var(--text); box-shadow: inset 0 0 0 1px var(--hair); }
+    .nav-item.active .icon { color: var(--text); }
+    .count { margin-left: auto; font-size: 12px; color: var(--muted); }
+
+    .team { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .member { display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 8px; color: var(--text-2); }
+    .avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--avatar); color: #3d362d;
+      font-size: 11px; font-weight: 500;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    .note {
+      margin-top: auto;
+      padding: 16px 8px 0;
+      border-top: 1px solid var(--hair);
+      font-size: 13px; line-height: 20px; color: var(--muted);
+    }
+
+    /* Main */
+    .main { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 28px 32px; }
+
+    .header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+    .eyebrow { font-size: 13px; color: var(--muted); }
+    .title { font-size: 32px; font-weight: 500; line-height: 1.1; margin-top: 4px; }
+    .subtitle { font-size: 14px; color: var(--text-2); margin-top: 8px; }
+
+    .btn-primary {
+      height: 36px; padding: 0 16px; border-radius: 10px;
+      background: var(--text); color: var(--card);
+      font-size: 14px; font-weight: 500;
+      display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transition: background-color 150ms var(--ease);
+    }
+    .btn-primary:hover { background: #2c2720; }
+    .btn-primary:focus-visible, .chip:focus-visible, .search:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
+
+    .toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+    .toolbar-label { font-size: 13px; color: var(--muted); margin-right: 4px; }
+    .chip {
+      height: 32px; padding: 0 12px; border-radius: 8px;
+      background: var(--card); border: 1px solid var(--hair);
+      font-size: 13px; color: var(--text-2);
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: background-color 150ms var(--ease), border-color 150ms var(--ease);
+    }
+    .chip:hover { border-color: var(--hair-strong); color: var(--text); }
+    .chip .icon { width: 12px; height: 12px; color: var(--muted); }
+    .search {
+      margin-left: auto; width: 240px; height: 32px; padding: 0 12px;
+      border-radius: 8px; border: 1px solid var(--hair);
+      background: var(--card); font-size: 13px; outline: none;
+    }
+    .search::placeholder { color: var(--muted); }
+
+    /* Progress */
+    .progress {
+      display: flex; align-items: center; gap: 20px;
+      padding: 16px 20px; margin-bottom: 24px;
+      background: var(--card); border: 1px solid var(--hair); border-radius: 14px;
+    }
+    .progress-label { font-size: 13px; font-weight: 500; color: var(--text-2); white-space: nowrap; }
+    .segments { flex: 1; display: flex; gap: 3px; min-width: 0; }
+    .segments i { flex: 1; height: 8px; border-radius: 2px; background: #e7e0d3; }
+    .segments i.on { background: var(--accent); }
+    .progress-figure { font-size: 14px; font-weight: 500; }
+    .progress-meta { font-size: 13px; color: var(--text-2); white-space: nowrap; }
+    .progress-meta.neg { color: var(--neg); }
+
+    /* Board */
+    .board { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .column { display: flex; flex-direction: column; background: var(--column); border-radius: 16px; padding: 12px; min-width: 0; }
+    .column-head { display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 4px; margin-bottom: 12px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .column-name { font-size: 14px; font-weight: 500; }
+    .column-count { margin-left: auto; font-size: 12px; color: var(--muted); }
+    .cards { display: flex; flex-direction: column; gap: 10px; }
+
+    .card {
+      background: var(--card); border: 1px solid var(--hair); border-radius: 12px;
+      padding: 16px;
+      transition: border-color 150ms var(--ease);
+    }
+    .card:hover { border-color: var(--hair-strong); }
+    .tags { font-size: 12px; color: var(--muted); line-height: 16px; }
+    .card-title { font-size: 15px; font-weight: 500; line-height: 20px; margin-top: 6px; }
+    .card-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+    .due { font-size: 12px; color: var(--muted); }
+    .due.neg { color: var(--neg); }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="brand-name">Sprintly</span>
+    </div>
+
+    <p class="label">Projects</p>
+    <ul class="nav">
+      <li class="nav-item active">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>
+        Mobile app v3
+        <span class="count mono">12</span>
+      </li>
+      <li class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg>
+        Web dashboard
+      </li>
+      <li class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 11.2a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/></svg>
+        Checkout revamp
+        <span class="count mono">3</span>
+      </li>
+      <li class="nav-item">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3"/><path d="M7.5 15h9"/></svg>
+        Experiments
+      </li>
+    </ul>
+
+    <p class="label">Team</p>
+    <ul class="team">
+      <li class="member"><span class="avatar">PS</span>Priya Shah</li>
+      <li class="member"><span class="avatar">MK</span>Marco Keller</li>
+      <li class="member"><span class="avatar">JO</span>Jun Okafor</li>
+      <li class="member"><span class="avatar">AL</span>Ana Lima</li>
+    </ul>
+
+    <p class="note">Keep sprints short and sweet</p>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <header class="header">
+      <div>
+        <p class="eyebrow">November 2026</p>
+        <h1 class="title">Mobile app v3</h1>
+        <p class="subtitle">Sprint ends tomorrow</p>
+      </div>
+      <button class="btn-primary">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        Add task
+      </button>
+    </header>
+
+    <div class="toolbar">
+      <span class="toolbar-label">Filter</span>
+      <button class="chip">Everyone <svg class="icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+      <button class="chip">All labels <svg class="icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+      <button class="chip">Any date <svg class="icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+      <input class="search" placeholder="Search" aria-label="Search tasks" />
+    </div>
+
+    <!-- Progress -->
+    <div class="progress">
+      <span class="progress-label">Sprint progress</span>
+      <div class="segments" aria-hidden="true">
+        <i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <span class="progress-figure mono">42%</span>
+      <span class="progress-meta">9 of 21 done</span>
+      <span class="progress-meta neg">2 overdue</span>
+    </div>
+
+    <!-- Board -->
+    <section class="board">
+
+      <div class="column">
+        <header class="column-head">
+          <span class="dot" style="background:#b3aa9a"></span>
+          <h2 class="column-name">Backlog</h2>
+          <span class="column-count mono">3</span>
+        </header>
+        <div class="cards">
+          <article class="card">
+            <div class="tags">Feature</div>
+            <h3 class="card-title">Onboarding carousel</h3>
+            <div class="card-foot">
+              <span class="avatar">PS</span>
+              <span class="due mono">Nov 3</span>
+            </div>
+          </article>
+          <article class="card">
+            <div class="tags">Design</div>
+            <h3 class="card-title">Dark mode tokens</h3>
+            <div class="card-foot">
+              <span class="avatar">MK</span>
+              <span class="due mono">Nov 12</span>
+            </div>
+          </article>
+          <article class="card">
+            <div class="tags">Infra</div>
+            <h3 class="card-title">Push certs renewal</h3>
+            <div class="card-foot">
+              <span class="avatar">JO</span>
+              <span class="due mono">Nov 11</span>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="column">
+        <header class="column-head">
+          <span class="dot" style="background:var(--text-2)"></span>
+          <h2 class="column-name">In progress</h2>
+          <span class="column-count mono">3</span>
+        </header>
+        <div class="cards">
+          <article class="card">
+            <div class="tags">Bug</div>
+            <h3 class="card-title">Login crash on iOS 19</h3>
+            <div class="card-foot">
+              <span class="avatar">AL</span>
+              <span class="due mono neg">Nov 5</span>
+            </div>
+          </article>
+          <article class="card">
+            <div class="tags">UX</div>
+            <h3 class="card-title">Push settings sheet</h3>
+            <div class="card-foot">
+              <span class="avatar">PS</span>
+              <span class="due mono">Nov 7</span>
+            </div>
+          </article>
+          <article class="card">
+            <div class="tags">API</div>
+            <h3 class="card-title">Cursor pagination v2</h3>
+            <div class="card-foot">
+              <span class="avatar">MK</span>
+              <span class="due mono">Nov 9</span>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="column">
+        <header class="column-head">
+          <span class="dot" style="background:var(--text)"></span>
+          <h2 class="column-name">In review</h2>
+          <span class="column-count mono">2</span>
+        </header>
+        <div class="cards">
+          <article class="card">
+            <div class="tags">Feature</div>
+            <h3 class="card-title">Biometric unlock</h3>
+            <div class="card-foot">
+              <span class="avatar">JO</span>
+              <span class="due mono">Nov 10</span>
+            </div>
+          </article>
+          <article class="card">
+            <div class="tags">QA · Tests</div>
+            <h3 class="card-title">E2E suite for checkout</h3>
+            <div class="card-foot">
+              <span class="avatar">AL</span>
+              <span class="due mono">Nov 4</span>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="column">
+        <header class="column-head">
+          <span class="dot" style="background:var(--pos-dot)"></span>
+          <h2 class="column-name">Done</h2>
+          <span class="column-count mono">3</span>
+        </header>
+        <div class="cards">
+          <article class="card">
+            <div class="tags">Done</div>
+            <h3 class="card-title">Splash screen refresh</h3>
+            <div class="card-foot">
+              <span class="avatar">PS</span>
+              <span class="due mono">Nov 1</span>
+            </div>
+          </article>
+          <article class="card">
+            <div class="tags">Chore</div>
+            <h3 class="card-title">Bump RN to 0.85</h3>
+            <div class="card-foot">
+              <span class="avatar">MK</span>
+              <span class="due mono">Oct 30</span>
+            </div>
+          </article>
+          <article class="card">
+            <div class="tags">Perf</div>
+            <h3 class="card-title">Image cache wins</h3>
+            <div class="card-foot">
+              <span class="avatar">JO</span>
+              <span class="due mono">Oct 28</span>
+            </div>
+          </article>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</div>
+</body>
+</html>

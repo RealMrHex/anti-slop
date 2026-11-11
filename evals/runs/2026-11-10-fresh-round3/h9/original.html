@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Courier | Transactional Email API</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background: #05050a; }
+  .grid-bg { background-image: linear-gradient(rgba(255,0,153,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,255,.08) 1px, transparent 1px); background-size: 42px 42px; }
+  .glow-pink { box-shadow: 0 0 40px rgba(255,0,153,.6), 0 0 90px rgba(255,0,153,.25); }
+  .glow-cyan { box-shadow: 0 0 30px rgba(0,255,255,.45); }
+  .grad-text { background: linear-gradient(90deg,#ff2a9d,#a855f7,#22d3ee); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .glass { background: rgba(255,255,255,.06); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,.12); }
+  @keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
+  .float { animation: float 4s ease-in-out infinite; }
+  .pill { transition: transform .2s; }
+  .pill:hover { transform: scale(1.08); }
+</style>
+</head>
+<body class="text-white antialiased">
+<div class="grid-bg min-h-screen relative overflow-hidden">
+<div class="absolute -top-40 -left-32 w-[560px] h-[560px] rounded-full bg-pink-600/40 blur-[120px]"></div>
+<div class="absolute top-20 -right-40 w-[520px] h-[520px] rounded-full bg-cyan-400/30 blur-[120px]"></div>
+
+<nav class="glass mx-[18px] mt-[14px] rounded-2xl flex items-center justify-between px-[22px] py-[13px] relative z-10">
+  <div class="flex items-center gap-2 font-black text-xl tracking-tight">📮 Courier</div>
+  <div class="hidden md:flex gap-7 text-sm font-bold uppercase tracking-[0.18em] text-white/80">
+    <a href="#">Features</a><a href="#">Docs</a><a href="#">Pricing</a><a href="#">Changelog 🚀</a>
+  </div>
+  <div class="flex items-center gap-3">
+    <a href="#" class="text-sm font-bold">Sign in</a>
+    <a href="#" class="pill glow-pink bg-gradient-to-r from-pink-500 to-violet-600 px-5 py-2.5 rounded-full text-sm font-black">Get started ⚡</a>
+  </div>
+</nav>
+
+<section class="relative z-10 max-w-[1180px] mx-auto px-[26px] pt-[70px] text-center">
+  <span class="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.25em] text-cyan-300 animate-pulse">
+    <span class="w-2 h-2 rounded-full bg-cyan-300"></span> v2.4 NEW 🔥
+  </span>
+  <h1 class="grad-text text-[88px] leading-[0.95] font-black tracking-[-0.04em] mt-[26px]">Email that<br>just WORKS!!</h1>
+  <p class="text-white/70 text-[19px] font-semibold max-w-[640px] mx-auto mt-[22px] leading-[1.5]">Send transactional email via REST or SMTP in seconds. Delivery logs, bounce handling and templates, built for devs who ship fast! 🚀</p>
+  <div class="flex justify-center gap-4 mt-[38px]">
+    <a href="#" class="pill glow-pink bg-gradient-to-r from-pink-500 via-fuchsia-500 to-cyan-400 px-8 py-4 rounded-full font-black text-base">Start sending free ✨</a>
+    <a href="#" class="pill glass px-8 py-4 rounded-full font-black text-base">▶ Watch demo</a>
+  </div>
+  <p class="text-[12px] uppercase tracking-[0.3em] text-white/50 font-extrabold mt-[16px]">No credit card • 99.99% delivery guaranteed!!</p>
+
+  <div class="grid grid-cols-3 gap-[22px] mt-[64px]">
+    <div class="glass rounded-[22px] py-[26px]"><div class="text-[64px] font-black grad-text">1.2B+</div><div class="text-[11px] font-black uppercase tracking-[0.2em] text-white/60 mt-1">📬 Emails sent</div></div>
+    <div class="glass rounded-[22px] py-[26px]"><div class="text-[64px] font-black grad-text">99.9%</div><div class="text-[11px] font-black uppercase tracking-[0.2em] text-white/60 mt-1">⚡ Inbox rate</div></div>
+    <div class="glass rounded-[22px] py-[26px]"><div class="text-[64px] font-black grad-text">14ms</div><div class="text-[11px] font-black uppercase tracking-[0.2em] text-white/60 mt-1">🏎️ Avg latency</div></div>
+  </div>
+
+  <div class="float glow-cyan mt-[64px] mx-auto max-w-[720px] rounded-[18px] border border-cyan-400/60 bg-[#0b0b14] text-left overflow-hidden">
+    <div class="flex gap-2 px-4 py-3 border-b border-white/10">
+      <span class="w-3 h-3 rounded-full bg-pink-500"></span>
+      <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+      <span class="w-3 h-3 rounded-full bg-cyan-400"></span>
+      <span class="ml-3 text-[11px] font-bold uppercase tracking-[0.2em] text-white/50">send.js 🔥</span>
+    </div>
+    <pre class="p-6 text-[14px] leading-[1.7] font-mono text-cyan-200"><code>const res = await courier.send({
+  to: "dev@acme.io",
+  template: "welcome-v3",
+  vars: { name: "Ada", ts: "2026/11/10 14:02" }
+});
+console.log("✅ sent!", res.id);</code></pre>
+  </div>
+
+  <div class="grid grid-cols-3 gap-[22px] mt-[56px] text-left">
+    <div class="glass rounded-[20px] p-[22px]">
+      <div class="text-3xl">🔁</div>
+      <h3 class="font-black text-lg mt-3 uppercase tracking-[0.1em]">Delivery logs!</h3>
+      <p class="text-white/60 text-[14px] font-semibold mt-2">Every event, every hop, searchable. Nov 10, 2026 and 2026-11-10 both work.</p>
+    </div>
+    <div class="glass rounded-[20px] p-[22px]">
+      <div class="text-3xl">🛡️</div>
+      <h3 class="font-black text-lg mt-3 uppercase tracking-[0.1em]">Bounce handling!</h3>
+      <p class="text-white/60 text-[14px] font-semibold mt-2">Hard and soft bounces sorted automatically. Trusted by top teams worldwide 🌍</p>
+    </div>
+    <div class="glass rounded-[20px] p-[22px]">
+      <div class="text-3xl">🎨</div>
+      <h3 class="font-black text-lg mt-3 uppercase tracking-[0.1em]">Templates PRO</h3>
+      <p class="text-white/60 text-[14px] font-semibold mt-2">Drag, drop, ship! Versioned templates with live preview 💖</p>
+    </div>
+  </div>
+
+  <footer class="mt-[72px] pb-[30px] text-[11px] uppercase tracking-[0.25em] text-white/40 font-extrabold">
+    © 2026 Courier 🚀 • Made with ❤️ for devs • Status: all systems GO!
+  </footer>
+</section>
+</div>
+</body>
+</html>

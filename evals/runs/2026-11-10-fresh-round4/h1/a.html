@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayNest - Payroll for Restaurants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --line: rgba(31, 27, 22, 0.08);
+      --ink: #1f1b16;
+      --ink2: #5e554a;
+      --ink3: #736a5d;
+      --accent: #b4491f;
+      --accent-hover: #9c3d18;
+      --bar: #cfc4b1;
+      --pos: #16a34a;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+    @media (max-width: 600px) { .wrap { padding: 0 16px; } }
+
+    /* Navigation */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .mark {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: var(--ink);
+    }
+    .mark::after {
+      content: "";
+      position: absolute;
+      right: 4px;
+      bottom: 4px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .links { display: flex; gap: 32px; font-size: 15px; font-weight: 500; }
+    .links a { color: var(--ink2); text-decoration: none; transition: color 160ms var(--ease); }
+    .links a:hover { color: var(--ink); }
+    .nav-actions { display: flex; align-items: center; gap: 20px; }
+    .login {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--ink2);
+      text-decoration: none;
+      transition: color 160ms var(--ease);
+    }
+    .login:hover { color: var(--ink); }
+    @media (max-width: 800px) { .links { display: none; } }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background-color 160ms var(--ease), color 160ms var(--ease), transform 120ms var(--ease);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-sm { height: 36px; font-size: 14px; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary { background: var(--card); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+    .btn-secondary:hover { background: var(--raised); }
+    .btn:focus-visible, .links a:focus-visible, .login:focus-visible, .kicker:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: 64px;
+      align-items: center;
+      padding-top: 96px;
+      padding-bottom: 80px;
+    }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 48px; padding-top: 48px; }
+    }
+
+    .kicker {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .kicker:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    h1 {
+      margin: 20px 0 0;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-size: 72px;
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+    }
+    @media (max-width: 600px) { h1 { font-size: 44px; } }
+
+    .lede {
+      margin: 24px 0 0;
+      max-width: 36rem;
+      font-size: 19px;
+      line-height: 1.55;
+      color: var(--ink2);
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
+
+    /* Product moment: a pay run slip */
+    .slip {
+      margin: 0;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.06);
+      font-variant-numeric: tabular-nums;
+    }
+    .slip-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow { margin: 0; font-size: 13px; color: var(--ink3); }
+    .title { margin: 4px 0 0; font-size: 20px; font-weight: 500; }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 28px;
+      font-size: 13px;
+      color: var(--ink2);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pos); }
+
+    .crew { list-style: none; margin: 0; padding: 0; }
+    .row {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr) 128px;
+      align-items: center;
+      gap: 12px;
+      height: 64px;
+      border-bottom: 1px solid var(--line);
+    }
+    .row:last-child { border-bottom: 0; }
+    .av {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--raised);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink2);
+    }
+    .name { margin: 0; font-size: 15px; font-weight: 500; }
+    .meta { margin: 0; font-size: 13px; color: var(--ink3); }
+    .tip { text-align: right; }
+    .amt { margin: 0; font-size: 15px; font-weight: 500; }
+    .track { margin-top: 8px; height: 4px; border-radius: 2px; background: var(--raised); overflow: hidden; }
+    .track i { display: block; height: 100%; border-radius: 2px; background: var(--bar); }
+    .row.top .track i { background: var(--accent); }
+
+    .slip-foot {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px dashed rgba(31, 27, 22, 0.2);
+    }
+    .slip-foot .right { text-align: right; }
+    .big { margin: 8px 0 0; font-size: 28px; line-height: 1; font-weight: 500; }
+
+    /* Facts strip */
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 32px;
+      padding-top: 32px;
+      padding-bottom: 96px;
+      border-top: 1px solid var(--line);
+    }
+    @media (max-width: 700px) { .facts { grid-template-columns: 1fr; gap: 24px; padding-bottom: 64px; } }
+    .num {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      color: var(--ink3);
+      font-variant-numeric: tabular-nums;
+    }
+    .facts h2 { margin: 12px 0 4px; font-size: 18px; font-weight: 500; }
+    .facts p { margin: 0; font-size: 15px; color: var(--ink2); }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <header class="nav">
+      <a class="brand" href="#"><span class="mark" aria-hidden="true"></span>PayNest</a>
+      <nav class="links" aria-label="Main">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Resources</a>
+        <a href="#">Customers</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="login" href="#">Log in</a>
+        <a class="btn btn-primary btn-sm" href="#">Get started</a>
+      </div>
+    </header>
+
+    <main class="hero">
+      <div class="copy">
+        <a class="kicker" href="#">Tip splitting is here</a>
+        <h1>Weekly payroll for your restaurant crew</h1>
+        <p class="lede">PayNest runs payroll every week, splits tips fairly across the crew and files your taxes automatically. No spreadsheets needed.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#">Get started</a>
+          <a class="btn btn-secondary" href="#">Watch demo</a>
+        </div>
+      </div>
+
+      <figure class="slip" aria-label="Pay run preview for the week of November 3 to 9, 2026">
+        <div class="slip-head">
+          <div>
+            <p class="eyebrow">Pay run</p>
+            <p class="title">Nov 3 to 9, 2026</p>
+          </div>
+          <span class="status"><span class="dot" aria-hidden="true"></span>Ready to send</span>
+        </div>
+
+        <ul class="crew">
+          <li class="row top">
+            <span class="av" aria-hidden="true">JR</span>
+            <div>
+              <p class="name">Jonah Reyes</p>
+              <p class="meta">Server, 28 hrs</p>
+            </div>
+            <div class="tip">
+              <p class="amt">$638.50</p>
+              <div class="track"><i style="width: 100%"></i></div>
+            </div>
+          </li>
+          <li class="row">
+            <span class="av" aria-hidden="true">MO</span>
+            <div>
+              <p class="name">Maya Ortiz</p>
+              <p class="meta">Line cook, 32.5 hrs</p>
+            </div>
+            <div class="tip">
+              <p class="amt">$412.00</p>
+              <div class="track"><i style="width: 65%"></i></div>
+            </div>
+          </li>
+          <li class="row">
+            <span class="av" aria-hidden="true">PS</span>
+            <div>
+              <p class="name">Priya Shah</p>
+              <p class="meta">Bartender, 24 hrs</p>
+            </div>
+            <div class="tip">
+              <p class="amt">$233.00</p>
+              <div class="track"><i style="width: 37%"></i></div>
+            </div>
+          </li>
+        </ul>
+
+        <div class="slip-foot">
+          <div>
+            <p class="meta">Tips this week</p>
+            <p class="big">$1,283.50</p>
+          </div>
+          <div class="right">
+            <p class="meta">Net pay</p>
+            <p class="big">$9,412.60</p>
+          </div>
+        </div>
+      </figure>
+    </main>
+
+    <section class="facts" aria-label="What PayNest does">
+      <div>
+        <span class="num">01</span>
+        <h2>Weekly payroll</h2>
+        <p>Runs every week, with no spreadsheets.</p>
+      </div>
+      <div>
+        <span class="num">02</span>
+        <h2>Tip splitting</h2>
+        <p>Splits tips fairly across the whole crew.</p>
+      </div>
+      <div>
+        <span class="num">03</span>
+        <h2>Tax filing</h2>
+        <p>Files your taxes automatically.</p>
+      </div>
+    </section>
+  </div>
+
+</body>
+</html>

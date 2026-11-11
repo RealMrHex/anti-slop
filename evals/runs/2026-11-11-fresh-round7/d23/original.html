@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peloton Club Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background: #0b1024; }
+  .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(12px); }
+  .grad-text { background: linear-gradient(90deg,#ff3cac,#ff8a00,#ffe600); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .glow { box-shadow: 0 0 30px rgba(255,60,172,.6); }
+  .float { animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  .pulse-dot { animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+</style>
+</head>
+<body class="text-white min-h-screen">
+<div class="flex h-[900px] w-[1280px] overflow-hidden">
+
+  <aside class="w-[246px] glass border-r-2 border-pink-500/40 p-5 flex flex-col gap-6">
+    <div class="text-2xl font-black grad-text">🚴 PELOTON CLUB 🔥</div>
+    <nav class="flex flex-col gap-2 text-sm font-extrabold">
+      <a class="rounded-xl px-4 py-3 bg-gradient-to-r from-pink-600 to-orange-500 glow">🏠 Dashboard</a>
+      <a class="rounded-xl px-4 py-3 hover:bg-white/10">📅 Club Rides</a>
+      <a class="rounded-xl px-4 py-3 hover:bg-white/10">🏆 Leaderboard <span class="ml-1 text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded-full">NEW!</span></a>
+      <a class="rounded-xl px-4 py-3 hover:bg-white/10">📈 Stats</a>
+      <a class="rounded-xl px-4 py-3 hover:bg-white/10">⚙️ Settings</a>
+    </nav>
+    <div class="mt-auto glass rounded-2xl p-4 border border-cyan-400/50">
+      <p class="text-[11px] tracking-[0.2em] uppercase text-cyan-300 font-black">PRO MEMBER ⭐</p>
+      <p class="text-sm font-extrabold mt-1">Unlock 10x more power!!</p>
+      <button class="mt-3 w-full py-2 rounded-full bg-gradient-to-r from-cyan-400 to-blue-600 font-black hover:scale-110 transition">UPGRADE 🚀</button>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-[22px] flex flex-col gap-[18px]">
+
+    <header class="flex items-center justify-between">
+      <div>
+        <p class="text-[11px] tracking-[0.25em] uppercase text-pink-300 font-black">WEEK 46 · 🔥 ON FIRE</p>
+        <h1 class="text-[34px] font-black leading-tight">Good morning, Alex!! 👋🚴‍♂️</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="pulse-dot inline-block w-3 h-3 rounded-full bg-green-400"></span>
+        <span class="text-sm font-extrabold">LIVE</span>
+        <button class="px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-orange-400 font-black glow hover:scale-110 transition">+ LOG RIDE 💥</button>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-4 gap-4">
+      <div class="rounded-2xl p-5 bg-gradient-to-br from-red-600 to-orange-500 shadow-2xl">
+        <p class="text-[11px] tracking-[0.2em] uppercase font-black">🚴 Distance</p>
+        <p class="text-[34px] font-black mt-2">148.3 km</p>
+        <p class="text-xs font-bold mt-1">+12% vs last week!! 📈</p>
+      </div>
+      <div class="rounded-2xl p-5 bg-gradient-to-br from-fuchsia-600 to-pink-500 shadow-2xl float">
+        <p class="text-[11px] tracking-[0.2em] uppercase font-black">⏱️ Ride Time</p>
+        <p class="text-[34px] font-black mt-2">6h 42m</p>
+        <p class="text-xs font-bold mt-1">Crushing it!! 💪</p>
+      </div>
+      <div class="rounded-2xl p-5 bg-gradient-to-br from-amber-400 to-rose-500 shadow-2xl">
+        <p class="text-[11px] tracking-[0.2em] uppercase font-black">⛰️ Elevation</p>
+        <p class="text-[34px] font-black mt-2">1,284 m</p>
+        <p class="text-xs font-bold mt-1">Mountain goat mode!! 🐐</p>
+      </div>
+      <div class="rounded-2xl p-5 bg-gradient-to-br from-indigo-600 to-violet-500 shadow-2xl">
+        <p class="text-[11px] tracking-[0.2em] uppercase font-black">🎯 Rides</p>
+        <p class="text-[34px] font-black mt-2">5 rides</p>
+        <p class="text-xs font-bold mt-1">Best week EVER!!! 🏅</p>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-3 gap-4">
+      <div class="col-span-2 glass rounded-2xl p-5 border border-pink-400/50">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] tracking-[0.2em] uppercase font-black">📊 Weekly Distance (8 wks)</p>
+          <span class="text-[10px] bg-pink-500 px-2 py-1 rounded-full font-black">PRO ⭐</span>
+        </div>
+        <div class="flex items-end gap-3 h-[150px] mt-4">
+          <div class="flex-1 rounded-t-lg bg-gradient-to-t from-red-500 to-red-300" style="height: 45%"></div>
+          <div class="flex-1 rounded-t-lg bg-gradient-to-t from-orange-500 to-yellow-300" style="height: 62%"></div>
+          <div class="flex-1 rounded-t-lg bg-gradient-to-t from-yellow-500 to-lime-300" style="height: 38%"></div>
+          <div class="flex-1 rounded-t-lg bg-gradient-to-t from-green-500 to-cyan-300" style="height: 71%"></div>
+          <div class="flex-1 rounded-t-lg bg-gradient-to-t from-cyan-500 to-blue-300" style="height: 55%"></div>
+          <div class="flex-1 rounded-t-lg bg-gradient-to-t from-blue-500 to-violet-300" style="height: 88%"></div>
+          <div class="flex-1 rounded-t-lg bg-gradient-to-t from-violet-500 to-pink-300" style="height: 64%"></div>
+          <div class="flex-1 rounded-t-lg bg-gradient-to-t from-pink-500 to-rose-300 shadow-[0_0_25px_rgba(236,72,153,.7)]" style="height: 97%"></div>
+        </div>
+        <div class="flex gap-3 mt-2 text-[10px] font-bold text-white/70">
+          <span class="flex-1 text-center">W39</span><span class="flex-1 text-center">Wk 40</span><span class="flex-1 text-center">W41</span><span class="flex-1 text-center">wk42</span><span class="flex-1 text-center">W 43</span><span class="flex-1 text-center">Week 44</span><span class="flex-1 text-center">W45</span><span class="flex-1 text-center">Wk46 🔥</span>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-5 border border-violet-400/50 flex flex-col items-center justify-center">
+        <p class="text-[11px] tracking-[0.2em] uppercase font-black self-start">🎯 Monthly Goal</p>
+        <svg width="170" height="170" viewBox="0 0 170 170" class="mt-3 drop-shadow-[0_0_18px_rgba(255,0,200,.8)]">
+          <defs>
+            <linearGradient id="rainbow" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ff0080"/>
+              <stop offset="50%" stop-color="#ffaa00"/>
+              <stop offset="100%" stop-color="#00e5ff"/>
+            </linearGradient>
+          </defs>
+          <circle cx="85" cy="85" r="70" stroke="rgba(255,255,255,0.1)" stroke-width="16" fill="none"/>
+          <circle cx="85" cy="85" r="70" stroke="url(#rainbow)" stroke-width="16" fill="none" stroke-linecap="round" stroke-dasharray="342 440" transform="rotate(-90 85 85)"/>
+          <text x="85" y="95" text-anchor="middle" font-size="32" font-weight="900" fill="#fff">78%</text>
+        </svg>
+        <p class="text-xs font-bold text-center">312 / 400 km 🚀 Almost there!!</p>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-5 gap-4 flex-1 min-h-0">
+      <div class="col-span-2 glass rounded-2xl p-5 border border-cyan-400/40 flex flex-col gap-3">
+        <p class="text-[11px] tracking-[0.2em] uppercase font-black">📅 Upcoming Club Rides</p>
+        <div class="rounded-xl bg-white/5 p-3 flex items-center justify-between border-l-4 border-green-400">
+          <div>
+            <p class="font-black text-sm">Sunrise Summit Climb ⛰️</p>
+            <p class="text-xs text-white/70">Sat, Nov 14 · 7:00AM · 62 km</p>
+          </div>
+          <span class="text-[10px] font-black bg-green-500 px-2 py-1 rounded-full">🟢 PACE A · 14 riders</span>
+        </div>
+        <div class="rounded-xl bg-white/5 p-3 flex items-center justify-between border-l-4 border-yellow-400">
+          <div>
+            <p class="font-black text-sm">Coffee &amp; Flats ☕</p>
+            <p class="text-xs text-white/70">Sun 15/11 · 08:30 · 38km</p>
+          </div>
+          <span class="text-[10px] font-black bg-yellow-500 text-black px-2 py-1 rounded-full">🟡 PACE B · 9 riders</span>
+        </div>
+        <div class="rounded-xl bg-white/5 p-3 flex items-center justify-between border-l-4 border-pink-400">
+          <div>
+            <p class="font-black text-sm">Night Ride Blitz!! 🌙</p>
+            <p class="text-xs text-white/70">Wed, 18 Nov · 19:30 · 25 km</p>
+          </div>
+          <span class="text-[10px] font-black bg-pink-500 px-2 py-1 rounded-full">🔴 PACE C · 22 riders</span>
+        </div>
+        <div class="rounded-xl bg-white/5 p-3 flex items-center justify-between border-l-4 border-cyan-400">
+          <div>
+            <p class="font-black text-sm">Hill Repeats 🔁</p>
+            <p class="text-xs text-white/70">Sat November 21 · 6:45am · 47.5 km</p>
+          </div>
+          <span class="text-[10px] font-black bg-cyan-500 px-2 py-1 rounded-full">🔵 PACE A · 6 riders</span>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-5 border border-amber-400/50 flex flex-col gap-3">
+        <p class="text-[11px] tracking-[0.2em] uppercase font-black">🥇 Personal Records</p>
+        <div class="flex justify-between items-center"><span class="text-sm font-bold">5K 🏃</span><span class="grad-text text-xl font-black">19:42</span></div>
+        <div class="flex justify-between items-center"><span class="text-sm font-bold">20 km ⚡</span><span class="grad-text text-xl font-black">41:08</span></div>
+        <div class="flex justify-between items-center"><span class="text-sm font-bold">Longest ride</span><span class="grad-text text-xl font-black">128.4km</span></div>
+        <span class="mt-auto text-[10px] font-black bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-3 py-1 rounded-full self-start">VERIFIED BY AI ✨</span>
+      </div>
+
+      <div class="col-span-2 glass rounded-2xl p-5 border border-fuchsia-400/50 flex flex-col gap-2">
+        <p class="text-[11px] tracking-[0.2em] uppercase font-black">🏆 Club Leaderboard</p>
+        <div class="flex items-center justify-between text-sm font-extrabold"><span>🥇 Maria R.</span><span class="grad-text">612.5 km</span></div>
+        <div class="flex items-center justify-between text-sm font-extrabold"><span>🥈 Jonas K.</span><span class="grad-text">598km</span></div>
+        <div class="flex items-center justify-between text-sm font-extrabold"><span>🥉 Priya S.</span><span class="grad-text">574,2 km</span></div>
+        <div class="flex items-center justify-between text-sm font-extrabold"><span>4️⃣ Tom B.</span><span class="grad-text">US 540.0 km</span></div>
+        <div class="flex items-center justify-between text-sm font-extrabold"><span>🔥 You (Alex)</span><span class="grad-text">312 km!!</span></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inbox – Postmark Mail</title>
+<style>
+:root{
+  --bg:#f4f2ee; --surface:#fff; --surface-2:#faf9f6; --line:#e6e2da; --line-2:#d6d1c6;
+  --ink:#1d2321; --ink-2:#4a524f; --ink-3:#6b736f;
+  --accent:#0b6e63; --accent-ink:#fff; --accent-soft:#dff0ec; --accent-hover:#095a51;
+  --star:#c98a0a; --danger:#b3392b;
+  --r-s:6px; --r-m:10px; --r-l:14px;
+  --sh-1:0 1px 2px rgba(29,35,33,.06),0 1px 1px rgba(29,35,33,.04);
+  --sh-2:0 8px 28px rgba(29,35,33,.10),0 2px 6px rgba(29,35,33,.06);
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;
+  --font:ui-sans-serif,-apple-system,"Segoe UI",system-ui,Roboto,sans-serif;
+  --serif:"Iowan Old Style",Palatino,Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--font);-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.app{display:grid;grid-template-columns:232px minmax(360px,1fr) minmax(360px,1.15fr);height:100vh;gap:0}
+
+/* sidebar */
+.side{padding:var(--s4) var(--s3);display:flex;flex-direction:column;gap:var(--s4);overflow:auto}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 10px;font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:-.01em}
+.brand i{width:26px;height:26px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:#fff}
+.brand i .icon{width:15px;height:15px}
+.compose{display:flex;align-items:center;justify-content:center;gap:8px;height:42px;border-radius:var(--r-m);background:var(--accent);color:var(--accent-ink);font-weight:600;box-shadow:var(--sh-1);transition:background .15s,transform .1s}
+.compose:hover{background:var(--accent-hover)}
+.compose:active{transform:translateY(1px)}
+nav ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+nav a{display:flex;align-items:center;gap:12px;min-height:36px;padding:0 10px;border-radius:var(--r-s);text-decoration:none;color:var(--ink-2);transition:background .12s}
+nav a:hover{background:rgba(29,35,33,.06)}
+nav a[aria-current=page]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:var(--sh-1)}
+nav a[aria-current=page] .icon{color:var(--accent)}
+nav .count{margin-left:auto;font-size:12px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums}
+nav a[aria-current=page] .count{color:var(--accent)}
+.side h2{margin:var(--s2) 10px 6px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.dot{width:9px;height:9px;border-radius:50%;margin:0 4.5px;flex:none}
+.storage{margin-top:auto;padding:10px;font-size:12px;color:var(--ink-3)}
+.bar{height:4px;border-radius:2px;background:var(--line);margin:6px 0;overflow:hidden}
+.bar b{display:block;height:100%;width:38%;background:var(--accent);border-radius:2px}
+
+/* list */
+.list{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-l) 0 0 var(--r-l);margin:var(--s3) 0 var(--s3);display:flex;flex-direction:column;min-width:0;overflow:hidden;box-shadow:var(--sh-1)}
+.top{display:flex;align-items:center;gap:var(--s3);padding:var(--s4) var(--s4) var(--s3)}
+.top h1{margin:0;font-family:var(--serif);font-size:24px;letter-spacing:-.015em;line-height:1.1}
+.top h1 small{display:block;font-family:var(--font);font-size:12.5px;font-weight:400;letter-spacing:0;color:var(--ink-3);margin-top:3px}
+.ib.menu-btn{display:none}
+.search{margin-left:auto;position:relative;flex:1;max-width:240px}
+.search input{width:100%;height:36px;border-radius:var(--r-m);border:1px solid var(--line);background:var(--surface-2);padding:0 12px 0 34px;transition:border-color .15s,background .15s}
+.search input::placeholder{color:var(--ink-3)}
+.search input:hover{border-color:var(--line-2)}
+.search input:focus{background:#fff;border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.search .icon{position:absolute;left:11px;top:9px;color:var(--ink-3);width:16px;height:16px}
+.tabs{display:flex;gap:var(--s1);padding:0 var(--s4);border-bottom:1px solid var(--line)}
+.tab{position:relative;height:38px;padding:0 var(--s3);color:var(--ink-3);font-weight:500;border-radius:var(--r-s) var(--r-s) 0 0}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected=true]{color:var(--ink);font-weight:600}
+.tab[aria-selected=true]::after{content:"";position:absolute;left:var(--s3);right:var(--s3);bottom:-1px;height:2px;background:var(--accent);border-radius:2px}
+.tab .n{margin-left:6px;font-size:11px;font-weight:600;background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:99px}
+.bulk{display:flex;align-items:center;gap:2px;padding:6px var(--s3);border-bottom:1px solid var(--line);color:var(--ink-3);min-height:44px}
+.ib{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--r-s);color:var(--ink-3);transition:background .12s,color .12s}
+.ib:hover{background:rgba(29,35,33,.07);color:var(--ink)}
+.bulk .meta{margin-left:auto;font-size:12px;padding-right:var(--s2);font-variant-numeric:tabular-nums}
+
+.scroll{overflow:auto;flex:1}
+.group{position:sticky;top:0;z-index:1;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);padding:10px var(--s4) 6px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:0}
+ul.rows{list-style:none;margin:0;padding:0}
+.row{display:grid;grid-template-columns:20px 22px 34px 1fr auto;column-gap:10px;align-items:start;padding:12px var(--s4) 12px 10px;border-bottom:1px solid var(--line);position:relative;cursor:pointer;transition:background .12s}
+.row:hover{background:var(--surface-2)}
+.row[aria-selected=true]{background:var(--accent-soft)}
+.row[aria-selected=true]::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+.row .chk{margin-top:7px;width:16px;height:16px;accent-color:var(--accent);justify-self:center}
+.star{width:22px;height:28px;display:grid;place-items:center;color:var(--line-2);border-radius:var(--r-s)}
+.star:hover{color:var(--star)}
+.star[aria-pressed=true]{color:var(--star)}
+.star[aria-pressed=true] .icon{fill:currentColor}
+.star .icon{width:17px;height:17px}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-weight:700;color:#fff;letter-spacing:.02em}
+.body{min-width:0}
+.l1{display:flex;align-items:baseline;gap:8px}
+.from{font-weight:500;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.time{margin-left:auto;font-size:12px;color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums}
+.subj{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink);margin-top:1px}
+.snip{color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+.tags{display:flex;gap:6px;margin-top:6px;align-items:center}
+.tag{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px;border-radius:99px;font-size:11.5px;font-weight:600;border:1px solid transparent}
+.tag.t-work{background:#e3ecfb;color:#254a8f}
+.tag.t-travel{background:#fbeede;color:#8a4a0a}
+.tag.t-money{background:#e4f3e2;color:#2b6a24}
+.tag.t-team{background:#f1e6f6;color:#6a2f86}
+.clip{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--ink-3)}
+.clip .icon{width:13px;height:13px}
+.row.unread .from,.row.unread .subj{font-weight:700;color:var(--ink)}
+.row.unread .time{color:var(--accent);font-weight:600}
+.row.unread .av::after{content:"";position:absolute;left:62px;top:12px;width:0}
+.udot{position:absolute;left:0;top:0}
+.row.unread .from::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:7px;vertical-align:1px}
+.empty{padding:56px 24px;text-align:center;color:var(--ink-3)}
+.empty b{display:block;font-family:var(--serif);font-size:18px;color:var(--ink);margin-bottom:4px}
+
+/* reader */
+.reader{background:var(--surface);border:1px solid var(--line);border-left:0;border-radius:0 var(--r-l) var(--r-l) 0;margin:var(--s3) var(--s3) var(--s3) 0;display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--sh-1);min-width:0}
+.r-bar{display:flex;align-items:center;gap:2px;padding:10px var(--s3);border-bottom:1px solid var(--line)}
+.r-bar .back{display:none}
+.r-bar .sp{flex:1}
+.r-scroll{overflow:auto;padding:var(--s5) var(--s6) var(--s6);flex:1}
+.r-scroll h2{font-family:var(--serif);font-size:26px;line-height:1.2;letter-spacing:-.015em;margin:0 0 var(--s4);text-wrap:balance}
+.who{display:flex;gap:12px;align-items:center;margin-bottom:var(--s5)}
+.who .av{width:42px;height:42px;font-size:14px}
+.who strong{display:block}
+.who span{color:var(--ink-3);font-size:13px}
+.who time{margin-left:auto;color:var(--ink-3);font-size:13px;align-self:flex-start;white-space:nowrap}
+.msg{max-width:60ch;font-size:15px;line-height:1.65;color:var(--ink)}
+.msg p{margin:0 0 1em}
+.callout{display:flex;gap:14px;align-items:center;border:1px solid var(--line);background:var(--surface-2);border-radius:var(--r-m);padding:14px 16px;margin:var(--s5) 0;max-width:60ch}
+.callout .ico{width:40px;height:40px;border-radius:var(--r-s);background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+.callout b{display:block;font-size:14px}
+.callout span{font-size:13px;color:var(--ink-3)}
+.callout .btn{margin-left:auto}
+.btn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:var(--r-m);border:1px solid var(--line-2);background:#fff;font-weight:600;transition:background .12s,border-color .12s}
+.btn:hover{background:var(--surface-2);border-color:var(--ink-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-hover)}
+.reply{display:flex;gap:var(--s2);margin-top:var(--s5)}
+.r-empty{margin:auto;text-align:center;color:var(--ink-3);padding:24px}
+.r-empty b{display:block;font-family:var(--serif);font-size:20px;color:var(--ink);margin-bottom:4px}
+
+/* narrower laptops: drop reader into list-only until opened */
+@media (max-width:1100px){
+  .app{grid-template-columns:200px minmax(0,1fr) minmax(0,1fr)}
+  .r-scroll{padding:var(--s4) var(--s5)}
+  .side{padding-inline:var(--s2)}
+}
+@media (max-width:860px){
+  .app{display:block;height:100vh;position:relative}
+  .side{position:fixed;inset:0 auto 0 0;width:min(280px,84vw);background:var(--bg);z-index:20;transform:translateX(-102%);transition:transform .22s ease;box-shadow:var(--sh-2)}
+  body.nav-open .side{transform:none}
+  body.nav-open::after{content:"";position:fixed;inset:0;background:rgba(29,35,33,.35);z-index:10}
+  .list{margin:0;border:0;border-radius:0;height:100vh}
+  .reader{position:fixed;inset:0;margin:0;border:0;border-radius:0;z-index:5;transform:translateX(100%);transition:transform .22s ease;visibility:hidden}
+  body.reading .reader{transform:none;visibility:visible}
+  .ib.menu-btn{display:grid}
+  .r-bar .back{display:grid}
+  .search{max-width:none}
+  .top{gap:var(--s2);padding:var(--s3)}
+  .top h1 small{display:none}
+  .tabs{overflow-x:auto;padding:0 var(--s2)}
+  .tab{white-space:nowrap}
+  .row{grid-template-columns:22px 36px 1fr auto;padding-left:var(--s3)}
+  .row .chk{display:none}
+  .r-scroll{padding:var(--s4)}
+  .r-scroll h2{font-size:22px}
+  .callout{flex-wrap:wrap}
+  .callout .btn{margin-left:0}
+  .ib{width:40px;height:40px}
+  .star{width:28px;height:36px}
+}
+@media (max-width:560px){
+  .top{flex-wrap:wrap}
+  .top h1{flex:1}
+  .search{order:3;flex:1 0 100%;margin:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3 13l2.5-7.2A2 2 0 017.4 4.5h9.2a2 2 0 011.9 1.3L21 13v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5z"/><path d="M3 13h5l1.5 2.5h5L16 13h5"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9 6.8 19.7l1-5.9L3.5 9.7l5.9-.8z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8M10 12h4"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12M9 7V4h6v3"/></symbol>
+  <symbol id="i-spam" viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.01"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 00-14.5-4M4 4v4h4M4 13a8 8 0 0014.5 4M20 20v-4h-4"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><path d="M20 12l-8 8a5 5 0 01-7-7l9-9a3.5 3.5 0 015 5l-9 9a2 2 0 01-3-3l8-8"/></symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 016 6v3"/></symbol>
+  <symbol id="i-fwd" viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H10a6 6 0 00-6 6v3"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></symbol>
+</svg>
+
+<div class="app">
+  <aside class="side" id="side" aria-label="Mailbox">
+    <div class="brand"><i><svg class="icon"><use href="#i-mail"/></svg></i>Postmark</div>
+    <button class="compose"><svg class="icon"><use href="#i-pen"/></svg>Compose</button>
+    <nav aria-label="Folders">
+      <ul>
+        <li><a href="#" aria-current="page"><svg class="icon"><use href="#i-inbox"/></svg>Inbox<span class="count">6</span></a></li>
+        <li><a href="#"><svg class="icon"><use href="#i-star"/></svg>Starred<span class="count" id="starCount">3</span></a></li>
+        <li><a href="#"><svg class="icon"><use href="#i-clock"/></svg>Snoozed</a></li>
+        <li><a href="#"><svg class="icon"><use href="#i-send"/></svg>Sent</a></li>
+        <li><a href="#"><svg class="icon"><use href="#i-file"/></svg>Drafts<span class="count">2</span></a></li>
+        <li><a href="#"><svg class="icon"><use href="#i-archive"/></svg>Archive</a></li>
+        <li><a href="#"><svg class="icon"><use href="#i-spam"/></svg>Spam</a></li>
+        <li><a href="#"><svg class="icon"><use href="#i-trash"/></svg>Trash</a></li>
+      </ul>
+    </nav>
+    <nav aria-label="Labels">
+      <h2>Labels</h2>
+      <ul>
+        <li><a href="#"><span class="dot" style="background:#3b66c4"></span>Work</a></li>
+        <li><a href="#"><span class="dot" style="background:#d08a2e"></span>Travel</a></li>
+        <li><a href="#"><span class="dot" style="background:#4a9a3f"></span>Money</a></li>
+        <li><a href="#"><span class="dot" style="background:#9a52b8"></span>Team</a></li>
+      </ul>
+    </nav>
+    <div class="storage">
+      <div class="bar" role="img" aria-label="38 percent of storage used"><b></b></div>
+      5.7 GB of 15 GB used
+    </div>
+  </aside>
+
+  <main class="list" aria-label="Inbox">
+    <div class="top">
+      <button class="ib menu-btn" id="menuBtn" aria-label="Open folders"><svg class="icon"><use href="#i-menu"/></svg></button>
+      <h1>Inbox<small id="sub">6 unread of 14 conversations</small></h1>
+      <label class="search"><span class="sr">Search mail</span><svg class="icon"><use href="#i-search"/></svg><input type="search" id="q" placeholder="Search mail"></label>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Filter">
+      <button class="tab" role="tab" aria-selected="true" data-f="all">All</button>
+      <button class="tab" role="tab" aria-selected="false" data-f="unread">Unread<span class="n" id="unreadN">6</span></button>
+      <button class="tab" role="tab" aria-selected="false" data-f="starred">Starred</button>
+      <button class="tab" role="tab" aria-selected="false" data-f="files">Attachments</button>
+    </div>
+    <div class="bulk">
+      <button class="ib" id="archiveBtn" aria-label="Archive selected"><svg class="icon"><use href="#i-archive"/></svg></button>
+      <button class="ib" id="readBtn" aria-label="Mark selected as read"><svg class="icon"><use href="#i-mail"/></svg></button>
+      <button class="ib" aria-label="Snooze"><svg class="icon"><use href="#i-clock"/></svg></button>
+      <button class="ib" aria-label="Refresh"><svg class="icon"><use href="#i-refresh"/></svg></button>
+      <span class="meta" id="meta" aria-live="polite">Select a conversation</span>
+    </div>
+    <div class="scroll" id="scroll"></div>
+  </main>
+
+  <section class="reader" id="reader" aria-label="Message"></section>
+</div>
+
+<script>
+const MAILS=[
+ {id:1,g:"Today",from:"Priya Raman",addr:"priya@northfield.studio",c:"#0b6e63",subj:"Revised scope for the Lumen rebrand",snip:"I folded in your notes on the packaging round and trimmed the timeline. Can you look before Thursday's call?",time:"9:41 AM",full:"Today, 9:41 AM",unread:1,star:1,tag:"work",files:["Lumen-scope-v3.pdf"],body:["Hi Sam,","I folded in your notes on the packaging round and moved the final review a week earlier so print has breathing room. The changes are highlighted in the attached document.","Two things I would like your eyes on: the revised budget for photography, and whether we keep the second round of logo explorations or fold it into the first.","Can you look before Thursday's call? A quick yes or no on each is plenty."]},
+ {id:2,g:"Today",from:"Brightline Air",addr:"no-reply@brightline.example",c:"#c26a1a",subj:"Check-in opens: LIS to JFK, Saturday 14 Nov",snip:"Your seat is held. Check in online to choose a seat and add a bag before the airport queue does.",time:"8:15 AM",full:"Today, 8:15 AM",unread:1,star:0,tag:"travel",cal:{t:"Flight BL 212",d:"Sat 14 Nov, 10:40 AM, Terminal 1"},body:["Hello Sam,","Online check-in for your flight to New York (JFK) is now open. Your seat is held, and you can choose a different one or add a bag until 90 minutes before departure.","Booking reference: 7KQ4NB."]},
+ {id:3,g:"Today",from:"Marcus Webb",addr:"marcus@tallowworks.example",c:"#3b66c4",subj:"Re: Staging deploy keeps timing out",snip:"Found it. The health check was hitting the old port. Pushed a fix to the branch, can you retry?",time:"7:52 AM",full:"Today, 7:52 AM",unread:1,star:0,tag:"work",body:["Found it. The health check was still hitting the old port after last week's config move.","I pushed a fix to the branch. Can you retry the deploy and tell me if it goes green? If not, send me the log from the last step and I will dig in."]},
+ {id:4,g:"Yesterday",from:"Harbor Bank",addr:"statements@harborbank.example",c:"#4a9a3f",subj:"Your October statement is ready",snip:"Your statement for the account ending 4417 is available. No action is needed.",time:"Nov 9",full:"Mon 9 Nov, 6:30 PM",unread:1,star:0,tag:"money",files:["Statement-Oct.pdf"],body:["Your statement for the account ending 4417 is now available in online banking.","No action is needed. If something looks wrong, reply through secure messaging rather than by email."]},
+ {id:5,g:"Yesterday",from:"Dana Okafor",addr:"dana@northfield.studio",c:"#9a52b8",subj:"Offsite dinner: vote on Friday or Saturday",snip:"Eleven of us so far. The Thai place can seat us either night, but Friday needs a deposit by tomorrow.",time:"Nov 9",full:"Mon 9 Nov, 2:08 PM",unread:1,star:1,tag:"team",body:["Eleven of us so far. The Thai place can seat us either night, but Friday needs a deposit by tomorrow.","Reply with Friday or Saturday and any dietary notes. I will count at noon."]},
+ {id:6,g:"Yesterday",from:"Joon Park",addr:"joon@tallowworks.example",c:"#b3392b",subj:"Photos from the site visit",snip:"Attached are the twelve best. The north wall is worse than the survey suggested.",time:"Nov 9",full:"Mon 9 Nov, 11:20 AM",unread:1,star:0,tag:"work",files:["site-visit.zip"],body:["Attached are the twelve best. The north wall is worse than the survey suggested, so I would raise it before the contractor quote comes back.","Happy to walk you through them tomorrow."]},
+ {id:7,g:"This week",from:"Elena Sorrell",addr:"elena@sorrell.example",c:"#0b6e63",subj:"Thank you for the introduction",snip:"We spoke for an hour and it was exactly the conversation I hoped for. I owe you a coffee, at least.",time:"Nov 7",full:"Sat 7 Nov, 4:45 PM",unread:0,star:1,tag:"",body:["We spoke for an hour and it was exactly the conversation I hoped for. I owe you a coffee, at least.","Next time you are in town, let me know."]},
+ {id:8,g:"This week",from:"Calendar",addr:"calendar@postmark.example",c:"#6b736f",subj:"Invitation: Quarterly planning, Wed 11 Nov",snip:"Dana Okafor invited you. 2:00 to 3:30 PM, Room Linden or video.",time:"Nov 6",full:"Fri 6 Nov, 10:02 AM",unread:0,star:0,tag:"team",cal:{t:"Quarterly planning",d:"Wed 11 Nov, 2:00 to 3:30 PM, Room Linden"},body:["Dana Okafor invited you to Quarterly planning.","Agenda is in the shared doc. Please add your items by end of day Tuesday."]},
+ {id:9,g:"This week",from:"Tomas Lindqvist",addr:"tomas@lindqvist.example",c:"#c26a1a",subj:"Invoice 0187 for October",snip:"Please find the invoice attached. Payment terms are 30 days as agreed.",time:"Nov 5",full:"Thu 5 Nov, 9:12 AM",unread:0,star:0,tag:"money",files:["Invoice-0187.pdf"],body:["Please find the invoice attached. Payment terms are 30 days as agreed.","Thank you again for the quick turnaround on the last round."]},
+ {id:10,g:"Earlier",from:"Ines Duarte",addr:"ines@duarte.example",c:"#3b66c4",subj:"Book recommendation, as promised",snip:"The one about lighthouses. It reads like a thriller, but every fact in it is true.",time:"Oct 30",full:"Fri 30 Oct, 8:40 PM",unread:0,star:0,tag:"",body:["The one about lighthouses. It reads like a thriller, but every fact in it is true.","I will lend you my copy if you promise not to fold the pages."]},
+ {id:11,g:"Earlier",from:"Northfield Studio",addr:"hello@northfield.studio",c:"#0b6e63",subj:"Welcome to the team, Sam",snip:"Everything you need for your first week: accounts, the wiki, and who to ask about what.",time:"Oct 26",full:"Mon 26 Oct, 9:00 AM",unread:0,star:0,tag:"team",body:["Everything you need for your first week: accounts, the wiki, and who to ask about what.","If anything is missing, reply here and a human will answer."]}
+];
+const TAGS={work:"Work",travel:"Travel",money:"Money",team:"Team"};
+const state={filter:"all",q:"",sel:null,checked:new Set()};
+const $=s=>document.querySelector(s);
+const ic=n=>`<svg class="icon" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const initials=n=>n.split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+
+function visible(){
+  return MAILS.filter(m=>{
+    if(state.filter==="unread"&&!m.unread)return false;
+    if(state.filter==="starred"&&!m.star)return false;
+    if(state.filter==="files"&&!m.files)return false;
+    if(state.q){const t=(m.from+m.subj+m.snip).toLowerCase();if(!t.includes(state.q))return false}
+    return true;
+  });
+}
+function renderList(){
+  const v=visible();let h="",g="";
+  if(!v.length){h=`<div class="empty"><b>Nothing here</b>No conversations match this view.</div>`}
+  v.forEach(m=>{
+    if(m.g!==g){if(g)h+="</ul>";g=m.g;h+=`<h3 class="group">${g}</h3><ul class="rows">`}
+    h+=`<li class="row${m.unread?" unread":""}" data-id="${m.id}" aria-selected="${state.sel===m.id}">
+      <input class="chk" type="checkbox" aria-label="Select conversation from ${esc(m.from)}" ${state.checked.has(m.id)?"checked":""}>
+      <button class="star" aria-pressed="${!!m.star}" aria-label="Star conversation from ${esc(m.from)}">${ic("star")}</button>
+      <div class="av" style="background:${m.c}" aria-hidden="true">${initials(m.from)}</div>
+      <div class="body">
+        <div class="l1"><span class="from">${esc(m.from)}</span></div>
+        <div class="subj"><a href="#m${m.id}" class="open" style="text-decoration:none">${esc(m.subj)}</a></div>
+        <div class="snip">${esc(m.snip)}</div>
+        ${(m.tag||m.files)?`<div class="tags">${m.tag?`<span class="tag t-${m.tag}">${TAGS[m.tag]}</span>`:""}${m.files?`<span class="clip">${ic("clip")}${esc(m.files[0])}</span>`:""}</div>`:""}
+      </div>
+      <time class="time">${m.time}</time>
+    </li>`;
+  });
+  if(g)h+="</ul>";
+  $("#scroll").innerHTML=h;
+  const un=MAILS.filter(m=>m.unread).length;
+  $("#unreadN").textContent=un;$("#sub").textContent=`${un} unread of ${MAILS.length} conversations`;
+  $("#starCount").textContent=MAILS.filter(m=>m.star).length;
+  document.querySelector("nav .count").textContent=un;
+  $("#meta").textContent=state.checked.size?`${state.checked.size} selected`:"Select a conversation";
+}
+function renderReader(){
+  const m=MAILS.find(x=>x.id===state.sel);const el=$("#reader");
+  if(!m){el.innerHTML=`<div class="r-empty"><b>Pick something to read</b>Your messages open here.</div>`;return}
+  el.innerHTML=`
+  <div class="r-bar">
+    <button class="ib back" id="back" aria-label="Back to inbox">${ic("back")}</button>
+    <button class="ib" aria-label="Archive">${ic("archive")}</button>
+    <button class="ib" aria-label="Delete">${ic("trash")}</button>
+    <button class="ib" aria-label="Snooze">${ic("clock")}</button>
+    <span class="sp"></span>
+    <button class="ib" aria-label="Reply">${ic("reply")}</button>
+    <button class="ib" aria-label="Forward">${ic("fwd")}</button>
+  </div>
+  <div class="r-scroll">
+    <h2>${esc(m.subj)}</h2>
+    <div class="who"><div class="av" style="background:${m.c}" aria-hidden="true">${initials(m.from)}</div>
+      <div><strong>${esc(m.from)}</strong><span>${esc(m.addr)}</span></div><time>${m.full}</time></div>
+    <div class="msg">${m.body.map(p=>`<p>${esc(p)}</p>`).join("")}</div>
+    ${m.cal?`<div class="callout"><div class="ico">${ic("cal")}</div><div><b>${esc(m.cal.t)}</b><span>${esc(m.cal.d)}</span></div><button class="btn">Add to calendar</button></div>`:""}
+    ${m.files?m.files.map(f=>`<div class="callout"><div class="ico">${ic("file")}</div><div><b>${esc(f)}</b><span>Attachment</span></div><button class="btn">Download</button></div>`).join(""):""}
+    <div class="reply"><button class="btn primary">${ic("reply")}Reply</button><button class="btn">${ic("fwd")}Forward</button></div>
+  </div>`;
+}
+function open(id){
+  state.sel=id;const m=MAILS.find(x=>x.id===id);m.unread=0;
+  document.body.classList.add("reading");renderList();renderReader();
+}
+$("#scroll").addEventListener("click",e=>{
+  const row=e.target.closest(".row");if(!row)return;const id=+row.dataset.id;
+  if(e.target.closest(".star")){const m=MAILS.find(x=>x.id===id);m.star=m.star?0:1;renderList();return}
+  if(e.target.classList.contains("chk")){e.target.checked?state.checked.add(id):state.checked.delete(id);$("#meta").textContent=state.checked.size?`${state.checked.size} selected`:"Select a conversation";return}
+  e.preventDefault();open(id);
+});
+document.addEventListener("click",e=>{
+  if(e.target.closest("#back")){document.body.classList.remove("reading")}
+  if(e.target.closest("#menuBtn")){document.body.classList.add("nav-open")}
+  else if(document.body.classList.contains("nav-open")&&!e.target.closest("#side")){document.body.classList.remove("nav-open")}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){document.body.classList.remove("nav-open","reading")}});
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",x===t));
+  state.filter=t.dataset.f;renderList();
+}));
+$("#q").addEventListener("input",e=>{state.q=e.target.value.trim().toLowerCase();renderList()});
+$("#readBtn").addEventListener("click",()=>{state.checked.forEach(id=>MAILS.find(m=>m.id===id).unread=0);state.checked.clear();renderList()});
+$("#archiveBtn").addEventListener("click",()=>{
+  for(let i=MAILS.length-1;i>=0;i--)if(state.checked.has(MAILS[i].id)){if(state.sel===MAILS[i].id)state.sel=null;MAILS.splice(i,1)}
+  state.checked.clear();renderList();renderReader();
+});
+state.sel=1;MAILS[0].unread=0;
+renderList();renderReader();
+document.body.classList.remove("reading");
+</script>
+</body>
+</html>

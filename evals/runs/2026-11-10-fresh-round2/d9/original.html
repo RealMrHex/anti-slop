@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quillnote ✨ Team Settings 🚀</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #1e1b4b; }
+    .glow-a { box-shadow: 0 0 60px 10px rgba(168, 85, 247, 0.45); }
+    .glow-b { box-shadow: 0 0 80px 20px rgba(59, 130, 246, 0.35); }
+    .glass { background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(14px); }
+    .meter-glow { box-shadow: 0 0 18px rgba(236, 72, 153, 0.8), 0 0 30px rgba(34, 211, 238, 0.6); }
+    .float { animation: floaty 3.2s ease-in-out infinite; }
+    .pulse-btn { animation: pulsegrad 2s ease-in-out infinite; }
+    @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+    @keyframes pulsegrad {
+      0%,100% { box-shadow: 0 0 14px rgba(236,72,153,.6); }
+      50% { box-shadow: 0 0 34px rgba(139,92,246,.95); }
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen overflow-hidden relative">
+  <div class="absolute -top-40 -left-32 w-[520px] h-[520px] rounded-full bg-fuchsia-600/40 blur-3xl glow-a"></div>
+  <div class="absolute top-1/3 -right-40 w-[600px] h-[600px] rounded-full bg-cyan-500/30 blur-3xl glow-b"></div>
+  <div class="absolute -bottom-48 left-1/3 w-[500px] h-[500px] rounded-full bg-indigo-500/40 blur-3xl"></div>
+
+  <div class="relative flex h-[900px] w-[1280px]">
+    <aside class="glass w-[236px] border-r-2 border-violet-400/50 p-[18px] flex flex-col gap-[6px]">
+      <div class="flex items-center gap-2 mb-[22px]">
+        <span class="text-2xl float">🪶</span>
+        <span class="font-black text-xl tracking-tight">Quillnote <span class="text-[10px] bg-gradient-to-r from-amber-400 to-pink-500 px-2 py-[2px] rounded-full font-black">PRO</span></span>
+      </div>
+      <p class="text-[11px] font-black uppercase tracking-[0.2em] text-violet-300 mb-1 ml-2">⚙️ Settings</p>
+      <a class="rounded-xl px-3 py-[9px] bg-gradient-to-r from-violet-600 to-fuchsia-600 font-extrabold glow-a">👥 Team Members</a>
+      <a class="rounded-xl px-3 py-[9px] font-bold hover:bg-white/10 transition">🧾 Billing</a>
+      <a class="rounded-xl px-3 py-[9px] font-bold hover:bg-white/10 transition">🔐 Security</a>
+      <a class="rounded-xl px-3 py-[9px] font-bold hover:bg-white/10 transition">🔗 Integrations <span class="text-[10px] bg-emerald-400 text-black px-[6px] rounded font-black">NEW</span></a>
+      <a class="rounded-xl px-3 py-[9px] font-bold hover:bg-white/10 transition">🎨 Appearance</a>
+      <div class="mt-auto glass rounded-2xl border border-cyan-400/60 p-3 text-[13px] font-semibold">
+        <p class="font-black text-cyan-300">🚀 Unlock 3x productivity!!</p>
+        <p class="text-white/70 mt-1">Trusted by 1M+ teams worldwide 🌍</p>
+      </div>
+    </aside>
+
+    <main class="flex-1 p-[34px] pt-[30px] overflow-hidden">
+      <header class="flex items-center justify-between mb-[26px]">
+        <div>
+          <h1 class="text-[34px] font-black tracking-tight bg-gradient-to-r from-pink-400 via-violet-300 to-cyan-300 bg-clip-text text-transparent">🎉 Team Members &amp; Roles 🎉</h1>
+          <p class="text-white/70 font-semibold mt-[5px]">Supercharge collaboration!! Invite your squad 🔥</p>
+        </div>
+        <div class="glass border border-white/20 rounded-full px-4 py-[10px] w-[280px] text-white/60 font-semibold">🔍 Search anything...</div>
+      </header>
+
+      <section class="glass rounded-3xl border-2 border-pink-400/60 p-[22px] mb-[18px] glow-a">
+        <div class="flex items-center justify-between mb-[14px]">
+          <p class="text-[11px] font-black uppercase tracking-[0.25em] text-pink-300">💺 Seats Used</p>
+          <p class="text-sm font-black">9 of 12 seats 🚀 <span class="text-emerald-300">(75%!)</span></p>
+        </div>
+        <div class="h-[18px] rounded-full bg-white/10 overflow-hidden">
+          <div class="h-full w-[75%] rounded-full bg-gradient-to-r from-red-500 via-yellow-400 via-lime-400 via-cyan-400 to-fuchsia-500 meter-glow"></div>
+        </div>
+        <p class="text-white/60 text-xs font-semibold mt-[10px]">Upgrade anytime for MORE seats!! ✨ Last billed 3/11/2026</p>
+      </section>
+
+      <div class="grid grid-cols-[1.35fr_1fr] gap-[18px]">
+        <section class="glass rounded-3xl border-2 border-cyan-400/50 p-[22px] float-slow">
+          <p class="text-[11px] font-black uppercase tracking-[0.25em] text-cyan-300 mb-3">📨 Invite by email 💌</p>
+          <form class="flex gap-2 items-stretch" onsubmit="event.preventDefault(); this.querySelector('input').value='';">
+            <input type="email" placeholder="teammate@company.com 🙌" class="flex-1 rounded-xl bg-white/10 border border-white/25 px-4 py-[11px] text-sm font-semibold placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-fuchsia-400" />
+            <select class="rounded-xl bg-indigo-900 border border-white/25 px-3 text-sm font-bold">
+              <option>👑 Admin</option>
+              <option>✏️ Editor</option>
+              <option>👀 Viewer</option>
+            </select>
+            <button type="submit" class="pulse-btn rounded-full bg-gradient-to-r from-pink-500 via-violet-500 to-cyan-400 px-6 font-black hover:scale-110 transition-transform">Send Invite 🚀</button>
+          </form>
+          <p class="text-white/50 text-xs mt-2 font-semibold">Invites expire in 7 days!! ⏳</p>
+        </section>
+
+        <section class="glass rounded-3xl border-2 border-amber-400/50 p-[22px]">
+          <p class="text-[11px] font-black uppercase tracking-[0.25em] text-amber-300 mb-3">📬 Pending invitations · 3</p>
+          <ul class="space-y-[9px] text-sm">
+            <li class="flex justify-between items-center"><span class="font-bold">priya@studio.io</span><span class="text-[10px] font-black bg-sky-400 text-black rounded-full px-2 py-[2px]">EDITOR</span></li>
+            <li class="flex justify-between items-center"><span class="font-bold">marco.v@gmail.com</span><span class="text-[10px] font-black bg-lime-400 text-black rounded-full px-2 py-[2px]">VIEWER</span></li>
+            <li class="flex justify-between items-center"><span class="font-bold">Jo_Kim@corp.co</span><span class="text-[10px] font-black bg-fuchsia-400 text-black rounded-full px-2 py-[2px]">ADMIN</span></li>
+          </ul>
+          <p class="text-white/50 text-[11px] font-semibold mt-3">Sent 2nd Nov, 2026 · 9/11/26 · Nov 4 2026 🗓️</p>
+        </section>
+      </div>
+
+      <section class="glass rounded-3xl border-2 border-violet-400/50 p-[22px] mt-[18px]">
+        <p class="text-[11px] font-black uppercase tracking-[0.25em] text-violet-300 mb-3">🧑‍🤝‍🧑 All members · 8</p>
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-[10px] uppercase tracking-[0.2em] text-white/60">
+              <th class="pb-[10px] font-black">Name</th>
+              <th class="pb-[10px] font-black">Email</th>
+              <th class="pb-[10px] font-black">Role</th>
+              <th class="pb-[10px] font-black">Last active</th>
+              <th class="pb-[10px] font-black">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="font-semibold">
+            <tr class="border-t border-white/10">
+              <td class="py-[10px]"><div class="flex items-center gap-2"><span class="h-[34px] w-[34px] rounded-full bg-gradient-to-br from-pink-500 to-orange-400 grid place-items-center font-black text-xs float">AR</span>Alex R. ⭐</div></td>
+              <td class="text-white/80">armin@quillnote.app</td>
+              <td><span class="rounded-full bg-fuchsia-500 px-3 py-[3px] text-[11px] font-black">👑 OWNER</span></td>
+              <td class="text-white/80">Just now!!</td>
+              <td><button class="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-3 py-[4px] text-xs font-black hover:scale-110 transition-transform">Edit ✏️</button></td>
+            </tr>
+            <tr class="border-t border-white/10">
+              <td class="py-[10px]"><div class="flex items-center gap-2"><span class="h-[34px] w-[34px] rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 grid place-items-center font-black text-xs">SL</span>Sofia Lang</div></td>
+              <td class="text-white/80">sofia@quillnote.app</td>
+              <td><span class="rounded-full bg-cyan-400 text-black px-3 py-[3px] text-[11px] font-black">🛠️ ADMIN</span></td>
+              <td class="text-white/80">2 hrs ago · 10/11/2026</td>
+              <td><button class="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-3 py-[4px] text-xs font-black hover:scale-110 transition-transform">Edit ✏️</button></td>
+            </tr>
+            <tr class="border-t border-white/10">
+              <td class="py-[10px]"><div class="flex items-center gap-2"><span class="h-[34px] w-[34px] rounded-full bg-gradient-to-br from-lime-400 to-emerald-600 grid place-items-center font-black text-xs">DK</span>Dev Kapoor</div></td>
+              <td class="text-white/80">dev.k@quillnote.app</td>
+              <td><span class="rounded-full bg-lime-400 text-black px-3 py-[3px] text-[11px] font-black">✏️ EDITOR</span></td>
+              <td class="text-white/80">Yesterday 4:12pm</td>
+              <td><button class="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-3 py-[4px] text-xs font-black hover:scale-110 transition-transform">Edit ✏️</button></td>
+            </tr>
+            <tr class="border-t border-white/10">
+              <td class="py-[10px]"><div class="flex items-center gap-2"><span class="h-[34px] w-[34px] rounded-full bg-gradient-to-br from-amber-300 to-red-500 grid place-items-center font-black text-xs">MO</span>Mina Okafor</div></td>
+              <td class="text-white/80">mina@quillnote.app</td>
+              <td><span class="rounded-full bg-amber-400 text-black px-3 py-[3px] text-[11px] font-black">🎯 MANAGER</span></td>
+              <td class="text-white/80">03.11.2026</td>
+              <td><button class="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-3 py-[4px] text-xs font-black hover:scale-110 transition-transform">Edit ✏️</button></td>
+            </tr>
+            <tr class="border-t border-white/10">
+              <td class="py-[10px]"><div class="flex items-center gap-2"><span class="h-[34px] w-[34px] rounded-full bg-gradient-to-br from-violet-500 to-pink-400 grid place-items-center font-black text-xs">TR</span>Tomás Ruiz</div></td>
+              <td class="text-white/80">tomas.r@quillnote.app</td>
+              <td><span class="rounded-full bg-rose-500 px-3 py-[3px] text-[11px] font-black">🎧 SUPPORT</span></td>
+              <td class="text-white/80">Nov 8, 2026</td>
+              <td><button class="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-3 py-[4px] text-xs font-black hover:scale-110 transition-transform">Edit ✏️</button></td>
+            </tr>
+            <tr class="border-t border-white/10">
+              <td class="py-[10px]"><div class="flex items-center gap-2"><span class="h-[34px] w-[34px] rounded-full bg-gradient-to-br from-sky-400 to-indigo-600 grid place-items-center font-black text-xs">NW</span>Nadia Walsh</div></td>
+              <td class="text-white/80">nadia@quillnote.app</td>
+              <td><span class="rounded-full bg-sky-400 text-black px-3 py-[3px] text-[11px] font-black">✏️ EDITOR</span></td>
+              <td class="text-white/80">5 days ago</td>
+              <td><button class="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-3 py-[4px] text-xs font-black hover:scale-110 transition-transform">Edit ✏️</button></td>
+            </tr>
+            <tr class="border-t border-white/10">
+              <td class="py-[10px]"><div class="flex items-center gap-2"><span class="h-[34px] w-[34px] rounded-full bg-gradient-to-br from-fuchsia-500 to-amber-400 grid place-items-center font-black text-xs">HB</span>Hiro Band</div></td>
+              <td class="text-white/80">hiro.b@quillnote.app</td>
+              <td><span class="rounded-full bg-emerald-400 text-black px-3 py-[3px] text-[11px] font-black">👀 VIEWER</span></td>
+              <td class="text-white/80">2026-10-28</td>
+              <td><button class="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-3 py-[4px] text-xs font-black hover:scale-110 transition-transform">Edit ✏️</button></td>
+            </tr>
+            <tr class="border-t border-white/10">
+              <td class="py-[10px]"><div class="flex items-center gap-2"><span class="h-[34px] w-[34px] rounded-full bg-gradient-to-br from-teal-300 to-cyan-600 grid place-items-center font-black text-xs">EC</span>Elif Can</div></td>
+              <td class="text-white/80">elif@quillnote.app</td>
+              <td><span class="rounded-full bg-orange-400 text-black px-3 py-[3px] text-[11px] font-black">🌟 GUEST</span></td>
+              <td class="text-white/80">Oct 2 2026 🗓️</td>
+              <td><button class="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-3 py-[4px] text-xs font-black hover:scale-110 transition-transform">Edit ✏️</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <p class="text-center text-[11px] font-black uppercase tracking-[0.3em] text-white/50 mt-[14px]">🏆 #1 rated doc app of 2026!! Loved by 1M+ writers 💜</p>
+    </main>
+  </div>
+</body>
+</html>

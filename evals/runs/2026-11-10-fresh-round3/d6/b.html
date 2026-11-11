@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Readwell Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #161513;
+    --side: #12110f;
+    --card: #1c1a18;
+    --raised: #262421;
+    --line: rgba(239, 233, 222, 0.08);
+    --t1: #efe9de;
+    --t2: #aaa398;
+    --t3: #8a847a;
+    --accent: #f5a524;
+    --pos: #4cc38a;
+    --neg: #e5484d;
+    --r-card: 14px;
+    --r-ctl: 8px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--t1);
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* Sidebar */
+  .side {
+    background: var(--side);
+    border-right: 1px solid var(--line);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 500; padding: 0 8px; }
+  .mark { width: 16px; height: 16px; border-radius: 4px; background: var(--accent); flex: none; }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex; align-items: center; gap: 10px;
+    height: 36px; padding: 0 10px;
+    border-radius: var(--r-ctl);
+    color: var(--t2);
+    text-decoration: none;
+    transition: background-color 150ms, color 150ms;
+  }
+  .nav a:hover { background: var(--raised); color: var(--t1); }
+  .nav a[aria-current="page"] { background: var(--raised); color: var(--t1); font-weight: 500; box-shadow: inset 0 0 0 1px var(--line); }
+  .nav a[aria-current="page"] .i { color: var(--accent); }
+
+  /* Icons */
+  .i {
+    width: 18px; height: 18px; flex: none;
+    fill: none; stroke: currentColor; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    color: var(--t3);
+  }
+
+  /* Main */
+  main { padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  h1 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 36px; line-height: 1.15; margin: 0; }
+  .sub { color: var(--t2); margin: 4px 0 0; }
+  .actions { display: flex; gap: 8px; align-items: center; }
+  .search { position: relative; display: block; }
+  .search .i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; }
+  .search input {
+    width: 220px; height: 36px;
+    padding: 0 12px 0 36px;
+    border-radius: var(--r-ctl);
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--t1);
+    font: inherit;
+  }
+  .search input::placeholder { color: var(--t3); }
+
+  .btn {
+    height: 36px; padding: 0 14px;
+    border-radius: var(--r-ctl);
+    border: 1px solid var(--line);
+    background: var(--raised);
+    color: var(--t1);
+    font: inherit; font-weight: 500;
+    cursor: pointer;
+    transition: background-color 150ms, border-color 150ms;
+  }
+  .btn:hover { border-color: rgba(239, 233, 222, 0.16); }
+  .btn-primary { background: var(--t1); color: var(--bg); border-color: transparent; }
+  .btn-primary:hover { background: #ffffff; }
+  .btn-sm { height: 32px; font-size: 13px; padding: 0 12px; }
+
+  .toolbar { display: flex; align-items: center; gap: 8px; color: var(--t3); font-size: 13px; flex-wrap: wrap; }
+  .toolbar .label { margin-right: 4px; }
+  .toolbar .btn { color: var(--t2); background: var(--card); font-weight: 400; }
+  .toolbar .btn[aria-pressed="true"] { color: var(--t1); }
+
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); padding: 20px; min-width: 0; }
+  .panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+  h2 { font-size: 16px; font-weight: 500; margin: 0; }
+  .meta { color: var(--t3); font-size: 13px; }
+  .text-link { color: var(--t2); text-decoration: none; font-size: 13px; }
+  .text-link:hover { color: var(--t1); }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .stat .label { color: var(--t2); font-size: 13px; }
+  .stat .figure { font-size: 32px; font-weight: 500; line-height: 1; margin: 12px 0; font-variant-numeric: tabular-nums; }
+  .delta { display: flex; align-items: center; gap: 8px; color: var(--t2); font-size: 13px; font-variant-numeric: tabular-nums; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pos); flex: none; }
+  .dot.neg { background: var(--neg); }
+
+  /* Main grid */
+  .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+
+  /* Chart: the one focal element */
+  .chart { position: relative; height: 220px; }
+  .chart svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .chart .grid { stroke: var(--line); fill: none; vector-effect: non-scaling-stroke; }
+  .chart .area { fill: rgba(245, 165, 36, 0.08); }
+  .chart .trend { stroke: var(--accent); stroke-width: 2; fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
+  .chart .end {
+    position: absolute; left: 95.83%; top: 8%;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--card);
+    transform: translate(-50%, -50%);
+  }
+  .dates {
+    display: grid; grid-template-columns: repeat(12, 1fr);
+    margin-top: 12px;
+    color: var(--t3); font-size: 11px; text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Traffic sources */
+  .src { display: flex; flex-direction: column; gap: 16px; }
+  .src-row { display: flex; flex-direction: column; gap: 6px; }
+  .src-top { display: flex; justify-content: space-between; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .src-top span:last-child { color: var(--t2); }
+  .track { height: 4px; border-radius: 2px; background: var(--raised); overflow: hidden; }
+  .track i { display: block; height: 100%; background: var(--t3); border-radius: 2px; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+  th {
+    text-align: left; color: var(--t3); font-size: 13px; font-weight: 400;
+    height: 36px; border-bottom: 1px solid var(--line); padding: 0 16px 0 0; white-space: nowrap;
+  }
+  td { height: 44px; border-bottom: 1px solid var(--line); padding: 0 16px 0 0; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: rgba(239, 233, 222, 0.02); }
+  .num { text-align: right; }
+  th.num { padding-right: 0; }
+  td.num { padding-right: 0; }
+  td.muted { color: var(--t2); }
+
+  /* Narrow screens */
+  @media (max-width: 960px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .side { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 16px; }
+    .nav { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+    .nav a { height: 32px; }
+    main { padding: 24px 16px 32px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .main-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 560px) {
+    h1 { font-size: 30px; }
+    .dates span:nth-child(even) { visibility: hidden; }
+    .actions { width: 100%; }
+    .search { flex: 1; }
+    .search input { width: 100%; }
+    .stat .figure { font-size: 28px; }
+    .stats { gap: 12px; }
+    .stat { padding: 16px; }
+    .panel { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand"><span class="mark" aria-hidden="true"></span>Readwell</div>
+    <nav class="nav" aria-label="Main">
+      <a href="#" aria-current="page"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M8 17v-6M13 17V7M18 17v-4"/></svg>Analytics</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Issues</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M16 4.1a4 4 0 0 1 0 7.8M22 21c0-3-1.7-5.6-4.2-6.7"/></svg>Subscribers</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>Templates</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>Automations</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg>Settings</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="head">
+      <div>
+        <h1>Analytics</h1>
+        <p class="sub">Your newsletter over the last 12 weeks</p>
+      </div>
+      <div class="actions">
+        <div class="search">
+          <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="text" placeholder="Search" aria-label="Search">
+        </div>
+        <button class="btn btn-primary">Boost</button>
+      </div>
+    </header>
+
+    <div class="toolbar" role="group" aria-label="Date range">
+      <span class="label">Date range</span>
+      <button class="btn btn-sm" aria-pressed="true">Last 12 weeks</button>
+      <button class="btn btn-sm">16 Aug to 8 Nov 2026</button>
+      <button class="btn btn-sm">Apply</button>
+    </div>
+
+    <section class="stats" aria-label="Key figures">
+      <article class="panel stat">
+        <p class="label">Subscribers</p>
+        <p class="figure">48,210</p>
+        <p class="delta"><span class="dot" aria-hidden="true"></span>+12% vs prior 12 weeks</p>
+      </article>
+      <article class="panel stat">
+        <p class="label">Open rate</p>
+        <p class="figure">41.7%</p>
+        <p class="delta"><span class="dot" aria-hidden="true"></span>+3.2% vs prior 12 weeks</p>
+      </article>
+      <article class="panel stat">
+        <p class="label">Click rate</p>
+        <p class="figure">6.9%</p>
+        <p class="delta"><span class="dot" aria-hidden="true"></span>+0.8% vs prior 12 weeks</p>
+      </article>
+      <article class="panel stat">
+        <p class="label">Unsubscribes</p>
+        <p class="figure">0.4%</p>
+        <p class="delta"><span class="dot" aria-hidden="true"></span>-0.1% vs prior 12 weeks</p>
+      </article>
+    </section>
+
+    <section class="main-grid">
+      <article class="panel">
+        <div class="panel-head">
+          <h2>Subscriber growth</h2>
+          <span class="meta">Weekly, 12 weeks</span>
+        </div>
+        <div class="chart">
+          <svg viewBox="0 0 1200 100" preserveAspectRatio="none" role="img" aria-label="Subscriber growth rising across 12 weeks">
+            <path class="grid" d="M0 25H1200M0 50H1200M0 75H1200"/>
+            <polygon class="area" points="50,62 150,56 250,59 350,48 450,42 550,45 650,37 750,30 850,34 950,22 1050,16 1150,8 1150,100 50,100"/>
+            <polyline class="trend" points="50,62 150,56 250,59 350,48 450,42 550,45 650,37 750,30 850,34 950,22 1050,16 1150,8"/>
+          </svg>
+          <span class="end" aria-hidden="true"></span>
+        </div>
+        <div class="dates" aria-hidden="true">
+          <span>Aug 16</span><span>Aug 23</span><span>Aug 30</span><span>Sep 6</span><span>Sep 13</span><span>Sep 20</span>
+          <span>Sep 27</span><span>Oct 4</span><span>Oct 11</span><span>Oct 18</span><span>Oct 25</span><span>Nov 1</span>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <h2>Traffic sources</h2>
+        </div>
+        <div class="src">
+          <div class="src-row">
+            <div class="src-top"><span>Google Search</span><span>38%</span></div>
+            <div class="track"><i style="width:100%"></i></div>
+          </div>
+          <div class="src-row">
+            <div class="src-top"><span>Instagram</span><span>24.5%</span></div>
+            <div class="track"><i style="width:64.5%"></i></div>
+          </div>
+          <div class="src-row">
+            <div class="src-top"><span>X / Twitter</span><span>17%</span></div>
+            <div class="track"><i style="width:44.7%"></i></div>
+          </div>
+          <div class="src-row">
+            <div class="src-top"><span>Direct &amp; email</span><span>12.3%</span></div>
+            <div class="track"><i style="width:32.4%"></i></div>
+          </div>
+          <div class="src-row">
+            <div class="src-top"><span>Referrals</span><span>8.2%</span></div>
+            <div class="track"><i style="width:21.6%"></i></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Recent issues</h2>
+        <a class="text-link" href="#">View all</a>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Title</th>
+              <th scope="col">Sent</th>
+              <th scope="col" class="num">Opens</th>
+              <th scope="col" class="num">Clicks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>You WON'T believe issue #48!!</td><td class="muted">Nov 3, 2026</td><td class="num">19,840</td><td class="num muted">2,311</td></tr>
+            <tr><td>10 hacks to 10x your reach</td><td class="muted">Oct 27, 2026</td><td class="num">18,205</td><td class="num muted">1,987</td></tr>
+            <tr><td>Our biggest update EVER</td><td class="muted">Oct 20, 2026</td><td class="num">17,612</td><td class="num muted">1,740</td></tr>
+            <tr><td>Genius idea (seriously!!)</td><td class="muted">Oct 13, 2026</td><td class="num">16,990</td><td class="num muted">1,502</td></tr>
+            <tr><td>#1 newsletter platform</td><td class="muted">Oct 6, 2026</td><td class="num">15,430</td><td class="num muted">1,388</td></tr>
+            <tr><td>Don't miss this!!!</td><td class="muted">Sep 29, 2026</td><td class="num">14,075</td><td class="num muted">1,219</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+</div>
+</body>
+</html>

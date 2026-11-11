@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Courier | Transactional Email API</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0d14;
+    --surface: #11141c;
+    --raised: #1a1e28;
+    --line: rgba(238, 240, 245, .08);
+    --text: #eef0f5;
+    --text-2: #a3a9b8;
+    --text-3: #7a8296;
+    --accent: #e8b86d;
+    --ok: #7fbf9a;
+    --bad: #e08a7a;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 400 16px/1.5 "Geist", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  .mono { font-family: "Geist Mono", ui-monospace, monospace; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* Navigation */
+  .top {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 18px; letter-spacing: -0.01em; }
+  .mark { width: 12px; height: 12px; border-radius: 3px; background: var(--accent); }
+  .links { display: flex; gap: 28px; font-size: 15px; color: var(--text-2); }
+  .links a, .signin { transition: color .15s var(--ease); }
+  .links a:hover, .signin:hover { color: var(--text); }
+  .actions { display: flex; align-items: center; gap: 20px; }
+  .signin { font-size: 15px; color: var(--text-2); }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: var(--radius-md);
+    font: 500 15px/1 "Geist", system-ui, sans-serif;
+    transition: background-color .15s var(--ease), border-color .15s var(--ease), color .15s var(--ease);
+  }
+  .btn-primary { background: var(--text); color: var(--bg); }
+  .btn-primary:hover { background: #ffffff; }
+  .btn-ghost { border: 1px solid var(--line); color: var(--text); }
+  .btn-ghost:hover { border-color: rgba(238, 240, 245, .2); }
+  .btn-sm { height: 36px; padding: 0 14px; font-size: 14px; }
+
+  /* Hero */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 64px;
+    align-items: center;
+    padding: 96px 0;
+  }
+  .eyebrow { font-size: 13px; color: var(--text-3); margin: 0 0 20px; }
+  .eyebrow a { color: var(--text-2); }
+  .eyebrow a:hover { color: var(--text); }
+  h1 {
+    font-weight: 500;
+    font-size: 54px;
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+  .lede { font-size: 18px; line-height: 1.55; color: var(--text-2); max-width: 36rem; margin: 20px 0 0; }
+  .cta { display: flex; gap: 12px; margin-top: 36px; }
+
+  .snippet {
+    margin-top: 48px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .snippet-bar {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  pre {
+    margin: 0;
+    padding: 20px;
+    font: 400 13.5px/1.7 "Geist Mono", ui-monospace, monospace;
+    color: var(--text-2);
+    overflow-x: auto;
+  }
+  pre .k { color: var(--text); }
+  pre .s { color: var(--accent); }
+
+  /* Product view: delivery log, the one bright moment */
+  .log {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .log-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .log-title { font-size: 15px; font-weight: 500; }
+  .log-meta { font-size: 13px; color: var(--text-3); }
+  .log-body { position: relative; padding: 8px 0; }
+  .log-body::before {
+    content: "";
+    position: absolute;
+    left: 31px;
+    top: 36px;
+    bottom: 36px;
+    width: 1px;
+    background: var(--line);
+  }
+  .row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    height: 64px;
+    padding: 0 20px;
+  }
+  .dot {
+    position: relative;
+    z-index: 1;
+    width: 9px;
+    height: 9px;
+    margin-left: 4px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 0 4px var(--surface);
+  }
+  .dot.queued { background: var(--accent); }
+  .dot.bounced { background: var(--bad); }
+  .row-main { min-width: 0; }
+  .to { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tpl { font-size: 13px; color: var(--text-3); }
+  .row-side { text-align: right; }
+  .state { font-size: 13px; color: var(--text-2); }
+  .state.queued { color: var(--accent); }
+  .state.bounced { color: var(--bad); }
+  .time { font-size: 12px; color: var(--text-3); }
+
+  /* Features */
+  .features { border-top: 1px solid var(--line); padding: 96px 0; }
+  .section-label { font-size: 13px; color: var(--text-3); margin: 0 0 40px; }
+  .feat {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 48px;
+    padding: 32px 0;
+    border-top: 1px solid var(--line);
+  }
+  .feat:last-child { border-bottom: 1px solid var(--line); }
+  .feat h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .feat h3 svg { width: 16px; height: 16px; flex: none; color: var(--text-3); }
+  .feat p { margin: 0; color: var(--text-2); font-size: 16px; }
+
+  footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 32px 0 48px;
+    font-size: 14px;
+    color: var(--text-3);
+  }
+
+  @media (max-width: 880px) {
+    .wrap { padding: 0 16px; }
+    .links { display: none; }
+    .hero { grid-template-columns: 1fr; gap: 48px; padding: 64px 0; }
+    h1 { font-size: 44px; }
+    .feat { grid-template-columns: 1fr; gap: 12px; }
+    .features { padding: 64px 0; }
+    footer { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="top">
+    <div class="brand"><span class="mark"></span>Courier</div>
+    <div class="links">
+      <a href="#">Features</a><a href="#">Docs</a><a href="#">Pricing</a><a href="#">Changelog</a>
+    </div>
+    <div class="actions">
+      <a href="#" class="signin">Sign in</a>
+      <a href="#" class="btn btn-primary btn-sm">Get started</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <p class="eyebrow mono"><a href="#">v2.4 changelog</a></p>
+      <h1>Send transactional<br>email from your code</h1>
+      <p class="lede">Send over REST or SMTP. Delivery logs, bounce handling and templates in one API, built for developers.</p>
+      <div class="cta">
+        <a href="#" class="btn btn-primary">Start sending free</a>
+        <a href="#" class="btn btn-ghost">Watch demo</a>
+      </div>
+
+      <div class="snippet">
+        <div class="snippet-bar mono">send.js</div>
+<pre><code><span class="k">const</span> res = <span class="k">await</span> courier.send({
+  to: <span class="s">"dev@acme.io"</span>,
+  template: <span class="s">"welcome-v3"</span>,
+  vars: { name: <span class="s">"Ada"</span>, ts: <span class="s">"2026/11/10 14:02"</span> }
+});
+console.log(<span class="s">"sent"</span>, res.id);</code></pre>
+      </div>
+    </div>
+
+    <div class="log" aria-label="Delivery log preview">
+      <div class="log-head">
+        <span class="log-title">Delivery log</span>
+        <span class="log-meta mono">Last 24 hours</span>
+      </div>
+      <div class="log-body">
+        <div class="row">
+          <span class="dot"></span>
+          <div class="row-main">
+            <div class="to">dev@acme.io</div>
+            <div class="tpl mono">welcome-v3</div>
+          </div>
+          <div class="row-side">
+            <div class="state">Delivered</div>
+            <div class="time mono">14 ms</div>
+          </div>
+        </div>
+        <div class="row">
+          <span class="dot"></span>
+          <div class="row-main">
+            <div class="to">ops@northwind.co</div>
+            <div class="tpl mono">invoice-088</div>
+          </div>
+          <div class="row-side">
+            <div class="state">Delivered</div>
+            <div class="time mono">11 ms</div>
+          </div>
+        </div>
+        <div class="row">
+          <span class="dot queued"></span>
+          <div class="row-main">
+            <div class="to">team@lumen.dev</div>
+            <div class="tpl mono">reset-password</div>
+          </div>
+          <div class="row-side">
+            <div class="state queued">Queued</div>
+            <div class="time mono">Just now</div>
+          </div>
+        </div>
+        <div class="row">
+          <span class="dot bounced"></span>
+          <div class="row-main">
+            <div class="to">old@mail.example</div>
+            <div class="tpl mono">digest-nov</div>
+          </div>
+          <div class="row-side">
+            <div class="state bounced">Soft bounce</div>
+            <div class="time mono">Retry in 10 min</div>
+          </div>
+        </div>
+        <div class="row">
+          <span class="dot"></span>
+          <div class="row-main">
+            <div class="to">hello@parcel.app</div>
+            <div class="tpl mono">receipt-4471</div>
+          </div>
+          <div class="row-side">
+            <div class="state">Delivered</div>
+            <div class="time mono">12 ms</div>
+          </div>
+        </div>
+        <div class="row">
+          <span class="dot"></span>
+          <div class="row-main">
+            <div class="to">billing@brightly.io</div>
+            <div class="tpl mono">trial-ending</div>
+          </div>
+          <div class="row-side">
+            <div class="state">Delivered</div>
+            <div class="time mono">16 ms</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <p class="section-label">Features</p>
+
+    <div class="feat">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+        Delivery logs
+      </h3>
+      <p>Every event, every hop, searchable. Nov 10, 2026 and 2026-11-10 both work.</p>
+    </div>
+
+    <div class="feat">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.2 8 9 4.6-.8 8-4.5 8-9V6l-8-3z"/></svg>
+        Bounce handling
+      </h3>
+      <p>Hard and soft bounces sorted automatically.</p>
+    </div>
+
+    <div class="feat">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Templates
+      </h3>
+      <p>Drag, drop and ship. Versioned templates with live preview.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Courier</span>
+    <span>Made for developers</span>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keystone - CRM for agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --bg: #f3f4f1;
+    --surface: #ffffff;
+    --raised: #f6f7f4;
+    --line: #dde1dc;
+    --ink: #15201a;
+    --ink-2: #4b5651;
+    --ink-3: #75807a;
+    --brass: #b7832b;
+    --brass-ink: #7d5410;
+    --radius-control: 8px;
+    --radius-card: 12px;
+  }
+  body {
+    font-family: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 44px; padding: 0 20px; border-radius: var(--radius-control);
+    font-size: 15px; font-weight: 500; text-decoration: none;
+    transition: background-color .15s, border-color .15s, transform .1s;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn:focus-visible, .nav-link:focus-visible, .text-link:focus-visible {
+    outline: 2px solid var(--brass-ink); outline-offset: 3px;
+  }
+  .btn-primary { background: var(--ink); color: #fff; }
+  .btn-primary:hover { background: #26352d; }
+  .btn-secondary { background: var(--surface); color: var(--ink); border: 1px solid var(--line); }
+  .btn-secondary:hover { background: var(--raised); }
+  .nav-link { color: var(--ink-2); text-decoration: none; font-size: 14px; font-weight: 500; }
+  .nav-link:hover { color: var(--ink); }
+  .text-link { color: var(--ink-2); text-decoration: none; font-size: 14px; font-weight: 500; }
+  .text-link:hover { color: var(--ink); }
+  .panel {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius-card); padding: 20px;
+    box-shadow: 0 1px 2px rgba(21,32,26,.04), 0 12px 32px -12px rgba(21,32,26,.12);
+  }
+  .deal {
+    background: var(--raised); border-radius: 8px; padding: 10px 12px;
+  }
+  .deal-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+  .deal-meta { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+  .col-head { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 500; color: var(--ink-2); padding-bottom: 10px; margin-bottom: 2px; border-bottom: 1px solid var(--line); }
+  .col-count { color: var(--ink-3); font-weight: 400; }
+  .brass-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--brass); margin-right: 8px; vertical-align: middle; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<header class="border-b border-[var(--line)] bg-[var(--surface)]">
+  <div class="mx-auto flex h-[64px] max-w-[1200px] items-center justify-between px-6 md:px-[72px]">
+    <a href="#" class="flex items-center gap-2 text-[17px] font-semibold tracking-tight text-[var(--ink)] no-underline">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="color: var(--brass)">
+        <circle cx="7" cy="12" r="3.5" stroke="currentColor" stroke-width="2"/>
+        <path d="M10.5 12H21M17.5 12v3M14 12v2.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      Keystone
+    </a>
+    <nav class="hidden items-center gap-8 md:flex" aria-label="Main">
+      <a class="nav-link" href="#">Features</a>
+      <a class="nav-link" href="#">Pricing</a>
+      <a class="nav-link" href="#">Pipeline</a>
+      <a class="nav-link" href="#">Resources</a>
+    </nav>
+    <div class="flex items-center gap-3 md:gap-5">
+      <a href="#" class="text-link text-[14px]">Log in</a>
+      <a href="#" class="btn btn-primary !h-[36px] !px-4 !text-[14px]">Start free</a>
+    </div>
+  </div>
+</header>
+
+<main class="mx-auto grid min-h-[calc(100vh-64px)] max-w-[1200px] grid-cols-[minmax(0,1fr)] content-center items-center gap-12 px-6 py-16 md:px-[72px] lg:grid-cols-12">
+
+  <div class="min-w-0 lg:col-span-5">
+    <p class="text-[14px] font-medium text-[var(--ink-2)]">CRM for agents</p>
+    <h1 class="mt-4 text-[40px] font-semibold leading-[1.08] tracking-[-0.02em] md:text-[50px]">Every lead, viewing and follow-up in one pipeline.</h1>
+    <p class="mt-6 max-w-[460px] text-[18px] leading-[1.55] text-[var(--ink-2)]">Keystone tracks your leads, books your viewings, nudges your follow-ups and shows every deal from first call to closing.</p>
+    <div class="mt-9 flex flex-wrap gap-3">
+      <a href="#" class="btn btn-primary">Get started free</a>
+      <a href="#" class="btn btn-secondary">Watch demo</a>
+    </div>
+  </div>
+
+  <div class="min-w-0 lg:col-span-7">
+    <div class="panel" aria-label="Sample pipeline">
+      <div class="flex items-baseline justify-between">
+        <h2 class="text-[16px] font-semibold">Pipeline</h2>
+        <span class="text-[13px] text-[var(--ink-3)]">Sample data</span>
+      </div>
+
+      <div class="mt-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="text-[13px] text-[var(--ink-2)]">Open value</p>
+          <p class="num mt-1 text-[40px] font-semibold leading-none tracking-[-0.02em]">$4,000,400</p>
+        </div>
+        <p class="num text-[13px] text-[var(--ink-2)]">+$310,000 vs last month</p>
+      </div>
+
+      <div class="mt-7 grid grid-cols-2 gap-3 md:grid-cols-4">
+        <div>
+          <h3 class="col-head"><span>Hot</span><span class="col-count num">2</span></h3>
+          <div class="mt-3 flex flex-col gap-2">
+            <div class="deal"><p class="deal-name">Maya Okafor</p><p class="deal-meta">14 Alder Road</p><p class="deal-meta num">$485,000</p></div>
+            <div class="deal"><p class="deal-name">Tom Brandt</p><p class="deal-meta">9 Quarry Lane</p><p class="deal-meta num">$612,500</p></div>
+          </div>
+        </div>
+        <div>
+          <h3 class="col-head"><span>Calls</span><span class="col-count num">3</span></h3>
+          <div class="mt-3 flex flex-col gap-2">
+            <div class="deal"><p class="deal-name">Priya Shah</p><p class="deal-meta">Hallam Court</p><p class="deal-meta num">$298,000</p></div>
+            <div class="deal"><p class="deal-name">Luis Ferreira</p><p class="deal-meta">22 Birch Ave</p><p class="deal-meta num">$1,040,000</p></div>
+            <div class="deal"><p class="deal-name">Ana Novak</p><p class="deal-meta">5 Mill Row</p><p class="deal-meta num">$389,900</p></div>
+          </div>
+        </div>
+        <div>
+          <h3 class="col-head"><span>Viewings</span><span class="col-count num">2</span></h3>
+          <div class="mt-3 flex flex-col gap-2">
+            <div class="deal"><p class="deal-name">Sam Whitfield</p><p class="deal-meta num">Thu 14:00</p><p class="deal-meta num">$455,000</p></div>
+            <div class="deal"><p class="deal-name">Grace Liu</p><p class="deal-meta num">Sat 10:30</p><p class="deal-meta num">$720,000</p></div>
+          </div>
+        </div>
+        <div>
+          <h3 class="col-head"><span class="flex items-center"><span class="brass-dot" aria-hidden="true"></span>Closed</span><span class="col-count num">1</span></h3>
+          <div class="mt-3 flex flex-col gap-2">
+            <div class="deal"><p class="deal-name">Daniel Mensah</p><p class="deal-meta">41 Kingsway</p><p class="deal-meta num">$532,000</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

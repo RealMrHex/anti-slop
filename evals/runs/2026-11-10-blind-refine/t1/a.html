@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paws & Path Dog Walking</title>
+<style>
+  :root {
+    --cream: #fbf6ec;
+    --sand: #f1e8d6;
+    --ink: #2a2a22;
+    --muted: #5f5c4e;
+    --olive: #4f6b17;      /* darker take on the original olive; white text passes AA */
+    --olive-dark: #3d5311;
+    --leaf: #dfe9c4;
+    --sun: #f2b84b;
+    --line: #e4d9c1;
+    --r: 16px;
+    --shadow: 0 1px 2px rgba(60,50,20,.08), 0 8px 24px rgba(60,50,20,.08);
+    --display: "Avenir Next", "Nunito", ui-rounded, "SF Pro Rounded", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: var(--ink); background: var(--cream); line-height: 1.6; }
+  h1, h2, h3 { font-family: var(--display); line-height: 1.15; letter-spacing: -0.01em; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 56px 0; }
+  h2 { margin: 0 0 24px; font-size: clamp(1.6rem, 3vw, 2.1rem); }
+
+  .btn { display: inline-block; padding: 14px 26px; background: var(--olive); color: #fff; text-decoration: none; border-radius: 999px; font-weight: 700; box-shadow: 0 4px 0 var(--olive-dark); transition: transform .12s, box-shadow .12s, background .12s; }
+  .btn:hover { background: var(--olive-dark); }
+  .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--olive-dark); }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+
+  /* hero */
+  header { background: var(--sand); overflow: hidden; position: relative; }
+  .hero { display: grid; gap: 24px; align-items: center; padding-top: 56px; padding-bottom: 0; }
+  @media (min-width:700px){ .hero{padding-bottom:0} }
+  .hero-text { padding-bottom: 8px; }
+  header h1 { margin: 0 0 16px; font-size: clamp(2.4rem, 6vw, 4rem); }
+  header h1 span { color: var(--olive); }
+  header p { margin: 0 0 28px; font-size: 1.2rem; color: var(--muted); max-width: 30em; }
+  .scene { width: 100%; height: auto; display: block; margin: 8px 0 32px; border-radius: 24px; box-shadow: var(--shadow); }
+
+  /* services */
+  .services { display: grid; gap: 20px; }
+  .service { background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+  .service h3 { margin: 0 0 8px; font-size: 1.25rem; }
+  .service p { margin: 0; color: var(--muted); }
+  .service p:last-child { margin-top: auto; padding-top: 20px; color: var(--ink); }
+  .service strong { font-family: var(--display); font-size: 1.9rem; color: var(--olive); }
+  .service strong small { font-size: .9rem; font-weight: 600; color: var(--muted); }
+
+  /* about + how */
+  .about { background: var(--leaf); }
+  .about p { margin: 0; font-size: clamp(1.15rem, 2.2vw, 1.45rem); line-height: 1.55; max-width: 36em; }
+  ol { list-style: none; counter-reset: s; margin: 0; padding: 0; display: grid; gap: 16px; }
+  ol li { counter-increment: s; display: flex; gap: 16px; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 18px 20px; font-size: 1.05rem; }
+  ol li::before { content: counter(s); flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--sun); color: var(--ink); display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: 1.1rem; }
+
+  /* form */
+  #book { background: var(--sand); }
+  .book-grid { display: grid; gap: 28px; justify-items: center; }
+  .book-grid h2 { text-align: center; }
+  form { background: #fff; border-radius: var(--r); padding: 28px; box-shadow: var(--shadow); display: grid; gap: 16px; }
+  form label { display: block; font-weight: 600; font-size: .95rem; }
+  form input, form textarea { display: block; width: 100%; margin-top: 6px; padding: 12px 14px; font: inherit; font-weight: 400; color: var(--ink); background: var(--cream); border: 1.5px solid #bfb394; border-radius: 10px; }
+  form input:focus, form textarea:focus { background: #fff; border-color: var(--olive); }
+  form button { padding: 14px 26px; background: var(--olive); color: #fff; border: 0; border-radius: 999px; font: inherit; font-weight: 700; cursor: pointer; box-shadow: 0 4px 0 var(--olive-dark); transition: transform .12s, box-shadow .12s, background .12s; }
+  form button:hover { background: var(--olive-dark); }
+  form button:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--olive-dark); }
+
+  footer { background: var(--ink); color: #e9e4d3; text-align: center; font-size: .92rem; padding: 32px 24px; }
+  footer p { margin: 4px 0; }
+
+  @media (min-width: 700px) {
+    .hero { grid-template-columns: 1.05fr 1fr; padding-top: 72px; }
+    .scene { margin: 0 0 56px; }
+    .services { grid-template-columns: repeat(3, 1fr); }
+    ol { grid-template-columns: repeat(3, 1fr); }
+    ol li { flex-direction: column; align-items: flex-start; padding: 24px; }
+    
+  }
+  @media (prefers-reduced-motion: reduce) { .btn, form button { transition: none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hero">
+    <div class="hero-text">
+      <h1>Paws &amp; Path <span>Dog Walking</span></h1>
+      <p>Reliable, friendly dog walkers in your neighborhood.</p>
+      <a class="btn" href="#book">Book a Walk</a>
+    </div>
+    <svg class="scene" viewBox="0 0 480 340" role="img" aria-label="Illustration of a dog on a leash walking along a path">
+      <rect width="480" height="340" fill="#fdf3dc"/>
+      <circle cx="370" cy="90" r="46" fill="#f2b84b"/>
+      <path d="M0 250 Q120 200 240 235 T480 215 V340 H0Z" fill="#c9d98f"/>
+      <path d="M0 290 Q140 250 260 280 T480 262 V340 H0Z" fill="#a9c05f"/>
+      <path d="M-10 335 Q200 250 490 300" fill="none" stroke="#f1e8d6" stroke-width="34" stroke-linecap="round" opacity=".9"/>
+      <!-- dog -->
+      <g transform="translate(150 150)">
+        <ellipse cx="70" cy="62" rx="62" ry="38" fill="#c98b4e"/>
+        <rect x="22" y="80" width="14" height="42" rx="7" fill="#b87a3f"/>
+        <rect x="52" y="84" width="14" height="40" rx="7" fill="#c98b4e"/>
+        <rect x="88" y="84" width="14" height="40" rx="7" fill="#b87a3f"/>
+        <rect x="112" y="80" width="14" height="42" rx="7" fill="#c98b4e"/>
+        <path d="M10 52 Q-14 30 -4 8" fill="none" stroke="#c98b4e" stroke-width="12" stroke-linecap="round"/>
+        <circle cx="128" cy="30" r="30" fill="#d89a5c"/>
+        <path d="M110 12 Q96 -4 92 34 Q102 40 112 30Z" fill="#8f5a2a"/>
+        <ellipse cx="152" cy="42" rx="16" ry="12" fill="#f3dcc0"/>
+        <circle cx="162" cy="38" r="5" fill="#2a2a22"/>
+        <circle cx="132" cy="24" r="4" fill="#2a2a22"/>
+        <path d="M148 52 Q154 60 160 52" fill="#e57b7b" stroke="#2a2a22" stroke-width="1.5"/>
+        <path d="M104 52 Q122 62 140 56" fill="none" stroke="#c0392b" stroke-width="6" stroke-linecap="round"/>
+        <path d="M118 56 Q60 120 -40 150" fill="none" stroke="#c0392b" stroke-width="3" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </div>
+</header>
+
+<section class="about">
+  <div class="wrap">
+    <h2>About Us</h2>
+    <p>We are a small team of experienced, insured dog walkers who treat every dog like family. Each walk includes GPS tracking, photo updates, and a happy pup at the end.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Our Services</h2>
+    <div class="services">
+      <div class="service">
+        <h3>30-Minute Walk</h3>
+        <p>A quick midday stroll to stretch the legs.</p>
+        <p><strong>$20 <small>per walk</small></strong></p>
+      </div>
+      <div class="service">
+        <h3>60-Minute Walk</h3>
+        <p>A longer adventure with plenty of sniffing time.</p>
+        <p><strong>$32 <small>per walk</small></strong></p>
+      </div>
+      <div class="service">
+        <h3>Drop-In Visit</h3>
+        <p>Check on your dog, feed, and play for 20 minutes.</p>
+        <p><strong>$15 <small>per visit</small></strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <h2>How It Works</h2>
+    <ol>
+      <li>Book online or call us.</li>
+      <li>We meet your dog and learn their routine.</li>
+      <li>Sit back while we walk, then receive a photo update.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="book">
+  <div class="wrap book-grid">
+    <h2 style="margin-bottom:0">Book a Walk</h2>
+    <form onsubmit="event.preventDefault(); alert('Thanks! We will be in touch soon.');" style="width:100%;max-width:640px">
+      <label>Your name <input type="text" name="name" required></label>
+      <label>Email <input type="email" name="email" required></label>
+      <label>Phone <input type="tel" name="phone"></label>
+      <label>Dog's name <input type="text" name="dog" required></label>
+      <label>Preferred date <input type="date" name="date"></label>
+      <label>Notes <textarea name="notes" rows="3"></textarea></label>
+      <button type="submit">Request Booking</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <p>Paws &amp; Path Dog Walking &middot; Serving the neighborhood &middot; (555) 123-4567 &middot; hello@example.com</p>
+  <p>&copy; 2026 Paws &amp; Path. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

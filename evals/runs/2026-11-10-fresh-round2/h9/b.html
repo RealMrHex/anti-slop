@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Courier | Transactional Email API</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0d14;
+    --bg-deep: #07080d;
+    --card: #11141c;
+    --raised: #1a1e28;
+    --text: #eef0f5;
+    --text-2: #a3a9b8;
+    --text-3: #7a8296;
+    --hair: rgba(238, 240, 245, 0.08);
+    --accent: #f26b3a;
+    --pos: #4cc38a;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --font: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* Header */
+  .site-header {
+    height: 64px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .site-header .wrap {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .site-nav { display: flex; gap: 28px; font-size: 14px; color: var(--text-2); }
+  .site-nav a { transition: color 150ms var(--ease); }
+  .site-nav a:hover { color: var(--text); }
+  .header-actions { display: flex; align-items: center; gap: 20px; font-size: 14px; }
+  .header-actions .signin { color: var(--text-2); transition: color 150ms var(--ease); }
+  .header-actions .signin:hover { color: var(--text); }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background-color 150ms var(--ease), transform 150ms var(--ease);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--text); color: var(--bg); }
+  .btn-primary:hover { background: #ffffff; }
+  .btn-secondary { background: var(--raised); color: var(--text); box-shadow: inset 0 0 0 1px var(--hair); }
+  .btn-secondary:hover { background: #232836; }
+  .btn-small { height: 36px; padding: 0 14px; font-size: 14px; border-radius: 8px; }
+
+  /* Hero */
+  .hero {
+    padding: 96px 0 112px;
+  }
+  .hero .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 64px;
+    align-items: center;
+  }
+  .eyebrow {
+    display: inline-block;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .eyebrow strong { color: var(--text); font-weight: 500; }
+  .eyebrow:hover strong { text-decoration: underline; text-underline-offset: 3px; }
+  .hero h1 {
+    margin: 20px 0 0;
+    font-size: 64px;
+    line-height: 1.04;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+  .lede {
+    margin: 24px 0 0;
+    max-width: 36rem;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--text-2);
+  }
+  .cta-row { display: flex; gap: 12px; margin-top: 36px; }
+  .hero-note { margin: 16px 0 0; font-size: 13px; color: var(--text-3); }
+
+  /* Focal panel: one delivery log */
+  .log {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .log-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .log-title { margin: 0; font-size: 16px; font-weight: 500; }
+  .log-sub { margin: 4px 0 0; font-family: var(--mono); font-size: 13px; color: var(--text-3); }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pos); flex: none; }
+  .dot-accent { background: var(--accent); }
+
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: 20px 0 8px;
+  }
+  .tile {
+    background: var(--raised);
+    border-radius: 10px;
+    padding: 12px 16px;
+  }
+  .tile-label { font-size: 12px; color: var(--text-3); }
+  .tile-value {
+    margin-top: 4px;
+    font-size: 20px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .events { list-style: none; margin: 0; padding: 0; }
+  .events li {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 16px;
+    padding: 14px 0;
+    border-top: 1px solid var(--hair);
+  }
+  .event-time {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+    padding-top: 1px;
+  }
+  .event-name { font-size: 14px; font-weight: 500; }
+  .event-detail { margin-top: 2px; font-size: 13px; color: var(--text-3); }
+
+  .log-foot {
+    margin: 12px 0 0;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+
+  /* Features */
+  .features {
+    border-top: 1px solid var(--hair);
+    padding: 96px 0;
+  }
+  .features .wrap {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 48px;
+  }
+  .feature-index {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .feature h3 {
+    margin: 16px 0 0;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .feature p {
+    margin: 8px 0 0;
+    font-size: 15px;
+    color: var(--text-2);
+  }
+
+  /* Code */
+  .code-section {
+    border-top: 1px solid var(--hair);
+    padding: 96px 0;
+  }
+  .code-section .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 64px;
+    align-items: center;
+  }
+  .code-section h2 {
+    margin: 0;
+    font-size: 32px;
+    line-height: 1.15;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .code-section p {
+    margin: 16px 0 0;
+    max-width: 30rem;
+    font-size: 16px;
+    color: var(--text-2);
+  }
+  .code-card {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .code-card-head {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--hair);
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .code-card pre {
+    margin: 0;
+    padding: 20px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-2);
+  }
+  .code-card code { font-family: inherit; }
+
+  /* Footer */
+  .site-footer {
+    border-top: 1px solid var(--hair);
+    padding: 32px 0;
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .site-footer .wrap {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  /* Phone and tablet */
+  @media (max-width: 960px) {
+    .hero { padding: 64px 0 80px; }
+    .hero .wrap, .code-section .wrap { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+    .hero h1 { font-size: 44px; }
+    .features .wrap { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+    .features, .code-section { padding: 72px 0; }
+    .code-section h2 { font-size: 28px; }
+    .site-nav { display: none; }
+  }
+  @media (max-width: 600px) {
+    .wrap { padding: 0 16px; }
+    .hero h1 { font-size: 36px; }
+    .lede { font-size: 17px; }
+    .cta-row { flex-direction: column; }
+    .cta-row .btn { width: 100%; }
+    .tiles { grid-template-columns: minmax(0, 1fr); }
+    .events li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    .log { padding: 20px; }
+    .log-head { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="#" class="wordmark" aria-label="Courier home">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+        <rect x="1" y="3.5" width="16" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M2 4.5 L9 10 L16 4.5" fill="none" stroke="#f26b3a" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      Courier
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="#">Features</a>
+      <a href="#">Docs</a>
+      <a href="#">Pricing</a>
+      <a href="#">Changelog</a>
+    </nav>
+    <div class="header-actions">
+      <a href="#" class="signin">Sign in</a>
+      <a href="#" class="btn btn-secondary btn-small">Get started</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <a href="#" class="eyebrow"><strong>Version 2.4</strong> is out. Read the changelog</a>
+        <h1>Send transactional email. See every delivery.</h1>
+        <p class="lede">Send over REST or SMTP. Delivery logs, bounce handling and versioned templates, built for developers who ship.</p>
+        <div class="cta-row">
+          <a href="#" class="btn btn-primary">Start sending free</a>
+          <a href="#" class="btn btn-secondary">Watch demo</a>
+        </div>
+        <p class="hero-note">No credit card required.</p>
+      </div>
+
+      <figure class="log" style="margin:0" aria-label="Sample delivery log for one message">
+        <div class="log-head">
+          <div>
+            <p class="log-title">Message</p>
+            <p class="log-sub">msg_8f2c1a &middot; welcome-v3</p>
+          </div>
+          <span class="status"><span class="dot" aria-hidden="true"></span>Delivered</span>
+        </div>
+
+        <div class="tiles">
+          <div class="tile">
+            <div class="tile-label">Attempts</div>
+            <div class="tile-value">1</div>
+          </div>
+          <div class="tile">
+            <div class="tile-label">Delivered in</div>
+            <div class="tile-value">1.4 s</div>
+          </div>
+          <div class="tile">
+            <div class="tile-label">Bounce</div>
+            <div class="tile-value">None</div>
+          </div>
+        </div>
+
+        <ol class="events">
+          <li>
+            <span class="event-time">14:02:11</span>
+            <div>
+              <div class="event-name">Accepted</div>
+              <div class="event-detail">Received over REST, to dev@acme.io</div>
+            </div>
+          </li>
+          <li>
+            <span class="event-time">14:02:12</span>
+            <div>
+              <div class="event-name">Delivered</div>
+              <div class="event-detail">Accepted by mx.acme.io</div>
+            </div>
+          </li>
+          <li>
+            <span class="event-time">14:09:40</span>
+            <div>
+              <div class="event-name">Opened</div>
+              <div class="event-detail">Seven minutes after delivery</div>
+            </div>
+          </li>
+        </ol>
+        <p class="log-foot">Sample data.</p>
+      </figure>
+    </div>
+  </section>
+
+  <section class="features" aria-labelledby="features-heading">
+    <div class="wrap">
+      <article class="feature">
+        <span class="feature-index">01</span>
+        <h3 id="features-heading">Delivery logs</h3>
+        <p>Every event for every message, searchable by recipient, status, or date.</p>
+      </article>
+      <article class="feature">
+        <span class="feature-index">02</span>
+        <h3>Bounce handling</h3>
+        <p>Hard and soft bounces are sorted automatically, so bad addresses stop costing you sends.</p>
+      </article>
+      <article class="feature">
+        <span class="feature-index">03</span>
+        <h3>Templates</h3>
+        <p>Versioned templates with a live preview. Roll back a version without a deploy.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="code-section" aria-labelledby="code-heading">
+    <div class="wrap">
+      <div>
+        <h2 id="code-heading">Send from code, or over SMTP.</h2>
+        <p>Use the REST API or point any SMTP client at Courier. Each send returns an id that matches its entry in the delivery log.</p>
+      </div>
+      <div class="code-card">
+        <div class="code-card-head">send.js</div>
+        <pre><code>const res = await courier.send({
+  to: "dev@acme.io",
+  template: "welcome-v3",
+  vars: { name: "Ada", ts: "2026/11/10 14:02" }
+});
+console.log("sent", res.id);</code></pre>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>&copy; 2026 Courier</span>
+    <span>Status: all systems operational</span>
+  </div>
+</footer>
+
+</body>
+</html>

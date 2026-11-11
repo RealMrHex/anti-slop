@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saltwick — Home cooking, seasoned by the sea</title>
+<meta name="description" content="Saltwick: unfussy home-cooking recipes with a coastal pantry. Weeknight suppers, slow Sundays and everything in between.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: { brine:'#0f2a33', salt:'#f6f1e7', foam:'#e9e2d2', rust:'#b34622', kelp:'#3f5b4a', sand:'#d9cdb2' },
+    fontFamily: { display:['Fraunces','serif'], sans:['"Hanken Grotesk"','system-ui','sans-serif'] }
+  } }
+}
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { background:#f6f1e7; color:#0f2a33; font-family:'Hanken Grotesk',system-ui,sans-serif; }
+  .display { font-family:'Fraunces',serif; font-variation-settings:'opsz' 144; letter-spacing:-0.02em; }
+  .grain::before { content:""; position:absolute; inset:0; pointer-events:none; opacity:.07; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  .chip { transition: all .2s ease; border:1.5px solid #0f2a33; }
+  .chip:hover { background:#e9e2d2; }
+  .chip[aria-pressed="true"] { background:#0f2a33; color:#f6f1e7; }
+  .chip:focus-visible, a:focus-visible, button:focus-visible, input:focus-visible { outline:3px solid #b34622; outline-offset:2px; }
+  .card { transition: transform .35s cubic-bezier(.2,.7,.2,1), opacity .3s; }
+  .card:hover { transform: translateY(-4px); }
+  .card img { transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+  .card:hover img { transform: scale(1.05); }
+  .card.hidden-card { display:none; }
+  .wave { background: repeating-linear-gradient(90deg,#0f2a33 0 8px,transparent 8px 16px); height:2px; }
+  @keyframes rise { from { opacity:0; transform:translateY(14px);} to { opacity:1; transform:none;} }
+  .rise { animation: rise .7s both cubic-bezier(.2,.7,.2,1); }
+  .card.show { animation: rise .45s both; }
+  @media (prefers-reduced-motion: reduce) { * { animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- Top bar -->
+<div class="bg-brine text-salt text-sm">
+  <div class="max-w-7xl mx-auto px-5 py-2 flex justify-between items-center">
+    <p>New this week: <a href="#recipes" class="underline decoration-rust underline-offset-4 hover:text-sand">Brown butter cod with capers</a></p>
+    <p class="hidden sm:block text-sand">Cook something honest tonight.</p>
+  </div>
+</div>
+
+<header class="border-b-2 border-brine">
+  <nav class="max-w-7xl mx-auto px-5 py-5 flex items-center justify-between" aria-label="Main">
+    <a href="#" class="flex items-center gap-2.5" aria-label="Saltwick home">
+      <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+        <circle cx="17" cy="17" r="15.5" stroke="#0f2a33" stroke-width="2"/>
+        <path d="M5 19c3.2-4 6.4-4 9.6 0s6.4 4 9.6 0 3.4-3 4.8-3" stroke="#b34622" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M17 6v6" stroke="#0f2a33" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="display text-3xl font-extrabold leading-none">Saltwick</span>
+    </a>
+    <ul class="hidden md:flex items-center gap-9 text-[15px] font-semibold">
+      <li><a class="hover:text-rust" href="#recipes">Recipes</a></li>
+      <li><a class="hover:text-rust" href="#featured">Featured</a></li>
+      <li><a class="hover:text-rust" href="#pantry">Pantry</a></li>
+      <li><a class="hover:text-rust" href="#journal">Journal</a></li>
+    </ul>
+    <a href="#newsletter" class="rounded-full bg-rust text-salt px-5 py-2.5 text-sm font-bold hover:bg-brine transition-colors">Join the table</a>
+  </nav>
+</header>
+
+<main>
+<!-- Hero / Featured -->
+<section id="featured" class="relative overflow-hidden">
+  <div class="max-w-7xl mx-auto px-5 pt-10 pb-14 md:pt-14 md:pb-20 grid lg:grid-cols-12 gap-10 items-center">
+    <div class="lg:col-span-5 rise">
+      <p class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[.2em] text-rust">
+        <span class="w-8 h-[2px] bg-rust"></span> Recipe of the week
+      </p>
+      <h1 class="display text-5xl sm:text-6xl xl:text-7xl font-extrabold leading-[0.95] mt-5">
+        Lemon &amp; chilli <em class="font-normal text-rust">crab</em> linguine
+      </h1>
+      <p class="mt-6 text-lg leading-relaxed text-brine/80 max-w-md">
+        A bowl that tastes like a harbour at noon. Sweet crab, bright lemon, a slow warm hum of chilli — and it's on the table in 25 minutes.
+      </p>
+      <dl class="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm">
+        <div><dt class="uppercase tracking-widest text-[11px] text-brine/60 font-bold">Time</dt><dd class="display text-2xl font-semibold">25 min</dd></div>
+        <div><dt class="uppercase tracking-widest text-[11px] text-brine/60 font-bold">Level</dt><dd class="display text-2xl font-semibold">Easy</dd></div>
+        <div><dt class="uppercase tracking-widest text-[11px] text-brine/60 font-bold">Serves</dt><dd class="display text-2xl font-semibold">4</dd></div>
+      </dl>
+      <div class="mt-9 flex flex-wrap items-center gap-4">
+        <a href="#" class="rounded-full bg-brine text-salt px-7 py-3.5 font-bold hover:bg-rust transition-colors">Get the recipe</a>
+        <a href="#recipes" class="font-bold underline underline-offset-[6px] decoration-2 decoration-rust hover:text-rust">Browse all recipes</a>
+      </div>
+    </div>
+    <div class="lg:col-span-7 relative rise" style="animation-delay:.12s">
+      <div class="absolute top-3 right-3 md:top-5 md:right-5 z-10 w-28 h-28 md:w-32 md:h-32 rounded-full bg-rust text-salt grid place-items-center text-center rotate-12 shadow-lg">
+        <span class="display text-[15px] font-semibold leading-tight px-2">Reader<br>favourite<br><span class="text-xl">★ 4.9</span></span>
+      </div>
+      <div class="rounded-t-[999px] rounded-b-3xl overflow-hidden border-2 border-brine aspect-[4/4.4] sm:aspect-[5/5] lg:aspect-[4/3.7] bg-foam">
+        <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=1400&q=80" alt="A white bowl of pasta with pesto, cherry tomatoes and salad leaves" class="w-full h-full object-cover" loading="eager">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee strip -->
+<div class="bg-brine text-salt overflow-hidden" aria-hidden="true">
+  <div class="max-w-7xl mx-auto px-5 py-4 flex flex-wrap justify-between gap-x-6 gap-y-1 display text-lg italic">
+    <span>Flaky sea salt</span><span class="text-rust">✺</span><span>Good butter</span><span class="text-rust">✺</span><span>Plenty of lemon</span><span class="text-rust hidden sm:inline">✺</span><span class="hidden sm:inline">Patience</span><span class="text-rust hidden md:inline">✺</span><span class="hidden md:inline">Second helpings</span>
+  </div>
+</div>
+
+<!-- Recipes -->
+<section id="recipes" class="max-w-7xl mx-auto px-5 py-20 md:py-28">
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div>
+      <p class="text-xs font-bold uppercase tracking-[.2em] text-rust">The latest</p>
+      <h2 class="display text-4xl md:text-5xl font-extrabold mt-3">Fresh from the kitchen</h2>
+    </div>
+    <p class="text-brine/70 max-w-sm" id="count" aria-live="polite">Showing all 9 recipes</p>
+  </div>
+
+  <div class="mt-8 flex flex-wrap gap-2.5" role="group" aria-label="Filter recipes by category" id="filters">
+    <button class="chip rounded-full px-5 py-2 text-sm font-bold" data-filter="all" aria-pressed="true">All</button>
+    <button class="chip rounded-full px-5 py-2 text-sm font-bold" data-filter="weeknight" aria-pressed="false">Weeknight</button>
+    <button class="chip rounded-full px-5 py-2 text-sm font-bold" data-filter="seafood" aria-pressed="false">Seafood</button>
+    <button class="chip rounded-full px-5 py-2 text-sm font-bold" data-filter="vegetarian" aria-pressed="false">Vegetarian</button>
+    <button class="chip rounded-full px-5 py-2 text-sm font-bold" data-filter="baking" aria-pressed="false">Baking</button>
+    <button class="chip rounded-full px-5 py-2 text-sm font-bold" data-filter="slow" aria-pressed="false">Slow Sunday</button>
+  </div>
+
+  <div class="wave mt-8 opacity-40"></div>
+
+  <div id="grid" class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-x-7 gap-y-12">
+
+    <article class="card" data-cat="weeknight seafood">
+      <a href="#" class="block group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-brine bg-foam">
+          <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=900&q=75" alt="Pan-seared cod fillet with capers" class="w-full h-full object-cover" loading="lazy">
+          <span class="absolute top-3 left-3 bg-salt text-brine text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Seafood</span>
+        </div>
+        <h3 class="display text-2xl font-semibold mt-4 leading-tight group-hover:text-rust transition-colors">Brown butter cod with capers</h3>
+        <p class="mt-2 flex items-center gap-3 text-sm font-semibold text-brine/75">
+          <span class="flex items-center gap-1.5"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>20 min</span>
+          <span class="w-1 h-1 rounded-full bg-brine/40"></span>
+          <span class="flex items-center gap-1.5"><span class="flex gap-0.5" aria-hidden="true"><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full border border-brine/40"></i><i class="w-2 h-2 rounded-full border border-brine/40"></i></span>Easy</span>
+        </p>
+      </a>
+    </article>
+
+    <article class="card" data-cat="vegetarian weeknight">
+      <a href="#" class="block group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-brine bg-foam">
+          <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=75" alt="Roasted vegetable grain bowl" class="w-full h-full object-cover" loading="lazy">
+          <span class="absolute top-3 left-3 bg-salt text-brine text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Vegetarian</span>
+        </div>
+        <h3 class="display text-2xl font-semibold mt-4 leading-tight group-hover:text-rust transition-colors">Charred veg &amp; tahini grain bowl</h3>
+        <p class="mt-2 flex items-center gap-3 text-sm font-semibold text-brine/75">
+          <span class="flex items-center gap-1.5"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>30 min</span>
+          <span class="w-1 h-1 rounded-full bg-brine/40"></span>
+          <span class="flex items-center gap-1.5"><span class="flex gap-0.5" aria-hidden="true"><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full border border-brine/40"></i><i class="w-2 h-2 rounded-full border border-brine/40"></i></span>Easy</span>
+        </p>
+      </a>
+    </article>
+
+    <article class="card" data-cat="baking vegetarian">
+      <a href="#" class="block group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-brine bg-foam">
+          <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=900&q=75" alt="Stack of fluffy pancakes with berries" class="w-full h-full object-cover" loading="lazy">
+          <span class="absolute top-3 left-3 bg-salt text-brine text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Baking</span>
+        </div>
+        <h3 class="display text-2xl font-semibold mt-4 leading-tight group-hover:text-rust transition-colors">Buttermilk pancakes, salted maple</h3>
+        <p class="mt-2 flex items-center gap-3 text-sm font-semibold text-brine/75">
+          <span class="flex items-center gap-1.5"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>35 min</span>
+          <span class="w-1 h-1 rounded-full bg-brine/40"></span>
+          <span class="flex items-center gap-1.5"><span class="flex gap-0.5" aria-hidden="true"><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full border border-brine/40"></i><i class="w-2 h-2 rounded-full border border-brine/40"></i></span>Easy</span>
+        </p>
+      </a>
+    </article>
+
+    <article class="card" data-cat="slow">
+      <a href="#" class="block group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-brine bg-foam">
+          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=75" alt="Braised beef short rib on a plate" class="w-full h-full object-cover" loading="lazy">
+          <span class="absolute top-3 left-3 bg-salt text-brine text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Slow Sunday</span>
+        </div>
+        <h3 class="display text-2xl font-semibold mt-4 leading-tight group-hover:text-rust transition-colors">Red wine short ribs, four hours</h3>
+        <p class="mt-2 flex items-center gap-3 text-sm font-semibold text-brine/75">
+          <span class="flex items-center gap-1.5"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>4 hr 15</span>
+          <span class="w-1 h-1 rounded-full bg-brine/40"></span>
+          <span class="flex items-center gap-1.5"><span class="flex gap-0.5" aria-hidden="true"><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full bg-rust"></i></span>Advanced</span>
+        </p>
+      </a>
+    </article>
+
+    <article class="card" data-cat="weeknight vegetarian">
+      <a href="#" class="block group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-brine bg-foam">
+          <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=900&q=75" alt="Homemade pizza with basil" class="w-full h-full object-cover" loading="lazy">
+          <span class="absolute top-3 left-3 bg-salt text-brine text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Weeknight</span>
+        </div>
+        <h3 class="display text-2xl font-semibold mt-4 leading-tight group-hover:text-rust transition-colors">Blistered tomato flatbread pizza</h3>
+        <p class="mt-2 flex items-center gap-3 text-sm font-semibold text-brine/75">
+          <span class="flex items-center gap-1.5"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>40 min</span>
+          <span class="w-1 h-1 rounded-full bg-brine/40"></span>
+          <span class="flex items-center gap-1.5"><span class="flex gap-0.5" aria-hidden="true"><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full border border-brine/40"></i></span>Medium</span>
+        </p>
+      </a>
+    </article>
+
+    <article class="card" data-cat="seafood slow">
+      <a href="#" class="block group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-brine bg-foam">
+          <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=900&q=75" alt="Seafood stew in a pot" class="w-full h-full object-cover" loading="lazy">
+          <span class="absolute top-3 left-3 bg-salt text-brine text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Seafood</span>
+        </div>
+        <h3 class="display text-2xl font-semibold mt-4 leading-tight group-hover:text-rust transition-colors">Saffron fisherman's stew</h3>
+        <p class="mt-2 flex items-center gap-3 text-sm font-semibold text-brine/75">
+          <span class="flex items-center gap-1.5"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>1 hr 30</span>
+          <span class="w-1 h-1 rounded-full bg-brine/40"></span>
+          <span class="flex items-center gap-1.5"><span class="flex gap-0.5" aria-hidden="true"><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full border border-brine/40"></i></span>Medium</span>
+        </p>
+      </a>
+    </article>
+
+    <article class="card" data-cat="baking">
+      <a href="#" class="block group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-brine bg-foam">
+          <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=75" alt="Rustic loaf of sourdough bread" class="w-full h-full object-cover" loading="lazy">
+          <span class="absolute top-3 left-3 bg-salt text-brine text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Baking</span>
+        </div>
+        <h3 class="display text-2xl font-semibold mt-4 leading-tight group-hover:text-rust transition-colors">No-knead harbour loaf</h3>
+        <p class="mt-2 flex items-center gap-3 text-sm font-semibold text-brine/75">
+          <span class="flex items-center gap-1.5"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>18 hr</span>
+          <span class="w-1 h-1 rounded-full bg-brine/40"></span>
+          <span class="flex items-center gap-1.5"><span class="flex gap-0.5" aria-hidden="true"><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full border border-brine/40"></i><i class="w-2 h-2 rounded-full border border-brine/40"></i></span>Easy</span>
+        </p>
+      </a>
+    </article>
+
+    <article class="card" data-cat="weeknight">
+      <a href="#" class="block group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-brine bg-foam">
+          <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=900&q=75" alt="Grilled chicken skewers" class="w-full h-full object-cover" loading="lazy">
+          <span class="absolute top-3 left-3 bg-salt text-brine text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Weeknight</span>
+        </div>
+        <h3 class="display text-2xl font-semibold mt-4 leading-tight group-hover:text-rust transition-colors">Honey-garlic chicken skewers</h3>
+        <p class="mt-2 flex items-center gap-3 text-sm font-semibold text-brine/75">
+          <span class="flex items-center gap-1.5"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>25 min</span>
+          <span class="w-1 h-1 rounded-full bg-brine/40"></span>
+          <span class="flex items-center gap-1.5"><span class="flex gap-0.5" aria-hidden="true"><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full border border-brine/40"></i><i class="w-2 h-2 rounded-full border border-brine/40"></i></span>Easy</span>
+        </p>
+      </a>
+    </article>
+
+    <article class="card" data-cat="baking vegetarian slow">
+      <a href="#" class="block group">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-brine bg-foam">
+          <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=900&q=75" alt="Glazed baked doughnuts" class="w-full h-full object-cover" loading="lazy">
+          <span class="absolute top-3 left-3 bg-salt text-brine text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full">Baking</span>
+        </div>
+        <h3 class="display text-2xl font-semibold mt-4 leading-tight group-hover:text-rust transition-colors">Cardamom buns, sticky glaze</h3>
+        <p class="mt-2 flex items-center gap-3 text-sm font-semibold text-brine/75">
+          <span class="flex items-center gap-1.5"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>3 hr</span>
+          <span class="w-1 h-1 rounded-full bg-brine/40"></span>
+          <span class="flex items-center gap-1.5"><span class="flex gap-0.5" aria-hidden="true"><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full bg-rust"></i><i class="w-2 h-2 rounded-full bg-rust"></i></span>Advanced</span>
+        </p>
+      </a>
+    </article>
+
+  </div>
+
+  <p id="empty" class="hidden text-center display text-2xl italic text-brine/70 py-16">Nothing in this tide pool yet.</p>
+</section>
+
+<!-- Pantry band -->
+<section id="pantry" class="bg-foam border-y-2 border-brine">
+  <div class="max-w-7xl mx-auto px-5 py-16 grid md:grid-cols-3 gap-10">
+    <div>
+      <p class="display text-6xl text-rust font-extrabold">01</p>
+      <h3 class="display text-2xl font-semibold mt-2">Small pantry, big flavour</h3>
+      <p class="mt-2 text-brine/75">Every recipe leans on a short list of staples you probably own: salt, citrus, butter, good oil.</p>
+    </div>
+    <div>
+      <p class="display text-6xl text-rust font-extrabold">02</p>
+      <h3 class="display text-2xl font-semibold mt-2">Tested three times</h3>
+      <p class="mt-2 text-brine/75">Nothing is published until it has worked in a real home kitchen, on a real Tuesday, with real children underfoot.</p>
+    </div>
+    <div>
+      <p class="display text-6xl text-rust font-extrabold">03</p>
+      <h3 class="display text-2xl font-semibold mt-2">Honest timings</h3>
+      <p class="mt-2 text-brine/75">Our times include the chopping and the washing up. If it says 30 minutes, it is 30 minutes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter -->
+<section id="newsletter" class="max-w-7xl mx-auto px-5 py-20 md:py-28">
+  <div class="relative grain overflow-hidden rounded-[2rem] bg-brine text-salt px-7 py-14 md:px-16 md:py-20 grid lg:grid-cols-2 gap-10 items-center">
+    <div class="relative">
+      <p class="text-xs font-bold uppercase tracking-[.2em] text-sand">The Saltwick Letter</p>
+      <h2 class="display text-4xl md:text-5xl font-extrabold mt-4 leading-[1.02]">One good recipe, <em class="font-normal text-rust">every Thursday.</em></h2>
+      <p class="mt-5 text-sand max-w-md">Plus a note from the kitchen, one pantry tip, and nothing you didn't ask for. Unsubscribe whenever the tide turns.</p>
+    </div>
+    <form id="signup" class="relative" novalidate>
+      <label for="email" class="block text-sm font-bold mb-2">Your email</label>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <input id="email" type="email" required placeholder="you@kitchen.com" autocomplete="email"
+               class="flex-1 rounded-full bg-salt text-brine placeholder-brine/50 px-6 py-4 font-medium border-2 border-transparent focus:border-rust">
+        <button type="submit" class="rounded-full bg-rust text-salt px-8 py-4 font-bold hover:bg-salt hover:text-brine transition-colors">Subscribe</button>
+      </div>
+      <p id="msg" class="mt-3 text-sm min-h-[1.25rem] text-sand" aria-live="polite">Join 48,000 home cooks. Free, always.</p>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer id="journal" class="border-t-2 border-brine">
+  <div class="max-w-7xl mx-auto px-5 py-12 flex flex-col md:flex-row gap-8 justify-between">
+    <div class="max-w-xs">
+      <span class="display text-3xl font-extrabold">Saltwick</span>
+      <p class="mt-3 text-sm text-brine/70">Home cooking with a coastal pantry. Made with butter, salt and a little stubbornness.</p>
+    </div>
+    <div class="flex gap-14 text-sm">
+      <ul class="space-y-2 font-semibold">
+        <li class="text-brine/50 uppercase tracking-widest text-[11px]">Cook</li>
+        <li><a href="#recipes" class="hover:text-rust">Recipes</a></li>
+        <li><a href="#" class="hover:text-rust">Techniques</a></li>
+        <li><a href="#pantry" class="hover:text-rust">Pantry</a></li>
+      </ul>
+      <ul class="space-y-2 font-semibold">
+        <li class="text-brine/50 uppercase tracking-widest text-[11px]">Follow</li>
+        <li><a href="#" class="hover:text-rust">Instagram</a></li>
+        <li><a href="#" class="hover:text-rust">Pinterest</a></li>
+        <li><a href="#" class="hover:text-rust">YouTube</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-brine/20 text-center text-xs text-brine/60 py-5">© 2026 Saltwick. All recipes tested in real kitchens.</div>
+</footer>
+
+<script>
+(function () {
+  var buttons = document.querySelectorAll('#filters .chip');
+  var cards = Array.prototype.slice.call(document.querySelectorAll('#grid .card'));
+  var count = document.getElementById('count');
+  var empty = document.getElementById('empty');
+  var names = { all:'', weeknight:'Weeknight', seafood:'Seafood', vegetarian:'Vegetarian', baking:'Baking', slow:'Slow Sunday' };
+
+  function apply(filter) {
+    var shown = 0;
+    cards.forEach(function (c) {
+      var match = filter === 'all' || c.getAttribute('data-cat').split(' ').indexOf(filter) !== -1;
+      c.classList.toggle('hidden-card', !match);
+      c.classList.remove('show');
+      if (match) { shown++; void c.offsetWidth; c.classList.add('show'); }
+    });
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-filter') === filter ? 'true' : 'false'); });
+    count.textContent = filter === 'all'
+      ? 'Showing all ' + shown + ' recipes'
+      : 'Showing ' + shown + ' ' + names[filter] + ' recipe' + (shown === 1 ? '' : 's');
+    empty.classList.toggle('hidden', shown !== 0);
+  }
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () { apply(b.getAttribute('data-filter')); });
+  });
+
+  var form = document.getElementById('signup');
+  var email = document.getElementById('email');
+  var msg = document.getElementById('msg');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+      msg.textContent = 'Thank you. Your first letter lands this Thursday.';
+      form.reset();
+    } else {
+      msg.textContent = 'Please enter a valid email address.';
+      email.focus();
+    }
+  });
+})();
+</script>
+</body>
+</html>

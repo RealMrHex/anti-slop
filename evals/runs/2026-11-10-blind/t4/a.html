@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Now Playing</title>
+<style>
+:root{
+  --bg:#14101f; --fg:#f4f1fa; --muted:#a79fbd; --accent:#ff7a59; --accent2:#7c5cff;
+  --track:rgba(255,255,255,.16);
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{
+  background:radial-gradient(120% 60% at 50% 0%, #3a2370 0%, var(--bg) 70%) var(--bg);
+  color:var(--fg); font-family:-apple-system,"SF Pro Text",system-ui,"Segoe UI",sans-serif;
+  display:flex; justify-content:center;
+}
+.screen{width:100%; max-width:430px; min-height:100%; padding:16px 24px 28px; display:flex; flex-direction:column}
+header{display:flex; align-items:center; justify-content:space-between; height:44px}
+header .ctx{text-align:center; font-size:12px; color:var(--muted); letter-spacing:.04em}
+header .ctx b{display:block; color:var(--fg); font-weight:600; font-size:13px; margin-top:2px}
+.icon{width:44px;height:44px;border:0;background:none;color:var(--fg);display:grid;place-items:center;border-radius:50%;cursor:pointer}
+.icon:focus-visible,.ctl:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.art-wrap{flex:1; display:grid; place-items:center; padding:20px 0; min-height:0}
+.art{
+  width:100%; max-width:340px; aspect-ratio:1; border-radius:20px; position:relative; overflow:hidden;
+  background:linear-gradient(160deg,#ff7a59 0%,#d4357f 45%,#4b2a9e 100%);
+  box-shadow:0 30px 60px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.06) inset;
+  transition:transform .4s cubic-bezier(.3,.8,.3,1);
+}
+.paused .art{transform:scale(.88)}
+.art::before{content:"";position:absolute;left:50%;top:62%;width:78%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  background:radial-gradient(circle,#ffd27a 0 40%,#ff9a5a 41% 100%);box-shadow:0 0 80px rgba(255,170,90,.6)}
+.art::after{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;
+  background:repeating-linear-gradient(0deg,rgba(40,16,90,.95) 0 6px,rgba(40,16,90,.0) 6px 14px),linear-gradient(#2a1266,#1a0b45);
+  -webkit-mask:linear-gradient(transparent,#000 40%);mask:linear-gradient(transparent,#000 40%)}
+.art i{position:absolute;left:0;right:0;bottom:0;height:30%;background:#1a0b45;z-index:1;clip-path:polygon(0 60%,15% 30%,30% 55%,48% 15%,65% 50%,82% 25%,100% 55%,100% 100%,0 100%)}
+.meta{display:flex; align-items:center; justify-content:space-between; gap:12px}
+.meta h1{font-size:22px; font-weight:700; letter-spacing:-.01em; line-height:1.2}
+.meta p{color:var(--muted); font-size:16px; margin-top:3px}
+.like[aria-pressed=true]{color:var(--accent)}
+.like[aria-pressed=true] svg{fill:currentColor}
+.seek{margin-top:22px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;cursor:pointer;display:block}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;
+  background:linear-gradient(90deg,var(--fg) var(--p,0%),var(--track) var(--p,0%))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--fg);margin-top:-5px}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--track)}
+input[type=range]::-moz-range-progress{height:4px;border-radius:2px;background:var(--fg)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:var(--fg)}
+.times{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:2px}
+.controls{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.ctl{border:0;background:none;color:var(--fg);width:48px;height:48px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+.ctl svg{width:26px;height:26px;fill:currentColor}
+.ctl.sm{color:var(--muted)} .ctl.sm svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ctl.sm[aria-pressed=true]{color:var(--accent)}
+.ctl.skip svg{width:32px;height:32px}
+.play{width:72px;height:72px;background:var(--fg);color:var(--bg);box-shadow:0 10px 30px -8px rgba(255,122,89,.6)}
+.play svg{width:30px;height:30px}
+.play:active{transform:scale(.95)}
+.play .pa{display:none}.playing .play .pl{display:none}.playing .play .pa{display:block}
+.foot{display:flex;justify-content:space-between;margin-top:18px;color:var(--muted)}
+.foot .ctl svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-height:700px){.art{max-width:220px}.art-wrap{padding:10px 0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="screen paused" id="app">
+  <header>
+    <button class="icon" aria-label="Minimize player"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+    <div class="ctx">PLAYING FROM ALBUM<b>Neon Horizons</b></div>
+    <button class="icon" aria-label="More options"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+  </header>
+
+  <div class="art-wrap"><div class="art" role="img" aria-label="Album cover: a sunset over a neon grid"><i></i></div></div>
+
+  <div class="meta">
+    <div>
+      <h1 id="title">Midnight Drive</h1>
+      <p id="artist">The Velvet Static</p>
+    </div>
+    <button class="icon like" id="like" aria-pressed="false" aria-label="Like song"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9-9.2C1.6 7.4 3.600 4 7 4c2 0 3.400 1 5 3 1.600-2 3-3 5-3 3.400 0 5.400 3.400 4 6.800C19 15.600 12 20 12 20z"/></svg></button>
+  </div>
+
+  <div class="seek">
+    <input type="range" id="seek" min="0" max="214" value="0" step="1" aria-label="Seek">
+    <div class="times"><span id="cur">0:00</span><span id="rem">-3:34</span></div>
+  </div>
+
+  <div class="controls">
+    <button class="ctl sm" id="shuffle" aria-pressed="false" aria-label="Shuffle"><svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></button>
+    <button class="ctl skip" id="prev" aria-label="Previous track"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+    <button class="ctl play" id="play" aria-label="Play"><svg class="pl" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="pa" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button>
+    <button class="ctl skip" id="next" aria-label="Next track"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5l11 7L4 19z"/></svg></button>
+    <button class="ctl sm" id="repeat" aria-pressed="false" aria-label="Repeat"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 013-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 01-3 3H3"/></svg></button>
+  </div>
+
+  <div class="foot">
+    <button class="ctl" aria-label="Choose output device"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></button>
+    <button class="ctl" aria-label="Queue"><svg viewBox="0 0 24 24"><path d="M4 6h12M4 12h12M4 18h7M18 14v6l4-3z"/></svg></button>
+  </div>
+</main>
+
+<script>
+(function(){
+  var tracks=[
+    {t:"Midnight Drive",a:"The Velvet Static",d:214},
+    {t:"Glass Skyline",a:"Hana Ito",d:187},
+    {t:"Afterglow Protocol",a:"Kiln & Moss",d:243}
+  ];
+  var i=0,pos=0,timer=null,app=document.getElementById("app");
+  var seek=document.getElementById("seek"),cur=document.getElementById("cur"),rem=document.getElementById("rem");
+  var play=document.getElementById("play");
+  function fmt(s){return Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0")}
+  function render(){
+    var d=tracks[i].d;
+    seek.max=d; seek.value=pos;
+    seek.style.setProperty("--p",(pos/d*100)+"%");
+    seek.setAttribute("aria-valuetext",fmt(pos)+" of "+fmt(d));
+    cur.textContent=fmt(pos); rem.textContent="-"+fmt(d-pos);
+  }
+  function load(n){
+    i=(n+tracks.length)%tracks.length; pos=0;
+    document.getElementById("title").textContent=tracks[i].t;
+    document.getElementById("artist").textContent=tracks[i].a;
+    render();
+  }
+  function setPlaying(p){
+    app.classList.toggle("playing",p); app.classList.toggle("paused",!p);
+    play.setAttribute("aria-label",p?"Pause":"Play");
+    clearInterval(timer);
+    if(p)timer=setInterval(function(){
+      pos++; if(pos>=tracks[i].d){ if(rpt){pos=0}else{load(i+1)} }
+      render();
+    },1000);
+  }
+  var rpt=false;
+  play.onclick=function(){setPlaying(!app.classList.contains("playing"))};
+  document.getElementById("next").onclick=function(){load(i+1)};
+  document.getElementById("prev").onclick=function(){ if(pos>3)load(i); else load(i-1)};
+  seek.oninput=function(){pos=+seek.value;render()};
+  ["shuffle","repeat"].forEach(function(id){
+    var b=document.getElementById(id);
+    b.onclick=function(){var v=b.getAttribute("aria-pressed")!=="true";b.setAttribute("aria-pressed",v);if(id==="repeat")rpt=v};
+  });
+  var like=document.getElementById("like");
+  like.onclick=function(){var v=like.getAttribute("aria-pressed")!=="true";like.setAttribute("aria-pressed",v);like.setAttribute("aria-label",v?"Unlike song":"Like song")};
+  pos=72; render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deskwise | Support Inbox</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background: #0f172a; color: #e2e8f0; }
+  .glow-teal { box-shadow: 0 0 24px 2px rgba(45, 212, 191, 0.35); }
+  .glow-purple { box-shadow: 0 0 28px 4px rgba(168, 85, 247, 0.4); }
+  .glass { background: rgba(30, 41, 59, 0.55); backdrop-filter: blur(12px); }
+  .pulse-btn { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 12px rgba(236,72,153,.5); } 50% { box-shadow: 0 0 30px rgba(236,72,153,.9); } }
+  .row:hover { transform: scale(1.02); }
+  .row { transition: transform .2s ease; }
+</style>
+</head>
+<body class="min-h-screen overflow-hidden">
+<div class="absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full bg-teal-500/30 blur-3xl"></div>
+<div class="absolute -bottom-40 right-0 w-[500px] h-[500px] rounded-full bg-purple-600/30 blur-3xl"></div>
+
+<div class="relative grid grid-cols-[230px_370px_1fr] h-[900px] w-[1280px]">
+
+  <!-- Sidebar -->
+  <aside class="glass border-r-2 border-teal-400/40 p-5 flex flex-col gap-6">
+    <div class="flex items-center gap-2 mt-1">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-400 to-purple-600 glow-teal"></div>
+      <span class="text-xl font-black tracking-tight bg-gradient-to-r from-teal-300 to-pink-400 bg-clip-text text-transparent">Deskwise</span>
+    </div>
+    <div>
+      <p class="text-[11px] uppercase tracking-[0.25em] text-teal-300 font-extrabold mb-3">Workspace</p>
+      <nav class="flex flex-col gap-2 text-sm font-extrabold">
+        <a class="flex items-center justify-between px-3 py-2.5 rounded-xl bg-gradient-to-r from-teal-500/30 to-purple-500/30 border border-teal-400/50 glow-teal">
+          <span>📥 Inbox</span><span class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-teal-400 to-cyan-400 text-slate-900 text-xs">12</span>
+        </a>
+        <a class="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-purple-500/20">
+          <span>🙋 Assigned to me</span><span class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">07</span>
+        </a>
+        <a class="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-purple-500/20">
+          <span>🫥 Unassigned</span><span class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 text-xs">03</span>
+        </a>
+        <a class="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-purple-500/20">
+          <span>✅ Closed</span><span class="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-lime-400 to-emerald-500 text-slate-900 text-xs">148</span>
+        </a>
+      </nav>
+    </div>
+    <div class="mt-auto glass rounded-2xl border border-purple-400/50 p-4 glow-purple">
+      <p class="text-xs font-black text-purple-200">✨ AI-Powered ✨</p>
+      <p class="text-[11px] text-slate-300 mt-1">Smart replies are ready 🤖</p>
+      <span class="inline-block mt-2 px-2 py-0.5 rounded-md bg-pink-500 text-[10px] font-black tracking-widest">NEW</span>
+    </div>
+  </aside>
+
+  <!-- Ticket list -->
+  <section class="glass border-r border-pink-400/30 flex flex-col">
+    <div class="p-4 space-y-4">
+      <p class="text-lg font-black">Welcome back, Sam! 🎧 You're on fire today!</p>
+      <div class="flex items-center gap-2 rounded-full bg-slate-800/80 border border-cyan-400/40 px-4 py-2.5">
+        <span class="text-slate-400">🔍</span>
+        <input class="bg-transparent outline-none text-sm w-full placeholder-slate-400" placeholder="Search anything...">
+      </div>
+    </div>
+    <div class="flex-1 overflow-hidden px-3 space-y-2.5 pb-4">
+
+      <div class="row rounded-2xl p-3.5 bg-gradient-to-r from-teal-500 via-purple-600 to-pink-600 glow-purple cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-300 to-pink-500 flex items-center justify-center font-black text-slate-900">MR</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between"><span class="font-black text-sm">Maria Rossi</span><span class="text-xs font-bold">2m ago</span></div>
+            <p class="text-sm font-extrabold truncate">Login loop after password reset</p>
+            <p class="text-xs text-white/80 truncate">I reset my password and now I keep getting...</p>
+            <div class="flex gap-1.5 mt-2"><span class="px-2 py-0.5 rounded-full bg-yellow-300 text-slate-900 text-[10px] font-black">🔥 URGENT</span><span class="px-2 py-0.5 rounded-full bg-cyan-300 text-slate-900 text-[10px] font-black">AUTH</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row rounded-2xl p-3.5 glass border border-pink-400/50 cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sky-400 to-indigo-600 flex items-center justify-center font-black">JK</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between"><span class="font-black text-sm">James Kim</span><span class="text-xs text-slate-400">14:05</span></div>
+            <p class="text-sm font-extrabold truncate">Invoice shows wrong VAT 💸</p>
+            <p class="text-xs text-slate-400 truncate">Hi, the VAT on invoice #4471 looks off...</p>
+            <div class="flex gap-1.5 mt-2"><span class="px-2 py-0.5 rounded-full bg-pink-500 text-white text-[10px] font-black">🔥 URGENT</span><span class="px-2 py-0.5 rounded-full bg-emerald-400 text-slate-900 text-[10px] font-black">BILLING</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row rounded-2xl p-3.5 glass border border-purple-400/50 cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-orange-400 flex items-center justify-center font-black">AL</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between"><span class="font-black text-sm">Aisha Lewis</span><span class="text-xs text-slate-400">Yesterday!!</span></div>
+            <p class="text-sm font-extrabold truncate">Can't export CSV 📂</p>
+            <p class="text-xs text-slate-400 truncate">Export button spins forever on big...</p>
+            <div class="flex gap-1.5 mt-2"><span class="px-2 py-0.5 rounded-full bg-violet-400 text-slate-900 text-[10px] font-black">BUG</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row rounded-2xl p-3.5 glass border border-teal-400/50 cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-teal-600 flex items-center justify-center font-black">DO</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between"><span class="font-black text-sm">David Okafor</span><span class="text-xs text-slate-400">09:41</span></div>
+            <p class="text-sm font-extrabold truncate">Feature request: dark mode 🌙</p>
+            <p class="text-xs text-slate-400 truncate">Would love a dark theme for late shifts</p>
+            <div class="flex gap-1.5 mt-2"><span class="px-2 py-0.5 rounded-full bg-orange-400 text-slate-900 text-[10px] font-black">⚡ HIGH</span><span class="px-2 py-0.5 rounded-full bg-indigo-400 text-white text-[10px] font-black">IDEA</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row rounded-2xl p-3.5 glass border border-sky-400/50 cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 to-red-600 flex items-center justify-center font-black">SP</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between"><span class="font-black text-sm">Sofia Pereira</span><span class="text-xs text-slate-400">3m ago</span></div>
+            <p class="text-sm font-extrabold truncate">Team seats not syncing 👥</p>
+            <p class="text-xs text-slate-400 truncate">We added 4 seats but only 2 show up</p>
+            <div class="flex gap-1.5 mt-2"><span class="px-2 py-0.5 rounded-full bg-lime-300 text-slate-900 text-[10px] font-black">MEDIUM</span><span class="px-2 py-0.5 rounded-full bg-pink-400 text-white text-[10px] font-black">TEAMS</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row rounded-2xl p-3.5 glass border border-amber-400/50 cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-300 to-yellow-600 flex items-center justify-center font-black text-slate-900">TN</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between"><span class="font-black text-sm">Tom Nguyen</span><span class="text-xs text-slate-400">Mon</span></div>
+            <p class="text-sm font-extrabold truncate">Webhook retries? 🔁</p>
+            <p class="text-xs text-slate-400 truncate">Do failed webhooks get retried automatically</p>
+            <div class="flex gap-1.5 mt-2"><span class="px-2 py-0.5 rounded-full bg-blue-400 text-white text-[10px] font-black">LOW</span><span class="px-2 py-0.5 rounded-full bg-fuchsia-400 text-white text-[10px] font-black">API</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row rounded-2xl p-3.5 glass border border-emerald-400/50 cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-700 flex items-center justify-center font-black">EB</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between"><span class="font-black text-sm">Elena Brandt</span><span class="text-xs text-slate-400">11:20</span></div>
+            <p class="text-sm font-extrabold truncate">Thanks so much!! 🙌</p>
+            <p class="text-xs text-slate-400 truncate">Issue fixed, appreciate the quick help</p>
+            <div class="flex gap-1.5 mt-2"><span class="px-2 py-0.5 rounded-full bg-green-400 text-slate-900 text-[10px] font-black">✅ RESOLVED</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row rounded-2xl p-3.5 glass border border-rose-400/50 cursor-pointer">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-indigo-400 flex items-center justify-center font-black">RP</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between"><span class="font-black text-sm">Raj Patel</span><span class="text-xs text-slate-400">2 days ago</span></div>
+            <p class="text-sm font-extrabold truncate">Locked out of account 🔒</p>
+            <p class="text-xs text-slate-400 truncate">Two-factor app got wiped, help pls</p>
+            <div class="flex gap-1.5 mt-2"><span class="px-2 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-black">🔥 URGENT</span><span class="px-2 py-0.5 rounded-full bg-cyan-300 text-slate-900 text-[10px] font-black">SECURITY</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Open ticket -->
+  <main class="flex flex-col p-6 gap-4 relative">
+    <div class="glass rounded-3xl border border-teal-400/40 p-5 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-300 to-pink-500 flex items-center justify-center font-black text-slate-900 text-lg">MR</div>
+        <div>
+          <h1 class="text-2xl font-black">Login loop after password reset</h1>
+          <p class="text-xs text-slate-400 uppercase tracking-[0.2em] font-extrabold mt-1">Ticket #DW-20417 · Opened 2m ago</p>
+        </div>
+      </div>
+      <span class="px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-900 text-xs font-black">● OPEN</span>
+    </div>
+
+    <div class="flex-1 glass rounded-3xl border border-purple-400/40 p-5 space-y-4 overflow-hidden">
+      <div class="max-w-[70%] rounded-2xl rounded-tl-none p-4 bg-slate-800 border border-sky-400/40">
+        <p class="text-[10px] uppercase tracking-[0.25em] font-black text-sky-300">Maria Rossi · 2m ago</p>
+        <p class="text-sm mt-1.5 leading-relaxed">I reset my password and now I keep getting bounced back to the login screen. Tried three browsers already!! 😩</p>
+      </div>
+      <div class="max-w-[70%] ml-auto rounded-2xl rounded-tr-none p-4 bg-gradient-to-r from-teal-500 to-purple-600 glow-purple">
+        <p class="text-[10px] uppercase tracking-[0.25em] font-black text-white/90">Sam · 14:05</p>
+        <p class="text-sm mt-1.5 leading-relaxed">Hi Maria! Sorry about that 💜 Let's get this sorted, can you clear your cookies for deskwise.app?</p>
+      </div>
+      <div class="max-w-[70%] rounded-2xl rounded-tl-none p-4 bg-slate-800 border border-sky-400/40">
+        <p class="text-[10px] uppercase tracking-[0.25em] font-black text-sky-300">Maria Rossi · Yesterday!!</p>
+        <p class="text-sm mt-1.5 leading-relaxed">Did that, still looping. Any update?? 🙏</p>
+      </div>
+    </div>
+
+    <div class="glass rounded-3xl border border-pink-400/40 p-4 flex flex-col gap-3">
+      <div class="flex gap-2 text-[11px] font-black">
+        <span class="px-2.5 py-1 rounded-full bg-cyan-400 text-slate-900">✨ Smart reply</span>
+        <span class="px-2.5 py-1 rounded-full bg-pink-400 text-slate-900">😊 Friendly</span>
+        <span class="px-2.5 py-1 rounded-full bg-lime-300 text-slate-900">📎 Attach</span>
+      </div>
+      <textarea class="w-full rounded-2xl bg-slate-900/70 border border-purple-400/50 p-3 text-sm outline-none h-20 resize-none" placeholder="Type your reply here... 💬"></textarea>
+      <div class="flex justify-end">
+        <button class="pulse-btn px-7 py-3 rounded-full bg-gradient-to-r from-pink-500 via-fuchsia-500 to-cyan-400 font-black text-white hover:scale-105 transition">✨ Send Reply 🚀</button>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

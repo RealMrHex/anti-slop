@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atmos | Weather Forecast</title>
+  <meta name="description" content="Atmos: current conditions, a 24-hour hourly forecast and a 7-day outlook for San Francisco, Tokyo, London and New York.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'] }
+        }
+      }
+    };
+  </script>
+  <style>
+    .glass {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .thin-scroll { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.3) transparent; }
+    select option { color: #0f172a; }
+  </style>
+</head>
+<body class="min-h-screen font-sans text-white antialiased bg-slate-950 bg-gradient-to-br from-slate-900 via-indigo-950 to-sky-950">
+
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 bg-white text-slate-900 px-4 py-2 rounded-lg font-semibold">Skip to content</a>
+
+  <!-- Header -->
+  <header class="mx-auto max-w-6xl px-4 sm:px-6 pt-6">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-2.5">
+        <span class="grid place-items-center h-10 w-10 rounded-xl bg-white/15 text-xl" aria-hidden="true">☁️</span>
+        <span class="text-2xl font-extrabold tracking-tight">Atmos</span>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <label for="city" class="sr-only">Select city</label>
+        <div class="relative">
+          <select id="city" class="appearance-none glass rounded-full pl-4 pr-10 py-2.5 text-sm font-semibold cursor-pointer text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300">
+            <option value="sf">San Francisco, US</option>
+            <option value="tokyo">Tokyo, JP</option>
+            <option value="london">London, UK</option>
+            <option value="nyc">New York, US</option>
+          </select>
+          <span class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-white/70 text-xs" aria-hidden="true">▼</span>
+        </div>
+
+        <div role="group" aria-label="Temperature unit" class="glass rounded-full p-1 flex text-sm font-semibold">
+          <button type="button" data-unit="C" aria-pressed="true" class="unit-btn px-4 py-1.5 rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300">°C</button>
+          <button type="button" data-unit="F" aria-pressed="false" class="unit-btn px-4 py-1.5 rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-300">°F</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="mx-auto max-w-6xl px-4 sm:px-6 py-8 space-y-6">
+
+    <!-- Current conditions -->
+    <section aria-labelledby="city-name" class="grid gap-6 lg:grid-cols-3">
+      <div class="glass rounded-3xl p-6 sm:p-8 lg:col-span-2 flex flex-col justify-between gap-8 relative overflow-hidden">
+        <div class="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl" aria-hidden="true"></div>
+
+        <div class="relative">
+          <h1 id="city-name" class="text-xl sm:text-2xl font-bold">San Francisco, US</h1>
+          <p class="text-sm text-white/70 mt-1">
+            Local time <time id="local-time" class="font-semibold text-white">--:--</time>
+            <span aria-hidden="true">·</span> <span id="local-date"></span>
+          </p>
+        </div>
+
+        <div class="relative flex flex-wrap items-center gap-6 sm:gap-10">
+          <div class="flex items-start font-extrabold tracking-tighter leading-none">
+            <span id="temp" class="text-8xl sm:text-9xl">19</span>
+            <span id="temp-unit" class="text-4xl sm:text-5xl mt-2 sm:mt-3 text-white/80">°C</span>
+          </div>
+          <div class="space-y-2">
+            <div class="text-6xl sm:text-7xl leading-none" id="cond-icon" aria-hidden="true">⛅</div>
+            <p id="condition" class="text-2xl sm:text-3xl font-semibold">Partly Cloudy</p>
+            <p class="text-white/75 font-medium" id="hl">High 22°C / Low 14°C</p>
+          </div>
+        </div>
+
+        <p id="summary" class="relative text-white/80 max-w-xl leading-relaxed">Mild, with clouds clearing by afternoon. A light layer is all you need.</p>
+      </div>
+
+      <!-- Details -->
+      <div class="glass rounded-3xl p-6 sm:p-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-white/60 mb-4">Weather details</h2>
+        <dl class="grid grid-cols-2 gap-x-6 gap-y-5">
+          <div>
+            <dt class="text-xs text-white/60">Feels Like</dt>
+            <dd id="d-feels" class="text-xl font-semibold mt-0.5">18°C</dd>
+          </div>
+          <div>
+            <dt class="text-xs text-white/60">Humidity</dt>
+            <dd id="d-humidity" class="text-xl font-semibold mt-0.5">64%</dd>
+          </div>
+          <div>
+            <dt class="text-xs text-white/60">Wind</dt>
+            <dd id="d-wind" class="text-xl font-semibold mt-0.5">12 km/h</dd>
+          </div>
+          <div>
+            <dt class="text-xs text-white/60">UV Index</dt>
+            <dd id="d-uv" class="text-xl font-semibold mt-0.5">5</dd>
+          </div>
+          <div>
+            <dt class="text-xs text-white/60">Visibility</dt>
+            <dd id="d-visibility" class="text-xl font-semibold mt-0.5">10 km</dd>
+          </div>
+          <div>
+            <dt class="text-xs text-white/60">Sunrise</dt>
+            <dd id="d-sunrise" class="text-xl font-semibold mt-0.5">6:42 AM</dd>
+          </div>
+          <div class="col-span-2 border-t border-white/10 pt-5">
+            <dt class="text-xs text-white/60">Sunset</dt>
+            <dd id="d-sunset" class="text-xl font-semibold mt-0.5">7:28 PM</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Hourly forecast -->
+    <section aria-labelledby="hourly-heading" class="glass rounded-3xl p-6 sm:p-8">
+      <div class="flex items-baseline justify-between mb-4">
+        <h2 id="hourly-heading" class="text-lg font-bold">Next 24 hours</h2>
+        <span class="text-xs text-white/60 hidden sm:inline">Scroll for more</span>
+      </div>
+      <ol id="hourly" class="flex gap-3 overflow-x-auto thin-scroll pb-3 -mx-2 px-2"></ol>
+    </section>
+
+    <!-- 7-day forecast -->
+    <section aria-labelledby="week-heading" class="glass rounded-3xl p-6 sm:p-8">
+      <h2 id="week-heading" class="text-lg font-bold mb-2">7-day forecast</h2>
+      <ol id="week" class="divide-y divide-white/10"></ol>
+    </section>
+
+    <p class="text-center text-xs text-white/50 pt-2">Atmos · Illustrative data for demonstration purposes.</p>
+  </main>
+
+  <p id="status" class="sr-only" aria-live="polite"></p>
+
+  <script>
+    const CITIES = {
+      sf: {
+        name: 'San Francisco, US', tz: 'America/Los_Angeles',
+        temp: 19, high: 22, low: 14, condition: 'Partly Cloudy', icon: '⛅', nightIcon: '☁️', precip: 10,
+        summary: 'Mild, with clouds clearing by afternoon. A light layer is all you need.',
+        humidity: 64, wind: 12, uv: 5, visibility: 10, feels: 18, sunrise: '6:42 AM', sunset: '7:28 PM',
+        days: [
+          ['Partly Cloudy', '⛅', 22, 14, 10], ['Sunny', '☀️', 23, 14, 0], ['Morning Fog', '🌫️', 20, 13, 0],
+          ['Cloudy', '☁️', 19, 13, 5], ['Light Rain', '🌦️', 17, 12, 40], ['Showers', '🌧️', 16, 11, 60],
+          ['Sunny', '☀️', 21, 13, 5]
+        ]
+      },
+      tokyo: {
+        name: 'Tokyo, JP', tz: 'Asia/Tokyo',
+        temp: 24, high: 27, low: 19, condition: 'Clear', icon: '☀️', nightIcon: '🌙', precip: 0,
+        summary: 'Clear skies and warm air through the afternoon. Keep water handy and seek shade at midday.',
+        humidity: 58, wind: 9, uv: 7, visibility: 15, feels: 25, sunrise: '5:01 AM', sunset: '6:08 PM',
+        days: [
+          ['Clear', '☀️', 27, 19, 0], ['Sunny', '☀️', 28, 20, 0], ['Mostly Sunny', '🌤️', 29, 21, 10],
+          ['Thunderstorms', '⛈️', 26, 20, 70], ['Cloudy', '☁️', 25, 19, 30], ['Partly Cloudy', '⛅', 26, 18, 15],
+          ['Sunny', '☀️', 28, 19, 0]
+        ]
+      },
+      london: {
+        name: 'London, UK', tz: 'Europe/London',
+        temp: 13, high: 15, low: 9, condition: 'Light Rain', icon: '🌦️', nightIcon: '🌧️', precip: 60,
+        summary: 'Damp and mild with rain easing later. Pack an umbrella and a waterproof layer.',
+        humidity: 78, wind: 18, uv: 2, visibility: 8, feels: 11, sunrise: '7:20 AM', sunset: '4:22 PM',
+        days: [
+          ['Light Rain', '🌦️', 15, 9, 60], ['Cloudy', '☁️', 14, 8, 20], ['Showers', '🌧️', 12, 7, 70],
+          ['Partly Cloudy', '⛅', 13, 7, 10], ['Sunny', '☀️', 16, 9, 0], ['Mostly Sunny', '🌤️', 17, 10, 5],
+          ['Cloudy', '☁️', 15, 9, 25]
+        ]
+      },
+      nyc: {
+        name: 'New York, US', tz: 'America/New_York',
+        temp: 21, high: 25, low: 16, condition: 'Mostly Sunny', icon: '🌤️', nightIcon: '🌙', precip: 5,
+        summary: 'Bright and pleasant with a steady breeze. A good day to be outside before evening storms.',
+        humidity: 52, wind: 14, uv: 6, visibility: 16, feels: 20, sunrise: '6:15 AM', sunset: '7:45 PM',
+        days: [
+          ['Mostly Sunny', '🌤️', 25, 16, 5], ['Sunny', '☀️', 26, 17, 0], ['Thunderstorms', '⛈️', 23, 17, 60],
+          ['Partly Cloudy', '⛅', 22, 15, 15], ['Cloudy', '☁️', 20, 14, 20], ['Sunny', '☀️', 24, 15, 0],
+          ['Mostly Sunny', '🌤️', 25, 16, 10]
+        ]
+      }
+    };
+
+    const state = { city: 'sf', unit: 'C' };
+    const $ = (id) => document.getElementById(id);
+    let lastHour = null;
+
+    const toUnit = (c) => (state.unit === 'C' ? c : c * 9 / 5 + 32);
+    const fmtT = (c) => `${Math.round(toUnit(c))}°${state.unit}`;
+    const fmtWind = (kmh) => (state.unit === 'C' ? `${kmh} km/h` : `${Math.round(kmh * 0.621371)} mph`);
+    const fmtVis = (km) => (state.unit === 'C' ? `${km} km` : `${Math.round(km * 0.621371)} mi`);
+
+    const hourOf = (tz) => Number(new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: 'numeric', hourCycle: 'h23' }).format(new Date()));
+    const fmtHour = (h) => (h === 0 ? '12 AM' : h < 12 ? `${h} AM` : h === 12 ? '12 PM' : `${h - 12} PM`);
+    const parseTime = (s) => {
+      const [t, ap] = s.split(' ');
+      let [hh, mm] = t.split(':').map(Number);
+      if (ap === 'PM' && hh !== 12) hh += 12;
+      if (ap === 'AM' && hh === 12) hh = 0;
+      return hh + mm / 60;
+    };
+    const curve = (c, h) => (c.high + c.low) / 2 + ((c.high - c.low) / 2) * Math.sin(((h - 9) * Math.PI) / 12);
+
+    function tick() {
+      const c = CITIES[state.city];
+      const now = new Date();
+      $('local-time').textContent = new Intl.DateTimeFormat('en-US', { timeZone: c.tz, hour: 'numeric', minute: '2-digit' }).format(now);
+      $('local-date').textContent = new Intl.DateTimeFormat('en-US', { timeZone: c.tz, weekday: 'long', month: 'long', day: 'numeric' }).format(now);
+      const h = hourOf(c.tz);
+      if (h !== lastHour) { lastHour = h; renderHourly(); }
+    }
+
+    function renderHero() {
+      const c = CITIES[state.city];
+      $('city-name').textContent = c.name;
+      $('summary').textContent = c.summary;
+      $('temp').textContent = Math.round(toUnit(c.temp));
+      $('temp-unit').textContent = `°${state.unit}`;
+      $('cond-icon').textContent = c.icon;
+      $('condition').textContent = c.condition;
+      $('hl').textContent = `High ${fmtT(c.high)} / Low ${fmtT(c.low)}`;
+      $('d-feels').textContent = fmtT(c.feels);
+      $('d-humidity').textContent = `${c.humidity}%`;
+      $('d-wind').textContent = fmtWind(c.wind);
+      $('d-uv').textContent = c.uv;
+      $('d-visibility').textContent = fmtVis(c.visibility);
+      $('d-sunrise').textContent = c.sunrise;
+      $('d-sunset').textContent = c.sunset;
+    }
+
+    function renderHourly() {
+      const c = CITIES[state.city];
+      const nowH = hourOf(c.tz);
+      const rise = parseTime(c.sunrise), set = parseTime(c.sunset);
+      const offset = c.temp - curve(c, nowH);
+      const items = [];
+      for (let i = 0; i < 24; i++) {
+        const h = (nowH + i) % 24;
+        const night = h + 0.5 < rise || h + 0.5 >= set;
+        const t = Math.round(curve(c, h) + offset);
+        const p = Math.max(0, Math.min(100, c.precip + ((h * 7) % 5) - 2));
+        const icon = night ? c.nightIcon : c.icon;
+        const label = i === 0 ? 'Now' : fmtHour(h);
+        items.push(`
+          <li class="flex-none w-[88px] glass rounded-2xl py-4 px-2 flex flex-col items-center gap-2 ${i === 0 ? 'ring-1 ring-sky-300/70 bg-white/15' : ''}">
+            <time class="text-xs font-medium text-white/70">${label}</time>
+            <span class="text-2xl leading-none" aria-hidden="true">${icon}</span>
+            <span class="sr-only">${c.condition}</span>
+            <span class="text-lg font-bold">${toUnit(t).toFixed(0)}°</span>
+            <span class="text-xs text-sky-300">${p}%</span>
+          </li>`);
+      }
+      $('hourly').innerHTML = items.join('');
+    }
+
+    function renderWeek() {
+      const c = CITIES[state.city];
+      const minAll = Math.min(...c.days.map((d) => d[3]));
+      const maxAll = Math.max(...c.days.map((d) => d[2]));
+      const span = maxAll - minAll || 1;
+      const now = Date.now();
+      const rows = c.days.map(([cond, icon, hi, lo, p], i) => {
+        const day = i === 0 ? 'Today' : new Intl.DateTimeFormat('en-US', { timeZone: c.tz, weekday: 'short' })
+          .format(new Date(now + i * 86400000));
+        const left = ((lo - minAll) / span) * 100;
+        const width = ((hi - lo) / span) * 100;
+        return `
+          <li class="flex items-center gap-3 py-3.5 text-sm">
+            <span class="w-14 font-semibold">${day}</span>
+            <span class="text-xl w-8 text-center" aria-hidden="true">${icon}</span>
+            <span class="sr-only">${cond}</span>
+            <span class="hidden md:inline w-28 text-white/70">${cond}</span>
+            <span class="w-12 text-xs text-sky-300"><span aria-hidden="true">💧</span> ${p}%</span>
+            <span class="w-12 text-right text-white/60">${fmtT(lo)}</span>
+            <div class="flex-1 h-1.5 rounded-full bg-white/10 relative min-w-[60px]" aria-hidden="true">
+              <span class="absolute top-0 h-full rounded-full bg-gradient-to-r from-sky-300 to-amber-300" style="left:${left.toFixed(1)}%;width:${Math.max(width, 4).toFixed(1)}%"></span>
+            </div>
+            <span class="w-12 font-semibold">${fmtT(hi)}</span>
+          </li>`;
+      });
+      $('week').innerHTML = rows.join('');
+    }
+
+    function renderUnitButtons() {
+      document.querySelectorAll('.unit-btn').forEach((btn) => {
+        const active = btn.dataset.unit === state.unit;
+        btn.setAttribute('aria-pressed', String(active));
+        btn.classList.toggle('bg-white', active);
+        btn.classList.toggle('text-slate-900', active);
+        btn.classList.toggle('text-white/75', !active);
+      });
+    }
+
+    function renderAll() {
+      renderHero();
+      renderHourly();
+      renderWeek();
+      renderUnitButtons();
+      lastHour = hourOf(CITIES[state.city].tz);
+      tick();
+    }
+
+    $('city').addEventListener('change', (e) => {
+      state.city = e.target.value;
+      renderAll();
+      $('status').textContent = `Showing weather for ${CITIES[state.city].name}`;
+    });
+
+    document.querySelectorAll('.unit-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (state.unit === btn.dataset.unit) return;
+        state.unit = btn.dataset.unit;
+        renderAll();
+        $('status').textContent = `Temperatures shown in degrees ${state.unit === 'C' ? 'Celsius' : 'Fahrenheit'}`;
+      });
+    });
+
+    renderAll();
+    setInterval(tick, 15000);
+  </script>
+</body>
+</html>

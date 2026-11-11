@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loomdesk: salon booking and rota</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #F6F3EE;
+      --surface: #FCFBF8;
+      --ink: #1F1C19;
+      --ink-2: #4F4A43;
+      --ink-3: #6F695F;
+      --hair: rgba(31, 28, 25, 0.09);
+      --hair-strong: rgba(31, 28, 25, 0.16);
+      --accent: #9A4029;
+      --accent-hover: #86361F;
+      --staff-1: #9A4029;
+      --staff-2: #4E6B5C;
+      --staff-3: #4A5F7A;
+      --r-ctl: 10px;
+      --r-card: 16px;
+      --r-inner: 8px;
+      --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+      --sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:focus-visible, button:focus-visible, summary:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+    /* Navigation */
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      height: 72px;
+    }
+    .logo { font-weight: 500; font-size: 18px; letter-spacing: -0.01em; }
+    .links { display: flex; gap: 32px; font-size: 15px; color: var(--ink-2); }
+    .links a { transition: color 0.2s var(--ease); }
+    .links a:hover { color: var(--ink); }
+    .top-right { display: flex; align-items: center; gap: 12px; }
+    .menu { display: none; position: relative; }
+    .menu summary {
+      list-style: none;
+      cursor: pointer;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 12px;
+      font-size: 15px;
+      color: var(--ink-2);
+    }
+    .menu summary::-webkit-details-marker { display: none; }
+    .menu-panel {
+      position: absolute;
+      right: 0;
+      top: 48px;
+      min-width: 180px;
+      background: var(--surface);
+      border: 1px solid var(--hair);
+      border-radius: var(--r-card);
+      padding: 8px;
+      display: grid;
+      box-shadow: 0 16px 40px -16px rgba(31, 28, 25, 0.22);
+      z-index: 2;
+    }
+    .menu-panel a { padding: 8px 12px; border-radius: var(--r-inner); font-size: 15px; color: var(--ink-2); }
+    .menu-panel a:hover { background: rgba(31, 28, 25, 0.05); color: var(--ink); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+      padding: 0 16px;
+      border-radius: var(--r-ctl);
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 500;
+      border: 1px solid transparent;
+      transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
+      cursor: pointer;
+    }
+    .btn-primary { background: var(--accent); color: #FFFFFF; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-ghost { background: var(--surface); color: var(--ink); border-color: var(--hair-strong); }
+    .btn-ghost:hover { border-color: rgba(31, 28, 25, 0.3); }
+    .btn-lg { height: 48px; padding: 0 22px; font-size: 16px; }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 64px;
+      align-items: center;
+      min-height: calc(100vh - 72px);
+      padding: 48px 0 64px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: 64px;
+      line-height: 1.04;
+      letter-spacing: -0.015em;
+      margin: 0;
+      color: var(--ink);
+      text-wrap: balance;
+    }
+    .lede {
+      margin: 24px 0 0;
+      max-width: 460px;
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--ink-2);
+    }
+    .actions { margin-top: 36px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Product preview */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--hair);
+      border-radius: var(--r-card);
+      padding: 20px;
+      box-shadow: 0 1px 2px rgba(31, 28, 25, 0.05), 0 16px 40px -16px rgba(31, 28, 25, 0.22);
+    }
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      padding: 4px 4px 16px;
+    }
+    .card-head h2 { font-size: 17px; font-weight: 500; margin: 0; }
+    .card-head p { margin: 0; font-size: 14px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+    .scroll { overflow-x: auto; }
+    .cal {
+      display: grid;
+      grid-template-columns: 48px repeat(3, minmax(140px, 1fr));
+      min-width: 488px;
+    }
+    .staff {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink-2);
+      padding: 0 0 12px 17px;
+      border-bottom: 1px solid var(--hair);
+    }
+    .times { position: relative; }
+    .times span {
+      display: block;
+      height: 64px;
+      font-size: 12px;
+      color: var(--ink-3);
+      font-variant-numeric: tabular-nums;
+      padding-top: 0;
+      line-height: 1;
+      padding-top: 6px;
+    }
+    .col {
+      position: relative;
+      height: 256px;
+      border-left: 1px solid var(--hair);
+      background-image: linear-gradient(to bottom, var(--hair) 1px, transparent 1px);
+      background-size: 100% 64px;
+    }
+    .appt {
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      padding: 6px 10px;
+      border-radius: var(--r-inner);
+      border-left: 3px solid var(--c);
+      background: color-mix(in srgb, var(--c) 10%, var(--surface));
+      overflow: hidden;
+    }
+    .appt b { display: block; font-weight: 500; font-size: 13px; color: var(--ink); line-height: 1.35; }
+    .appt span { display: block; font-size: 12px; color: var(--ink-2); line-height: 1.35; font-variant-numeric: tabular-nums; }
+    .s1 { --c: var(--staff-1); }
+    .s2 { --c: var(--staff-2); }
+    .s3 { --c: var(--staff-3); }
+
+    /* Entrance: one short rise on load */
+    .rise { animation: rise 0.6s var(--ease) both; }
+    .rise-2 { animation-delay: 0.08s; }
+    .rise-3 { animation-delay: 0.16s; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rise { animation: none; }
+    }
+
+    /* Small screens */
+    @media (max-width: 1023px) {
+      .hero { gap: 48px; }
+      h1 { font-size: 56px; }
+    }
+    @media (max-width: 899px) {
+      .hero { grid-template-columns: 1fr; min-height: 0; padding: 32px 0 48px; }
+      h1 { font-size: 52px; }
+    }
+    @media (max-width: 767px) {
+      .wrap { padding: 0 20px; }
+      .links { display: none; }
+      .menu { display: block; }
+      .top { gap: 12px; }
+      .top-right { gap: 4px; }
+      .top-right .btn { padding: 0 14px; font-size: 14px; }
+      .hero > * { min-width: 0; }
+      h1 { font-size: 44px; }
+      .lede { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="top rise">
+      <a href="#" class="logo">Loomdesk</a>
+      <div class="links">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Stories</a>
+        <a href="#">Blog</a>
+      </div>
+      <div class="top-right">
+        <details class="menu">
+          <summary>Menu</summary>
+          <div class="menu-panel">
+            <a href="#">Features</a>
+            <a href="#">Pricing</a>
+            <a href="#">Stories</a>
+            <a href="#">Blog</a>
+          </div>
+        </details>
+        <a href="#" class="btn btn-primary">Start free trial</a>
+      </div>
+    </nav>
+
+    <main class="hero">
+      <section>
+        <h1 class="rise rise-2">Bookings, staff rota and reminders for salons</h1>
+        <p class="lede rise rise-2">Clients book online, your team works from one rota, and text reminders go out before every appointment</p>
+        <div class="actions rise rise-3">
+          <a href="#" class="btn btn-primary btn-lg">Start free trial</a>
+          <a href="#" class="btn btn-ghost btn-lg">Watch demo</a>
+        </div>
+      </section>
+
+      <section class="card rise rise-3" aria-label="Sample day in the booking calendar">
+        <div class="card-head">
+          <h2>Thursday 12 November</h2>
+          <p>5 bookings · 3 stylists</p>
+        </div>
+        <div class="scroll">
+          <div class="cal">
+            <div></div>
+            <div class="staff">Priya</div>
+            <div class="staff">Marcus</div>
+            <div class="staff">Ines</div>
+
+            <div class="times">
+              <span>9:00</span>
+              <span>10:00</span>
+              <span>11:00</span>
+              <span>12:00</span>
+            </div>
+
+            <div class="col">
+              <div class="appt s1" style="top:0;height:64px"><b>Amara Osei</b><span>9:00 · Cut and blow dry</span></div>
+              <div class="appt s1" style="top:128px;height:96px"><b>Hannah Brooks</b><span>11:00 · Colour and cut</span></div>
+            </div>
+            <div class="col">
+              <div class="appt s2" style="top:32px;height:64px"><b>Jonah Reyes</b><span>9:30 · Beard trim</span></div>
+              <div class="appt s2" style="top:128px;height:64px"><b>Sam Whitfield</b><span>11:00 · Men's cut</span></div>
+            </div>
+            <div class="col">
+              <div class="appt s3" style="top:0;height:128px"><b>Lucía Marín</b><span>9:00 · Balayage</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

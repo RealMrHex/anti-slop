@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anti-Slob blind refine test</title>
+<style>
+  :root { color-scheme: light dark; --bg: #f4f4f2; --fg: #1a1a1a; --muted: #555; --line: #9a9a96; --panel: #fff; --pick: #1d4ed8; --pick-fg: #fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #161616; --fg: #f2f2f0; --muted: #b0b0ac; --line: #666; --panel: #0c0c0c; --pick: #93b4ff; --pick-fg: #0b1020; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; background: var(--bg); color: var(--fg); font: 15px/1.5 system-ui, sans-serif; }
+  h1 { font-size: 22px; margin: 0 0 6px; } h2 { font-size: 17px; margin: 44px 0 10px; }
+  p { margin: 0 0 10px; color: var(--muted); max-width: 78ch; }
+  .pair { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+  figure { margin: 0; } .orig { opacity: .92; } .orig figcaption { font-weight: 500; color: var(--muted); } figcaption { display: flex; justify-content: space-between; padding: 4px 0; font-weight: 700; font-size: 16px; }
+  figcaption a { font-weight: 400; font-size: 13px; color: inherit; }
+  iframe { width: 100%; height: 640px; border: 1px solid var(--line); background: var(--panel); }
+  .phone iframe { max-width: 390px; height: 780px; display: block; margin: 0 auto; }
+  .vote { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 12px; }
+  button { font: inherit; font-weight: 600; min-height: 40px; padding: 0 18px; border: 1.5px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--fg); cursor: pointer; }
+  button[aria-pressed="true"] { background: var(--pick); border-color: var(--pick); color: var(--pick-fg); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  :focus-visible { outline: 3px solid var(--pick); outline-offset: 2px; }
+  #end { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); }
+  #out { white-space: pre-wrap; font: 13px/1.5 ui-monospace, Menlo, monospace; background: var(--panel); border: 1px solid var(--line); padding: 12px; margin-top: 12px; }
+</style>
+</head>
+<body>
+  <h1>Anti-Slob blind refine test</h1>
+  <p>8 tasks. Each starts from a rough first-draft page (shown as Original). The same agent was asked to improve it twice: once using the skill, once without. A and B are those two refinements. Which side is which was randomised and is hidden. Pick the refinement you think is better: cooler, better looking, more usable, whatever matters to you. Open them full size if the frames are cramped.</p>
+  <p>When you have picked for all of them, press Reveal.</p>
+
+  <section class="task desktop" data-task="t1">
+    <h2>1. Landing page for a dog-walking service</h2>
+    <div class="pair">
+      <figure class="orig"><figcaption>Original <a href="t1/original.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t1/original.html" title="Landing page for a dog-walking service, original"></iframe></figure>
+      <figure><figcaption>A <a href="t1/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t1/a.html" title="Landing page for a dog-walking service, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t1/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t1/b.html" title="Landing page for a dog-walking service, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 1">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task phone" data-task="t2">
+    <h2>2. To-do list app home screen</h2>
+    <div class="pair">
+      <figure class="orig"><figcaption>Original <a href="t2/original.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t2/original.html" title="To-do list app home screen, original"></iframe></figure>
+      <figure><figcaption>A <a href="t2/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t2/a.html" title="To-do list app home screen, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t2/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t2/b.html" title="To-do list app home screen, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 2">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task desktop" data-task="t3">
+    <h2>3. Dental clinic contact and appointment page</h2>
+    <div class="pair">
+      <figure class="orig"><figcaption>Original <a href="t3/original.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t3/original.html" title="Dental clinic contact and appointment page, original"></iframe></figure>
+      <figure><figcaption>A <a href="t3/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t3/a.html" title="Dental clinic contact and appointment page, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t3/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t3/b.html" title="Dental clinic contact and appointment page, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 3">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task desktop" data-task="t4">
+    <h2>4. Gym member-management dashboard</h2>
+    <div class="pair">
+      <figure class="orig"><figcaption>Original <a href="t4/original.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t4/original.html" title="Gym member-management dashboard, original"></iframe></figure>
+      <figure><figcaption>A <a href="t4/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t4/a.html" title="Gym member-management dashboard, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t4/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t4/b.html" title="Gym member-management dashboard, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 4">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task desktop" data-task="t5">
+    <h2>5. Headphones product page</h2>
+    <div class="pair">
+      <figure class="orig"><figcaption>Original <a href="t5/original.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t5/original.html" title="Headphones product page, original"></iframe></figure>
+      <figure><figcaption>A <a href="t5/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t5/a.html" title="Headphones product page, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t5/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t5/b.html" title="Headphones product page, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 5">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task phone" data-task="t6">
+    <h2>6. Banking app send-money screen</h2>
+    <div class="pair">
+      <figure class="orig"><figcaption>Original <a href="t6/original.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t6/original.html" title="Banking app send-money screen, original"></iframe></figure>
+      <figure><figcaption>A <a href="t6/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t6/a.html" title="Banking app send-money screen, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t6/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t6/b.html" title="Banking app send-money screen, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 6">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task desktop" data-task="t7">
+    <h2>7. Travel writer's blog home</h2>
+    <div class="pair">
+      <figure class="orig"><figcaption>Original <a href="t7/original.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t7/original.html" title="Travel writer's blog home, original"></iframe></figure>
+      <figure><figcaption>A <a href="t7/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t7/a.html" title="Travel writer's blog home, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t7/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t7/b.html" title="Travel writer's blog home, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 7">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+
+  <section class="task desktop" data-task="t8">
+    <h2>8. Careers page for a software company</h2>
+    <div class="pair">
+      <figure class="orig"><figcaption>Original <a href="t8/original.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t8/original.html" title="Careers page for a software company, original"></iframe></figure>
+      <figure><figcaption>A <a href="t8/a.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t8/a.html" title="Careers page for a software company, option A"></iframe></figure>
+      <figure><figcaption>B <a href="t8/b.html" target="_blank" rel="noopener">open full size</a></figcaption><iframe src="t8/b.html" title="Careers page for a software company, option B"></iframe></figure>
+    </div>
+    <div class="vote" role="group" aria-label="Your pick for task 8">
+      <button type="button" data-pick="A">A is better</button>
+      <button type="button" data-pick="same">About the same</button>
+      <button type="button" data-pick="B">B is better</button>
+    </div>
+  </section>
+  <div id="end">
+    <button type="button" id="reveal" disabled>Reveal which was which</button>
+    <span id="progress" role="status"></span>
+    <div id="out" hidden></div>
+    <p id="hint" hidden>Copy the text above and paste it back to Claude.</p>
+  </div>
+<script>
+  const K = "fSJCIiA6Ijh0IiAsIkIiIDoiN3QiICwiQiIgOiI2dCIgLCJCIiA6IjV0IiAsIkIiIDoiNHQiICwiQSIgOiIzdCIgLCJBIiA6IjJ0IiAsIkEiIDoiMXQiew==", META = {"t1": {"title": "Landing page for a dog-walking service", "set": "refine"}, "t2": {"title": "To-do list app home screen", "set": "refine"}, "t3": {"title": "Dental clinic contact and appointment page", "set": "refine"}, "t4": {"title": "Gym member-management dashboard", "set": "refine"}, "t5": {"title": "Headphones product page", "set": "refine"}, "t6": {"title": "Banking app send-money screen", "set": "refine"}, "t7": {"title": "Travel writer's blog home", "set": "refine"}, "t8": {"title": "Careers page for a software company", "set": "refine"}}, picks = {};
+  const store = { get() { try { return JSON.parse(localStorage.getItem("antislob-blind-refine") || "{}"); } catch (e) { return {}; } },
+                  set(v) { try { localStorage.setItem("antislob-blind-refine", JSON.stringify(v)); } catch (e) {} } };
+  Object.assign(picks, store.get());
+  const total = Object.keys(META).length, reveal = document.getElementById("reveal"), progress = document.getElementById("progress");
+  function paint() {
+    document.querySelectorAll(".task").forEach(s => s.querySelectorAll("button").forEach(b =>
+      b.setAttribute("aria-pressed", String(picks[s.dataset.task] === b.dataset.pick))));
+    const n = Object.keys(picks).length;
+    reveal.disabled = n < total; progress.textContent = " " + n + " of " + total + " picked";
+  }
+  document.querySelectorAll(".task button").forEach(b => b.addEventListener("click", () => {
+    picks[b.closest(".task").dataset.task] = b.dataset.pick; store.set(picks); paint();
+  }));
+  reveal.addEventListener("click", () => {
+    const key = JSON.parse(atob(K).split("").reverse().join(""));
+    let skill = 0, base = 0, same = 0; const lines = [];
+    Object.keys(META).forEach((t, i) => {
+      const p = picks[t], r = p === "same" ? "same" : (p === key[t] ? "with skill" : "without skill");
+      if (r === "same") same++; else if (r === "with skill") skill++; else base++;
+      lines.push((i + 1) + ". " + META[t].title + " [" + META[t].set + "]: picked " + p + " = " + r + " (skill was " + key[t] + ")");
+    });
+    const out = document.getElementById("out");
+    out.textContent = "Anti-Slob 0.3.0 blind refine test\nPreferred with skill: " + skill + "\nPreferred without skill: " + base + "\nAbout the same: " + same + "\n\n" + lines.join("\n");
+    out.hidden = false; document.getElementById("hint").hidden = false;
+  });
+  paint();
+</script>
+</body>
+</html>

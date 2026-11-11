@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pennywise - Overview</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background: #0b0b1e; }
+  .glass { background: rgba(255,255,255,0.06); backdrop-filter: blur(12px); border: 1px solid rgba(167,139,250,0.45); }
+  .grad-text { background: linear-gradient(90deg,#f472b6,#a78bfa,#60a5fa); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .rainbow { background: linear-gradient(90deg,#f472b6,#fb923c,#facc15,#4ade80,#60a5fa,#a78bfa); }
+  .glow-bar { box-shadow: 0 0 14px rgba(167,139,250,0.8); }
+  .glow-donut { filter: drop-shadow(0 0 10px rgba(236,72,153,0.7)) drop-shadow(0 0 18px rgba(96,165,250,0.5)); }
+</style>
+</head>
+<body class="text-white min-h-screen">
+<div class="flex min-h-[900px] w-full">
+
+  <aside class="w-[248px] shrink-0 p-6 glass border-r border-violet-400/30 flex flex-col gap-[22px]">
+    <div class="flex items-center gap-2 mt-1">
+      <span class="text-2xl">💸</span>
+      <span class="text-xl font-black grad-text">Pennywise</span>
+    </div>
+    <span class="self-start text-[10px] font-black tracking-[0.2em] px-2 py-[3px] rounded-full bg-gradient-to-r from-yellow-400 to-pink-500 text-black">PREMIUM</span>
+    <nav class="flex flex-col gap-[6px] text-[15px] font-extrabold">
+      <a class="flex items-center gap-3 px-4 py-[11px] rounded-2xl bg-gradient-to-r from-pink-500 to-violet-600 glow-bar">🏠 Overview</a>
+      <a class="flex items-center gap-3 px-4 py-[11px] rounded-2xl hover:bg-white/10">💳 Transactions</a>
+      <a class="flex items-center gap-3 px-4 py-[11px] rounded-2xl hover:bg-white/10">📊 Budgets</a>
+      <a class="flex items-center gap-3 px-4 py-[11px] rounded-2xl hover:bg-white/10">🎯 Goals</a>
+      <a class="flex items-center gap-3 px-4 py-[11px] rounded-2xl hover:bg-white/10">🔁 Subscriptions <span class="relative flex h-2.5 w-2.5 ml-auto"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-pink-500"></span></span></a>
+      <a class="flex items-center gap-3 px-4 py-[11px] rounded-2xl hover:bg-white/10">🧾 Bills</a>
+      <a class="flex items-center gap-3 px-4 py-[11px] rounded-2xl hover:bg-white/10">⚙️ Settings</a>
+    </nav>
+    <div class="mt-auto p-4 rounded-3xl bg-gradient-to-br from-violet-600 to-blue-500 text-sm font-semibold">
+      🚀 Unlock AI tips!!
+      <p class="text-xs opacity-80 mt-1">Upgrade now for more magic</p>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-[30px] flex flex-col gap-[22px] overflow-y-auto">
+    <header>
+      <p class="text-[11px] uppercase tracking-[0.3em] text-pink-300 font-bold">November 2026 · Overview</p>
+      <h1 class="text-[34px] font-black mt-1">Hey Jordan! 💰 <span class="grad-text">Your money is looking great!</span></h1>
+    </header>
+
+    <section class="grid grid-cols-4 gap-[18px]">
+      <div class="p-[22px] rounded-3xl bg-gradient-to-br from-pink-600 via-purple-600 to-blue-600 shadow-xl shadow-pink-500/40 hover:scale-105 transition-transform">
+        <p class="text-[11px] uppercase tracking-[0.2em] font-bold opacity-90">Total Balance</p>
+        <p class="text-[32px] font-black mt-2 leading-none">$12,480.50</p>
+        <p class="text-xs font-bold mt-3">🚀 +8.2%!!</p>
+      </div>
+      <div class="p-[22px] rounded-3xl bg-gradient-to-br from-violet-600 to-indigo-500 shadow-xl shadow-violet-500/40 hover:scale-105 transition-transform">
+        <p class="text-[11px] uppercase tracking-[0.2em] font-bold opacity-90">Income This Month</p>
+        <p class="text-[32px] font-black mt-2 leading-none">$4,210</p>
+        <p class="text-xs font-bold mt-3">💚 +12%!!</p>
+      </div>
+      <div class="p-[22px] rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-400 shadow-xl shadow-blue-500/40 hover:scale-105 transition-transform">
+        <p class="text-[11px] uppercase tracking-[0.2em] font-bold opacity-90">Spending This Month</p>
+        <p class="text-[32px] font-black mt-2 leading-none">$1,204.5</p>
+        <p class="text-xs font-bold mt-3">🔥 3 less!!</p>
+      </div>
+      <div class="p-[22px] rounded-3xl bg-gradient-to-br from-fuchsia-600 to-pink-500 shadow-xl shadow-fuchsia-500/40 hover:scale-105 transition-transform">
+        <p class="text-[11px] uppercase tracking-[0.2em] font-bold opacity-90">Savings Rate</p>
+        <p class="text-[32px] font-black mt-2 leading-none">38.6%</p>
+        <p class="text-xs font-bold mt-3">✨ +5.1%!! · next bill 07 Nov</p>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-5 gap-[18px]">
+      <div class="col-span-2 glass rounded-3xl p-[22px]">
+        <h2 class="text-[13px] uppercase tracking-[0.2em] font-black mb-4">🍩 Spending by category</h2>
+        <div class="flex items-center gap-5">
+          <svg viewBox="0 0 100 100" class="w-[150px] h-[150px] shrink-0 glow-donut">
+            <g fill="none" stroke-width="14" transform="rotate(-90 50 50)">
+              <circle cx="50" cy="50" r="40" stroke="#f472b6" stroke-dasharray="73.7 251.3" stroke-dashoffset="0"/>
+              <circle cx="50" cy="50" r="40" stroke="#fb923c" stroke-dasharray="33.9 251.3" stroke-dashoffset="-73.7"/>
+              <circle cx="50" cy="50" r="40" stroke="#facc15" stroke-dasharray="20.4 251.3" stroke-dashoffset="-107.6"/>
+              <circle cx="50" cy="50" r="40" stroke="#4ade80" stroke-dasharray="80.4 251.3" stroke-dashoffset="-128"/>
+              <circle cx="50" cy="50" r="40" stroke="#60a5fa" stroke-dasharray="17.3 251.3" stroke-dashoffset="-208.4"/>
+              <circle cx="50" cy="50" r="40" stroke="#a78bfa" stroke-dasharray="25.1 251.3" stroke-dashoffset="-225.7"/>
+            </g>
+            <text x="50" y="48" text-anchor="middle" fill="white" font-size="9" font-weight="900">$1,404</text>
+            <text x="50" y="60" text-anchor="middle" fill="#f9a8d4" font-size="5" font-weight="700">SPENT</text>
+          </svg>
+          <ul class="flex-1 flex flex-col gap-[9px] text-[13px] font-bold">
+            <li>🍔 Food &amp; Dining <span class="float-right">$412 / $500</span></li>
+            <li>🛍️ Shopping <span class="float-right">$189.99 / $400</span></li>
+            <li>🚗 Transport <span class="float-right">$114 / $250</span></li>
+            <li>🏠 Housing <span class="float-right">$450 / $450</span></li>
+            <li>🎬 Entertainment <span class="float-right">$97.5 / $150</span></li>
+            <li>💡 Utilities <span class="float-right">$141 / $200</span></li>
+          </ul>
+        </div>
+        <div class="mt-4 flex flex-col gap-[7px]">
+          <div class="h-[7px] rounded-full bg-white/10"><div class="h-full w-[82%] rounded-full rainbow glow-bar"></div></div>
+          <div class="h-[7px] rounded-full bg-white/10"><div class="h-full w-[76%] rounded-full rainbow glow-bar"></div></div>
+          <div class="h-[7px] rounded-full bg-white/10"><div class="h-full w-[91%] rounded-full rainbow glow-bar"></div></div>
+        </div>
+      </div>
+
+      <div class="col-span-3 glass rounded-3xl p-[22px] flex flex-col">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-[13px] uppercase tracking-[0.2em] font-black">📈 Monthly spending</h2>
+          <span class="text-[10px] font-black px-3 py-1 rounded-full bg-pink-500/30 border border-pink-400">LAST 6 MONTHS</span>
+        </div>
+        <div class="flex-1 flex items-end justify-between gap-[14px] h-[200px] px-2 border-b border-white/20">
+          <div class="flex flex-col items-center gap-2 w-full"><div class="w-full rounded-t-2xl bg-gradient-to-t from-pink-500 to-violet-500 glow-bar" style="height:133px"></div><span class="text-[11px] font-bold">JUN</span></div>
+          <div class="flex flex-col items-center gap-2 w-full"><div class="w-full rounded-t-2xl bg-gradient-to-t from-pink-500 to-violet-500 glow-bar" style="height:160px"></div><span class="text-[11px] font-bold">JUL</span></div>
+          <div class="flex flex-col items-center gap-2 w-full"><div class="w-full rounded-t-2xl bg-gradient-to-t from-pink-500 to-violet-500 glow-bar" style="height:110px"></div><span class="text-[11px] font-bold">AUG</span></div>
+          <div class="flex flex-col items-center gap-2 w-full"><div class="w-full rounded-t-2xl bg-gradient-to-t from-pink-500 to-violet-500 glow-bar" style="height:147px"></div><span class="text-[11px] font-bold">SEP</span></div>
+          <div class="flex flex-col items-center gap-2 w-full"><div class="w-full rounded-t-2xl bg-gradient-to-t from-pink-500 to-violet-500 glow-bar" style="height:174px"></div><span class="text-[11px] font-bold">OCT</span></div>
+          <div class="flex flex-col items-center gap-2 w-full"><div class="w-full rounded-t-2xl bg-gradient-to-t from-cyan-400 to-blue-500 glow-bar" style="height:135px"></div><span class="text-[11px] font-bold">NOV</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="glass rounded-3xl p-[22px]">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-[13px] uppercase tracking-[0.2em] font-black">🧾 Recent transactions</h2>
+        <span class="text-xs font-bold text-pink-300">See all →</span>
+      </div>
+      <ul class="flex flex-col divide-y divide-white/10 text-[14px]">
+        <li class="flex items-center gap-4 py-[9px]"><span class="text-lg">☕</span><span class="flex-1 font-extrabold">Blue Bottle Coffee</span><span class="w-[140px] text-xs font-bold text-pink-300">🍔 Food &amp; Dining</span><span class="w-[110px] text-xs">07 Nov</span><span class="w-[90px] text-right font-black">-$6.75</span></li>
+        <li class="flex items-center gap-4 py-[9px]"><span class="text-lg">🛒</span><span class="flex-1 font-extrabold">Whole Foods</span><span class="w-[140px] text-xs font-bold text-pink-300">🍔 Food &amp; Dining</span><span class="w-[110px] text-xs">2026-11-06</span><span class="w-[90px] text-right font-black">-$118.4</span></li>
+        <li class="flex items-center gap-4 py-[9px]"><span class="text-lg">💼</span><span class="flex-1 font-extrabold">Acme Corp Payroll</span><span class="w-[140px] text-xs font-bold text-green-300">💚 Income</span><span class="w-[110px] text-xs">Nov 5</span><span class="w-[90px] text-right font-black text-green-300">+$4,210.00</span></li>
+        <li class="flex items-center gap-4 py-[9px]"><span class="text-lg">🎧</span><span class="flex-1 font-extrabold">Spotify</span><span class="w-[140px] text-xs font-bold text-violet-300">🔁 Subscriptions</span><span class="w-[110px] text-xs">04/11/2026</span><span class="w-[90px] text-right font-black">-$11.99</span></li>
+        <li class="flex items-center gap-4 py-[9px]"><span class="text-lg">🚕</span><span class="flex-1 font-extrabold">Uber</span><span class="w-[140px] text-xs font-bold text-blue-300">🚗 Transport</span><span class="w-[110px] text-xs">Nov 3</span><span class="w-[90px] text-right font-black">-$23.5</span></li>
+        <li class="flex items-center gap-4 py-[9px]"><span class="text-lg">👟</span><span class="flex-1 font-extrabold">Nike</span><span class="w-[140px] text-xs font-bold text-fuchsia-300">🛍️ Shopping</span><span class="w-[110px] text-xs">02 Nov</span><span class="w-[90px] text-right font-black">-$139.99</span></li>
+        <li class="flex items-center gap-4 py-[9px]"><span class="text-lg">⚡</span><span class="flex-1 font-extrabold">City Power</span><span class="w-[140px] text-xs font-bold text-yellow-300">💡 Utilities</span><span class="w-[110px] text-xs">01/11</span><span class="w-[90px] text-right font-black">-$89.00</span></li>
+      </ul>
+    </section>
+  </main>
+</div>
+</body>
+</html>

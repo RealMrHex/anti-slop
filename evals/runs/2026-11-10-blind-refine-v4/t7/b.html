@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atmos — Weather for your day</title>
+  <meta name="description" content="Atmos helps people check current weather, understand forecasts, and plan their day." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Fraunces', 'Georgia', 'serif'],
+            sans: ['Sora', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            dusk: '#1C2A36',
+            sky: '#7EB6D9',
+            sand: '#D9C4A5',
+            foam: '#F4F8FB',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-a: #8ec5e8;
+      --bg-b: #f2e6d4;
+      --bg-c: #d7e8ef;
+      --ink: #1C2A36;
+      --glass: rgba(255,255,255,0.55);
+    }
+    body {
+      font-family: Sora, system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(160deg, var(--bg-a) 0%, var(--bg-b) 48%, var(--bg-c) 100%);
+      min-height: 100vh;
+      transition: background 0.6s ease;
+    }
+    .font-display { font-family: Fraunces, Georgia, serif; }
+    .hero-shell {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      min-height: min(78vh, 680px);
+    }
+    .hero-media {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.04);
+      transition: opacity 0.7s ease, transform 8s ease;
+      animation: drift 18s ease-in-out infinite alternate;
+    }
+    .hero-veil {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        linear-gradient(180deg, rgba(28,42,54,0.35) 0%, rgba(28,42,54,0.25) 45%, rgba(28,42,54,0.45) 80%, rgba(28,42,54,0.5) 100%),
+        linear-gradient(90deg, rgba(28,42,54,0.35), transparent 65%);
+    }
+    @keyframes drift {
+      from { transform: scale(1.04) translate3d(0,0,0); }
+      to { transform: scale(1.1) translate3d(-1.5%, -1%, 0); }
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .rise { animation: rise 0.55s ease both; }
+    .rise-2 { animation-delay: 0.08s; }
+    .rise-3 { animation-delay: 0.16s; }
+    .glass {
+      background: var(--glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.45);
+    }
+    .hero-text { text-shadow: 0 1px 18px rgba(20,32,44,0.45); }
+    .glass-strong {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 10px 30px rgba(20,32,44,0.18);
+    }
+    .hour-track {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(76px, 1fr);
+      gap: 0.75rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 0.25rem;
+      scrollbar-width: thin;
+    }
+    .hour-track > * { scroll-snap-align: start; }
+    .city-option, .unit-btn { transition: background .2s, color .2s; }
+    .city-option:hover { background: rgba(255,255,255,0.8); }
+    .city-option:focus-visible, .unit-btn:focus-visible { outline: 2px solid #1C2A36; outline-offset: 2px; }
+    .city-option[aria-selected="true"] {
+      background: #1C2A36;
+      color: #fff;
+    }
+    .unit-btn[aria-pressed="true"] {
+      background: #1C2A36;
+      color: #fff;
+    }
+    .day-row:hover { background: rgba(255,255,255,0.55); }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-media { animation: none; }
+      .rise, .rise-2, .rise-3 { animation: none; }
+    }
+  </style>
+</head>
+<body class="antialiased">
+  <a href="#forecast" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[80] focus:bg-dusk focus:text-white focus:px-4 focus:py-2 focus:rounded-md">Skip to forecast</a>
+
+  <header class="absolute top-0 inset-x-0 z-20">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 py-5 flex items-center justify-between gap-4">
+      <p class="font-display text-2xl sm:text-3xl tracking-tight text-white drop-shadow-sm" aria-label="Atmos">Atmos</p>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div class="inline-flex glass rounded-xl p-1" role="group" aria-label="Temperature unit">
+          <button type="button" id="unit-c" class="unit-btn px-3 py-1.5 text-sm font-semibold rounded-lg" aria-pressed="true">°C</button>
+          <button type="button" id="unit-f" class="unit-btn px-3 py-1.5 text-sm font-semibold rounded-lg text-dusk/70" aria-pressed="false">°F</button>
+        </div>
+        <label for="city-select" class="sr-only">Choose city</label>
+        <select id="city-select" class="glass rounded-xl px-3 py-2 text-sm font-semibold text-dusk focus:outline-none focus:ring-2 focus:ring-dusk/30 max-w-[46vw] sm:max-w-none">
+          <option value="san-francisco">San Francisco</option>
+          <option value="tokyo">Tokyo</option>
+          <option value="london">London</option>
+          <option value="new-york">New York</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero-shell" aria-labelledby="brand-heading">
+      <div id="hero-media" class="hero-media" role="img" aria-label="Current weather atmosphere"></div>
+      <div class="hero-veil" aria-hidden="true"></div>
+
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 pt-28 sm:pt-36 pb-14 sm:pb-16">
+        <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 items-end">
+          <div class="text-white hero-text">
+            <h1 id="brand-heading" class="rise text-sm sm:text-base uppercase tracking-[0.22em] font-semibold text-white"><span id="city-label">San Francisco</span></h1>
+            <div class="rise rise-2 mt-3 flex flex-wrap items-end gap-x-6 gap-y-2">
+              <p id="temp-now" class="font-display text-8xl sm:text-9xl leading-[0.9] tracking-tight">19°</p>
+              <div class="pb-3">
+                <p id="condition" class="text-2xl sm:text-3xl font-medium">Partly Cloudy</p>
+                <p class="mt-1.5 text-white/90"><span id="high-low">H 22° / L 14°</span> · <span id="local-time">Local time —</span></p>
+              </div>
+            </div>
+            <div class="rise rise-3 mt-8">
+              <a href="#forecast" class="inline-flex items-center justify-center rounded-xl bg-white text-dusk px-5 py-3 text-sm font-semibold hover:bg-foam transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-dusk">See forecast</a>
+            </div>
+          </div>
+
+          <div class="glass-strong rounded-2xl p-5 sm:p-6 text-dusk" aria-label="Weather details">
+            <p class="text-xs uppercase tracking-[0.16em] text-dusk/70 font-semibold">Right now</p>
+            <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-4 text-sm">
+              <div><dt class="text-dusk/70">Feels like</dt><dd id="feels" class="font-semibold mt-0.5 text-base">18°</dd></div>
+              <div><dt class="text-dusk/70">Humidity</dt><dd id="humidity" class="font-semibold mt-0.5 text-base">64%</dd></div>
+              <div><dt class="text-dusk/70">Wind</dt><dd id="wind" class="font-semibold mt-0.5 text-base">12 km/h</dd></div>
+              <div><dt class="text-dusk/70">UV Index</dt><dd id="uv" class="font-semibold mt-0.5 text-base">5</dd></div>
+              <div><dt class="text-dusk/70">Visibility</dt><dd id="visibility" class="font-semibold mt-0.5 text-base">10 km</dd></div>
+              <div><dt class="text-dusk/70">Sun</dt><dd id="sun" class="font-semibold mt-0.5 text-base">6:42 AM – 7:28 PM</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="forecast" class="relative pt-8 pb-16 scroll-mt-4">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 space-y-6">
+        <!-- City chips -->
+        <div class="flex flex-wrap gap-2" role="listbox" aria-label="Quick city selector" id="city-chips">
+          <button type="button" class="city-option glass rounded-xl px-4 py-2 text-sm font-semibold" role="option" data-city="san-francisco" aria-selected="true">San Francisco</button>
+          <button type="button" class="city-option glass rounded-xl px-4 py-2 text-sm font-semibold text-dusk/80" role="option" data-city="tokyo" aria-selected="false">Tokyo</button>
+          <button type="button" class="city-option glass rounded-xl px-4 py-2 text-sm font-semibold text-dusk/80" role="option" data-city="london" aria-selected="false">London</button>
+          <button type="button" class="city-option glass rounded-xl px-4 py-2 text-sm font-semibold text-dusk/80" role="option" data-city="new-york" aria-selected="false">New York</button>
+        </div>
+
+        <!-- Hourly -->
+        <section class="glass rounded-3xl p-5 sm:p-6" aria-labelledby="hourly-heading">
+          <div class="flex items-end justify-between gap-3 mb-4">
+            <div>
+              <h2 id="hourly-heading" class="font-display text-2xl sm:text-3xl tracking-tight">Next 24 hours</h2>
+              <p class="text-sm text-dusk/70 mt-1">Hourly conditions for the day ahead</p>
+            </div>
+          </div>
+          <div id="hourly" class="hour-track" tabindex="0" aria-label="Hourly forecast scroller"></div>
+        </section>
+
+        <!-- 7 day + tip -->
+        <div class="grid lg:grid-cols-[1.4fr_0.8fr] gap-6">
+          <section class="glass rounded-3xl p-5 sm:p-6" aria-labelledby="daily-heading">
+            <h2 id="daily-heading" class="font-display text-2xl sm:text-3xl tracking-tight">7-day forecast</h2>
+            <p class="text-sm text-dusk/70 mt-1 mb-4">Plan the week with highs, lows, and conditions</p>
+            <ul id="daily" class="divide-y divide-dusk/10"></ul>
+          </section>
+
+          <aside class="rounded-3xl overflow-hidden relative min-h-[280px] text-white" aria-labelledby="plan-heading">
+            <img id="aside-image" src="" alt="" class="absolute inset-0 w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-dusk/85 via-dusk/35 to-transparent"></div>
+            <div class="relative h-full flex flex-col justify-end p-6">
+              <p class="text-xs uppercase tracking-[0.18em] text-white/70">Day plan</p>
+              <h2 id="plan-heading" class="font-display text-3xl mt-2 leading-tight">A good stretch for outdoor coffee</h2>
+              <p id="plan-copy" class="mt-3 text-sm text-white/85 max-w-sm">Skies stay partly cloudy into the evening. Carry a light layer for the bay breeze after sunset.</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-dusk/10 bg-foam/70">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 py-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm text-dusk/70">
+      <p class="font-display text-xl text-dusk">Atmos</p>
+      <p>Weather for San Francisco, Tokyo, London & New York · Demo data</p>
+    </div>
+  </footer>
+
+  <script>
+    const weatherData = {
+      'san-francisco': {
+        name: 'San Francisco',
+        timezone: 'America/Los_Angeles',
+        condition: 'Partly Cloudy',
+        tempC: 19,
+        highC: 22,
+        lowC: 14,
+        feelsC: 18,
+        humidity: 64,
+        windKmh: 12,
+        uv: 5,
+        visibilityKm: 10,
+        sunrise: '6:42 AM',
+        sunset: '7:28 PM',
+        image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1800&q=80',
+        aside: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1000&q=80',
+        palette: ['#8ec5e8', '#f2e6d4', '#d7e8ef'],
+        tipTitle: 'A good stretch for outdoor coffee',
+        tipCopy: 'Skies stay partly cloudy into the evening. Carry a light layer for the bay breeze after sunset.',
+        hourly: [
+          { h: 0, t: 15, icon: 'moon', label: 'Clear' },
+          { h: 1, t: 15, icon: 'moon', label: 'Clear' },
+          { h: 2, t: 14, icon: 'moon', label: 'Clear' },
+          { h: 3, t: 14, icon: 'cloud', label: 'Cloudy' },
+          { h: 4, t: 14, icon: 'cloud', label: 'Cloudy' },
+          { h: 5, t: 14, icon: 'fog', label: 'Fog' },
+          { h: 6, t: 15, icon: 'fog', label: 'Fog' },
+          { h: 7, t: 16, icon: 'partly', label: 'Partly' },
+          { h: 8, t: 17, icon: 'partly', label: 'Partly' },
+          { h: 9, t: 18, icon: 'sun', label: 'Sunny' },
+          { h: 10, t: 19, icon: 'sun', label: 'Sunny' },
+          { h: 11, t: 20, icon: 'partly', label: 'Partly' },
+          { h: 12, t: 21, icon: 'partly', label: 'Partly' },
+          { h: 13, t: 22, icon: 'partly', label: 'Partly' },
+          { h: 14, t: 22, icon: 'cloud', label: 'Cloudy' },
+          { h: 15, t: 21, icon: 'cloud', label: 'Cloudy' },
+          { h: 16, t: 20, icon: 'partly', label: 'Partly' },
+          { h: 17, t: 19, icon: 'partly', label: 'Partly' },
+          { h: 18, t: 18, icon: 'partly', label: 'Partly' },
+          { h: 19, t: 17, icon: 'cloud', label: 'Cloudy' },
+          { h: 20, t: 16, icon: 'cloud', label: 'Cloudy' },
+          { h: 21, t: 16, icon: 'moon', label: 'Clear' },
+          { h: 22, t: 15, icon: 'moon', label: 'Clear' },
+          { h: 23, t: 15, icon: 'moon', label: 'Clear' }
+        ],
+        daily: [
+          { day: 'Today', high: 22, low: 14, icon: 'partly', label: 'Partly cloudy' },
+          { day: 'Wed', high: 21, low: 13, icon: 'fog', label: 'Morning fog' },
+          { day: 'Thu', high: 23, low: 14, icon: 'sun', label: 'Mostly sunny' },
+          { day: 'Fri', high: 20, low: 13, icon: 'rain', label: 'Light rain' },
+          { day: 'Sat', high: 19, low: 12, icon: 'rain', label: 'Showers' },
+          { day: 'Sun', high: 20, low: 13, icon: 'cloud', label: 'Cloudy' },
+          { day: 'Mon', high: 22, low: 14, icon: 'partly', label: 'Partly cloudy' }
+        ]
+      },
+      tokyo: {
+        name: 'Tokyo',
+        timezone: 'Asia/Tokyo',
+        condition: 'Clear Skies',
+        tempC: 24,
+        highC: 27,
+        lowC: 18,
+        feelsC: 25,
+        humidity: 58,
+        windKmh: 9,
+        uv: 7,
+        visibilityKm: 12,
+        sunrise: '5:58 AM',
+        sunset: '6:41 PM',
+        image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1800&q=80',
+        aside: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1000&q=80',
+        palette: ['#7aa8d6', '#f3d9b4', '#e8f0f5'],
+        tipTitle: 'Golden hour along the river',
+        tipCopy: 'Warm and clear through late afternoon. Hydrate and seek shade around peak UV at midday.',
+        hourly: [
+          { h: 0, t: 19, icon: 'moon', label: 'Clear' },
+          { h: 1, t: 18, icon: 'moon', label: 'Clear' },
+          { h: 2, t: 18, icon: 'moon', label: 'Clear' },
+          { h: 3, t: 18, icon: 'moon', label: 'Clear' },
+          { h: 4, t: 18, icon: 'moon', label: 'Clear' },
+          { h: 5, t: 19, icon: 'sun', label: 'Sunny' },
+          { h: 6, t: 20, icon: 'sun', label: 'Sunny' },
+          { h: 7, t: 21, icon: 'sun', label: 'Sunny' },
+          { h: 8, t: 22, icon: 'sun', label: 'Sunny' },
+          { h: 9, t: 24, icon: 'sun', label: 'Sunny' },
+          { h: 10, t: 25, icon: 'sun', label: 'Sunny' },
+          { h: 11, t: 26, icon: 'sun', label: 'Sunny' },
+          { h: 12, t: 27, icon: 'sun', label: 'Sunny' },
+          { h: 13, t: 27, icon: 'partly', label: 'Partly' },
+          { h: 14, t: 26, icon: 'partly', label: 'Partly' },
+          { h: 15, t: 26, icon: 'sun', label: 'Sunny' },
+          { h: 16, t: 25, icon: 'sun', label: 'Sunny' },
+          { h: 17, t: 24, icon: 'sun', label: 'Sunny' },
+          { h: 18, t: 22, icon: 'partly', label: 'Partly' },
+          { h: 19, t: 21, icon: 'moon', label: 'Clear' },
+          { h: 20, t: 20, icon: 'moon', label: 'Clear' },
+          { h: 21, t: 20, icon: 'moon', label: 'Clear' },
+          { h: 22, t: 19, icon: 'moon', label: 'Clear' },
+          { h: 23, t: 19, icon: 'moon', label: 'Clear' }
+        ],
+        daily: [
+          { day: 'Today', high: 27, low: 18, icon: 'sun', label: 'Clear skies' },
+          { day: 'Wed', high: 28, low: 19, icon: 'sun', label: 'Sunny' },
+          { day: 'Thu', high: 26, low: 18, icon: 'partly', label: 'Partly cloudy' },
+          { day: 'Fri', high: 24, low: 17, icon: 'rain', label: 'Afternoon rain' },
+          { day: 'Sat', high: 23, low: 16, icon: 'cloud', label: 'Overcast' },
+          { day: 'Sun', high: 25, low: 17, icon: 'partly', label: 'Partly cloudy' },
+          { day: 'Mon', high: 27, low: 18, icon: 'sun', label: 'Sunny' }
+        ]
+      },
+      london: {
+        name: 'London',
+        timezone: 'Europe/London',
+        condition: 'Light Rain',
+        tempC: 12,
+        highC: 14,
+        lowC: 8,
+        feelsC: 10,
+        humidity: 82,
+        windKmh: 18,
+        uv: 2,
+        visibilityKm: 6,
+        sunrise: '7:12 AM',
+        sunset: '4:28 PM',
+        image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1800&q=80',
+        aside: 'https://images.unsplash.com/photo-1486299267070-83823f5448dd?auto=format&fit=crop&w=1000&q=80',
+        palette: ['#9aaebd', '#c9d2d8', '#e6ecef'],
+        tipTitle: 'Keep a waterproof layer handy',
+        tipCopy: 'Showers move through in bands. Midday is the driest window for errands between fronts.',
+        hourly: [
+          { h: 0, t: 9, icon: 'rain', label: 'Rain' },
+          { h: 1, t: 9, icon: 'rain', label: 'Rain' },
+          { h: 2, t: 8, icon: 'cloud', label: 'Cloudy' },
+          { h: 3, t: 8, icon: 'cloud', label: 'Cloudy' },
+          { h: 4, t: 8, icon: 'fog', label: 'Mist' },
+          { h: 5, t: 8, icon: 'fog', label: 'Mist' },
+          { h: 6, t: 9, icon: 'cloud', label: 'Cloudy' },
+          { h: 7, t: 9, icon: 'rain', label: 'Rain' },
+          { h: 8, t: 10, icon: 'rain', label: 'Rain' },
+          { h: 9, t: 11, icon: 'cloud', label: 'Cloudy' },
+          { h: 10, t: 12, icon: 'partly', label: 'Breaks' },
+          { h: 11, t: 13, icon: 'partly', label: 'Breaks' },
+          { h: 12, t: 14, icon: 'cloud', label: 'Cloudy' },
+          { h: 13, t: 14, icon: 'rain', label: 'Showers' },
+          { h: 14, t: 13, icon: 'rain', label: 'Showers' },
+          { h: 15, t: 13, icon: 'cloud', label: 'Cloudy' },
+          { h: 16, t: 12, icon: 'cloud', label: 'Cloudy' },
+          { h: 17, t: 11, icon: 'rain', label: 'Rain' },
+          { h: 18, t: 10, icon: 'rain', label: 'Rain' },
+          { h: 19, t: 10, icon: 'cloud', label: 'Cloudy' },
+          { h: 20, t: 9, icon: 'cloud', label: 'Cloudy' },
+          { h: 21, t: 9, icon: 'moon', label: 'Clear' },
+          { h: 22, t: 9, icon: 'moon', label: 'Clear' },
+          { h: 23, t: 8, icon: 'moon', label: 'Clear' }
+        ],
+        daily: [
+          { day: 'Today', high: 14, low: 8, icon: 'rain', label: 'Light rain' },
+          { day: 'Wed', high: 13, low: 7, icon: 'cloud', label: 'Overcast' },
+          { day: 'Thu', high: 12, low: 6, icon: 'rain', label: 'Showers' },
+          { day: 'Fri', high: 11, low: 5, icon: 'rain', label: 'Steady rain' },
+          { day: 'Sat', high: 12, low: 6, icon: 'partly', label: 'Clearing' },
+          { day: 'Sun', high: 14, low: 7, icon: 'partly', label: 'Partly cloudy' },
+          { day: 'Mon', high: 15, low: 8, icon: 'sun', label: 'Bright spells' }
+        ]
+      },
+      'new-york': {
+        name: 'New York',
+        timezone: 'America/New_York',
+        condition: 'Mostly Sunny',
+        tempC: 16,
+        highC: 19,
+        lowC: 11,
+        feelsC: 15,
+        humidity: 49,
+        windKmh: 14,
+        uv: 4,
+        visibilityKm: 14,
+        sunrise: '6:31 AM',
+        sunset: '5:52 PM',
+        image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=1800&q=80',
+        aside: 'https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?auto=format&fit=crop&w=1000&q=80',
+        palette: ['#6ea0c8', '#efd7b8', '#e4eef4'],
+        tipTitle: 'Crisp walking weather downtown',
+        tipCopy: 'Comfortable temperatures with a mild breeze. Great window for an outdoor lunch before late-day clouds.',
+        hourly: [
+          { h: 0, t: 12, icon: 'moon', label: 'Clear' },
+          { h: 1, t: 11, icon: 'moon', label: 'Clear' },
+          { h: 2, t: 11, icon: 'moon', label: 'Clear' },
+          { h: 3, t: 11, icon: 'cloud', label: 'Cloudy' },
+          { h: 4, t: 11, icon: 'cloud', label: 'Cloudy' },
+          { h: 5, t: 11, icon: 'partly', label: 'Partly' },
+          { h: 6, t: 12, icon: 'sun', label: 'Sunny' },
+          { h: 7, t: 13, icon: 'sun', label: 'Sunny' },
+          { h: 8, t: 14, icon: 'sun', label: 'Sunny' },
+          { h: 9, t: 15, icon: 'sun', label: 'Sunny' },
+          { h: 10, t: 16, icon: 'sun', label: 'Sunny' },
+          { h: 11, t: 17, icon: 'sun', label: 'Sunny' },
+          { h: 12, t: 18, icon: 'sun', label: 'Sunny' },
+          { h: 13, t: 19, icon: 'partly', label: 'Partly' },
+          { h: 14, t: 19, icon: 'partly', label: 'Partly' },
+          { h: 15, t: 18, icon: 'partly', label: 'Partly' },
+          { h: 16, t: 17, icon: 'cloud', label: 'Cloudy' },
+          { h: 17, t: 16, icon: 'cloud', label: 'Cloudy' },
+          { h: 18, t: 15, icon: 'partly', label: 'Partly' },
+          { h: 19, t: 14, icon: 'moon', label: 'Clear' },
+          { h: 20, t: 13, icon: 'moon', label: 'Clear' },
+          { h: 21, t: 13, icon: 'moon', label: 'Clear' },
+          { h: 22, t: 12, icon: 'moon', label: 'Clear' },
+          { h: 23, t: 12, icon: 'moon', label: 'Clear' }
+        ],
+        daily: [
+          { day: 'Today', high: 19, low: 11, icon: 'sun', label: 'Mostly sunny' },
+          { day: 'Wed', high: 18, low: 10, icon: 'partly', label: 'Partly cloudy' },
+          { day: 'Thu', high: 16, low: 9, icon: 'cloud', label: 'Cloudy' },
+          { day: 'Fri', high: 14, low: 8, icon: 'rain', label: 'Rain likely' },
+          { day: 'Sat', high: 13, low: 7, icon: 'rain', label: 'Showers' },
+          { day: 'Sun', high: 15, low: 8, icon: 'partly', label: 'Clearing' },
+          { day: 'Mon', high: 17, low: 9, icon: 'sun', label: 'Sunny' }
+        ]
+      }
+    };
+
+    let unit = 'c';
+    let currentCity = 'san-francisco';
+    let clockTimer = null;
+
+    function cToF(c) { return Math.round((c * 9) / 5 + 32); }
+    function displayTemp(c) { return unit === 'c' ? Math.round(c) : cToF(c); }
+    function unitLabel() { return unit === 'c' ? '°' : '°'; }
+    function windDisplay(kmh) {
+      if (unit === 'c') return kmh + ' km/h';
+      return Math.round(kmh * 0.621371) + ' mph';
+    }
+    function visibilityDisplay(km) {
+      if (unit === 'c') return km + ' km';
+      return (Math.round(km * 0.621371 * 10) / 10) + ' mi';
+    }
+
+    function iconSvg(type) {
+      const common = 'width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"';
+      const icons = {
+        sun: `<svg ${common}><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>`,
+        moon: `<svg ${common}><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"/></svg>`,
+        cloud: `<svg ${common}><path d="M6.5 19h11a4.5 4.5 0 0 0 .4-9 6 6 0 0 0-11.5 1.7A3.5 3.5 0 0 0 6.5 19z"/></svg>`,
+        partly: `<svg ${common}><circle cx="9" cy="9" r="3"/><path d="M9 2v1.5M2.5 9H4M4.2 4.2l1.1 1.1"/><path d="M7 18h10.5a4 4 0 0 0 .3-8 5.2 5.2 0 0 0-9.7 1.6A3 3 0 0 0 7 18z"/></svg>`,
+        rain: `<svg ${common}><path d="M6.5 15h11a4.5 4.5 0 0 0 .4-9 6 6 0 0 0-11.5 1.7A3.5 3.5 0 0 0 6.5 15z"/><path d="M8 18l-1 2M12 18l-1 2M16 18l-1 2"/></svg>`,
+        fog: `<svg ${common}><path d="M4 10h16M6 14h12M8 18h8M7 6h10"/></svg>`
+      };
+      return icons[type] || icons.cloud;
+    }
+
+    function formatHourLabel(hour) {
+      const suffix = hour >= 12 ? 'PM' : 'AM';
+      const h = hour % 12 === 0 ? 12 : hour % 12;
+      return h + ' ' + suffix;
+    }
+
+    function updateClock(timezone) {
+      const el = document.getElementById('local-time');
+      const now = new Date();
+      const formatted = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        weekday: 'short',
+        hour: 'numeric',
+        minute: '2-digit'
+      }).format(now);
+      el.textContent = 'Local ' + formatted;
+    }
+
+    function renderHourly(city) {
+      const root = document.getElementById('hourly');
+      const nowHour = Number(new Intl.DateTimeFormat('en-US', { timeZone: city.timezone, hour: 'numeric', hour12: false }).format(new Date()));
+      const ordered = [...city.hourly.slice(nowHour), ...city.hourly.slice(0, nowHour)];
+      root.innerHTML = ordered.map((slot, idx) => `
+        <article class="rounded-2xl bg-white/55 border border-white/50 px-3 py-3 text-center min-w-[76px]">
+          <p class="text-[11px] font-semibold text-dusk/70">${idx === 0 ? 'Now' : formatHourLabel(slot.h)}</p>
+          <div class="my-2 flex justify-center text-dusk">${iconSvg(slot.icon)}</div>
+          <p class="font-display text-xl leading-none">${displayTemp(slot.t)}${unitLabel()}</p>
+          <p class="mt-1 text-[11px] text-dusk/70 truncate">${slot.label}</p>
+        </article>
+      `).join('');
+    }
+
+    function renderDaily(city) {
+      const root = document.getElementById('daily');
+      root.innerHTML = city.daily.map(day => `
+        <li class="day-row grid grid-cols-[72px_1fr_auto] sm:grid-cols-[88px_1fr_auto] items-center gap-3 py-3 px-2 rounded-xl transition-colors">
+          <p class="font-semibold">${day.day}</p>
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="text-dusk shrink-0">${iconSvg(day.icon)}</span>
+            <span class="text-sm text-dusk/70 truncate">${day.label}</span>
+          </div>
+          <p class="text-sm font-semibold tabular-nums whitespace-nowrap"><span class="text-dusk">${displayTemp(day.high)}°</span> <span class="text-dusk/60">/ ${displayTemp(day.low)}°</span></p>
+        </li>
+      `).join('');
+    }
+
+    function applyCity(cityKey) {
+      currentCity = cityKey;
+      const city = weatherData[cityKey];
+      document.documentElement.style.setProperty('--bg-a', city.palette[0]);
+      document.documentElement.style.setProperty('--bg-b', city.palette[1]);
+      document.documentElement.style.setProperty('--bg-c', city.palette[2]);
+
+      const media = document.getElementById('hero-media');
+      media.style.backgroundImage = `url('${city.image}')`;
+      media.setAttribute('aria-label', city.condition + ' over ' + city.name);
+
+      document.getElementById('city-label').textContent = city.name;
+      document.getElementById('temp-now').textContent = displayTemp(city.tempC) + unitLabel();
+      document.getElementById('condition').textContent = city.condition;
+      document.getElementById('high-low').textContent = 'H ' + displayTemp(city.highC) + '° / L ' + displayTemp(city.lowC) + '°';
+      document.getElementById('feels').textContent = displayTemp(city.feelsC) + '°';
+      document.getElementById('humidity').textContent = city.humidity + '%';
+      document.getElementById('wind').textContent = windDisplay(city.windKmh);
+      document.getElementById('uv').textContent = String(city.uv);
+      document.getElementById('visibility').textContent = visibilityDisplay(city.visibilityKm);
+      document.getElementById('sun').textContent = city.sunrise + ' – ' + city.sunset;
+      document.getElementById('plan-heading').textContent = city.tipTitle;
+      document.getElementById('plan-copy').textContent = city.tipCopy;
+
+      const aside = document.getElementById('aside-image');
+      aside.src = city.aside;
+      aside.alt = 'Scene from ' + city.name;
+
+      document.getElementById('city-select').value = cityKey;
+      document.querySelectorAll('.city-option').forEach(btn => {
+        const selected = btn.dataset.city === cityKey;
+        btn.setAttribute('aria-selected', String(selected));
+        btn.classList.toggle('text-dusk/80', !selected);
+      });
+
+      renderHourly(city);
+      renderDaily(city);
+      updateClock(city.timezone);
+      clearInterval(clockTimer);
+      clockTimer = setInterval(() => updateClock(city.timezone), 30000);
+    }
+
+    function setUnit(next) {
+      unit = next;
+      document.getElementById('unit-c').setAttribute('aria-pressed', String(next === 'c'));
+      document.getElementById('unit-f').setAttribute('aria-pressed', String(next === 'f'));
+      document.getElementById('unit-c').classList.toggle('text-dusk/70', next !== 'c');
+      document.getElementById('unit-f').classList.toggle('text-dusk/70', next !== 'f');
+      applyCity(currentCity);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyCity('san-francisco');
+
+      document.getElementById('city-select').addEventListener('change', (e) => applyCity(e.target.value));
+      document.querySelectorAll('.city-option').forEach(btn => {
+        btn.addEventListener('click', () => applyCity(btn.dataset.city));
+      });
+      document.getElementById('unit-c').addEventListener('click', () => setUnit('c'));
+      document.getElementById('unit-f').addEventListener('click', () => setUnit('f'));
+    });
+  </script>
+</body>
+</html>

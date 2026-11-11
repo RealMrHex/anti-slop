@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team members · Quillnote</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --surface: #fdfbf7;
+      --sidebar: #f2ede4;
+      --raised: #efe9df;
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --text-3: #736a5d;
+      --hair: rgba(31, 27, 22, 0.08);
+      --hair-strong: rgba(31, 27, 22, 0.16);
+      --accent: #b4441f;
+      --accent-hover: #9a3a1a;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 20px;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; color: inherit; }
+    .icon { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 256px;
+      flex: none;
+      padding: 24px 16px;
+      background: var(--sidebar);
+      border-right: 1px solid var(--hair);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 32px;
+      padding: 0 12px;
+      margin-bottom: 8px;
+      font-size: 17px;
+      font-weight: 500;
+    }
+    .brand .icon { width: 18px; height: 18px; color: var(--accent); }
+    .nav-label {
+      margin: 24px 0 8px;
+      padding: 0 12px;
+      font-size: 13px;
+      color: var(--text-3);
+    }
+    .nav { display: flex; flex-direction: column; gap: 2px; }
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 36px;
+      padding: 0 12px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      color: var(--text-2);
+      transition: background-color 150ms var(--ease), color 150ms var(--ease);
+    }
+    .nav a:hover { background: rgba(31, 27, 22, 0.05); color: var(--text); }
+    .nav a[aria-current="page"] {
+      background: var(--surface);
+      border-color: var(--hair);
+      color: var(--text);
+      font-weight: 500;
+    }
+    .nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* Main */
+    main {
+      flex: 1;
+      min-width: 0;
+      padding: 32px 40px 48px;
+    }
+    .page-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    h1 {
+      margin: 0;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-size: 36px;
+      line-height: 1.15;
+    }
+    .sub { margin: 4px 0 0; font-size: 15px; color: var(--text-2); }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: none;
+      width: 260px;
+      height: 36px;
+      padding: 0 12px;
+      background: var(--surface);
+      border: 1px solid var(--hair-strong);
+      border-radius: 8px;
+      color: var(--text-3);
+    }
+    .search input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      font-size: 14px;
+    }
+    .search input::placeholder { color: var(--text-3); }
+    .search:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--hair);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .card + .grid, .grid + .card, .seats + .grid { margin-top: 24px; }
+    .card h2 {
+      margin: 0 0 16px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-2);
+    }
+    .count { color: var(--text-3); font-weight: 400; margin-left: 4px; }
+    .caption { margin: 12px 0 0; font-size: 13px; color: var(--text-3); }
+
+    /* Seats */
+    .seats-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .seats-head h2 { margin: 0; }
+    .seats-figure { font-size: 14px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+    .seats-figure strong { font-size: 28px; font-weight: 500; color: var(--text); margin-right: 4px; }
+    .seat-bar {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 4px;
+      margin: 16px 0 0;
+    }
+    .seat-bar span { height: 12px; border-radius: 4px; background: var(--raised); }
+    .seat-bar span.on { background: var(--text); }
+
+    /* Invite + pending */
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: 24px;
+    }
+    .invite-form { display: flex; gap: 8px; }
+    .field {
+      height: 40px;
+      padding: 0 12px;
+      background: var(--surface);
+      border: 1px solid var(--hair-strong);
+      border-radius: 10px;
+      font-size: 14px;
+      outline: 0;
+    }
+    .field::placeholder { color: var(--text-3); }
+    .invite-form input { flex: 1; min-width: 0; }
+    .invite-form select { padding-right: 8px; }
+    .field:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .btn-primary {
+      height: 40px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 150ms var(--ease);
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .pending { list-style: none; margin: 0; padding: 0; }
+    .pending li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      height: 44px;
+      border-top: 1px solid var(--hair);
+    }
+    .pending li:first-child { border-top: 0; }
+    .pending .email { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pending .role { color: var(--text-2); }
+
+    /* Members table */
+    .table-wrap { overflow-x: auto; margin: 0 -24px; padding: 0 24px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th {
+      padding: 0 12px 12px 0;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-3);
+      white-space: nowrap;
+    }
+    td {
+      height: 56px;
+      padding: 8px 12px 8px 0;
+      border-top: 1px solid var(--hair);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    td.muted { color: var(--text-2); }
+    .person { display: flex; align-items: center; gap: 12px; font-weight: 500; }
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      flex: none;
+      border-radius: 50%;
+      background: var(--raised);
+      color: var(--text-2);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .btn-secondary {
+      height: 32px;
+      padding: 0 12px;
+      background: var(--surface);
+      border: 1px solid var(--hair-strong);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 150ms var(--ease);
+    }
+    .btn-secondary:hover { background: var(--raised); }
+    .btn-secondary:focus-visible, .btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .note { margin: 40px 0 0; font-size: 13px; color: var(--text-3); }
+
+    /* Small screens */
+    @media (max-width: 900px) {
+      .app { flex-direction: column; }
+      .sidebar { width: 100%; border-right: 0; border-bottom: 1px solid var(--hair); padding: 16px; }
+      .nav-label { display: none; }
+      .nav { flex-direction: row; flex-wrap: wrap; }
+      main { padding: 24px 16px 40px; }
+      .page-head { flex-direction: column; }
+      .search { width: 100%; }
+      h1 { font-size: 30px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4C10 4 6 10 6 16l-2 4 4-2c6 0 12-4 12-14z"/><path d="M6 20l8-8"/></svg>
+        Quillnote
+      </div>
+      <p class="nav-label">Settings</p>
+      <nav class="nav" aria-label="Settings">
+        <a href="#" aria-current="page">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Team members
+        </a>
+        <a href="#">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+          Billing
+        </a>
+        <a href="#">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Security
+        </a>
+        <a href="#">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0zM12 18v4"/></svg>
+          Integrations
+        </a>
+        <a href="#">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7" r="1"/><circle cx="16" cy="10" r="1"/></svg>
+          Appearance
+        </a>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="page-head">
+        <div>
+          <h1>Team members and roles</h1>
+          <p class="sub">Invite teammates and choose what each role can do.</p>
+        </div>
+        <label class="search">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="search" placeholder="Search" aria-label="Search members" />
+        </label>
+      </header>
+
+      <section class="card" aria-labelledby="seats-title">
+        <div class="seats-head">
+          <h2 id="seats-title">Seats used</h2>
+          <p class="seats-figure"><strong>9</strong>of 12</p>
+        </div>
+        <div class="seat-bar" role="img" aria-label="9 of 12 seats used">
+          <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span>
+          <span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span>
+          <span class="on"></span><span></span><span></span><span></span>
+        </div>
+        <p class="caption">Need more seats? Upgrade anytime. Last billed Nov 3, 2026.</p>
+      </section>
+
+      <div class="grid">
+        <section class="card" aria-labelledby="invite-title">
+          <h2 id="invite-title">Invite by email</h2>
+          <form class="invite-form" onsubmit="event.preventDefault(); this.querySelector('input').value='';">
+            <input class="field" type="email" placeholder="teammate@company.com" aria-label="Email address" />
+            <select class="field" aria-label="Role">
+              <option>Admin</option>
+              <option>Editor</option>
+              <option>Viewer</option>
+            </select>
+            <button type="submit" class="btn-primary">Send invite</button>
+          </form>
+          <p class="caption">Invites expire in 7 days.</p>
+        </section>
+
+        <section class="card" aria-labelledby="pending-title">
+          <h2 id="pending-title">Pending invitations <span class="count">3</span></h2>
+          <ul class="pending">
+            <li><span class="email">priya@studio.io</span><span class="role">Editor</span></li>
+            <li><span class="email">marco.v@gmail.com</span><span class="role">Viewer</span></li>
+            <li><span class="email">Jo_Kim@corp.co</span><span class="role">Admin</span></li>
+          </ul>
+          <p class="caption">Last sent Nov 9, 2026.</p>
+        </section>
+      </div>
+
+      <section class="card" aria-labelledby="members-title">
+        <h2 id="members-title">All members <span class="count">8</span></h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Last active</th>
+                <th scope="col"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="person"><span class="avatar">AR</span>Alex R.</div></td>
+                <td class="muted">armin@quillnote.app</td>
+                <td>Owner</td>
+                <td class="muted">Just now</td>
+                <td><button class="btn-secondary">Edit</button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">SL</span>Sofia Lang</div></td>
+                <td class="muted">sofia@quillnote.app</td>
+                <td>Admin</td>
+                <td class="muted">2 hrs ago</td>
+                <td><button class="btn-secondary">Edit</button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">DK</span>Dev Kapoor</div></td>
+                <td class="muted">dev.k@quillnote.app</td>
+                <td>Editor</td>
+                <td class="muted">Yesterday, 4:12 pm</td>
+                <td><button class="btn-secondary">Edit</button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">MO</span>Mina Okafor</div></td>
+                <td class="muted">mina@quillnote.app</td>
+                <td>Manager</td>
+                <td class="muted">Nov 3, 2026</td>
+                <td><button class="btn-secondary">Edit</button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">TR</span>Tomás Ruiz</div></td>
+                <td class="muted">tomas.r@quillnote.app</td>
+                <td>Support</td>
+                <td class="muted">Nov 8, 2026</td>
+                <td><button class="btn-secondary">Edit</button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">NW</span>Nadia Walsh</div></td>
+                <td class="muted">nadia@quillnote.app</td>
+                <td>Editor</td>
+                <td class="muted">5 days ago</td>
+                <td><button class="btn-secondary">Edit</button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">HB</span>Hiro Band</div></td>
+                <td class="muted">hiro.b@quillnote.app</td>
+                <td>Viewer</td>
+                <td class="muted">Oct 28, 2026</td>
+                <td><button class="btn-secondary">Edit</button></td>
+              </tr>
+              <tr>
+                <td><div class="person"><span class="avatar">EC</span>Elif Can</div></td>
+                <td class="muted">elif@quillnote.app</td>
+                <td>Guest</td>
+                <td class="muted">Oct 2, 2026</td>
+                <td><button class="btn-secondary">Edit</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

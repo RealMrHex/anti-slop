@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brightside | One-to-one maths tutoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Newsreader:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --muted: #7b7266;
+      --accent: #2f5bb7;
+      --accent-hover: #264b9c;
+      --hair: rgba(31, 27, 22, 0.08);
+      --hair-strong: rgba(31, 27, 22, 0.16);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* Navigation */
+    .nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .brand {
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+    .links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+    .links a { transition: color 0.15s var(--ease); }
+    .links a:hover { color: var(--text); }
+    .links .login { color: var(--text); font-weight: 500; }
+
+    /* Hero */
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 64px 32px 96px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 64px;
+      align-items: center;
+    }
+
+    .copy { max-width: 540px; }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    h1 {
+      margin: 16px 0 0;
+      font-family: 'Newsreader', Georgia, serif;
+      font-weight: 500;
+      font-size: clamp(40px, 5.2vw, 64px);
+      line-height: 1.06;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .sub {
+      margin: 24px 0 0;
+      max-width: 36rem;
+      font-size: 18px;
+      line-height: 28px;
+      color: var(--text-2);
+    }
+
+    .actions {
+      margin-top: 40px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      height: 48px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background-color 0.15s var(--ease), color 0.15s var(--ease), border-color 0.15s var(--ease), transform 0.15s var(--ease);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn.primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .btn.primary:hover { background: var(--accent-hover); }
+    .btn.secondary {
+      border: 1px solid var(--hair-strong);
+      color: var(--text);
+    }
+    .btn.secondary:hover { background: var(--raised); }
+
+    /* Product preview */
+    .preview {
+      position: relative;
+      padding: 32px;
+      border-radius: 20px;
+      background-color: #f1ebe1;
+      background-image:
+        linear-gradient(to right, rgba(31, 27, 22, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(31, 27, 22, 0.06) 1px, transparent 1px);
+      background-size: 24px 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--hair);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.06);
+    }
+
+    .meta {
+      margin: 0;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--muted);
+    }
+
+    .problem {
+      margin: 8px 0 0;
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .steps {
+      list-style: none;
+      margin: 20px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .steps li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: var(--raised);
+      font-size: 15px;
+      color: var(--text-2);
+    }
+    .steps .num {
+      width: 20px;
+      flex: none;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .steps .result {
+      margin-left: auto;
+      color: var(--text);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .progress-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .figure {
+      margin: 8px 0 0;
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .change {
+      margin: 0;
+      font-size: 13px;
+      line-height: 20px;
+      color: var(--text-2);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .chart {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin-top: 16px;
+    }
+
+    .fade-rise {
+      animation: rise 0.4s var(--ease) both;
+    }
+    .preview.fade-rise { animation-delay: 0.06s; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (max-width: 880px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 48px;
+        padding: 40px 24px 80px;
+      }
+      .nav { padding: 24px; }
+      .links { gap: 20px; }
+      .copy { max-width: none; }
+      .actions .btn { flex: 1 1 auto; justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      h1 { font-size: 40px; }
+      .preview { padding: 16px; }
+      .card { padding: 20px; }
+      .problem { font-size: 24px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-rise { animation: none; }
+      .btn:active { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <a class="brand" href="#">Brightside</a>
+    <nav class="links">
+      <a href="#">How it works</a>
+      <a href="#">Homework help</a>
+      <a href="#">Plans</a>
+      <a href="#" class="login">Log in</a>
+    </nav>
+  </header>
+
+  <main class="hero">
+    <section class="copy fade-rise">
+      <p class="eyebrow">Weekly video lessons, online</p>
+      <h1>One-to-one maths tutoring for <span style="white-space: nowrap">ages 11 to 16</span></h1>
+      <p class="sub">Each week your child works through a live video lesson with the same tutor, gets help on homework whenever a question stalls, and you receive a progress report</p>
+      <div class="actions">
+        <a class="btn primary" href="#">Start free trial</a>
+        <a class="btn secondary" href="#">Watch demo</a>
+      </div>
+    </section>
+
+    <section class="preview fade-rise" aria-label="Sample lesson and progress report">
+      <div class="card">
+        <p class="meta">Lesson 6 &middot; Linear equations</p>
+        <p class="problem">Solve 3x + 5 = 20</p>
+        <ol class="steps">
+          <li><span class="num">1</span>Subtract 5 from both sides <span class="result">3x = 15</span></li>
+          <li><span class="num">2</span>Divide both sides by 3 <span class="result">x = 5</span></li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <div class="progress-head">
+          <div>
+            <p class="meta">Algebra score</p>
+            <p class="figure">78%</p>
+          </div>
+          <p class="change">+24 vs week 1</p>
+        </div>
+        <svg class="chart" viewBox="0 0 360 170" role="img" aria-label="Algebra score rising from 54% in week 1 to 78% in week 8">
+          <g stroke="rgba(31,27,22,0.08)" stroke-width="1">
+            <line x1="0" y1="28" x2="360" y2="28"></line>
+            <line x1="0" y1="56" x2="360" y2="56"></line>
+            <line x1="0" y1="84" x2="360" y2="84"></line>
+            <line x1="0" y1="112" x2="360" y2="112"></line>
+            <line x1="0" y1="140" x2="360" y2="140"></line>
+          </g>
+          <path fill="rgba(47,91,183,0.08)" d="M20,124 L65.7,112 L111.4,116 L157.1,96 L202.9,84 L248.6,72 L294.3,56 L340,28 L340,140 L20,140 Z"></path>
+          <polyline fill="none" stroke="#2f5bb7" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="20,124 65.7,112 111.4,116 157.1,96 202.9,84 248.6,72 294.3,56 340,28"></polyline>
+          <circle cx="340" cy="28" r="4.5" fill="#2f5bb7" stroke="#fdfbf7" stroke-width="2"></circle>
+          <g font-family="Inter, sans-serif" font-size="11" fill="#7b7266" style="font-variant-numeric: tabular-nums">
+            <text x="20" y="162">Week 1</text>
+            <text x="340" y="162" text-anchor="end">Week 8</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>

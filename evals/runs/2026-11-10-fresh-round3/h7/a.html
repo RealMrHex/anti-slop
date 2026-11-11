@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ledgerly | Bookkeeping for freelancers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --surface: #fdfbf7;
+      --raised: #efe9df;
+      --line: rgba(31, 27, 22, 0.08);
+      --ink: #1f1b16;
+      --ink-2: #5e554a;
+      --ink-3: #7b7266;
+      --accent: #1f5d47;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Navigation */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 15px;
+      color: var(--ink-2);
+    }
+
+    .nav-links a { color: inherit; text-decoration: none; }
+    .nav-links a:hover { color: var(--ink); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .login {
+      font-size: 15px;
+      color: var(--ink-2);
+      text-decoration: none;
+    }
+    .login:hover { color: var(--ink); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    .btn-ink { background: var(--ink); color: var(--surface); height: 36px; padding: 0 16px; font-size: 14px; }
+    .btn-ink:hover { background: #3a342c; }
+
+    .btn-accent { background: var(--accent); color: #fff; padding: 0 24px; }
+    .btn-accent:hover { background: #184b38; }
+
+    .btn-quiet {
+      background: var(--surface);
+      border-color: var(--line);
+      color: var(--ink);
+      padding: 0 24px;
+    }
+    .btn-quiet:hover { background: var(--raised); }
+
+    /* Hero */
+    .hero {
+      min-height: 680px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 480px;
+      align-items: center;
+      gap: 64px;
+      padding: 32px 0 80px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 15px;
+      color: var(--ink-3);
+    }
+
+    h1 {
+      margin: 16px 0 0;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-size: 72px;
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      max-width: 15ch;
+    }
+
+    .lede {
+      margin: 24px 0 0;
+      max-width: 36rem;
+      font-size: 20px;
+      line-height: 30px;
+      color: var(--ink-2);
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 40px;
+    }
+
+    /* Product preview */
+    .ledger {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(31, 27, 22, 0.06);
+    }
+
+    .ledger-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: var(--ink-3);
+    }
+
+    .ledger-tax { margin-top: 24px; }
+
+    .ledger-tax .label {
+      display: block;
+      font-size: 14px;
+      color: var(--ink-2);
+    }
+
+    .figure {
+      display: block;
+      margin-top: 4px;
+      font-size: 40px;
+      font-weight: 500;
+      line-height: 1;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 24px;
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .stats dt { font-size: 13px; color: var(--ink-3); }
+    .stats dd {
+      margin: 4px 0 0;
+      font-size: 17px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .rows {
+      list-style: none;
+      margin: 8px 0 0;
+      padding: 0;
+    }
+
+    .rows li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 56px;
+      border-bottom: 1px solid var(--line);
+    }
+    .rows li:last-child { border-bottom: 0; }
+
+    .row-name { font-size: 15px; color: var(--ink); }
+    .row-meta { display: block; font-size: 13px; color: var(--ink-3); }
+    .row-amt {
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+    }
+
+    /* Features */
+    .features {
+      padding: 0 0 128px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .feature-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--ink-3);
+    }
+
+    .feature h3 {
+      margin: 20px 0 0;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .feature p {
+      margin: 4px 0 0;
+      font-size: 15px;
+      line-height: 22px;
+      color: var(--ink-2);
+    }
+
+    /* One entrance on load */
+    .rise {
+      animation: rise 420ms var(--ease) both;
+      animation-delay: var(--d, 0ms);
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rise { animation: none; }
+      .btn { transition: none; }
+    }
+
+    /* Small screens */
+    @media (max-width: 960px) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: 0;
+        gap: 48px;
+        padding: 32px 0 64px;
+      }
+      h1 { font-size: 44px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 560px) {
+      .wrap { padding: 0 16px; }
+      .actions { flex-direction: column; align-items: stretch; }
+      .actions .btn { width: 100%; }
+      .nav-actions .login { display: none; }
+      .features { padding-bottom: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <nav class="nav">
+      <a class="brand" href="#">
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+          <rect width="22" height="22" rx="6" fill="#1f5d47"></rect>
+          <path d="M6 8h10M6 11h10M6 14h6" stroke="#fdfbf7" stroke-width="1.5" stroke-linecap="round"></path>
+        </svg>
+        Ledgerly
+      </a>
+      <ul class="nav-links">
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a class="login" href="#">Log in</a>
+        <a class="btn btn-ink" href="#">Get started</a>
+      </div>
+    </nav>
+
+    <main class="hero">
+      <div>
+        <p class="eyebrow rise" style="--d: 0ms">Bookkeeping for freelancers</p>
+        <h1 class="rise" style="--d: 60ms">Freelance bookkeeping that sorts itself</h1>
+        <p class="lede rise" style="--d: 120ms">Connect your bank, sort every transaction automatically, and estimate your quarterly tax in one click.</p>
+        <div class="actions rise" style="--d: 180ms">
+          <a class="btn btn-accent" href="#">Get started free</a>
+          <a class="btn btn-quiet" href="#">Watch demo</a>
+        </div>
+      </div>
+
+      <aside class="ledger rise" style="--d: 240ms" aria-label="Quarter to date preview">
+        <div class="ledger-head">
+          <span>Quarter to date</span>
+          <span>Q4 2026</span>
+        </div>
+
+        <div class="ledger-tax">
+          <span class="label">Estimated tax</span>
+          <span class="figure">$1,187</span>
+        </div>
+
+        <dl class="stats">
+          <div>
+            <dt>Income</dt>
+            <dd>$4,250</dd>
+          </div>
+          <div>
+            <dt>Expenses</dt>
+            <dd>$295</dd>
+          </div>
+        </dl>
+
+        <ul class="rows">
+          <li>
+            <span>
+              <span class="row-name">Northwind Studio</span>
+              <span class="row-meta">Invoice 1042</span>
+            </span>
+            <span class="row-amt">+$2,400</span>
+          </li>
+          <li>
+            <span>
+              <span class="row-name">Lumen Labs</span>
+              <span class="row-meta">Invoice 1044</span>
+            </span>
+            <span class="row-amt">+$1,850</span>
+          </li>
+          <li>
+            <span>
+              <span class="row-name">Adobe Creative Cloud</span>
+              <span class="row-meta">Software</span>
+            </span>
+            <span class="row-amt">&minus;$54.99</span>
+          </li>
+          <li>
+            <span>
+              <span class="row-name">Coworking desk</span>
+              <span class="row-meta">Office</span>
+            </span>
+            <span class="row-amt">&minus;$240</span>
+          </li>
+        </ul>
+      </aside>
+    </main>
+
+    <section class="features" aria-label="Features">
+      <div class="feature-grid">
+        <article class="feature rise" style="--d: 300ms">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="22" x2="21" y2="22"></line>
+            <line x1="6" y1="18" x2="6" y2="11"></line>
+            <line x1="10" y1="18" x2="10" y2="11"></line>
+            <line x1="14" y1="18" x2="14" y2="11"></line>
+            <line x1="18" y1="18" x2="18" y2="11"></line>
+            <polygon points="12 2 20 7 4 7"></polygon>
+          </svg>
+          <h3>Connect your bank</h3>
+          <p>Link any account in 30 seconds</p>
+        </article>
+
+        <article class="feature rise" style="--d: 360ms">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"></path>
+            <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"></circle>
+          </svg>
+          <h3>Sort automatically</h3>
+          <p>Every transaction sorted for you</p>
+        </article>
+
+        <article class="feature rise" style="--d: 420ms">
+          <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1Z"></path>
+            <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+            <path d="M12 17.5v-11"></path>
+          </svg>
+          <h3>Quarterly tax estimates</h3>
+          <p>Know what you owe, every quarter</p>
+        </article>
+      </div>
+    </section>
+  </div>
+
+</body>
+</html>

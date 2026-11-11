@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create your Parlo account</title>
+<style>
+:root{
+  --bg:#FFF6E8; --surface:#FFFFFF; --ink:#1E1B4B; --muted:#55527A; --line:#CFC8E0;
+  --primary:#3B2FC9; --primary-hover:#2E24A8; --primary-press:#251C8C;
+  --sun:#FFC83D; --coral:#FF7A59; --mint:#46C9A0; --sky:#7CB8FF; --lilac:#C9B8FF;
+  --error:#B3261E; --focus:#1E1B4B;
+  --r-s:12px; --r-m:16px; --r-l:28px; --r-pill:999px;
+  --sh-1:0 1px 0 rgba(30,27,75,.06), 0 6px 16px -6px rgba(30,27,75,.18);
+  --sh-2:0 2px 0 rgba(30,27,75,.08), 0 14px 28px -12px rgba(30,27,75,.30);
+  --font:ui-rounded,"SF Pro Rounded","Avenir Next","Nunito","Segoe UI",system-ui,sans-serif;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.45;min-height:100vh;display:flex;justify-content:center}
+.screen{width:100%;max-width:440px;padding:0 20px 32px;display:flex;flex-direction:column}
+
+/* hero */
+.hero{position:relative;height:236px;margin:0 -20px;overflow:hidden;background:
+  radial-gradient(120% 90% at 50% 0%, #FFE7B8 0%, rgba(255,231,184,0) 70%)}
+.brand{position:absolute;top:18px;left:20px;display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px;letter-spacing:-.01em}
+.brand-mark{width:30px;height:30px;border-radius:10px 10px 10px 3px;background:var(--primary);display:grid;place-items:center}
+.bubble{position:absolute;display:flex;flex-direction:column;padding:10px 16px 11px;border-radius:22px 22px 22px 6px;box-shadow:var(--sh-2);color:var(--ink);transform:rotate(var(--rot,0));animation:float 6s ease-in-out infinite;animation-delay:var(--d,0s)}
+.bubble b{font-size:26px;line-height:1.1;font-weight:800;letter-spacing:-.02em}
+.bubble small{font-size:12px;font-weight:700;opacity:.78;margin-top:2px;letter-spacing:.02em}
+.b1{background:var(--sun);left:20px;top:62px;--rot:-4deg}
+.b2{background:var(--coral);right:22px;top:50px;border-radius:22px 22px 6px 22px;--rot:3deg;--d:-2s}
+.b3{background:var(--mint);left:34%;top:140px;--rot:-2deg;--d:-4s}
+.b4{background:var(--lilac);right:14px;top:150px;border-radius:22px 22px 6px 22px;padding:8px 14px 9px;--rot:5deg;--d:-1s}
+.b4 b{font-size:20px}
+.b5{background:var(--sky);left:12px;top:162px;padding:8px 14px 9px;--rot:3deg;--d:-3s}
+.b5 b{font-size:20px}
+@keyframes float{0%,100%{transform:translateY(0) rotate(var(--rot,0))}50%{transform:translateY(-6px) rotate(var(--rot,0))}}
+
+h1{font-size:32px;line-height:1.08;letter-spacing:-.025em;font-weight:800;margin:8px 0 8px}
+.lede{margin:0 0 var(--s5);color:var(--muted);font-size:16px}
+
+/* social */
+.social{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3)}
+.btn{font:inherit;font-weight:700;border-radius:var(--r-m);min-height:52px;padding:0 var(--s4);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px;transition:background .15s,transform .1s,box-shadow .15s,border-color .15s}
+.btn-ghost{background:var(--surface);color:var(--ink);border:2px solid var(--line);box-shadow:var(--sh-1)}
+.btn-ghost:hover{border-color:var(--ink)}
+.btn-ghost:active{transform:translateY(1px);box-shadow:none}
+.btn-primary{width:100%;background:var(--primary);color:#fff;border:0;font-size:17px;min-height:56px;border-radius:var(--r-pill);box-shadow:0 4px 0 var(--primary-press),0 12px 22px -8px rgba(59,47,201,.55)}
+.btn-primary:hover{background:var(--primary-hover)}
+.btn-primary:active{transform:translateY(3px);box-shadow:0 1px 0 var(--primary-press)}
+.btn[disabled]{opacity:.6;cursor:progress}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+
+.or{display:flex;align-items:center;gap:var(--s3);margin:var(--s5) 0 var(--s4);color:var(--muted);font-size:14px;font-weight:600}
+.or::before,.or::after{content:"";flex:1;height:2px;background:#EADFCB;border-radius:2px}
+
+/* fields */
+form{display:flex;flex-direction:column;gap:var(--s4)}
+.field label{display:block;font-weight:700;font-size:14px;margin:0 0 6px}
+.control{position:relative}
+input{font:inherit;width:100%;min-height:52px;padding:0 var(--s4);border-radius:var(--r-m);border:2px solid var(--line);background:var(--surface);color:var(--ink);transition:border-color .15s,box-shadow .15s}
+input::placeholder{color:#6F6C8F}
+input:hover{border-color:#9C95BE}
+input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(59,47,201,.18)}
+input[aria-invalid="true"]{border-color:var(--error)}
+.pw input{padding-right:72px}
+.toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);min-height:40px;padding:0 12px;border:0;background:none;border-radius:var(--r-s);font:inherit;font-size:14px;font-weight:700;color:var(--primary);cursor:pointer}
+.toggle:hover{background:#EFEDFF}
+.hint{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.err{margin:6px 0 0;font-size:13px;font-weight:600;color:var(--error);display:none}
+.err.on{display:flex;gap:6px;align-items:center}
+.err.on::before{content:"!";display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--error);color:#fff;font-size:11px;font-weight:800;flex:none}
+
+.cta{margin-top:var(--s2)}
+.legal{margin:var(--s4) 0 0;font-size:13px;color:var(--muted);text-align:center}
+.legal a,.signin a{color:var(--primary);font-weight:700;text-underline-offset:3px}
+.signin{text-align:center;margin:var(--s5) 0 0;font-weight:600}
+.done{display:none;text-align:center;padding:var(--s5);background:var(--surface);border-radius:var(--r-l);box-shadow:var(--sh-2);margin-top:var(--s4)}
+.done.on{display:block}
+.done h2{margin:0 0 4px;font-size:24px}
+
+@media (prefers-reduced-motion:reduce){.bubble{animation:none}*{transition:none!important}}
+@media (min-width:480px){body{padding:24px 0;align-items:flex-start}.screen{background:var(--surface);border-radius:36px;box-shadow:var(--sh-2);overflow:hidden;padding-bottom:36px}.hero{margin:0 -20px}}
+@media (min-width:480px){.screen{--x:0}}
+@media (max-width:360px){h1{font-size:28px}.social{grid-template-columns:1fr}.b3{left:30%}}
+</style>
+</head>
+<body>
+<main class="screen">
+  <header class="hero" aria-hidden="true">
+    <div class="brand">
+      <span class="brand-mark"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 2h5.5a3.5 3.5 0 010 7H6v5H3z" fill="#FFC83D"/></svg></span>
+      Parlo
+    </div>
+    <div class="bubble b1"><b>Hola</b><small>Spanish</small></div>
+    <div class="bubble b2"><b>こんにちは</b><small>Japanese</small></div>
+    <div class="bubble b3"><b>Ciao</b><small>Italian</small></div>
+    <div class="bubble b4"><b>Salut</b><small>French</small></div>
+    <div class="bubble b5"><b>Hallo</b><small>German</small></div>
+  </header>
+
+  <h1>Say hello to your next language</h1>
+  <p class="lede">Make an account to save your progress and pick up where you left off.</p>
+
+  <div class="social">
+    <button class="btn btn-ghost" type="button">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#1E1B4B" d="M16.4 12.7c0-2.3 1.9-3.4 2-3.5-1.1-1.600-2.800-1.800-3.400-1.800-1.400-.1-2.800.9-3.500.9s-1.800-.8-3-.8c-1.500 0-3 .9-3.800 2.300-1.600 2.800-.4 7 1.200 9.300.8 1.100 1.700 2.400 2.900 2.300 1.200 0 1.600-.7 3-.7s1.800.7 3 .7 2-1.100 2.800-2.200c.9-1.300 1.200-2.500 1.300-2.600-.1 0-2.500-1-2.500-3.900zM14.100 5.800c.6-.8 1.100-1.900.9-3-1 0-2.100.7-2.800 1.500-.6.700-1.100 1.800-1 2.900 1.100.1 2.200-.6 2.900-1.400z"/></svg>
+      Apple
+    </button>
+    <button class="btn btn-ghost" type="button">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22 12.200c0-.7-.1-1.400-.2-2H12v3.800h5.600a4.800 4.800 0 01-2.100 3.100v2.600h3.400c2-1.800 3.100-4.500 3.100-7.500z"/><path fill="#34A853" d="M12 22c2.800 0 5.200-.9 6.900-2.500l-3.400-2.600c-.9.600-2.100 1-3.500 1-2.700 0-5-1.800-5.800-4.300H2.700v2.700A10 10 0 0012 22z"/><path fill="#FBBC05" d="M6.200 13.600a6 6 0 010-3.800V7.100H2.700a10 10 0 000 9.200z"/><path fill="#EA4335" d="M12 6c1.500 0 2.900.5 4 1.600l3-3A10 10 0 002.700 7.100l3.500 2.700C7 7.800 9.300 6 12 6z"/></svg>
+      Google
+    </button>
+  </div>
+
+  <div class="or" role="separator">or use your email</div>
+
+  <form id="f" novalidate>
+    <div class="field">
+      <label for="name">First name</label>
+      <input id="name" name="name" autocomplete="given-name" placeholder="What should we call you?" required>
+      <p class="err" id="name-err">Tell us what to call you.</p>
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required>
+      <p class="err" id="email-err">Enter an email like name@example.com.</p>
+    </div>
+    <div class="field">
+      <label for="pw">Password</label>
+      <div class="control pw">
+        <input id="pw" name="pw" type="password" autocomplete="new-password" placeholder="At least 8 characters" aria-describedby="pw-hint pw-err" required>
+        <button class="toggle" type="button" id="tg" aria-controls="pw" aria-pressed="false">Show</button>
+      </div>
+      <p class="hint" id="pw-hint">Use 8 or more characters.</p>
+      <p class="err" id="pw-err">Password needs at least 8 characters.</p>
+    </div>
+    <div class="cta"><button class="btn btn-primary" type="submit" id="go">Create account</button></div>
+  </form>
+
+  <div class="done" id="done" role="status" tabindex="-1">
+    <h2>Welcome aboard!</h2>
+    <p style="margin:0;color:var(--muted)">Next, choose the language you want to learn.</p>
+  </div>
+
+  <p class="legal">By continuing you agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+  <p class="signin">Already learning? <a href="#">Log in</a></p>
+</main>
+
+<script>
+(function(){
+  var f=document.getElementById('f'),pw=document.getElementById('pw'),tg=document.getElementById('tg');
+  tg.addEventListener('click',function(){
+    var show=pw.type==='password';
+    pw.type=show?'text':'password';
+    tg.textContent=show?'Hide':'Show';
+    tg.setAttribute('aria-pressed',show);
+  });
+  function check(id,ok){
+    var i=document.getElementById(id),e=document.getElementById(id+'-err');
+    i.setAttribute('aria-invalid',!ok);
+    e.classList.toggle('on',!ok);
+    var h=document.getElementById('pw-hint');
+    if(id==='pw')h.style.display=ok?'':'none';
+    return ok;
+  }
+  f.addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var a=check('name',document.getElementById('name').value.trim().length>0);
+    var b=check('email',/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(document.getElementById('email').value));
+    var c=check('pw',pw.value.length>=8);
+    if(!(a&&b&&c)){f.querySelector('[aria-invalid="true"]').focus();return;}
+    f.style.display='none';
+    var d=document.getElementById('done');d.classList.add('on');d.focus();
+  });
+})();
+</script>
+</body>
+</html>

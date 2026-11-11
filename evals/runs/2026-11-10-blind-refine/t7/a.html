@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travel Blog</title>
+<style>
+  :root{--bg:#fbf8f3;--ink:#1f2421;--muted:#5e665f;--line:#e2dccf;--accent:#1f5f55;--accent-d:#164a42;--card:#fff}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:Georgia,"Times New Roman",serif;background:var(--bg);color:var(--ink);line-height:1.65;font-size:18px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px}
+  a{color:var(--accent)}
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #e0a43a;outline-offset:2px}
+  header{padding:40px 0 20px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:12px 24px}
+  header h1{margin:0;font-size:1.7rem;letter-spacing:-.01em;line-height:1.2}
+  nav{display:flex;gap:20px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.85rem}
+  nav a{color:var(--muted);text-decoration:none;padding:6px 0;border-bottom:2px solid transparent}
+  nav a:hover{color:var(--accent);border-color:var(--accent)}
+  nav a:first-child{color:var(--ink);border-color:var(--accent)}
+  .intro{padding:56px 0 40px}
+  .intro p{margin:0;font-size:1.55rem;line-height:1.45;letter-spacing:-.01em;text-wrap:balance}
+  main>h2{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0;padding-bottom:12px;border-bottom:1px solid var(--ink)}
+  .post{padding:26px 0;border-bottom:1px solid var(--line)}
+  .post h2{margin:0 0 6px;font-size:1.4rem;line-height:1.3;letter-spacing:-.01em}
+  .post h2 a{color:var(--ink);text-decoration:none;background:linear-gradient(var(--accent),var(--accent)) 0 100%/0 2px no-repeat;transition:background-size .25s}
+  .post h2 a:hover{color:var(--accent);background-size:100% 2px}
+  .post p{margin:0;color:var(--muted)}
+  .date{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+  .signup{margin:56px 0;padding:32px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+  .signup h3{margin:0 0 6px;font-size:1.35rem}
+  .signup p{margin:0 0 18px;color:var(--muted)}
+  .signup label{font-family:system-ui,-apple-system,sans-serif;font-size:.85rem;font-weight:600;display:block;margin-bottom:6px}
+  .signup .row{display:flex;gap:10px;flex-wrap:wrap}
+  .signup input[type=email]{flex:1 1 220px;padding:12px 14px;font:inherit;font-size:1rem;border:1px solid #b9b2a2;border-radius:6px;background:#fff;color:var(--ink)}
+  .signup button{padding:12px 22px;font:600 .95rem system-ui,-apple-system,sans-serif;color:#fff;background:var(--accent);border:0;border-radius:6px;cursor:pointer}
+  .signup button:hover{background:var(--accent-d)}
+  footer{border-top:1px solid var(--line);padding:24px 0 40px;font-family:system-ui,-apple-system,sans-serif;font-size:.8rem;color:var(--muted)}
+  @media(max-width:520px){body{font-size:17px}.wrap{padding:0 18px}.intro{padding:36px 0 28px}.intro p{font-size:1.3rem}.signup{padding:22px}header{padding-top:28px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>[Writer Name] Travels</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Posts</a>
+      <a href="#">Destinations</a>
+      <a href="#">About</a>
+    </nav>
+  </header>
+
+  <section class="intro">
+    <p>
+      Notes, road stories and honest recommendations from years of slow travel,
+      cheap trains, and getting lost on purpose. I write about the places I actually
+      stayed, the meals I actually ate, and the mistakes I would like you to skip.
+    </p>
+  </section>
+
+  <main>
+    <h2>Recent posts</h2>
+
+    <article class="post">
+      <div class="date">November 4, 2026</div>
+      <h2><a href="#">Three Days on the Night Train to Lisbon</a></h2>
+      <p>Sleeper berths, a broken air vent, and the best pastry I have had all year at a station kiosk before dawn.</p>
+    </article>
+
+    <article class="post">
+      <div class="date">October 22, 2026</div>
+      <h2><a href="#">Hill Towns Without a Car</a></h2>
+      <p>How to string together buses, shared taxis and long walks through the mountain villages of central Italy.</p>
+    </article>
+
+    <article class="post">
+      <div class="date">October 8, 2026</div>
+      <h2><a href="#">What I Packed for Six Weeks in One Bag</a></h2>
+      <p>A full list, what I wore every day, and the two items I would never bring again.</p>
+    </article>
+
+    <article class="post">
+      <div class="date">September 19, 2026</div>
+      <h2><a href="#">A Quiet Week on the Coast of Vietnam</a></h2>
+      <p>Off-season fishing towns, family guesthouses, and why I stopped checking the weather app.</p>
+    </article>
+
+    <article class="post">
+      <div class="date">September 2, 2026</div>
+      <h2><a href="#">Booking Hostels Without Regret</a></h2>
+      <p>Questions to ask before you click reserve, and the signs that a bunk room will be a bad idea.</p>
+    </article>
+  </main>
+
+  <section class="signup">
+    <h3>Get new posts by email</h3>
+    <p>One letter a month. No ads, no spam, unsubscribe any time.</p>
+    <form action="#" method="post" onsubmit="event.preventDefault(); alert('Sign-up not connected yet.');">
+      <label for="email">Email address</label>
+      <div class="row"><input type="email" id="email" name="email" required placeholder="you@example.com">
+      <button type="submit">Subscribe</button></div>
+    </form>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    &copy; 2026 [Writer Name]. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

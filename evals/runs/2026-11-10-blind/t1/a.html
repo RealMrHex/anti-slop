@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API usage – Meridian</title>
+<style>
+:root{
+  --bg:#f5f4f0; --surface:#fff; --surface-2:#faf9f6; --line:#e5e2da; --line-strong:#cfcabc;
+  --text:#1c1b18; --muted:#5f5c53; --faint:#8a867a;
+  --accent:#2f5bea; --accent-soft:#e8edfd;
+  --err:#c2362b; --err-soft:#fbe9e7; --ok:#1f7a4d; --warn:#a45d00; --warn-soft:#fdf0d9; --ok-soft:#e3f3ea;
+  --r:10px; --r-sm:6px;
+  --shadow:0 1px 2px rgba(28,27,24,.05),0 2px 8px rgba(28,27,24,.04);
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#121316; --surface:#1a1c20; --surface-2:#1f2126; --line:#2b2e35; --line-strong:#3d414a;
+    --text:#ecebe7; --muted:#a6a59e; --faint:#8a8b85;
+    --accent:#7d9bff; --accent-soft:#222c4d;
+    --err:#ff8077; --err-soft:#3a1f1d; --ok:#5fcf98; --warn:#f0b254; --warn-soft:#3a2d14; --ok-soft:#173326;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:var(--s5) var(--s4) var(--s6)}
+a,button,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+header.top{display:flex;flex-wrap:wrap;gap:var(--s4);align-items:flex-end;justify-content:space-between;margin-bottom:var(--s5)}
+.crumb{display:flex;align-items:center;gap:var(--s2);color:var(--muted);font-size:13px;margin-bottom:var(--s1)}
+.crumb .dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+h1{font-size:24px;line-height:1.2;margin:0;letter-spacing:-.01em;font-weight:650}
+.controls{display:flex;gap:var(--s3);flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:3px;box-shadow:var(--shadow)}
+.seg button{border:0;background:none;padding:6px 14px;min-height:30px;border-radius:7px;color:var(--muted);cursor:pointer;font-weight:500}
+.seg button:hover{color:var(--text)}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff}
+@media (prefers-color-scheme:dark){.seg button[aria-pressed=true]{color:#0e1220}}
+.env{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:0 var(--s3);min-height:38px;box-shadow:var(--shadow);cursor:pointer}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);margin-bottom:var(--s4)}
+.stat{padding:var(--s4) var(--s4) var(--s3)}
+.stat .label{color:var(--muted);font-size:13px}
+.stat .value{font-size:28px;font-weight:650;letter-spacing:-.02em;line-height:1.2;margin:var(--s1) 0}
+.stat .value small{font-size:15px;color:var(--muted);font-weight:500;letter-spacing:0}
+.delta{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:550;padding:1px 7px;border-radius:99px}
+.delta.good{background:var(--ok-soft);color:var(--ok)}
+.delta.bad{background:var(--err-soft);color:var(--err)}
+.delta.flat{background:var(--surface-2);color:var(--muted)}
+.stat .sub{color:var(--faint);font-size:12.5px;margin-left:6px}
+.meter{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin:10px 0 2px}
+.meter i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+
+.stats>*,.main>*{min-width:0}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:var(--s4);margin-bottom:var(--s4)}
+.panel-h{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--s3);padding:var(--s4) var(--s4) 0}
+.panel-h h2{font-size:15px;margin:0;font-weight:650}
+.panel-h p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.legend{display:flex;gap:var(--s4);font-size:12.5px;color:var(--muted);white-space:nowrap}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.chart{padding:var(--s3) var(--s4) var(--s4);position:relative}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart text{font:11.5px var(--sans);fill:var(--faint)}
+.tip{position:absolute;pointer-events:none;background:var(--text);color:var(--bg);border-radius:var(--r-sm);padding:8px 10px;font-size:12.5px;line-height:1.45;opacity:0;transition:opacity .12s;white-space:nowrap;z-index:2}
+.tip b{display:block;font-weight:600;margin-bottom:2px}
+.tip.on{opacity:1}
+
+.quota{padding:var(--s4)}
+.quota h2{font-size:15px;margin:0 0 2px;font-weight:650}
+.quota .plan{color:var(--muted);font-size:13px;margin:0 0 var(--s4)}
+.ring{position:relative;width:176px;height:176px;margin:0 auto var(--s4)}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .c b{font-size:32px;letter-spacing:-.02em;line-height:1}
+.ring .c span{color:var(--muted);font-size:12.5px;margin-top:4px}
+dl.kv{margin:0;border-top:1px solid var(--line)}
+dl.kv div{display:flex;justify-content:space-between;gap:var(--s3);padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+dl.kv div:last-child{border-bottom:0;padding-bottom:0}
+dl.kv dt{color:var(--muted)} dl.kv dd{margin:0;font-weight:550;text-align:right}
+.note{display:flex;gap:var(--s2);align-items:flex-start;background:var(--warn-soft);color:var(--warn);border-radius:var(--r-sm);padding:9px 11px;font-size:13px;margin-bottom:var(--s4);line-height:1.4}
+.note svg{flex:none;margin-top:2px}
+
+.table-card .panel-h{padding-bottom:var(--s3)}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:760px}
+th{font-weight:550;color:var(--muted);font-size:12.5px;text-align:right;padding:8px var(--s4);border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface-2);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th button{background:none;border:0;cursor:pointer;color:inherit;font:inherit;padding:4px 0;min-height:24px}
+th button:hover{color:var(--text)}
+th[aria-sort] button{color:var(--text)}
+td{padding:11px var(--s4);text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--surface-2)}
+.ep{display:flex;align-items:center;gap:10px}
+.m{font:600 11px var(--mono);padding:2px 6px;border-radius:4px;min-width:44px;text-align:center;letter-spacing:.02em}
+.m.GET{background:var(--ok-soft);color:var(--ok)} .m.POST{background:var(--accent-soft);color:var(--accent)} .m.DELETE{background:var(--err-soft);color:var(--err)} .m.PUT{background:var(--warn-soft);color:var(--warn)}
+.path{font-family:var(--mono);font-size:13px}
+.err-pill{display:inline-block;padding:1px 8px;border-radius:99px;font-weight:550}
+.err-pill.ok{color:var(--ok)} .err-pill.warn{background:var(--warn-soft);color:var(--warn)} .err-pill.bad{background:var(--err-soft);color:var(--err)}
+.lat{display:flex;align-items:center;justify-content:flex-end;gap:10px}
+.bar{position:relative;width:120px;height:8px;background:var(--line);border-radius:99px}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--accent);opacity:.35}
+.bar b{position:absolute;top:-2px;bottom:-2px;width:3px;border-radius:2px;background:var(--accent)}
+.bar b.slow{background:var(--err)}
+footer{margin-top:var(--s4);color:var(--faint);font-size:12.5px}
+
+@media (max-width:980px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.main{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){
+  .wrap{padding:var(--s4) 16px var(--s5)}
+  .stats{gap:var(--s3)} .stat{padding:var(--s3)} .stat .value{font-size:23px}
+  .chart{overflow-x:auto}.chart svg{min-width:520px}
+  .stat .sub{display:none}.stat .delta+.sub{display:none}
+  .panel-h{flex-direction:column}
+  .controls{width:100%} .seg{flex:1} .seg button{flex:1;padding:6px 6px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="crumb"><span class="dot" aria-hidden="true"></span><span>All systems operational</span> · <span>Project <b style="color:var(--text);font-weight:550">northwind-prod</b></span></div>
+      <h1>API usage</h1>
+    </div>
+    <div class="controls">
+      <label class="visually" for="env" style="position:absolute;left:-9999px">Environment</label>
+      <select class="env" id="env"><option>Production</option><option>Staging</option></select>
+      <div class="seg" role="group" aria-label="Time range" id="range">
+        <button aria-pressed="false" data-r="24h">24 hours</button>
+        <button aria-pressed="true" data-r="7d">7 days</button>
+        <button aria-pressed="false" data-r="30d">30 days</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="stats" id="stats" aria-label="Summary"></section>
+
+  <section class="main">
+    <div class="card">
+      <div class="panel-h">
+        <div><h2>Requests and errors</h2><p id="chartSub"></p></div>
+        <div class="legend"><span><i style="background:var(--accent)"></i>Successful</span><span><i style="background:var(--err)"></i>Errors (4xx/5xx)</span></div>
+      </div>
+      <div class="chart" id="chart"></div>
+    </div>
+    <aside class="card quota" aria-labelledby="qh">
+      <h2 id="qh">Monthly quota</h2>
+      <p class="plan">Growth plan · resets Dec 1</p>
+      <div class="note" role="note">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 2 1.5 13.5h13L8 2Z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.6v.1" stroke-linecap="round"/></svg>
+        <span>On pace to reach the limit around Nov 27. Consider upgrading or setting a spend cap.</span>
+      </div>
+      <div class="ring" role="img" aria-label="78 percent of monthly quota used">
+        <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="var(--line)" stroke-width="11"/><circle id="ringArc" cx="60" cy="60" r="50" fill="none" stroke="var(--accent)" stroke-width="11" stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="69.1"/></svg>
+        <div class="c"><b class="num">78%</b><span class="num">3.9M of 5M</span></div>
+      </div>
+      <dl class="kv num">
+        <div><dt>Used this cycle</dt><dd>3,912,480</dd></div>
+        <div><dt>Remaining</dt><dd>1,087,520</dd></div>
+        <div><dt>Projected by Dec 1</dt><dd style="color:var(--err)">5.6M (112%)</dd></div>
+        <div><dt>Rate limit</dt><dd>200 req/s</dd></div>
+      </dl>
+    </aside>
+  </section>
+
+  <section class="card table-card">
+    <div class="panel-h"><div><h2>Latency by endpoint</h2><p>Sorted by request volume. Marker shows p95, shaded span runs from p50 to p99.</p></div></div>
+    <div class="scroll"><table id="tbl"><caption style="position:absolute;left:-9999px">Per-endpoint requests, error rate and latency</caption></table></div>
+  </section>
+  <footer>Sample data for illustration. Latency measured at the edge, excluding client network time.</footer>
+</div>
+
+<script>
+(function(){
+  // deterministic pseudo-random so the page is stable between loads
+  function rng(seed){return function(){seed=(seed*1664525+1013904223)%4294967296;return seed/4294967296}}
+  var fmt=function(n){return n.toLocaleString('en-US')};
+  var short=function(n){return n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':''+n};
+
+  var RANGES={
+    '24h':{n:24,label:function(i){return (i%4===0)?(String(i).padStart(2,'0')+':00'):''},unit:'hour',base:46000,sub:'Hourly, last 24 hours (UTC)',
+      total:'1.08M',err:'0.62%',p95:'412',dReq:'+4.1%',dErr:'-0.08 pt',dLat:'+6 ms',reqBad:false},
+    '7d':{n:7,label:function(i){return ['Nov 4','Nov 5','Nov 6','Nov 7','Nov 8','Nov 9','Nov 10'][i]},unit:'day',base:1100000,sub:'Daily, Nov 4 to Nov 10',
+      total:'7.62M',err:'0.71%',p95:'398',dReq:'+12.4%',dErr:'+0.14 pt',dLat:'-21 ms'},
+    '30d':{n:30,label:function(i){return (i%5===0)?('Oct '+(12+i)>'Oct 31'?'':'' ):''},unit:'day',base:1050000,sub:'Daily, last 30 days',
+      total:'31.4M',err:'0.66%',p95:'405',dReq:'+9.8%',dErr:'-0.03 pt',dLat:'-9 ms'}
+  };
+  function dayLabel(i,n){var d=new Date(2026,10,10-(n-1-i));return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})}
+
+  function series(key){
+    var c=RANGES[key],r=rng(key==='24h'?7:key==='7d'?21:99),out=[];
+    for(var i=0;i<c.n;i++){
+      var shape;
+      if(key==='24h') shape=0.55+0.45*Math.sin((i-5)/24*2*Math.PI)+0.1;
+      else { var dow=(new Date(2026,10,10-(c.n-1-i))).getDay(); shape=(dow===0||dow===6)?0.55:1; if(key==='30d') shape*=0.85+i/c.n*0.3; }
+      var total=Math.round(c.base*shape*(0.9+r()*0.2));
+      var rate=0.005+r()*0.004; if(key==='24h'&&i===15) rate=0.031; if(key==='7d'&&i===3) rate=0.019; if(key==='30d'&&i===21) rate=0.024;
+      out.push({total:total,err:Math.round(total*rate),label:key==='24h'?String(i).padStart(2,'0')+':00':dayLabel(i,c.n)});
+    }
+    return out;
+  }
+
+  var EPS=[
+    ['POST','/v1/completions',   2840000,0.42, 188,402,910],
+    ['GET', '/v1/models',        1920000,0.03,  14, 38, 96],
+    ['POST','/v1/embeddings',    1310000,0.55,  61,148,331],
+    ['GET', '/v1/files/{id}',     720000,0.91,  42,175,640],
+    ['POST','/v1/files',          340000,2.84, 410,1380,3120],
+    ['GET', '/v1/usage',          262000,0.12,  33, 81,205],
+    ['PUT', '/v1/webhooks/{id}',   74000,1.37,  72,214,518],
+    ['DELETE','/v1/files/{id}',    41000,0.66,  58,160,402]
+  ];
+
+  var state={range:'7d',sort:'req',dir:-1};
+
+  function stat(label,val,unit,delta,good,sub,extra){
+    return '<div class="card stat"><div class="label">'+label+'</div><div class="value num">'+val+(unit?' <small>'+unit+'</small>':'')+'</div>'+
+      '<span class="delta '+good+'">'+(good==='good'?'&#9660;':good==='bad'?'&#9650;':'')+(delta.charAt(0)==='+'?' ':' ')+delta+'</span><span class="sub">vs previous period</span>'+(extra||'')+'</div>';
+  }
+  function renderStats(){
+    var c=RANGES[state.range];
+    var reqUp=c.dReq.charAt(0)==='+';
+    var errCls=c.dErr.charAt(0)==='+'?'bad':'good', latCls=c.dLat.charAt(0)==='+'?'bad':'good';
+    var h='';
+    h+='<div class="card stat"><div class="label">Total requests</div><div class="value num">'+c.total+'</div><span class="delta flat">'+(reqUp?'&#9650; ':'&#9660; ')+c.dReq+'</span><span class="sub">vs previous period</span></div>';
+    h+='<div class="card stat"><div class="label">Error rate</div><div class="value num">'+c.err+'</div><span class="delta '+errCls+'">'+(errCls==='bad'?'&#9650; ':'&#9660; ')+c.dErr+'</span><span class="sub">vs previous period</span></div>';
+    h+='<div class="card stat"><div class="label">p95 latency</div><div class="value num">'+c.p95+' <small>ms</small></div><span class="delta '+latCls+'">'+(latCls==='bad'?'&#9650; ':'&#9660; ')+c.dLat+'</span><span class="sub">vs previous period</span></div>';
+    h+='<div class="card stat"><div class="label">Quota used</div><div class="value num">78% <small>of 5M</small></div><div class="meter" role="img" aria-label="78 percent used"><i style="width:78%"></i></div><span class="sub" style="margin:0;display:block">Day 10 of 30 &middot; ahead of pace</span></div>';
+    document.getElementById('stats').innerHTML=h;
+  }
+
+  function niceMax(v){var p=Math.pow(10,Math.floor(Math.log10(v)));var m=v/p;return (m<=1.5?1.5:m<=2?2:m<=3?3:m<=5?5:10)*p}
+
+  function renderChart(){
+    var d=series(state.range),W=760,L=46,R=8,T=10,ih=236,SH=54,H=T+ih+22+34+SH+4,iw=W-L-R;
+    var max=niceMax(Math.max.apply(null,d.map(function(x){return x.total}))),n=d.length,slot=iw/n,bw=Math.min(slot*0.66,34);
+    var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Bar charts of requests and error rate per '+RANGES[state.range].unit+' with errors highlighted">';
+    for(var g=0;g<=4;g++){
+      var y=T+ih-ih*g/4;
+      s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y+'" y2="'+y+'" stroke="var(--line)" '+(g?'stroke-dasharray="2 4"':'')+'/>';
+      s+='<text x="'+(L-8)+'" y="'+(y+4)+'" text-anchor="end">'+short(max*g/4).replace('.0','')+'</text>';
+    }
+    d.forEach(function(p,i){
+      var x=L+slot*i+(slot-bw)/2, okH=ih*(p.total-p.err)/max, erH=Math.max(ih*p.err/max,p.err?2:0);
+      var yOk=T+ih-okH-erH;
+      s+='<g class="bg" data-i="'+i+'"><rect x="'+(L+slot*i)+'" y="'+T+'" width="'+slot+'" height="'+ih+'" fill="transparent"/>'+
+         '<rect x="'+x+'" y="'+yOk+'" width="'+bw+'" height="'+okH+'" rx="2" fill="var(--accent)" opacity=".9"/>'+
+         '<rect x="'+x+'" y="'+(T+ih-erH)+'" width="'+bw+'" height="'+erH+'" fill="var(--err)"/></g>';
+      var lab=state.range==='30d'?(i%5===0||i===n-1?p.label:''):state.range==='24h'?(i%4===0?p.label:''):p.label;
+      if(lab) s+='<text x="'+(x+bw/2)+'" y="'+(T+ih+18)+'" text-anchor="middle">'+lab+'</text>';
+    });
+    var sy=T+ih+22+34, rates=d.map(function(p){return p.err/p.total*100}), rmax=Math.max(2,Math.ceil(Math.max.apply(null,rates)));
+    s+='<text x="'+L+'" y="'+(sy-10)+'" style="font-weight:600;fill:var(--muted)">Error rate</text><text x="'+(W-R)+'" y="'+(sy-10)+'" text-anchor="end">peak '+Math.max.apply(null,rates).toFixed(1)+'%</text>';
+    s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+(sy+SH)+'" y2="'+(sy+SH)+'" stroke="var(--line)"/><text x="'+(L-8)+'" y="'+(sy+8)+'" text-anchor="end">'+rmax+'%</text><text x="'+(L-8)+'" y="'+(sy+SH+4)+'" text-anchor="end">0</text>';
+    rates.forEach(function(r,i){var x=L+slot*i+(slot-bw)/2,h=Math.max(SH*r/rmax,1.5);s+='<rect x="'+x+'" y="'+(sy+SH-h)+'" width="'+bw+'" height="'+h+'" rx="1.5" fill="var(--err)" opacity="'+(r>1.5?1:.55)+'"/>'});
+    s+='</svg><div class="tip" id="tip"></div>';
+    var el=document.getElementById('chart'); el.innerHTML=s;
+    document.getElementById('chartSub').textContent=RANGES[state.range].sub;
+    var tip=document.getElementById('tip');
+    el.querySelectorAll('.bg').forEach(function(g){
+      function show(){
+        var p=d[+g.dataset.i],r=g.getBoundingClientRect(),b=el.getBoundingClientRect();
+        tip.innerHTML='<b>'+p.label+'</b>'+fmt(p.total)+' requests<br>'+fmt(p.err)+' errors ('+(p.err/p.total*100).toFixed(2)+'%)';
+        tip.classList.add('on');
+        var left=r.left-b.left+r.width/2-tip.offsetWidth/2;
+        tip.style.left=Math.max(0,Math.min(left,b.width-tip.offsetWidth))+'px'; tip.style.top=Math.max(0,r.top-b.top+20)+'px';
+      }
+      g.addEventListener('mouseenter',show); g.addEventListener('mouseleave',function(){tip.classList.remove('on')});
+    });
+  }
+
+  function renderTable(){
+    var cols=[['ep','Endpoint'],['req','Requests'],['err','Error rate'],['p50','p50'],['p95','p95'],['p99','p99'],['lat','Latency spread']];
+    var rows=EPS.slice().sort(function(a,b){
+      var k={ep:1,req:2,err:3,p50:4,p95:5,p99:6}[state.sort]||2;
+      if(k===1) return state.dir*a[1].localeCompare(b[1]);
+      return state.dir*(a[k]-b[k]);
+    });
+    var scale=Math.max.apply(null,EPS.map(function(e){return e[6]}));
+    var h='<thead><tr>'+cols.map(function(c,i){
+      if(c[0]==='lat') return '<th scope="col">'+c[1]+'</th>';
+      var sorted=state.sort===c[0];
+      return '<th scope="col"'+(sorted?' aria-sort="'+(state.dir>0?'ascending':'descending')+'"':'')+'><button data-s="'+c[0]+'">'+c[1]+(sorted?(state.dir>0?' &uarr;':' &darr;'):'')+'</button></th>';
+    }).join('')+'</tr></thead><tbody>';
+    rows.forEach(function(e){
+      var cls=e[3]>=2?'bad':e[3]>=1?'warn':'ok';
+      var icon=cls==='bad'?'&#9650; ':cls==='warn'?'&#9679; ':'';
+      var slow=e[5]>1000;
+      h+='<tr><td><div class="ep"><span class="m '+e[0]+'">'+e[0]+'</span><span class="path">'+e[1]+'</span></div></td>'+
+        '<td class="num">'+fmt(e[2])+'</td>'+
+        '<td><span class="err-pill num '+cls+'">'+icon+e[3].toFixed(2)+'%</span></td>'+
+        '<td class="num">'+e[4]+' ms</td><td class="num"><b style="font-weight:600">'+e[5]+' ms</b></td><td class="num">'+e[6]+' ms</td>'+
+        '<td><div class="lat"><div class="bar" aria-hidden="true"><i style="left:'+(e[4]/scale*100)+'%;width:'+((e[6]-e[4])/scale*100)+'%"></i><b class="'+(slow?'slow':'')+'" style="left:calc('+(e[5]/scale*100)+'% - 1px)"></b></div></div></td></tr>';
+    });
+    document.getElementById('tbl').innerHTML=document.getElementById('tbl').firstElementChild.outerHTML+h+'</tbody>';
+  }
+
+  document.getElementById('range').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return; state.range=b.dataset.r;
+    this.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+    renderStats(); renderChart();
+  });
+  document.getElementById('tbl').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-s]'); if(!b) return;
+    if(state.sort===b.dataset.s) state.dir*=-1; else {state.sort=b.dataset.s; state.dir=b.dataset.s==='ep'?1:-1}
+    renderTable();
+  });
+
+  renderStats(); renderChart(); renderTable();
+})();
+</script>
+</body>
+</html>

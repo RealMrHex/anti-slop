@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pennywise - Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #161513;
+    --deep: #12110f;
+    --card: #1c1a18;
+    --raised: #262421;
+    --hair: rgba(239, 233, 222, 0.08);
+    --hair-strong: rgba(239, 233, 222, 0.14);
+    --text: #efe9de;
+    --text-2: #aaa398;
+    --text-3: #8a847a;
+    --accent: #e2a94e;
+    --pos: #4cc38a;
+    --neg: #e5484d;
+    --bar: #3a3631;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text);
+    font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  aside {
+    width: 256px;
+    flex-shrink: 0;
+    background: var(--deep);
+    border-right: 1px solid var(--hair);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+  .brand-name { font-size: 18px; font-weight: 600; line-height: 1; }
+  .brand-tier { display: block; font-size: 12px; color: var(--text-3); margin-top: 4px; }
+
+  nav { display: flex; flex-direction: column; gap: 2px; }
+  nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    color: var(--text-2);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.16s ease, color 0.16s ease;
+  }
+  nav a svg {
+    width: 18px; height: 18px; flex-shrink: 0;
+    fill: none; stroke: currentColor; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  nav a:hover { background: var(--raised); color: var(--text); }
+  nav a[aria-current="page"] {
+    background: var(--raised);
+    color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  nav a:focus-visible, .see-all:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .nav-dot { margin-left: auto; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  .upgrade {
+    margin-top: auto;
+    padding: 16px;
+    border-radius: 14px;
+    background: var(--card);
+    border: 1px solid var(--hair);
+  }
+  .upgrade strong { display: block; font-weight: 500; }
+  .upgrade p { margin: 4px 0 0; color: var(--text-2); font-size: 13px; }
+
+  /* Main */
+  main {
+    flex: 1;
+    min-width: 0;
+    max-width: 1440px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .eyebrow { color: var(--text-2); font-size: 13px; }
+  h1 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1.1;
+    margin: 4px 0 0;
+    letter-spacing: -0.01em;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    padding: 20px;
+    min-width: 0;
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .card h2 { font-size: 15px; font-weight: 500; margin: 0; }
+  .muted { color: var(--text-3); }
+  .see-all { color: var(--text-2); font-size: 13px; text-decoration: none; }
+  .see-all:hover { color: var(--text); }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .stat-label { color: var(--text-2); font-size: 13px; }
+  .stat-figure {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1;
+    margin-top: 12px;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-change {
+    font-size: 13px;
+    margin-top: 12px;
+    color: var(--pos);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-meta { font-size: 13px; color: var(--text-3); margin-top: 4px; }
+
+  /* Charts */
+  .charts { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 16px; }
+  .donut-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+  .bars-card { display: flex; flex-direction: column; }
+  .donut { width: 144px; height: 144px; flex-shrink: 0; }
+  .cats {
+    flex: 1; min-width: 0;
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .cats li {
+    display: grid;
+    grid-template-columns: 8px minmax(0, 1fr) auto;
+    column-gap: 10px;
+    align-items: center;
+    font-size: 13px;
+  }
+  .cats .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+  .cats .amt { color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .cats .track {
+    grid-column: 2 / 4;
+    height: 4px;
+    margin-top: 6px;
+    border-radius: 2px;
+    background: var(--raised);
+    overflow: hidden;
+  }
+  .cats .track span { display: block; height: 100%; border-radius: 2px; background: var(--c); }
+
+  .plot {
+    flex: 1;
+    min-height: 240px;
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    padding: 0 8px;
+    border-bottom: 1px solid var(--hair-strong);
+  }
+  .plot .bar { flex: 1; border-radius: 6px 6px 0 0; background: var(--bar); }
+  .plot .bar.now { background: var(--accent); }
+  .labels { display: flex; gap: 14px; padding: 8px 8px 0; }
+  .labels span { flex: 1; text-align: center; font-size: 12px; color: var(--text-3); }
+  .labels span.now { color: var(--text); }
+
+  /* Transactions */
+  .tx { list-style: none; margin: 0; padding: 0; }
+  .tx li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 176px 88px 104px;
+    gap: 16px;
+    align-items: center;
+    min-height: 48px;
+    border-top: 1px solid var(--hair);
+  }
+  .tx li:first-child { border-top: 0; }
+  .tx .name { font-weight: 500; }
+  .tx .cat { display: flex; align-items: center; gap: 8px; color: var(--text-2); font-size: 13px; }
+  .tx .cat i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
+  .tx .date { color: var(--text-3); font-size: 13px; font-variant-numeric: tabular-nums; }
+  .tx .amt { text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .pos { color: var(--pos); }
+
+  /* Entrance: one fade and rise for the main content */
+  main > * { animation: rise 0.4s var(--ease) both; }
+  main > *:nth-child(2) { animation-delay: 0.04s; }
+  main > *:nth-child(3) { animation-delay: 0.08s; }
+  main > *:nth-child(4) { animation-delay: 0.12s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { main > * { animation: none; } }
+
+  /* Narrow screens */
+  @media (max-width: 1100px) {
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .charts { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 800px) {
+    .app { flex-direction: column; }
+    aside { width: 100%; padding: 16px; gap: 16px; }
+    nav { flex-direction: row; flex-wrap: wrap; }
+    nav a { height: 36px; }
+    .upgrade { display: none; }
+    main { padding: 16px; }
+    h1 { font-size: 32px; }
+    .tx li { grid-template-columns: minmax(0, 1fr) auto; row-gap: 4px; padding: 12px 0; }
+    .tx .cat, .tx .date { grid-column: 1; }
+    .tx .amt { grid-column: 2; grid-row: 1; }
+    .tx .name { grid-row: 1; grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside>
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" fill="none" stroke="#e2a94e" stroke-width="2"/>
+        <path d="M12 7v10M9.5 9.5h4a1.5 1.5 0 0 1 0 3h-3a1.5 1.5 0 0 0 0 3H15" fill="none" stroke="#e2a94e" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <span class="brand-name">Pennywise</span>
+        <span class="brand-tier">Premium</span>
+      </div>
+    </div>
+
+    <nav aria-label="Main">
+      <a href="#" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/></svg>
+        Overview
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/></svg>
+        Transactions
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-5M12 16V8M17 16v-7"/></svg>
+        Budgets
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.9" fill="currentColor"/></svg>
+        Goals
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11V9a4 4 0 0 1 4-4h11"/><path d="M16 2l3 3-3 3"/><path d="M20 13v2a4 4 0 0 1-4 4H5"/><path d="M8 22l-3-3 3-3"/></svg>
+        Subscriptions
+        <span class="nav-dot" aria-label="New activity"></span>
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>
+        Bills
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <div class="upgrade">
+      <strong>AI tips</strong>
+      <p>Upgrade for more tips</p>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p class="eyebrow">Overview</p>
+      <h1>November 2026</h1>
+    </header>
+
+    <section class="stats">
+      <div class="card">
+        <p class="stat-label">Total balance</p>
+        <p class="stat-figure">$12,480.50</p>
+        <p class="stat-change">+8.2% vs last month</p>
+      </div>
+      <div class="card">
+        <p class="stat-label">Income this month</p>
+        <p class="stat-figure">$4,210.00</p>
+        <p class="stat-change">+12% vs last month</p>
+      </div>
+      <div class="card">
+        <p class="stat-label">Spending this month</p>
+        <p class="stat-figure">$1,204.50</p>
+        <p class="stat-change">3 less vs last month</p>
+      </div>
+      <div class="card">
+        <p class="stat-label">Savings rate</p>
+        <p class="stat-figure">38.6%</p>
+        <p class="stat-change">+5.1% vs last month</p>
+        <p class="stat-meta">Next bill 07 Nov</p>
+      </div>
+    </section>
+
+    <section class="charts">
+      <div class="card">
+        <div class="card-head">
+          <h2>Spending by category</h2>
+        </div>
+        <div class="donut-wrap">
+          <svg class="donut" viewBox="0 0 100 100" role="img" aria-label="Spending by category, total $1,404.49">
+            <g fill="none" stroke-width="14" transform="rotate(-90 50 50)">
+              <circle cx="50" cy="50" r="40" stroke="#262421"/>
+              <circle cx="50" cy="50" r="40" stroke="#c9735a" stroke-dasharray="73.7 251.3" stroke-dashoffset="0"/>
+              <circle cx="50" cy="50" r="40" stroke="#8c7ab8" stroke-dasharray="33.9 251.3" stroke-dashoffset="-73.7"/>
+              <circle cx="50" cy="50" r="40" stroke="#5f8fb8" stroke-dasharray="20.4 251.3" stroke-dashoffset="-107.6"/>
+              <circle cx="50" cy="50" r="40" stroke="#6fae8c" stroke-dasharray="80.4 251.3" stroke-dashoffset="-128"/>
+              <circle cx="50" cy="50" r="40" stroke="#d4b86a" stroke-dasharray="17.3 251.3" stroke-dashoffset="-208.4"/>
+              <circle cx="50" cy="50" r="40" stroke="#7d8aa0" stroke-dasharray="25.1 251.3" stroke-dashoffset="-225.7"/>
+            </g>
+            <text x="50" y="50" text-anchor="middle" fill="#efe9de" font-size="8.5" font-weight="500" style="font-variant-numeric: tabular-nums">$1,404.49</text>
+            <text x="50" y="61" text-anchor="middle" fill="#8a847a" font-size="5.5">Spent</text>
+          </svg>
+          <ul class="cats">
+            <li style="--c:#c9735a">
+              <span class="dot"></span>
+              <span>Food &amp; Dining</span>
+              <span class="amt">$412.00 / $500.00</span>
+              <div class="track"><span style="width:82%"></span></div>
+            </li>
+            <li style="--c:#8c7ab8">
+              <span class="dot"></span>
+              <span>Shopping</span>
+              <span class="amt">$189.99 / $400.00</span>
+              <div class="track"><span style="width:47.5%"></span></div>
+            </li>
+            <li style="--c:#5f8fb8">
+              <span class="dot"></span>
+              <span>Transport</span>
+              <span class="amt">$114.00 / $250.00</span>
+              <div class="track"><span style="width:45.6%"></span></div>
+            </li>
+            <li style="--c:#6fae8c">
+              <span class="dot"></span>
+              <span>Housing</span>
+              <span class="amt">$450.00 / $450.00</span>
+              <div class="track"><span style="width:100%"></span></div>
+            </li>
+            <li style="--c:#d4b86a">
+              <span class="dot"></span>
+              <span>Entertainment</span>
+              <span class="amt">$97.50 / $150.00</span>
+              <div class="track"><span style="width:65%"></span></div>
+            </li>
+            <li style="--c:#7d8aa0">
+              <span class="dot"></span>
+              <span>Utilities</span>
+              <span class="amt">$141.00 / $200.00</span>
+              <div class="track"><span style="width:70.5%"></span></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card bars-card">
+        <div class="card-head">
+          <h2>Monthly spending</h2>
+          <span class="muted" style="font-size:13px">Last 6 months</span>
+        </div>
+        <div class="plot" role="img" aria-label="Monthly spending bars, June to November, November highlighted">
+          <div class="bar" style="height:133px"></div>
+          <div class="bar" style="height:160px"></div>
+          <div class="bar" style="height:110px"></div>
+          <div class="bar" style="height:147px"></div>
+          <div class="bar" style="height:174px"></div>
+          <div class="bar now" style="height:135px"></div>
+        </div>
+        <div class="labels">
+          <span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span class="now">Nov</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Recent transactions</h2>
+        <a class="see-all" href="#">See all &rarr;</a>
+      </div>
+      <ul class="tx">
+        <li>
+          <span class="name">Blue Bottle Coffee</span>
+          <span class="cat"><i style="--c:#c9735a"></i>Food &amp; Dining</span>
+          <span class="date">Nov 7</span>
+          <span class="amt">-$6.75</span>
+        </li>
+        <li>
+          <span class="name">Whole Foods</span>
+          <span class="cat"><i style="--c:#c9735a"></i>Food &amp; Dining</span>
+          <span class="date">Nov 6</span>
+          <span class="amt">-$118.40</span>
+        </li>
+        <li>
+          <span class="name">Acme Corp Payroll</span>
+          <span class="cat"><i style="--c:#4cc38a"></i>Income</span>
+          <span class="date">Nov 5</span>
+          <span class="amt pos">+$4,210.00</span>
+        </li>
+        <li>
+          <span class="name">Spotify</span>
+          <span class="cat"><i style="--c:#8a847a"></i>Subscriptions</span>
+          <span class="date">Nov 4</span>
+          <span class="amt">-$11.99</span>
+        </li>
+        <li>
+          <span class="name">Uber</span>
+          <span class="cat"><i style="--c:#5f8fb8"></i>Transport</span>
+          <span class="date">Nov 3</span>
+          <span class="amt">-$23.50</span>
+        </li>
+        <li>
+          <span class="name">Nike</span>
+          <span class="cat"><i style="--c:#8c7ab8"></i>Shopping</span>
+          <span class="date">Nov 2</span>
+          <span class="amt">-$139.99</span>
+        </li>
+        <li>
+          <span class="name">City Power</span>
+          <span class="cat"><i style="--c:#7d8aa0"></i>Utilities</span>
+          <span class="date">Nov 1</span>
+          <span class="amt">-$89.00</span>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+</div>
+</body>
+</html>

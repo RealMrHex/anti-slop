@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Burst Tomato Rigatoni with Burrata</title>
+<style>
+:root{
+  --bg:#fbf5ec; --surface:#fffdf9; --ink:#2b1d17; --ink-2:#6b5a50; --line:#eadfce;
+  --accent:#c4421f; --accent-ink:#fff; --accent-soft:#fbe3d9; --green:#4d6b3a; --green-soft:#e6eddc;
+  --hero:#e9a23b;
+  --r-s:10px; --r-m:18px; --r-l:28px;
+  --sh:0 1px 2px rgba(60,30,10,.06),0 6px 18px rgba(60,30,10,.08);
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+  --serif:"Iowan Old Style",Palatino,"Palatino Linotype",Georgia,serif;
+  --sans:ui-rounded,"SF Pro Rounded","Avenir Next",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#efe4d3;color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;background:var(--bg);min-height:100vh;position:relative;padding-bottom:110px}
+@media(min-width:520px){.app{box-shadow:0 0 0 1px var(--line),0 20px 60px rgba(60,30,10,.15)}}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #1b5fd1;outline-offset:2px;border-radius:6px}
+
+/* hero */
+.hero{position:relative;background:radial-gradient(120% 90% at 50% 30%,#f0b955 0%,var(--hero) 45%,#d98a2b 100%);height:300px;border-radius:0 0 var(--r-l) var(--r-l);overflow:hidden}
+.hero svg.dish{position:absolute;left:50%;top:50%;width:300px;height:300px;transform:translate(-50%,-48%)}
+.icon-btn{position:absolute;top:var(--s4);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,253,249,.92);box-shadow:var(--sh);display:grid;place-items:center;cursor:pointer;transition:transform .15s}
+.icon-btn:hover{transform:scale(1.06)}.icon-btn:active{transform:scale(.95)}
+.icon-btn svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.back{left:var(--s4)}.save{right:var(--s4)}
+.save[aria-pressed="true"] svg{fill:var(--accent);stroke:var(--accent)}
+
+main{padding:0 var(--s4)}
+.head{padding:var(--s5) var(--s2) var(--s4)}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 var(--s2)}
+h1{font-family:var(--serif);font-size:32px;line-height:1.1;margin:0 0 var(--s3);letter-spacing:-.01em;text-wrap:balance}
+.lede{margin:0;color:var(--ink-2)}
+.rating{display:flex;align-items:center;gap:var(--s2);margin-top:var(--s3);font-size:14px;color:var(--ink-2)}
+.rating b{color:var(--ink)}
+.stars{color:#d98a2b;letter-spacing:2px}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border-radius:var(--r-m);box-shadow:var(--sh);margin:0}
+.stats div{padding:var(--s3) var(--s2);text-align:center}
+.stats div+div{border-left:1px solid var(--line)}
+.stats dt{font-size:12px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.stats dd{margin:2px 0 0;font-family:var(--serif);font-size:20px;font-weight:700}
+
+section{margin-top:var(--s6)}
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);padding:0 var(--s2);margin-bottom:var(--s3)}
+h2{font-family:var(--serif);font-size:24px;margin:0;line-height:1.2}
+
+.stepper{display:flex;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.stepper button{width:40px;height:40px;border-radius:50%;border:0;background:var(--accent-soft);color:var(--accent);font-size:22px;font-weight:700;cursor:pointer;line-height:1;transition:background .15s}
+.stepper button:hover:not(:disabled){background:#f6cfbf}
+.stepper button:disabled{opacity:.4;cursor:not-allowed}
+.stepper output{min-width:92px;text-align:center;font-weight:700;font-size:15px}
+
+.card{background:var(--surface);border-radius:var(--r-m);box-shadow:var(--sh);margin:0;padding:var(--s2) 0;list-style:none}
+.ing{display:flex;align-items:center;gap:var(--s3);padding:0 var(--s4);min-height:56px;cursor:pointer}
+.ing+.ing{border-top:1px solid var(--line)}
+.ing:hover{background:#fdf6ec}
+.ing input{position:absolute;opacity:0;width:24px;height:24px;margin:0}
+.box{flex:none;width:24px;height:24px;border-radius:8px;border:2px solid #b8a590;display:grid;place-items:center;transition:all .15s;background:#fff}
+.box svg{width:14px;height:14px;stroke:#fff;stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round;opacity:0;transform:scale(.4);transition:all .18s cubic-bezier(.3,1.6,.6,1)}
+.ing input:checked~.box{background:var(--green);border-color:var(--green)}
+.ing input:checked~.box svg{opacity:1;transform:scale(1)}
+.ing input:focus-visible~.box{outline:3px solid #1b5fd1;outline-offset:2px}
+.ing .name{flex:1}
+.ing .name small{display:block;color:var(--ink-2);font-size:13px}
+.ing .qty{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ing input:checked~.name,.ing input:checked~.qty{color:var(--ink-2);text-decoration:line-through;text-decoration-color:rgba(107,90,80,.5)}
+
+ol.steps{list-style:none;margin:0;padding:0;counter-reset:s;display:grid;gap:var(--s3)}
+.steps li{counter-increment:s;background:var(--surface);border-radius:var(--r-m);box-shadow:var(--sh);padding:var(--s4);display:grid;grid-template-columns:36px 1fr;gap:var(--s3)}
+.steps li::before{content:counter(s);width:36px;height:36px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:17px}
+.steps h3{margin:4px 0 4px;font-size:17px;line-height:1.3}
+.steps p{margin:0;color:var(--ink-2)}
+.timer{display:inline-flex;align-items:center;gap:6px;margin-top:var(--s3);padding:6px 12px;border-radius:999px;background:var(--green-soft);color:#3a5429;font-size:14px;font-weight:700}
+.timer svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+
+.tip{margin-top:var(--s6);background:var(--green-soft);border-radius:var(--r-m);padding:var(--s4) var(--s5);color:#2f4421}
+.tip b{display:block;font-family:var(--serif);font-size:18px;margin-bottom:4px}
+.tip p{margin:0}
+
+/* bottom bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;pointer-events:none}
+.bar-in{max-width:480px;margin:0 auto;padding:var(--s5) var(--s4) var(--s4);background:linear-gradient(to top,var(--bg) 62%,rgba(251,245,236,0));pointer-events:auto}
+.cta{width:100%;height:58px;border:0;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 20px rgba(196,66,31,.35);transition:transform .15s,background .15s}
+.cta:hover{background:#b23a1a}.cta:active{transform:scale(.98)}
+.cta svg{width:20px;height:20px;fill:currentColor}
+.cta.on{background:var(--green);box-shadow:0 8px 20px rgba(77,107,58,.35)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.steam{animation:steam 3s ease-in-out infinite}
+@keyframes steam{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:.7;transform:translateY(-6px)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hero">
+    <button class="icon-btn back" type="button" aria-label="Back to recipes"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="icon-btn save" type="button" aria-label="Save recipe" aria-pressed="false" id="save"><svg viewBox="0 0 24 24"><path d="M12 20.5s-8-4.9-8-11A4.5 4.5 0 0 1 12 6.6 4.5 4.5 0 0 1 20 9.5c0 6.100-8 11-8 11z"/></svg></button>
+    <svg class="dish" viewBox="0 0 300 300" role="img" aria-label="Bowl of rigatoni with burst tomatoes, burrata and basil">
+      <ellipse cx="150" cy="262" rx="105" ry="12" fill="#7a3a0f" opacity=".22"/>
+      <path class="steam" d="M120 62c-12 14 12 22 0 38M152 52c-12 14 12 22 0 38M184 62c-12 14 12 22 0 38" fill="none" stroke="#fff6e6" stroke-width="5" stroke-linecap="round"/>
+      <path d="M38 150h224c0 56-44 106-112 106S38 206 38 150z" fill="#fffaf0"/>
+      <path d="M38 150h224c0 8-1 16-3 24H41c-2-8-3-16-3-24z" fill="#f1e5cf"/>
+      <ellipse cx="150" cy="150" rx="112" ry="34" fill="#fffaf0"/>
+      <ellipse cx="150" cy="152" rx="94" ry="26" fill="#d9552b"/>
+      <g fill="#f3b24a" stroke="#c4421f" stroke-width="3">
+        <rect x="82" y="134" width="46" height="18" rx="9" transform="rotate(-14 105 143)"/>
+        <rect x="170" y="130" width="46" height="18" rx="9" transform="rotate(12 193 139)"/>
+        <rect x="128" y="146" width="46" height="18" rx="9" transform="rotate(4 151 155)"/>
+        <rect x="100" y="156" width="42" height="17" rx="8" transform="rotate(18 121 164)"/>
+        <rect x="170" y="154" width="42" height="17" rx="8" transform="rotate(-20 191 162)"/>
+      </g>
+      <g fill="#c4210f"><circle cx="96" cy="150" r="9"/><circle cx="206" cy="148" r="10"/><circle cx="150" cy="170" r="9"/><circle cx="130" cy="130" r="8"/><circle cx="182" cy="128" r="8"/></g>
+      <g fill="#ee6a4d"><circle cx="94" cy="147" r="3"/><circle cx="204" cy="145" r="3"/><circle cx="148" cy="167" r="3"/></g>
+      <ellipse cx="150" cy="143" rx="30" ry="22" fill="#fffdf6"/>
+      <ellipse cx="144" cy="138" rx="12" ry="7" fill="#fff" opacity=".9"/>
+      <g fill="#4f8a2e"><path d="M120 150c10-16 26-14 30-4-8 10-22 14-30 4z"/><path d="M158 156c4-14 20-18 28-8-4 12-20 16-28 8z"/><path d="M148 124c8-8 20-4 22 4-8 6-18 6-22-4z"/></g>
+      <g stroke="#2f5a1a" stroke-width="1.5" fill="none" stroke-linecap="round"><path d="M123 150l20-8M162 156l20-8"/></g>
+    </svg>
+  </header>
+
+  <main>
+    <div class="head">
+      <p class="eyebrow">Weeknight pasta</p>
+      <h1>Burst Tomato Rigatoni with Burrata</h1>
+      <p class="lede">Cherry tomatoes blister in olive oil until they collapse into a sweet, garlicky sauce. Finish with cool, creamy burrata.</p>
+      <div class="rating"><span class="stars" aria-hidden="true">★★★★★</span><span><b>4.8</b> · 312 ratings</span></div>
+    </div>
+
+    <dl class="stats">
+      <div><dt>Time</dt><dd>35 min</dd></div>
+      <div><dt>Level</dt><dd>Easy</dd></div>
+      <div><dt>Per serving</dt><dd>610 kcal</dd></div>
+    </dl>
+
+    <section aria-labelledby="ing-h">
+      <div class="sec-head">
+        <h2 id="ing-h">Ingredients</h2>
+        <div class="stepper" role="group" aria-label="Servings">
+          <button type="button" id="minus" aria-label="Fewer servings">−</button>
+          <output id="serv" aria-live="polite">4 servings</output>
+          <button type="button" id="plus" aria-label="More servings">+</button>
+        </div>
+      </div>
+      <ul class="card" id="list"></ul>
+    </section>
+
+    <section aria-labelledby="m-h">
+      <div class="sec-head"><h2 id="m-h">Method</h2></div>
+      <ol class="steps">
+        <li><div><h3>Boil the pasta water</h3><p>Salt a large pot generously. Cook the rigatoni 1 minute short of the packet time and save a mug of the cooking water.</p>
+          <span class="timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 3h6"/></svg>10 min</span></div></li>
+        <li><div><h3>Blister the tomatoes</h3><p>Warm the oil with garlic and chili flakes over medium heat. Add tomatoes and a pinch of salt; cover and cook until they start to pop.</p>
+          <span class="timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 3h6"/></svg>8 min</span></div></li>
+        <li><div><h3>Crush into a sauce</h3><p>Press the tomatoes with the back of a spoon so they release their juices. Simmer uncovered until glossy and jammy.</p>
+          <span class="timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 3h6"/></svg>6 min</span></div></li>
+        <li><div><h3>Toss and finish</h3><p>Add the pasta and a splash of cooking water. Toss over the heat until the sauce clings. Tear the burrata on top and scatter with basil.</p></div></li>
+      </ol>
+    </section>
+
+    <aside class="tip" aria-label="Cook's tip"><b>Cook's tip</b><p>Pull the burrata from the fridge 20 minutes before serving. Cold cheese on hot pasta stiffens up; room temperature stays soft and creamy.</p></aside>
+  </main>
+
+  <div class="bar"><div class="bar-in">
+    <button class="cta" type="button" id="cta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.500v15l13-7.500z"/></svg><span>Start cooking</span></button>
+  </div></div>
+</div>
+
+<script>
+const base=[
+ {n:"Rigatoni",q:400,u:"g"},
+ {n:"Cherry tomatoes",q:500,u:"g",note:"mixed colours if you can"},
+ {n:"Garlic",q:4,u:"cloves",note:"thinly sliced"},
+ {n:"Olive oil",q:4,u:"tbsp"},
+ {n:"Chili flakes",q:1,u:"tsp"},
+ {n:"Burrata",q:250,u:"g",note:"1 large ball"},
+ {n:"Fresh basil",q:1,u:"handful"},
+ {n:"Flaky salt",q:null,u:"to taste"}
+];
+let serv=4;
+const list=document.getElementById('list'),out=document.getElementById('serv');
+const frac={.25:"¼",.5:"½",.75:"¾"};
+function fmt(x){
+  if(x>=20)return String(Math.round(x/5)*5);
+  const w=Math.floor(x+1e-6),f=Math.round((x-w)*4)/4;
+  if(f===1)return String(w+1);
+  return (w?String(w):"")+(f?frac[f]:"")||"¼";
+}
+const check='<span class="box"><svg viewBox="0 0 24 24"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg></span>';
+function render(){
+  const checked=[...list.querySelectorAll('input')].map(i=>i.checked);
+  list.innerHTML=base.map((b,i)=>{
+    const qty=b.q==null?b.u:fmt(b.q*serv/4)+" "+b.u;
+    return `<li><label class="ing"><input type="checkbox" ${checked[i]?"checked":""}>${check}<span class="name">${b.n}${b.note?`<small>${b.note}</small>`:""}</span><span class="qty">${qty}</span></label></li>`;
+  }).join('');
+  out.textContent=serv+(serv===1?" serving":" servings");
+  minus.disabled=serv<=1;plus.disabled=serv>=12;
+}
+const minus=document.getElementById('minus'),plus=document.getElementById('plus');
+minus.onclick=()=>{serv--;render()};plus.onclick=()=>{serv++;render()};
+render();
+const save=document.getElementById('save');
+save.onclick=()=>{const on=save.getAttribute('aria-pressed')!=='true';save.setAttribute('aria-pressed',on);save.setAttribute('aria-label',on?'Remove from saved':'Save recipe')};
+const cta=document.getElementById('cta');
+cta.onclick=()=>{const on=cta.classList.toggle('on');cta.querySelector('span').textContent=on?'Step 1 of 4 · Boil the pasta water':'Start cooking'};
+</script>
+</body>
+</html>

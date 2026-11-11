@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quarry - Search your logs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1113;
+      --surface: #16191c;
+      --raised: #1c2024;
+      --line: rgba(236, 233, 227, 0.08);
+      --text: #ece9e3;
+      --text-2: #a4a7ab;
+      --text-3: #6f737a;
+      --accent: #e3a93b;
+      --accent-ink: #1a1305;
+      --sans: 'IBM Plex Sans', system-ui, sans-serif;
+      --mono: 'IBM Plex Mono', ui-monospace, monospace;
+      --ease: cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; transition: color 150ms var(--ease), background-color 150ms var(--ease); }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
+
+    .wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      height: 64px;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 18px; }
+    .mark { width: 12px; height: 12px; border-radius: 3px; background: var(--accent); }
+    .nav { display: flex; gap: 28px; font-size: 14px; color: var(--text-2); }
+    .nav a:hover { color: var(--text); }
+    .top-actions { display: flex; align-items: center; gap: 20px; font-size: 14px; }
+    .top-actions .login { color: var(--text-2); }
+    .top-actions .login:hover { color: var(--text); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 150ms var(--ease), color 150ms var(--ease), border-color 150ms var(--ease);
+    }
+    .btn-primary { background: var(--text); color: var(--bg); }
+    .btn-primary:hover { background: #d9d5cc; }
+    .btn-ghost { border: 1px solid var(--line); color: var(--text); background: transparent; }
+    .btn-ghost:hover { background: var(--surface); }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: 64px;
+      align-items: center;
+      min-height: calc(100vh - 64px);
+      padding: 64px 0;
+    }
+
+    .meta {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 60px;
+      line-height: 1.04;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .lede {
+      margin-top: 24px;
+      max-width: 480px;
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--text-2);
+    }
+
+    .actions { margin-top: 36px; display: flex; gap: 12px; }
+
+    /* Product panel */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .panel-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 44px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-3);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--raised); border: 1px solid var(--line); }
+    .panel-bar .title { margin-left: 8px; }
+
+    .terminal {
+      padding: 20px 20px 8px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 24px;
+      color: var(--text-2);
+      font-variant-numeric: tabular-nums;
+    }
+    .terminal .row { display: grid; grid-template-columns: 168px 56px 1fr; gap: 12px; white-space: nowrap; }
+    .terminal .prompt { color: var(--text); }
+    .terminal .time { color: var(--text-3); }
+    .terminal .lvl-error { color: #d98a7a; }
+    .terminal .lvl-warn { color: var(--accent); }
+    .terminal .summary { margin-top: 12px; color: var(--text); }
+    .terminal .summary span { color: var(--text-3); }
+
+    .chart {
+      padding: 20px 20px 16px;
+      border-top: 1px solid var(--line);
+    }
+    .chart-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 13px;
+      color: var(--text-2);
+      margin-bottom: 16px;
+    }
+    .chart-head b { font-weight: 500; color: var(--text); }
+    .chart-head .mono { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+    .chart svg { display: block; width: 100%; height: 120px; }
+    .axis {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .alert {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .alert .dot-accent { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+    .alert .text { color: var(--text); }
+    .alert .when { margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--text-3); white-space: nowrap; }
+
+    /* Entrance: one short fade and rise */
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    .rise { animation: rise 500ms var(--ease) both; }
+    .rise-2 { animation-delay: 80ms; }
+
+    @media (max-width: 920px) {
+      .hero { grid-template-columns: 1fr; gap: 48px; padding: 64px 0 80px; }
+      h1 { font-size: 44px; }
+      .nav { display: none; }
+    }
+
+    @media (max-width: 560px) {
+      .wrap { padding: 0 16px; }
+      .top-actions .login { display: none; }
+      h1 { font-size: 36px; }
+      .lede { font-size: 16px; }
+      .actions { flex-direction: column; }
+      .actions .btn { justify-content: center; width: 100%; }
+      .terminal { font-size: 12px; }
+      .terminal .row { grid-template-columns: 1fr; gap: 0; }
+      .terminal .row .time, .terminal .row .lvl-error, .terminal .row .lvl-warn { display: inline; }
+      .terminal .row { white-space: normal; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rise { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top rise">
+      <a href="#" class="brand"><span class="mark" aria-hidden="true"></span>Quarry</a>
+      <nav class="nav" aria-label="Main">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Docs</a>
+        <a href="#">Changelog</a>
+      </nav>
+      <div class="top-actions">
+        <a href="#" class="login">Log in</a>
+        <a href="#" class="btn btn-primary">Get started</a>
+      </div>
+    </header>
+
+    <main class="hero">
+      <section class="rise rise-2">
+        <p class="meta">Version 2.0</p>
+        <h1>Search every log in one query</h1>
+        <p class="lede">Ingest logs from anywhere, search them fast, save the queries you run often, and get alerted when a pattern shows up.</p>
+        <div class="actions">
+          <a href="#" class="btn btn-primary">Start free trial</a>
+          <a href="#" class="btn btn-ghost">Watch demo</a>
+        </div>
+      </section>
+
+      <section class="panel rise rise-2" aria-label="Example search">
+        <div class="panel-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="title">quarry ~ search</span>
+        </div>
+
+        <div class="terminal">
+          <div class="row"><span class="prompt">$ quarry search "status:500 AND service:checkout"</span></div>
+          <div class="row"><span class="time">2026-11-11 09:14:02</span><span class="lvl-error">ERROR</span><span>checkout timeout after 3000 ms</span></div>
+          <div class="row"><span class="time">2026-11-11 09:14:03</span><span class="lvl-warn">WARN</span><span>retry 2 on payment-gw</span></div>
+          <div class="row"><span class="time">2026-11-11 09:14:05</span><span class="lvl-error">ERROR</span><span>upstream 502 bad gateway</span></div>
+          <div class="summary">1,284 matches <span>in 0.8 ms</span></div>
+        </div>
+
+        <div class="chart">
+          <div class="chart-head">
+            <b>Matches over time</b>
+            <span class="mono">1 min buckets</span>
+          </div>
+          <svg viewBox="0 0 400 120" preserveAspectRatio="none" role="img" aria-label="Bar chart of matches per minute, with a spike near 09:15">
+            <g fill="#2a2f34">
+              <rect x="0" y="84" width="12" height="36" rx="2"/>
+              <rect x="17" y="78" width="12" height="42" rx="2"/>
+              <rect x="34" y="88" width="12" height="32" rx="2"/>
+              <rect x="51" y="82" width="12" height="38" rx="2"/>
+              <rect x="68" y="86" width="12" height="34" rx="2"/>
+              <rect x="85" y="80" width="12" height="40" rx="2"/>
+              <rect x="102" y="84" width="12" height="36" rx="2"/>
+              <rect x="119" y="90" width="12" height="30" rx="2"/>
+              <rect x="136" y="84" width="12" height="36" rx="2"/>
+              <rect x="153" y="76" width="12" height="44" rx="2"/>
+              <rect x="170" y="82" width="12" height="38" rx="2"/>
+              <rect x="187" y="86" width="12" height="34" rx="2"/>
+              <rect x="204" y="80" width="12" height="40" rx="2"/>
+              <rect x="221" y="84" width="12" height="36" rx="2"/>
+              <rect x="238" y="88" width="12" height="32" rx="2"/>
+              <rect x="255" y="82" width="12" height="38" rx="2"/>
+              <rect x="272" y="86" width="12" height="34" rx="2"/>
+              <rect x="289" y="84" width="12" height="36" rx="2"/>
+              <rect x="306" y="80" width="12" height="40" rx="2"/>
+              <rect x="323" y="86" width="12" height="34" rx="2"/>
+              <rect x="340" y="90" width="12" height="30" rx="2"/>
+              <rect x="357" y="84" width="12" height="36" rx="2"/>
+              <rect x="374" y="88" width="12" height="32" rx="2"/>
+            </g>
+            <g fill="#e3a93b">
+              <rect x="306" y="40" width="12" height="80" rx="2"/>
+              <rect x="323" y="16" width="12" height="104" rx="2"/>
+              <rect x="340" y="56" width="12" height="64" rx="2"/>
+            </g>
+          </svg>
+          <div class="axis"><span>09:00</span><span>09:10</span><span>09:20</span></div>
+        </div>
+
+        <div class="alert">
+          <span class="dot-accent" aria-hidden="true"></span>
+          <span class="text">Alert: 5xx spike detected</span>
+          <span class="when">09:15</span>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

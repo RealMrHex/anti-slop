@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stackhost Billing</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background: #1e1b4b; }
+  .glow-a { box-shadow: 0 0 40px rgba(168, 85, 247, 0.55); }
+  .glow-b { box-shadow: 0 0 30px rgba(34, 211, 238, 0.45); }
+  .plan-card { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); box-shadow: 0 0 70px rgba(236, 72, 153, 0.6); }
+  .glass { background: rgba(255, 255, 255, 0.07); backdrop-filter: blur(14px); }
+  .meter-track { background: rgba(255, 255, 255, 0.12); height: 17px; border-radius: 999px; }
+  .meter-fill { background: linear-gradient(90deg, #f43f5e, #f59e0b, #22c55e, #06b6d4, #8b5cf6); box-shadow: 0 0 22px rgba(139, 92, 246, 0.9); }
+  .upgrade-btn { background: linear-gradient(90deg, #f97316, #e11d48, #a21caf); animation: pulse-soft 1.6s infinite; }
+  @keyframes pulse-soft { 0%, 100% { transform: scale(1); box-shadow: 0 0 18px rgba(244, 63, 94, 0.7); } 50% { transform: scale(1.06); box-shadow: 0 0 36px rgba(244, 63, 94, 1); } }
+  .hov:hover { transform: scale(1.04); }
+  .hov { transition: transform 0.2s; }
+</style>
+</head>
+<body class="text-white overflow-hidden">
+<div class="fixed -top-48 -left-48 w-[640px] h-[640px] rounded-full bg-fuchsia-600/40 blur-3xl"></div>
+<div class="fixed -bottom-40 right-0 w-[520px] h-[520px] rounded-full bg-cyan-500/30 blur-3xl"></div>
+
+<div class="relative flex w-[1280px] h-[900px]">
+
+  <aside class="w-[248px] shrink-0 glass border-r-2 border-fuchsia-500/50 p-[18px] flex flex-col">
+    <div class="flex items-center gap-2 mb-[30px]">
+      <span class="text-2xl">🖥️</span>
+      <span class="text-xl font-black tracking-tight">Stackhost</span>
+    </div>
+    <p class="text-[11px] font-bold tracking-[0.22em] text-fuchsia-300 mb-3 pl-2">SETTINGS</p>
+    <nav class="flex flex-col gap-[7px] text-[15px] font-bold">
+      <a href="#" class="hov rounded-xl px-3 py-[9px] bg-gradient-to-r from-fuchsia-600 to-pink-500 glow-a">👤 Profile</a>
+      <a href="#" class="hov rounded-xl px-3 py-[9px] hover:bg-white/10">🏢 Team</a>
+      <a href="#" class="hov rounded-xl px-3 py-[9px] bg-white/10 border border-cyan-400/60 glow-b">💳 Billing</a>
+      <a href="#" class="hov rounded-xl px-3 py-[9px] hover:bg-white/10">🔑 API Keys</a>
+      <a href="#" class="hov rounded-xl px-3 py-[9px] hover:bg-white/10">🔔 Notifications</a>
+      <a href="#" class="hov rounded-xl px-3 py-[9px] hover:bg-white/10">🛡️ Security</a>
+      <a href="#" class="hov rounded-xl px-3 py-[9px] hover:bg-white/10">📦 Usage Logs</a>
+    </nav>
+    <div class="mt-auto rounded-2xl p-4 bg-gradient-to-br from-indigo-500/40 to-fuchsia-500/40 border-2 border-yellow-300/60">
+      <p class="text-[12px] font-black uppercase tracking-[0.2em]">Need help? 💬</p>
+      <p class="text-[13px] mt-1 text-indigo-100">Chat with our support crew any time!!</p>
+    </div>
+  </aside>
+
+  <main class="flex-1 p-[28px] pt-[22px] flex flex-col gap-[22px]">
+    <header class="flex items-center justify-between">
+      <div>
+        <h1 class="text-[34px] font-black leading-none">⚙️ Billing &amp; Plans ✨</h1>
+        <p class="text-[13px] text-fuchsia-200 mt-[7px] uppercase tracking-[0.18em]">Manage your subscription</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="text" placeholder="🔍 Search anything..." class="glass border-2 border-cyan-400/50 rounded-full px-5 py-[10px] w-[260px] text-[14px] placeholder-indigo-200 outline-none">
+        <div class="w-[42px] h-[42px] rounded-full bg-gradient-to-br from-yellow-300 to-rose-500 glow-a flex items-center justify-center font-black">AR</div>
+      </div>
+    </header>
+
+    <section class="grid grid-cols-12 gap-[20px]">
+      <div class="col-span-5 plan-card rounded-[26px] p-[26px] relative overflow-hidden hov">
+        <span class="absolute top-[14px] right-[14px] bg-yellow-300 text-purple-900 text-[11px] font-black tracking-[0.15em] px-3 py-[5px] rounded-full">🔥 MOST POPULAR</span>
+        <p class="text-[12px] font-black uppercase tracking-[0.25em] text-pink-100">Current plan</p>
+        <h2 class="text-[40px] font-black mt-2 leading-none">Team plan</h2>
+        <p class="mt-4 text-[46px] font-black leading-none">$49<span class="text-[17px] font-bold text-pink-100"> /month</span></p>
+        <p class="mt-3 text-[14px] font-semibold text-pink-50">Renews 3 December 2026</p>
+        <div class="mt-[22px] flex gap-3">
+          <button class="upgrade-btn rounded-full px-6 py-[12px] text-[15px] font-black text-white">🚀 Upgrade Now!</button>
+          <button class="hov rounded-full px-5 py-[12px] text-[14px] font-bold bg-white/20 border border-white/50">Change plan</button>
+        </div>
+      </div>
+
+      <div class="col-span-7 glass rounded-[26px] p-[24px] border-2 border-emerald-400/60 glow-b">
+        <div class="flex items-center justify-between mb-[16px]">
+          <h3 class="text-[18px] font-black uppercase tracking-[0.12em]">📊 Usage this cycle</h3>
+          <span class="text-[12px] font-bold text-cyan-200">Resets in 23 days</span>
+        </div>
+        <div class="flex flex-col gap-[15px] text-[14px]">
+          <div>
+            <div class="flex justify-between font-extrabold mb-[6px]"><span>🌐 Bandwidth</span><span>73%!!</span></div>
+            <div class="meter-track"><div class="meter-fill h-full rounded-full" style="width: 73%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between font-extrabold mb-[6px]"><span>💾 Storage</span><span>41%</span></div>
+            <div class="meter-track"><div class="meter-fill h-full rounded-full" style="width: 41%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between font-extrabold mb-[6px]"><span>⏱️ Build minutes</span><span>88%!!</span></div>
+            <div class="meter-track"><div class="meter-fill h-full rounded-full" style="width: 88%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between font-extrabold mb-[6px]"><span>👥 Seats</span><span>6 / 8 · 75%</span></div>
+            <div class="meter-track"><div class="meter-fill h-full rounded-full" style="width: 75%"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-12 gap-[20px] flex-1 min-h-0">
+      <div class="col-span-4 glass rounded-[26px] p-[24px] border-2 border-pink-400/60 glow-a flex flex-col">
+        <h3 class="text-[12px] font-black uppercase tracking-[0.25em] text-pink-200 mb-[16px]">💳 Payment method</h3>
+        <div class="rounded-2xl p-[18px] bg-gradient-to-br from-indigo-600 via-purple-600 to-fuchsia-600 glow-a">
+          <p class="text-[13px] font-bold tracking-[0.2em]">VISA ✨</p>
+          <p class="text-[20px] font-black tracking-[0.12em] mt-[18px]">•••• •••• •••• 4242</p>
+          <p class="text-[12px] mt-[10px] text-indigo-100 font-semibold">Expires 08/28</p>
+        </div>
+        <button class="hov mt-[18px] rounded-full py-[10px] text-[14px] font-extrabold bg-cyan-400 text-indigo-950">Update card 💳</button>
+        <p class="mt-auto text-[12px] text-indigo-200 pt-[14px]">Billing email: billing@acme-team.io</p>
+      </div>
+
+      <div class="col-span-8 glass rounded-[26px] p-[24px] border-2 border-cyan-400/60 glow-b">
+        <div class="flex items-center justify-between mb-[14px]">
+          <h3 class="text-[12px] font-black uppercase tracking-[0.25em] text-cyan-200">🧾 Invoice history</h3>
+          <button class="hov text-[12px] font-bold text-fuchsia-300 underline">View all →</button>
+        </div>
+        <table class="w-full text-[14px]">
+          <thead>
+            <tr class="text-left text-[11px] uppercase tracking-[0.2em] text-indigo-200">
+              <th class="pb-[10px] font-black">Date</th>
+              <th class="pb-[10px] font-black">Invoice</th>
+              <th class="pb-[10px] font-black">Amount</th>
+              <th class="pb-[10px] font-black">Status</th>
+              <th class="pb-[10px] font-black">File</th>
+            </tr>
+          </thead>
+          <tbody class="font-semibold">
+            <tr class="border-t border-white/15">
+              <td class="py-[10px]">03/11/26</td>
+              <td class="py-[10px] font-mono">INV-2026-0311</td>
+              <td class="py-[10px]">$49</td>
+              <td class="py-[10px]"><span class="bg-emerald-400 text-emerald-950 text-[11px] font-black px-3 py-[3px] rounded-full">PAID ✅</span></td>
+              <td class="py-[10px]"><a href="#" class="hov text-cyan-300 font-bold underline">⬇ Download</a></td>
+            </tr>
+            <tr class="border-t border-white/15">
+              <td class="py-[10px]">Oct 3</td>
+              <td class="py-[10px] font-mono">INV-2026-1003</td>
+              <td class="py-[10px]">$49.00</td>
+              <td class="py-[10px]"><span class="bg-emerald-400 text-emerald-950 text-[11px] font-black px-3 py-[3px] rounded-full">PAID ✅</span></td>
+              <td class="py-[10px]"><a href="#" class="hov text-cyan-300 font-bold underline">⬇ Download</a></td>
+            </tr>
+            <tr class="border-t border-white/15">
+              <td class="py-[10px]">Sep 03, 2026</td>
+              <td class="py-[10px] font-mono">INV-2026-0903</td>
+              <td class="py-[10px]">49 USD</td>
+              <td class="py-[10px]"><span class="bg-amber-300 text-amber-950 text-[11px] font-black px-3 py-[3px] rounded-full">PENDING ⏳</span></td>
+              <td class="py-[10px]"><a href="#" class="hov text-cyan-300 font-bold underline">⬇ Download</a></td>
+            </tr>
+            <tr class="border-t border-white/15">
+              <td class="py-[10px]">03/08/26</td>
+              <td class="py-[10px] font-mono">INV-2026-0803</td>
+              <td class="py-[10px]">$49.00</td>
+              <td class="py-[10px]"><span class="bg-emerald-400 text-emerald-950 text-[11px] font-black px-3 py-[3px] rounded-full">PAID ✅</span></td>
+              <td class="py-[10px]"><a href="#" class="hov text-cyan-300 font-bold underline">⬇ Download</a></td>
+            </tr>
+            <tr class="border-t border-white/15">
+              <td class="py-[10px]">Jul 3</td>
+              <td class="py-[10px] font-mono">INV-2026-0703</td>
+              <td class="py-[10px]">$49</td>
+              <td class="py-[10px]"><span class="bg-rose-500 text-white text-[11px] font-black px-3 py-[3px] rounded-full">FAILED ❌</span></td>
+              <td class="py-[10px]"><a href="#" class="hov text-cyan-300 font-bold underline">⬇ Download</a></td>
+            </tr>
+            <tr class="border-t border-white/15">
+              <td class="py-[10px]">06/03/26</td>
+              <td class="py-[10px] font-mono">INV-2026-0603</td>
+              <td class="py-[10px]">$49.00 USD</td>
+              <td class="py-[10px]"><span class="bg-emerald-400 text-emerald-950 text-[11px] font-black px-3 py-[3px] rounded-full">PAID ✅</span></td>
+              <td class="py-[10px]"><a href="#" class="hov text-cyan-300 font-bold underline">⬇ Download</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+</html>

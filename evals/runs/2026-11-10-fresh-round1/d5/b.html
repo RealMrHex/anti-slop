@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deskwise | Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #161513;
+    --deep: #12110f;
+    --card: #1c1a18;
+    --raised: #262421;
+    --avatar: #33302b;
+    --hair: rgba(239, 233, 222, 0.08);
+    --hair-strong: rgba(239, 233, 222, 0.14);
+    --text: #efe9de;
+    --text-2: #aaa398;
+    --text-3: #8a847a;
+    --accent: #e0a458;
+    --accent-ink: #1c1a18;
+    --neg: #e5484d;
+    --pos: #4cc38a;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .mono, time, .meta, .count {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .ico { width: 16px; height: 16px; flex-shrink: 0; }
+
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-3); display: inline-block; flex-shrink: 0; }
+  .dot.neg { background: var(--neg); }
+  .dot.pos { background: var(--pos); }
+
+  .app {
+    display: grid;
+    grid-template-columns: 240px 360px 1fr;
+    height: 100vh;
+    min-width: 1024px;
+    min-height: 640px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--deep);
+    border-right: 1px solid var(--hair);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 8px; }
+  .mark { width: 20px; height: 20px; border-radius: 6px; background: var(--accent); }
+  .wordmark { font-size: 16px; font-weight: 600; line-height: 20px; }
+  .label { font-size: 12px; line-height: 16px; color: var(--text-3); font-weight: 500; padding: 0 8px; margin-bottom: 8px; }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 36px;
+    padding: 0 8px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .nav a:hover { background: rgba(239, 233, 222, 0.04); color: var(--text); }
+  .nav a.is-active {
+    background: var(--raised);
+    border-color: var(--hair);
+    color: var(--text);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  .nav-left { display: flex; align-items: center; gap: 10px; }
+  .nav-left .ico { color: var(--text-3); }
+  .nav a.is-active .count { color: var(--accent); }
+
+  /* Ticket list */
+  .list {
+    background: var(--bg);
+    border-right: 1px solid var(--hair);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .list-head { padding: 20px 16px 12px; display: flex; flex-direction: column; gap: 12px; }
+  .list-head h2 { font-size: 20px; line-height: 28px; font-weight: 500; }
+  .list-head .meta { margin-top: 2px; }
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid var(--hair);
+    color: var(--text-3);
+    transition: border-color 150ms var(--ease);
+  }
+  .search:focus-within { border-color: var(--hair-strong); }
+  .search input { flex: 1; min-width: 0; background: none; border: 0; outline: none; color: var(--text); }
+  .search input::placeholder { color: var(--text-3); }
+
+  .tickets {
+    list-style: none;
+    padding: 4px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .ticket {
+    display: flex;
+    gap: 12px;
+    height: 100px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background-color 150ms var(--ease), border-color 150ms var(--ease);
+  }
+  .ticket:hover { background: rgba(239, 233, 222, 0.03); }
+  .ticket.is-selected {
+    background: var(--raised);
+    border-color: var(--hair);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  .ticket-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .row1 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; height: 18px; }
+  .name { font-size: 13px; line-height: 18px; font-weight: 500; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .subject { font-size: 14px; line-height: 20px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .preview { font-size: 13px; line-height: 18px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tags { display: flex; gap: 4px; margin-top: auto; height: 18px; }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 18px;
+    padding: 0 6px;
+    border-radius: 6px;
+    border: 1px solid var(--hair-strong);
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--text-2);
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--avatar);
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    flex-shrink: 0;
+  }
+  .avatar.lg { width: 40px; height: 40px; font-size: 14px; }
+
+  /* Thread */
+  .thread { display: flex; flex-direction: column; gap: 16px; padding: 24px; min-width: 0; min-height: 0; }
+  .card { background: var(--card); border: 1px solid var(--hair); border-radius: 14px; }
+
+  .thread-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; }
+  .head-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .thread-head h1 { font-size: 20px; line-height: 28px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .thread-head .meta { margin-top: 2px; display: block; }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 8px;
+    border: 1px solid var(--hair);
+    font-size: 13px;
+    color: var(--text-2);
+    flex-shrink: 0;
+  }
+
+  .messages {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .msg { max-width: 70%; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--hair); }
+  .msg.customer { align-self: flex-start; background: var(--raised); border-top-left-radius: 4px; }
+  .msg.agent { align-self: flex-end; background: var(--bg); border-color: var(--hair-strong); border-top-right-radius: 4px; }
+  .msg-meta { display: flex; align-items: baseline; gap: 8px; font-size: 13px; line-height: 18px; }
+  .msg-meta strong { font-weight: 500; color: var(--text); }
+  .msg p { margin-top: 6px; font-size: 14px; line-height: 22px; color: var(--text); }
+
+  .composer { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .composer-tools { display: flex; gap: 4px; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 8px;
+    border: 1px solid var(--hair);
+    background: transparent;
+    font-size: 13px;
+    color: var(--text-2);
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .chip:hover { background: var(--raised); color: var(--text); }
+  .chip.is-on { color: var(--text); border-color: var(--hair-strong); }
+  textarea {
+    width: 100%;
+    height: 80px;
+    resize: none;
+    outline: none;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--deep);
+    border: 1px solid var(--hair);
+    font-size: 14px;
+    line-height: 20px;
+    transition: border-color 150ms var(--ease);
+  }
+  textarea:focus { border-color: var(--hair-strong); }
+  textarea::placeholder { color: var(--text-3); }
+  .composer-foot { display: flex; justify-content: flex-end; }
+  .btn-primary {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    border: 0;
+    background: var(--text);
+    color: var(--accent-ink);
+    font-weight: 500;
+    transition: background-color 150ms var(--ease), transform 150ms var(--ease);
+  }
+  .btn-primary:hover { background: #ddd6c7; }
+  .btn-primary:active { transform: scale(0.98); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="wordmark">Deskwise</span>
+    </div>
+    <div>
+      <p class="label">Workspace</p>
+      <nav class="nav" aria-label="Inbox views">
+        <a class="is-active" href="#">
+          <span class="nav-left">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+            Inbox
+          </span>
+          <span class="count">12</span>
+        </a>
+        <a href="#">
+          <span class="nav-left">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            Assigned to me
+          </span>
+          <span class="count">7</span>
+        </a>
+        <a href="#">
+          <span class="nav-left">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><line x1="17" y1="8" x2="22" y2="13"/><line x1="22" y1="8" x2="17" y2="13"/></svg>
+            Unassigned
+          </span>
+          <span class="count">3</span>
+        </a>
+        <a href="#">
+          <span class="nav-left">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            Closed
+          </span>
+          <span class="count">148</span>
+        </a>
+      </nav>
+    </div>
+  </aside>
+
+  <section class="list" aria-label="Tickets">
+    <header class="list-head">
+      <div>
+        <h2>Inbox</h2>
+        <span class="meta">12 open tickets</span>
+      </div>
+      <label class="search">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" placeholder="Search" aria-label="Search tickets">
+      </label>
+    </header>
+
+    <ol class="tickets">
+      <li class="ticket is-selected">
+        <div class="avatar">MR</div>
+        <div class="ticket-body">
+          <div class="row1"><span class="name">Maria Rossi</span><time>2m ago</time></div>
+          <p class="subject">Login loop after password reset</p>
+          <p class="preview">I reset my password and now I keep getting bounced back</p>
+          <div class="tags">
+            <span class="tag"><i class="dot neg"></i>Urgent</span>
+            <span class="tag">Auth</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="ticket">
+        <div class="avatar">JK</div>
+        <div class="ticket-body">
+          <div class="row1"><span class="name">James Kim</span><time>14:05</time></div>
+          <p class="subject">Invoice shows wrong VAT</p>
+          <p class="preview">Hi, the VAT on invoice #4471 looks off</p>
+          <div class="tags">
+            <span class="tag"><i class="dot neg"></i>Urgent</span>
+            <span class="tag">Billing</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="ticket">
+        <div class="avatar">AL</div>
+        <div class="ticket-body">
+          <div class="row1"><span class="name">Aisha Lewis</span><time>Yesterday</time></div>
+          <p class="subject">Can't export CSV</p>
+          <p class="preview">Export button spins forever on big accounts</p>
+          <div class="tags">
+            <span class="tag">Bug</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="ticket">
+        <div class="avatar">DO</div>
+        <div class="ticket-body">
+          <div class="row1"><span class="name">David Okafor</span><time>09:41</time></div>
+          <p class="subject">Feature request: dark mode</p>
+          <p class="preview">Would love a dark theme for late shifts</p>
+          <div class="tags">
+            <span class="tag">High</span>
+            <span class="tag">Idea</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="ticket">
+        <div class="avatar">SP</div>
+        <div class="ticket-body">
+          <div class="row1"><span class="name">Sofia Pereira</span><time>3m ago</time></div>
+          <p class="subject">Team seats not syncing</p>
+          <p class="preview">We added 4 seats but only 2 show up</p>
+          <div class="tags">
+            <span class="tag">Medium</span>
+            <span class="tag">Teams</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="ticket">
+        <div class="avatar">TN</div>
+        <div class="ticket-body">
+          <div class="row1"><span class="name">Tom Nguyen</span><time>Mon</time></div>
+          <p class="subject">Webhook retries?</p>
+          <p class="preview">Do failed webhooks get retried automatically</p>
+          <div class="tags">
+            <span class="tag">Low</span>
+            <span class="tag">API</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="ticket">
+        <div class="avatar">EB</div>
+        <div class="ticket-body">
+          <div class="row1"><span class="name">Elena Brandt</span><time>11:20</time></div>
+          <p class="subject">Thanks so much</p>
+          <p class="preview">Issue fixed, appreciate the quick help</p>
+          <div class="tags">
+            <span class="tag"><i class="dot pos"></i>Resolved</span>
+          </div>
+        </div>
+      </li>
+
+      <li class="ticket">
+        <div class="avatar">RP</div>
+        <div class="ticket-body">
+          <div class="row1"><span class="name">Raj Patel</span><time>2 days ago</time></div>
+          <p class="subject">Locked out of account</p>
+          <p class="preview">Two-factor app got wiped, help please</p>
+          <div class="tags">
+            <span class="tag"><i class="dot neg"></i>Urgent</span>
+            <span class="tag">Security</span>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <main class="thread">
+    <header class="card thread-head">
+      <div class="head-left">
+        <div class="avatar lg">MR</div>
+        <div style="min-width: 0;">
+          <h1>Login loop after password reset</h1>
+          <span class="meta">Ticket DW-20417 · Opened 2m ago</span>
+        </div>
+      </div>
+      <span class="status"><i class="dot pos"></i>Open</span>
+    </header>
+
+    <div class="card messages">
+      <div class="msg customer">
+        <div class="msg-meta"><strong>Maria Rossi</strong><time>2m ago</time></div>
+        <p>I reset my password and now I keep getting bounced back to the login screen. I've tried three browsers already.</p>
+      </div>
+      <div class="msg agent">
+        <div class="msg-meta"><strong>Sam</strong><time>14:05</time></div>
+        <p>Hi Maria, sorry about that. Let's get this sorted. Can you clear your cookies for deskwise.app?</p>
+      </div>
+      <div class="msg customer">
+        <div class="msg-meta"><strong>Maria Rossi</strong><time>Yesterday</time></div>
+        <p>Did that, still looping. Any update?</p>
+      </div>
+    </div>
+
+    <form class="card composer" onsubmit="return false">
+      <div class="composer-tools">
+        <button class="chip is-on" type="button">Smart reply</button>
+        <button class="chip" type="button">Friendly</button>
+        <button class="chip" type="button">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          Attach
+        </button>
+      </div>
+      <textarea placeholder="Write a reply" aria-label="Reply"></textarea>
+      <div class="composer-foot">
+        <button class="btn-primary" type="button">Send reply</button>
+      </div>
+    </form>
+  </main>
+
+</div>
+</body>
+</html>

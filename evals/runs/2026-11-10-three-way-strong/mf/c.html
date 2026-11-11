@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview · MetricFlow</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F2F3EF; --surface:#FFFFFF; --surface-2:#F7F8F5; --line:#E1E4DD; --line-strong:#CBD0C7;
+    --ink:#14211E; --ink-2:#3A4945; --muted:#5E6D68;
+    --pine:#0F2A25; --pine-2:#173832; --pine-text:#C9D8D3;
+    --accent:#1E7A62; --accent-soft:#E3F1EB; --accent-strong:#15604D;
+    --glow:#E7B84A; --glow-soft:#FBF1D9;
+    --down:#B4452A; --down-soft:#FBE9E3;
+    --warn:#8A5A00; --warn-soft:#FBF0D6;
+    --c1:#1E7A62; --c2:#3E9BB0; --c3:#E7B84A; --c4:#9C8FC4;
+    --r:14px; --r-sm:9px;
+    --shadow:0 1px 2px rgba(20,33,30,.05),0 4px 14px -6px rgba(20,33,30,.08);
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--bg)}
+  body{font-family:"Hanken Grotesk",ui-sans-serif,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 1}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+  .muted{color:var(--muted)}
+  .eyebrow{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.01em}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+  /* sidebar */
+  .side{background:var(--pine);color:var(--pine-text)}
+  .nav-link{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--r-sm);font-weight:500;font-size:15px;color:var(--pine-text);transition:background .15s,color .15s}
+  .nav-link:hover{background:var(--pine-2);color:#fff}
+  .nav-link[aria-current="page"]{background:#24493F;color:#fff}
+  .nav-link[aria-current="page"] svg{color:var(--glow)}
+  .side :focus-visible{outline-color:var(--glow)}
+
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:var(--r-sm);border:1px solid var(--line-strong);background:var(--surface);font-weight:500;font-size:14px;color:var(--ink);transition:background .15s,border-color .15s,transform .05s}
+  .btn:hover{background:var(--surface-2);border-color:#B7BDB2}
+  .btn:active{transform:translateY(1px)}
+  .icon-btn{width:40px;padding:0;justify-content:center;position:relative}
+  .select{appearance:none;-webkit-appearance:none;height:40px;padding:0 36px 0 38px;border-radius:var(--r-sm);border:1px solid var(--line-strong);background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%235E6D68' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center;font:inherit;font-size:14px;font-weight:500;color:var(--ink);cursor:pointer}
+  .select:hover{border-color:#B7BDB2}
+  .seg{display:inline-flex;padding:3px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line)}
+  .seg button{height:30px;padding:0 12px;border-radius:7px;font-size:13px;font-weight:600;color:var(--muted)}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(20,33,30,.12)}
+
+  .delta{display:inline-flex;align-items:center;gap:3px;font-size:13px;font-weight:600;padding:2px 8px;border-radius:999px}
+  .delta.up{color:var(--accent-strong);background:var(--accent-soft)}
+  .delta.down{color:var(--down);background:var(--down-soft)}
+
+  /* chart */
+  .bar{transition:fill .15s,opacity .15s}
+  .bar-hit{cursor:pointer}
+  .bar-hit:focus{outline:none}
+  .bar-hit:focus-visible + .bar,.bar-group:hover .bar{filter:brightness(.92)}
+  .tip{position:absolute;pointer-events:none;background:var(--pine);color:#fff;border-radius:10px;padding:8px 12px;font-size:13px;white-space:nowrap;transform:translate(-50%,-100%);opacity:0;transition:opacity .12s;box-shadow:0 8px 20px -8px rgba(0,0,0,.4)}
+  .tip.show{opacity:1}
+
+  /* table */
+  .tbl th{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:left;padding:10px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+  .tbl td{padding:13px 16px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:middle}
+  .tbl tbody tr:last-child td{border-bottom:0}
+  .tbl tbody tr:hover{background:var(--surface-2)}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap}
+  .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+  .pill.paid{color:var(--accent-strong);background:var(--accent-soft)}
+  .pill.pending{color:var(--warn);background:var(--warn-soft)}
+  .pill.refunded{color:var(--down);background:var(--down-soft)}
+  .avatar{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
+  .search{height:36px;border-radius:var(--r-sm);border:1px solid var(--line-strong);padding:0 12px 0 34px;font:inherit;font-size:14px;width:100%;background:var(--surface)}
+  .search:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+
+  .pop{position:absolute;right:0;top:calc(100% + 8px);z-index:40;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 18px 40px -12px rgba(20,33,30,.25)}
+  .menu-item{display:flex;width:100%;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:14px;color:var(--ink);text-align:left}
+  .menu-item:hover{background:var(--surface-2)}
+
+  .drawer-backdrop{background:rgba(15,42,37,.45)}
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body class="min-h-screen">
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded-lg">Skip to content</a>
+
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <div id="backdrop" class="drawer-backdrop fixed inset-0 z-30 hidden lg:hidden"></div>
+  <aside id="sidebar" class="side fixed inset-y-0 left-0 z-40 w-64 -translate-x-full lg:translate-x-0 lg:static lg:flex-none transition-transform duration-200 flex flex-col" aria-label="Primary">
+    <div class="flex items-center gap-3 px-5 h-16">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#1E7A62"/><path d="M6 21c4 0 5-9 9-9s4 6 7 6 3-5 4-7" fill="none" stroke="#E7B84A" stroke-width="2.6" stroke-linecap="round"/></svg>
+      <span class="text-white text-[18px] font-bold tracking-tight">MetricFlow</span>
+      <button id="closeNav" class="lg:hidden ml-auto w-10 h-10 grid place-items-center rounded-lg hover:bg-white/10" aria-label="Close navigation">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+      </button>
+    </div>
+    <nav class="px-3 mt-4 flex-1">
+      <ul class="space-y-1" id="navList">
+        <li><a href="#overview" class="nav-link" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Overview</a></li>
+        <li><a href="#analytics" class="nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-5 3 3 5-6"/></svg>Analytics</a></li>
+        <li><a href="#customers" class="nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.8 3 2.5 3.5 5.2"/></svg>Customers</a></li>
+        <li><a href="#reports" class="nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Reports</a></li>
+        <li><a href="#settings" class="nav-link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Settings</a></li>
+      </ul>
+    </nav>
+    <div class="m-3 p-4 rounded-xl" style="background:var(--pine-2)">
+      <p class="text-white text-sm font-semibold">Weekly digest</p>
+      <p class="text-[13px] mt-1 leading-snug">Next report goes to 4 teammates on Monday, 8:00.</p>
+      <a href="#reports" class="inline-block mt-3 text-[13px] font-semibold" style="color:var(--glow)">Edit schedule →</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="flex-1 min-w-0 flex flex-col">
+    <header class="sticky top-0 z-20 border-b" style="background:rgba(242,243,239,.92);backdrop-filter:blur(8px);border-color:var(--line)">
+      <div class="flex items-center gap-3 px-4 sm:px-6 lg:px-8 h-16">
+        <button id="openNav" class="btn icon-btn lg:hidden" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5h14M3 10h14M3 15h14"/></svg>
+        </button>
+        <div class="min-w-0">
+          <h1 class="text-[22px] font-bold tracking-tight leading-tight">Overview</h1>
+          <p class="text-[13px] muted hidden sm:block">Northwind Supply Co. · all channels</p>
+        </div>
+        <div class="ml-auto flex items-center gap-2">
+          <label class="relative hidden sm:block">
+            <span class="sr-only">Date range</span>
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5E6D68" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            <select id="range" class="select">
+              <option value="1">October 2026</option>
+              <option value="3">Last 3 months</option>
+              <option value="ytd">Year to date</option>
+              <option value="12">Last 12 months</option>
+            </select>
+          </label>
+          <div class="relative">
+            <button id="notifBtn" class="btn icon-btn" aria-label="Notifications, 3 unread" aria-haspopup="true" aria-expanded="false" aria-controls="notifPop">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+              <span id="notifDot" class="absolute top-1.5 right-1.5 min-w-[18px] h-[18px] px-1 rounded-full text-[11px] font-bold grid place-items-center" style="background:var(--down);color:#fff" aria-hidden="true">3</span>
+            </button>
+            <div id="notifPop" class="pop w-[320px] max-w-[calc(100vw-32px)] p-2 hidden" role="region" aria-label="Notifications">
+              <div class="flex items-center justify-between px-3 py-2">
+                <p class="font-semibold">Notifications</p>
+                <button id="markRead" class="text-[13px] font-semibold rounded px-1" style="color:var(--accent-strong)">Mark all read</button>
+              </div>
+              <ul class="text-sm" id="notifList">
+                <li class="menu-item items-start unread"><span class="mt-1.5 w-2 h-2 rounded-full flex-none" style="background:var(--accent)"></span><span><strong>Revenue passed $48k</strong> for October, your best month so far.<span class="block muted text-[13px] mt-0.5">2 h ago</span></span></li>
+                <li class="menu-item items-start unread"><span class="mt-1.5 w-2 h-2 rounded-full flex-none" style="background:var(--accent)"></span><span><strong>Refund issued</strong> to Halden &amp; Pike, $214.00.<span class="block muted text-[13px] mt-0.5">5 h ago</span></span></li>
+                <li class="menu-item items-start unread"><span class="mt-1.5 w-2 h-2 rounded-full flex-none" style="background:var(--accent)"></span><span><strong>Q3 report</strong> is ready to download.<span class="block muted text-[13px] mt-0.5">Yesterday</span></span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="relative">
+            <button id="profileBtn" class="btn !px-1.5 sm:!pr-3 gap-2" aria-haspopup="menu" aria-expanded="false" aria-controls="profilePop">
+              <span class="avatar" style="width:30px;height:30px;background:#F3DFA9;color:#5A3F00">MO</span>
+              <span class="hidden sm:block text-left leading-tight"><span class="block text-sm font-semibold">Maya Okafor</span><span class="block text-[12px] muted">Head of Growth</span></span>
+            </button>
+            <div id="profilePop" class="pop w-56 p-1.5 hidden" role="menu" aria-label="Account">
+              <button class="menu-item" role="menuitem">Profile</button>
+              <button class="menu-item" role="menuitem">Team &amp; billing</button>
+              <button class="menu-item" role="menuitem">Keyboard shortcuts</button>
+              <hr class="my-1" style="border-color:var(--line)">
+              <button class="menu-item" role="menuitem" style="color:var(--down)">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sm:hidden px-4 pb-3">
+        <label class="relative block">
+          <span class="sr-only">Date range</span>
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5E6D68" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <select id="rangeMobile" class="select w-full">
+            <option value="1">October 2026</option>
+            <option value="3">Last 3 months</option>
+            <option value="ytd">Year to date</option>
+            <option value="12">Last 12 months</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <main id="main" class="px-4 sm:px-6 lg:px-8 py-6 space-y-5 max-w-[1440px] w-full">
+      <h2 class="sr-only">Key metrics</h2>
+      <!-- Hero: revenue + chart, side KPIs -->
+      <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_300px] gap-5">
+        <section class="card p-5 sm:p-6" aria-labelledby="revTitle">
+          <div class="flex flex-wrap items-start gap-x-6 gap-y-4">
+            <div>
+              <h3 id="revTitle" class="eyebrow">Total Revenue · <span data-period>October 2026</span></h3>
+              <div class="flex items-baseline gap-3 mt-1 flex-wrap">
+                <p id="revValue" class="text-[44px] sm:text-[52px] font-bold tracking-tight leading-none">$48,290</p>
+                <span id="revDelta" class="delta up"></span>
+              </div>
+              <p id="revNote" class="text-sm muted mt-2"></p>
+            </div>
+            <div class="ml-auto flex items-center gap-4 flex-wrap">
+              <div class="flex items-center gap-4 text-[13px] muted" aria-hidden="true">
+                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-[3px]" style="background:var(--accent)"></span>Selected period</span>
+                <span id="legendPrior" class="flex items-center gap-1.5"><svg width="18" height="4"><path d="M0 2h18" stroke="#B88A1E" stroke-width="2" stroke-dasharray="4 3"/></svg>Last year</span>
+              </div>
+              <div class="seg" role="group" aria-label="Compare">
+                <button type="button" id="cmpOn" aria-pressed="true">vs last year</button>
+                <button type="button" id="cmpOff" aria-pressed="false">Off</button>
+              </div>
+            </div>
+          </div>
+          <div id="chartWrap" class="relative mt-6">
+            <svg id="chart" class="w-full block" height="280" role="img" aria-labelledby="chartDesc"></svg>
+            <p id="chartDesc" class="sr-only">Monthly revenue, November 2025 to October 2026. Detailed values in the table that follows.</p>
+            <div id="tip" class="tip" role="status" aria-live="polite"></div>
+          </div>
+          <table class="sr-only"><caption>Monthly revenue</caption><thead><tr><th>Month</th><th>Revenue</th><th>Same month last year</th></tr></thead><tbody id="srRows"></tbody></table>
+        </section>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 xl:grid-cols-1 gap-5" id="kpis"></div>
+      </div>
+
+      <!-- Traffic + Insights -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <section class="card p-5 sm:p-6" aria-labelledby="trafficTitle">
+          <div class="flex items-baseline justify-between gap-4">
+            <h2 id="trafficTitle" class="text-[17px] font-bold">Traffic sources</h2>
+            <p class="text-sm muted"><span id="sessionsTotal">17,220</span> sessions</p>
+          </div>
+          <div class="mt-5 flex h-4 rounded-full overflow-hidden gap-[3px]" id="trafficBar" aria-hidden="true"></div>
+          <ul class="mt-5 divide-y" style="border-color:var(--line)" id="trafficList"></ul>
+        </section>
+
+        <section class="card p-5 sm:p-6" aria-labelledby="insightTitle">
+          <div class="flex items-baseline justify-between gap-4">
+            <h2 id="insightTitle" class="text-[17px] font-bold">Insights &amp; activity</h2>
+            <a href="#analytics" class="text-sm font-semibold rounded" style="color:var(--accent-strong)">All activity</a>
+          </div>
+          <div class="mt-4 rounded-xl p-4 flex gap-3" style="background:var(--glow-soft)">
+            <svg class="flex-none mt-0.5" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8A5A00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg>
+            <div>
+              <p class="font-semibold text-[15px]" style="color:#5A3F00">Order value is slipping while orders grow</p>
+              <p class="text-sm mt-1 leading-relaxed" style="color:#6B4C08">Orders rose 15% in October, but average order value fell 2.1% to $86.50. Most of the new orders came from Social, where baskets average $61. A free-shipping threshold around $95 could lift it.</p>
+            </div>
+          </div>
+          <ol class="mt-4 space-y-4" id="activity">
+            <li class="flex gap-3"><span class="avatar" style="background:var(--accent-soft);color:var(--accent-strong)" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span><p class="text-sm leading-snug pt-1"><strong class="font-semibold">Lumen Studio</strong> upgraded to the Annual plan, <span class="font-semibold">$1,240</span><span class="block muted text-[13px] mt-0.5">Today, 09:42</span></p></li>
+            <li class="flex gap-3"><span class="avatar" style="background:#E4F0F3;color:#245F6D" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8M15 7h6v6"/></svg></span><p class="text-sm leading-snug pt-1">Organic sessions up <span class="font-semibold">22%</span> after the “Spring restock guide” post<span class="block muted text-[13px] mt-0.5">Today, 07:15</span></p></li>
+            <li class="flex gap-3"><span class="avatar" style="background:var(--down-soft);color:var(--down)" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg></span><p class="text-sm leading-snug pt-1">Refund of <span class="font-semibold">$214.00</span> issued to Halden &amp; Pike<span class="block muted text-[13px] mt-0.5">Yesterday, 16:08</span></p></li>
+          </ol>
+        </section>
+      </div>
+
+      <!-- Transactions -->
+      <section class="card" aria-labelledby="txTitle">
+        <div class="flex flex-wrap items-center gap-3 p-5 sm:px-6 pb-4">
+          <h2 id="txTitle" class="text-[17px] font-bold mr-auto">Recent transactions</h2>
+          <div class="seg" role="group" aria-label="Filter by status" id="txFilter">
+            <button type="button" data-f="all" aria-pressed="true">All</button>
+            <button type="button" data-f="paid" aria-pressed="false">Paid</button>
+            <button type="button" data-f="pending" aria-pressed="false">Pending</button>
+            <button type="button" data-f="refunded" aria-pressed="false">Refunded</button>
+          </div>
+          <label class="relative w-full sm:w-56">
+            <span class="sr-only">Search transactions</span>
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5E6D68" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="txSearch" type="search" class="search" placeholder="Customer or order ID">
+          </label>
+        </div>
+        <div class="overflow-x-auto border-t" style="border-color:var(--line)">
+          <table class="tbl w-full min-w-[680px]">
+            <thead><tr><th scope="col">Customer</th><th scope="col">Order</th><th scope="col">Date</th><th scope="col">Channel</th><th scope="col">Status</th><th scope="col" class="!text-right">Amount</th></tr></thead>
+            <tbody id="txBody"></tbody>
+          </table>
+          <p id="txEmpty" class="hidden p-8 text-center muted text-sm">No transactions match that search.</p>
+        </div>
+      </section>
+      <p class="text-[13px] muted pb-4">Data refreshed 10 Nov 2026, 10:05. Figures in USD.</p>
+    </main>
+  </div>
+</div>
+
+<script>
+(() => {
+  const months = ['Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'];
+  const years  = [2025,2025,2026,2026,2026,2026,2026,2026,2026,2026,2026,2026];
+  const rev    = [31420,36980,29880,33150,35970,34210,37640,39980,38450,40120,42810,48290];
+  const prior  = [27150,31760,26310,28440,30020,29870,31390,33060,32540,33410,35120,39470];
+
+  const ranges = {
+    '1':  {label:'October 2026', n:1,  base:'September',
+           kpi:{users:[12840,8.2], conv:[3.24,1.4], aov:[86.50,-2.1]}, sessions:17220},
+    '3':  {label:'Last 3 months', n:3, base:'the previous 3 months',
+           kpi:{users:[31960,11.5], conv:[3.18,2.6], aov:[87.10,0.8]}, sessions:48760},
+    'ytd':{label:'Year to date', n:10, base:'Jan–Oct 2025', yoy:true,
+           kpi:{users:[84320,14.9], conv:[3.06,4.1], aov:[87.90,1.2]}, sessions:146080},
+    '12': {label:'Last 12 months', n:12, base:'the previous 12 months', yoy:true,
+           kpi:{users:[97410,15.3], conv:[3.02,3.8], aov:[88.20,1.5]}, sessions:171930},
+  };
+  const spark = {
+    users:[9800,10120,10400,10050,10900,11240,11180,11620,11870,12100,11860,12840],
+    conv:[2.88,2.91,2.95,2.86,3.02,3.05,2.98,3.10,3.12,3.15,3.19,3.24],
+    aov:[89.6,90.1,88.7,89.2,88.9,88.1,88.6,87.9,88.4,87.6,88.36,86.5]
+  };
+
+  const fmt$ = n => '$' + n.toLocaleString('en-US');
+  const fmt$2 = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const arrow = up => up
+    ? '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2.5 10 8H2z" fill="currentColor"/></svg>'
+    : '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 9.5 2 4h8z" fill="currentColor"/></svg>';
+  const delta = v => `<span class="delta ${v>=0?'up':'down'}">${arrow(v>=0)}<span class="sr-only">${v>=0?'up':'down'}</span>${Math.abs(v).toFixed(1)}%</span>`;
+
+  let state = {range:'1', compare:true};
+
+  function selection(){
+    const r = ranges[state.range];
+    const end = 12, start = end - r.n;
+    const cur = rev.slice(start,end).reduce((a,b)=>a+b,0);
+    let base;
+    if (r.yoy) base = prior.slice(start,end).reduce((a,b)=>a+b,0);
+    else base = rev.slice(start - r.n, start).reduce((a,b)=>a+b,0);
+    return {r, start, end, cur, change:(cur/base-1)*100};
+  }
+
+  // ---- KPIs
+  const kpiDefs = [
+    {key:'users', title:'Active Users', fmt:v=>v.toLocaleString('en-US'), color:'#3E9BB0'},
+    {key:'conv', title:'Conversion Rate', fmt:v=>v.toFixed(2)+'%', color:'#1E7A62'},
+    {key:'aov', title:'Average Order Value', fmt:fmt$2, color:'#B4452A'},
+  ];
+  function sparkPath(data,w,h){
+    const min=Math.min(...data), max=Math.max(...data);
+    return data.map((v,i)=>`${i?'L':'M'}${(i/(data.length-1)*w).toFixed(1)},${(h-3-(v-min)/(max-min)*(h-6)).toFixed(1)}`).join(' ');
+  }
+  function renderKpis(){
+    const {r} = selection();
+    document.getElementById('kpis').innerHTML = kpiDefs.map(d=>{
+      const [v,c] = r.kpi[d.key];
+      const col = c>=0 ? '#1E7A62' : '#B4452A';
+      return `<section class="card p-5 flex flex-col" aria-label="${d.title}">
+        <div class="flex items-start justify-between gap-2"><h3 class="eyebrow">${d.title}</h3>${delta(c)}</div>
+        <div class="flex items-end justify-between gap-3 mt-3">
+          <p class="text-[30px] font-bold tracking-tight leading-none">${d.fmt(v)}</p>
+          <svg width="96" height="34" viewBox="0 0 96 34" aria-hidden="true" class="flex-none"><path d="${sparkPath(spark[d.key],96,34)}" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <p class="text-[13px] muted mt-2">vs ${r.base}</p>
+      </section>`;
+    }).join('');
+  }
+
+  // ---- Revenue header
+  function renderRevenue(){
+    const s = selection();
+    document.getElementById('revValue').textContent = fmt$(s.cur);
+    document.getElementById('revDelta').outerHTML = `<span id="revDelta">${delta(s.change)}</span>`;
+    const orders = Math.round(s.cur / s.r.kpi.aov[0]);
+    document.getElementById('revNote').textContent = `${orders.toLocaleString('en-US')} orders · vs ${s.r.base}`;
+    document.querySelectorAll('[data-period]').forEach(e=>e.textContent=s.r.label);
+    document.getElementById('sessionsTotal').textContent = s.r.sessions.toLocaleString('en-US');
+    renderTraffic(s.r.sessions);
+  }
+
+  // ---- Chart
+  const svg = document.getElementById('chart');
+  const tip = document.getElementById('tip');
+  function renderChart(){
+    const s = selection();
+    const W = svg.clientWidth || 800, H = 280;
+    const pad = {l:44, r:8, t:12, b:30};
+    const iw = W - pad.l - pad.r, ih = H - pad.t - pad.b;
+    const max = 50000;
+    const y = v => pad.t + ih - v/max*ih;
+    const step = iw/12, bw = Math.min(40, step*0.56);
+    let g = '';
+    for (let t=0; t<=max; t+=10000){
+      g += `<line x1="${pad.l}" x2="${W-pad.r}" y1="${y(t)}" y2="${y(t)}" stroke="${t?'#E8EBE4':'#CBD0C7'}" />`;
+      g += `<text x="${pad.l-10}" y="${y(t)+4}" text-anchor="end" font-size="12" fill="#5E6D68">${t? '$'+t/1000+'k':'$0'}</text>`;
+    }
+    rev.forEach((v,i)=>{
+      const cx = pad.l + step*i + step/2, inSel = i>=s.start;
+      const last = i===11;
+      const fill = inSel ? (last ? '#15604D' : '#1E7A62') : '#C9DDD5';
+      const h = ih - (y(v)-pad.t);
+      g += `<g class="bar-group">
+        <rect class="bar-hit" data-i="${i}" tabindex="0" role="button" aria-label="${months[i]} ${years[i]}: ${fmt$(v)}" x="${cx-step/2}" y="${pad.t}" width="${step}" height="${ih}" fill="transparent"/>
+        <rect class="bar" x="${cx-bw/2}" y="${y(v)}" width="${bw}" height="${h}" rx="5" fill="${fill}" pointer-events="none"/>
+        ${last?`<rect x="${cx-bw/2}" y="${y(v)}" width="${bw}" height="4" rx="2" fill="#E7B84A" pointer-events="none"/>`:''}
+      </g>`;
+      const showLabel = W > 560 || i%2===1;
+      if (showLabel) g += `<text x="${cx}" y="${H-8}" text-anchor="middle" font-size="12" fill="${inSel?'#14211E':'#5E6D68'}" font-weight="${inSel?600:400}">${months[i]}${i===0||months[i]==='Jan'?` ’${String(years[i]).slice(2)}`:''}</text>`;
+    });
+    if (state.compare){
+      const pts = prior.map((v,i)=>`${i?'L':'M'}${pad.l+step*i+step/2},${y(v)}`).join(' ');
+      g += `<path d="${pts}" fill="none" stroke="#B88A1E" stroke-width="2" stroke-dasharray="5 4" stroke-linejoin="round" pointer-events="none"/>`;
+      prior.forEach((v,i)=>{ g += `<circle cx="${pad.l+step*i+step/2}" cy="${y(v)}" r="3" fill="#fff" stroke="#B88A1E" stroke-width="1.8" pointer-events="none"/>`; });
+    }
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.innerHTML = g;
+    svg.querySelectorAll('.bar-hit').forEach(el=>{
+      const show = () => {
+        const i = +el.dataset.i, v = rev[i], p = prior[i];
+        const cx = pad.l + step*i + step/2;
+        const yoy = ((v/p-1)*100).toFixed(1);
+        tip.innerHTML = `<div class="font-semibold">${months[i]} ${years[i]}</div><div class="text-[15px] font-bold mt-0.5">${fmt$(v)}</div><div style="color:#C9D8D3">${state.compare?`Last year ${fmt$(p)} · +${yoy}%`:''}</div>`;
+        const left = Math.max(80, Math.min(W-80, cx));
+        tip.style.left = left + 'px';
+        tip.style.top = (Math.min(y(v), state.compare ? y(p) : y(v)) - 10) + 'px';
+        tip.classList.add('show');
+      };
+      el.addEventListener('mouseenter', show);
+      el.addEventListener('focus', show);
+      el.addEventListener('mouseleave', ()=>tip.classList.remove('show'));
+      el.addEventListener('blur', ()=>tip.classList.remove('show'));
+    });
+    document.getElementById('legendPrior').style.visibility = state.compare ? 'visible' : 'hidden';
+  }
+  document.getElementById('srRows').innerHTML = rev.map((v,i)=>`<tr><td>${months[i]} ${years[i]}</td><td>${fmt$(v)}</td><td>${fmt$(prior[i])}</td></tr>`).join('');
+
+  const cmpOn = document.getElementById('cmpOn'), cmpOff = document.getElementById('cmpOff');
+  [cmpOn,cmpOff].forEach(b=>b.addEventListener('click',()=>{
+    state.compare = b===cmpOn;
+    cmpOn.setAttribute('aria-pressed', state.compare); cmpOff.setAttribute('aria-pressed', !state.compare);
+    renderChart();
+  }));
+
+  // ---- Traffic
+  const traffic = [
+    {name:'Organic search', pct:42, color:'var(--c1)', note:'Google, Bing, DuckDuckGo'},
+    {name:'Direct', pct:28, color:'var(--c2)', note:'Typed URL, bookmarks'},
+    {name:'Social', pct:18, color:'var(--c3)', note:'Instagram, Pinterest, TikTok'},
+    {name:'Referral', pct:12, color:'var(--c4)', note:'Partner blogs, newsletters'},
+  ];
+  function renderTraffic(total){
+    document.getElementById('trafficBar').innerHTML = traffic.map(t=>`<span style="width:${t.pct}%;background:${t.color}"></span>`).join('');
+    document.getElementById('trafficList').innerHTML = traffic.map(t=>`
+      <li class="flex items-center gap-3 py-3" style="border-color:var(--line)">
+        <span class="w-3 h-3 rounded-[3px] flex-none" style="background:${t.color}" aria-hidden="true"></span>
+        <span class="min-w-0"><span class="block font-semibold text-[15px]">${t.name}</span><span class="block text-[13px] muted truncate">${t.note}</span></span>
+        <span class="ml-auto text-right"><span class="block font-bold text-[15px]">${t.pct}%</span><span class="block text-[13px] muted">${Math.round(total*t.pct/100).toLocaleString('en-US')}</span></span>
+      </li>`).join('');
+  }
+
+  // ---- Transactions
+  const tx = [
+    {name:'Lumen Studio', email:'billing@lumenstudio.co', id:'MF-20481', date:'Nov 10, 09:42', ch:'Direct', st:'paid', amt:1240.00, av:['#E3F1EB','#15604D']},
+    {name:'Priya Raman', email:'priya.raman@gmail.com', id:'MF-20480', date:'Nov 10, 08:17', ch:'Organic', st:'paid', amt:92.40, av:['#E4F0F3','#245F6D']},
+    {name:'Brightside Bakery', email:'orders@brightside.shop', id:'MF-20479', date:'Nov 9, 19:55', ch:'Social', st:'pending', amt:68.00, av:['#FBF1D9','#6B4C08']},
+    {name:'Halden & Pike', email:'accounts@haldenpike.com', id:'MF-20476', date:'Nov 9, 16:08', ch:'Referral', st:'refunded', amt:214.00, av:['#ECE8F5','#4F437A']},
+    {name:'Tomás Herrera', email:'tomas.h@outlook.com', id:'MF-20474', date:'Nov 9, 13:31', ch:'Organic', st:'paid', amt:118.75, av:['#E3F1EB','#15604D']},
+    {name:'Kestrel Outdoor', email:'ap@kestreloutdoor.com', id:'MF-20471', date:'Nov 9, 10:02', ch:'Direct', st:'paid', amt:486.20, av:['#E4F0F3','#245F6D']},
+    {name:'Ana Lindqvist', email:'ana.lindqvist@proton.me', id:'MF-20468', date:'Nov 8, 21:44', ch:'Social', st:'paid', amt:54.90, av:['#FBF1D9','#6B4C08']},
+  ];
+  const stLabel = {paid:'Paid', pending:'Pending', refunded:'Refunded'};
+  let filter='all', q='';
+  function initials(n){return n.replace('&','').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();}
+  function renderTx(){
+    const rows = tx.filter(t => (filter==='all'||t.st===filter) && (!q || (t.name+' '+t.id+' '+t.email).toLowerCase().includes(q)));
+    document.getElementById('txBody').innerHTML = rows.map(t=>`
+      <tr>
+        <td><div class="flex items-center gap-3"><span class="avatar" style="background:${t.av[0]};color:${t.av[1]}" aria-hidden="true">${initials(t.name)}</span><span class="min-w-0"><span class="block font-semibold">${t.name.replace('&','&amp;')}</span><span class="block text-[13px] muted">${t.email}</span></span></div></td>
+        <td class="mono text-[13px] whitespace-nowrap" style="color:var(--ink-2)">${t.id}</td>
+        <td class="whitespace-nowrap" style="color:var(--ink-2)">${t.date}</td>
+        <td style="color:var(--ink-2)">${t.ch}</td>
+        <td><span class="pill ${t.st}">${stLabel[t.st]}</span></td>
+        <td class="text-right font-semibold whitespace-nowrap ${t.st==='refunded'?'line-through':''}" style="${t.st==='refunded'?'color:var(--muted)':''}">${fmt$2(t.amt)}</td>
+      </tr>`).join('');
+    document.getElementById('txEmpty').classList.toggle('hidden', rows.length>0);
+    document.getElementById('txEmpty').textContent = q ? `No transactions match “${q}”.` : 'No transactions with this status yet.';
+  }
+  document.querySelectorAll('#txFilter button').forEach(b=>b.addEventListener('click',()=>{
+    filter=b.dataset.f;
+    document.querySelectorAll('#txFilter button').forEach(x=>x.setAttribute('aria-pressed', x===b));
+    renderTx();
+  }));
+  document.getElementById('txSearch').addEventListener('input',e=>{q=e.target.value.trim().toLowerCase();renderTx();});
+
+  // ---- Range selects (kept in sync)
+  const selects = [document.getElementById('range'), document.getElementById('rangeMobile')];
+  selects.forEach(sel=>sel.addEventListener('change',()=>{
+    state.range = sel.value; selects.forEach(s=>s.value=sel.value);
+    renderAll();
+  }));
+
+  // ---- Popovers
+  function popover(btnId, popId){
+    const btn=document.getElementById(btnId), pop=document.getElementById(popId);
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      const open = pop.classList.contains('hidden');
+      closeAll();
+      if(open){pop.classList.remove('hidden');btn.setAttribute('aria-expanded','true');const f=pop.querySelector('button');f&&f.focus();}
+    });
+    pop.addEventListener('click',e=>e.stopPropagation());
+    return {btn,pop};
+  }
+  const pops=[popover('notifBtn','notifPop'),popover('profileBtn','profilePop')];
+  function closeAll(){pops.forEach(p=>{p.pop.classList.add('hidden');p.btn.setAttribute('aria-expanded','false');});}
+  document.addEventListener('click',closeAll);
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ const open=pops.find(p=>!p.pop.classList.contains('hidden')); closeAll(); open&&open.btn.focus(); closeNav(); }});
+  document.getElementById('markRead').addEventListener('click',()=>{
+    document.querySelectorAll('#notifList .unread > span:first-child').forEach(d=>d.style.background='transparent');
+    document.getElementById('notifDot').style.display='none';
+    document.getElementById('notifBtn').setAttribute('aria-label','Notifications, none unread');
+  });
+
+  // ---- Nav
+  const side=document.getElementById('sidebar'), back=document.getElementById('backdrop'), openBtn=document.getElementById('openNav');
+  function openNav(){side.classList.remove('-translate-x-full');back.classList.remove('hidden');openBtn.setAttribute('aria-expanded','true');document.getElementById('closeNav').focus();}
+  function closeNav(){ if(window.innerWidth>=1024) return; side.classList.add('-translate-x-full');back.classList.add('hidden');openBtn.setAttribute('aria-expanded','false');}
+  openBtn.addEventListener('click',openNav);
+  document.getElementById('closeNav').addEventListener('click',()=>{closeNav();openBtn.focus();});
+  back.addEventListener('click',closeNav);
+  document.querySelectorAll('#navList a').forEach(a=>a.addEventListener('click',e=>{
+    e.preventDefault();
+    document.querySelectorAll('#navList a').forEach(x=>x.removeAttribute('aria-current'));
+    a.setAttribute('aria-current','page');
+    closeNav();
+  }));
+
+  function renderAll(){renderRevenue();renderKpis();renderChart();}
+  renderAll(); renderTx();
+  let rt; window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(renderChart,100);});
+})();
+</script>
+</body>
+</html>

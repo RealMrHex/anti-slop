@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pingly: Uptime monitoring for developers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --bg: #0b0d14;
+    --surface: #11141c;
+    --raised: #1a1e28;
+    --text: #eef0f5;
+    --text-2: #a3a9b8;
+    --text-3: #7a8296;
+    --accent: #f5b544;
+    --accent-hover: #ffc865;
+    --ok: #4cc38a;
+    --hairline: rgba(238, 240, 245, 0.08);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  body {
+    font-family: 'Geist', ui-sans-serif, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .mono { font-family: 'Geist Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .hairline { border-color: var(--hairline); }
+  a, summary { transition: color 160ms var(--ease), background-color 160ms var(--ease), border-color 160ms var(--ease); }
+  a:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  summary { list-style: none; cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .rise { animation: rise 420ms var(--ease) both; }
+  .rise-2 { animation: rise 420ms var(--ease) 60ms both; }
+  .rise-3 { animation: rise 420ms var(--ease) 120ms both; }
+  @media (prefers-reduced-motion: reduce) {
+    .rise, .rise-2, .rise-3 { animation: none; }
+    a, summary { transition: none; }
+  }
+</style>
+</head>
+<body class="antialiased min-h-screen">
+
+<header class="border-b hairline">
+  <div class="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-6 py-4">
+    <a href="#" class="flex items-center gap-2.5">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect width="24" height="24" rx="6" fill="#f5b544"/>
+        <path d="M4 14H8.5L10.5 8.5L13.5 16.5L15.5 11.5H20" stroke="#0b0d14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="text-[17px] font-semibold tracking-[-0.01em]">Pingly</span>
+    </a>
+
+    <nav class="hidden items-center gap-7 text-[14px] text-[#a3a9b8] md:flex" aria-label="Main">
+      <a href="#" class="hover:text-[#eef0f5]">Features</a>
+      <a href="#" class="hover:text-[#eef0f5]">Status pages</a>
+      <a href="#" class="hover:text-[#eef0f5]">Integrations</a>
+      <a href="#" class="hover:text-[#eef0f5]">Pricing</a>
+      <a href="#" class="hover:text-[#eef0f5]">Docs</a>
+    </nav>
+
+    <div class="flex items-center gap-5">
+      <a href="#" class="hidden text-[14px] text-[#a3a9b8] hover:text-[#eef0f5] sm:inline">Log in</a>
+      <a href="#" class="rounded-[8px] bg-[#f5b544] px-4 py-2 text-[14px] font-medium text-[#1a1205] hover:bg-[#ffc865]">Start free</a>
+      <details class="relative md:hidden">
+        <summary class="rounded-[8px] border hairline px-3 py-2 text-[14px] text-[#a3a9b8] hover:text-[#eef0f5]">Menu</summary>
+        <nav class="absolute right-0 mt-2 flex w-[200px] flex-col gap-1 rounded-[12px] border hairline bg-[#11141c] p-2 text-[14px] text-[#a3a9b8] shadow-[0_8px_24px_rgba(0,0,0,0.35)]" aria-label="Mobile">
+          <a href="#" class="rounded-[8px] px-3 py-2 hover:bg-[#1a1e28] hover:text-[#eef0f5]">Features</a>
+          <a href="#" class="rounded-[8px] px-3 py-2 hover:bg-[#1a1e28] hover:text-[#eef0f5]">Status pages</a>
+          <a href="#" class="rounded-[8px] px-3 py-2 hover:bg-[#1a1e28] hover:text-[#eef0f5]">Integrations</a>
+          <a href="#" class="rounded-[8px] px-3 py-2 hover:bg-[#1a1e28] hover:text-[#eef0f5]">Pricing</a>
+          <a href="#" class="rounded-[8px] px-3 py-2 hover:bg-[#1a1e28] hover:text-[#eef0f5]">Docs</a>
+          <a href="#" class="rounded-[8px] px-3 py-2 hover:bg-[#1a1e28] hover:text-[#eef0f5] sm:hidden">Log in</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main class="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-14 px-6 pb-20 pt-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12 lg:pt-24">
+
+  <section class="min-w-0">
+    <p class="rise mono text-[13px] text-[#a3a9b8]">v2.0 is live</p>
+    <h1 class="rise mt-5 text-[44px] font-medium leading-[1.04] tracking-[-0.03em] sm:text-[56px] lg:text-[64px]">
+      Uptime monitoring for developers
+    </h1>
+    <p class="rise-2 mt-6 max-w-[34rem] text-[18px] leading-[1.6] text-[#a3a9b8]">
+      Check your APIs every 30 seconds from 12 regions. Alerts reach Slack and PagerDuty as soon as a check fails, and public status pages keep your users informed.
+    </p>
+    <div class="rise-2 mt-9 flex flex-wrap items-center gap-3">
+      <a href="#" class="rounded-[10px] bg-[#f5b544] px-5 py-3 text-[16px] font-medium text-[#1a1205] hover:bg-[#ffc865]">Start monitoring free</a>
+      <a href="#" class="rounded-[10px] border hairline bg-[#1a1e28] px-5 py-3 text-[16px] font-medium text-[#eef0f5] hover:bg-[#232a38]">Watch demo</a>
+    </div>
+
+    <dl class="rise-3 mt-12 grid max-w-[34rem] grid-cols-2 gap-6 border-t hairline pt-6 sm:grid-cols-3">
+      <div>
+        <dt class="text-[13px] text-[#7a8296]">Check interval</dt>
+        <dd class="mono mt-1 text-[20px] text-[#eef0f5]">30 s</dd>
+      </div>
+      <div>
+        <dt class="text-[13px] text-[#7a8296]">Regions</dt>
+        <dd class="mono mt-1 text-[20px] text-[#eef0f5]">12</dd>
+      </div>
+      <div>
+        <dt class="text-[13px] text-[#7a8296]">Alert routes</dt>
+        <dd class="mt-1 text-[20px] text-[#eef0f5]">Slack, PagerDuty</dd>
+      </div>
+    </dl>
+
+    <div class="rise-3 mt-10 max-w-[34rem] overflow-hidden rounded-[14px] border hairline bg-[#0f1219]">
+      <div class="flex items-center gap-2 border-b hairline px-4 py-3">
+        <span class="h-[10px] w-[10px] rounded-full bg-[#2a2f3c]"></span>
+        <span class="h-[10px] w-[10px] rounded-full bg-[#2a2f3c]"></span>
+        <span class="h-[10px] w-[10px] rounded-full bg-[#2a2f3c]"></span>
+        <span class="mono ml-3 text-[12px] text-[#7a8296]">pingly-cli, zsh</span>
+      </div>
+      <pre class="mono overflow-x-auto px-5 py-4 text-[13.5px] leading-[1.7] text-[#a3a9b8]"><span class="text-[#eef0f5]">$ pingly monitor add api.acme.dev --interval 30s</span>
+<span class="text-[#4cc38a]">Monitor created</span>
+<span class="text-[#eef0f5]">$ pingly regions --list</span>
+  us-east  eu-west  ap-south  +9 more
+<span class="text-[#eef0f5]">$ pingly alerts --route slack,pagerduty</span>
+<span class="text-[#4cc38a]">Alert routing set: slack, pagerduty</span></pre>
+    </div>
+  </section>
+
+  <section aria-label="Example monitor" class="rise-2 min-w-0 rounded-[18px] border hairline bg-[#11141c] p-5 sm:p-6 shadow-[0_8px_24px_rgba(0,0,0,0.35)]">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p class="text-[15px] font-medium text-[#eef0f5]">api.acme.dev</p>
+        <p class="mono mt-1 text-[12px] text-[#7a8296]">GET /v1/health</p>
+      </div>
+      <p class="flex items-center gap-2 text-[13px] text-[#a3a9b8]">
+        <span class="h-[7px] w-[7px] rounded-full bg-[#4cc38a]" aria-hidden="true"></span>
+        Operational
+      </p>
+    </div>
+
+    <div class="mt-6 grid grid-cols-2 gap-4 border-y hairline py-5">
+      <div>
+        <p class="mono text-[28px] font-medium leading-none text-[#eef0f5]">99.98%</p>
+        <p class="mt-2 text-[13px] text-[#7a8296]">Uptime, last 30 days</p>
+      </div>
+      <div>
+        <p class="mono text-[28px] font-medium leading-none text-[#eef0f5]">146 ms</p>
+        <p class="mt-2 text-[13px] text-[#7a8296]">Median response, 24 h</p>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <div class="mb-3 flex items-center justify-between text-[13px] text-[#7a8296]">
+        <span>Response time, us-east</span>
+        <span class="mono text-[12px]">24 h</span>
+      </div>
+      <svg viewBox="0 0 560 206" class="block h-auto w-full" role="img" aria-label="Response time for us-east over 24 hours. A spike around 14:30 triggered an alert.">
+        <g stroke="#eef0f5" stroke-opacity="0.06" stroke-width="1">
+          <line x1="0" y1="60" x2="560" y2="60"/>
+          <line x1="0" y1="100" x2="560" y2="100"/>
+          <line x1="0" y1="140" x2="560" y2="140"/>
+        </g>
+        <line x1="0" y1="180" x2="560" y2="180" stroke="#eef0f5" stroke-opacity="0.12" stroke-width="1"/>
+        <polygon fill="#f5b544" fill-opacity="0.08" points="0,142.5 24.3,145.5 48.7,148.5 73,150.8 97.4,146.3 121.7,141.8 146.1,136.5 170.5,132.8 194.8,126.8 219.2,129 243.5,135 267.8,138.8 292.2,143.3 316.5,141 340.9,144.8 365.2,149.3 389.6,151.5 413.9,147.8 438.3,112.5 462.6,78 487,126.8 511.3,136.5 535.7,143.3 560,145.5 560,180 0,180"/>
+        <polyline fill="none" stroke="#f5b544" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="0,142.5 24.3,145.5 48.7,148.5 73,150.8 97.4,146.3 121.7,141.8 146.1,136.5 170.5,132.8 194.8,126.8 219.2,129 243.5,135 267.8,138.8 292.2,143.3 316.5,141 340.9,144.8 365.2,149.3 389.6,151.5 413.9,147.8 438.3,112.5 462.6,78 487,126.8 511.3,136.5 535.7,143.3 560,145.5"/>
+        <circle cx="462.6" cy="78" r="4" fill="#11141c" stroke="#f5b544" stroke-width="2"/>
+        <text x="450" y="66" text-anchor="end" fill="#a3a9b8" font-size="12" font-family="Geist Mono, monospace">Alert sent 14:32</text>
+        <g fill="#7a8296" font-size="11" font-family="Geist Mono, monospace">
+          <text x="0" y="198">00:00</text>
+          <text x="140" y="198" text-anchor="middle">06:00</text>
+          <text x="280" y="198" text-anchor="middle">12:00</text>
+          <text x="420" y="198" text-anchor="middle">18:00</text>
+          <text x="560" y="198" text-anchor="end">now</text>
+        </g>
+      </svg>
+    </div>
+
+    <ul class="mt-6 border-t hairline">
+      <li class="flex items-center justify-between border-b hairline py-3 text-[14px]">
+        <span class="text-[#a3a9b8]">us-east</span>
+        <span class="mono text-[#eef0f5]">142 ms</span>
+      </li>
+      <li class="flex items-center justify-between border-b hairline py-3 text-[14px]">
+        <span class="text-[#a3a9b8]">eu-west</span>
+        <span class="mono text-[#eef0f5]">96 ms</span>
+      </li>
+      <li class="flex items-center justify-between py-3 text-[14px]">
+        <span class="text-[#a3a9b8]">ap-south</span>
+        <span class="mono text-[#eef0f5]">231 ms</span>
+      </li>
+    </ul>
+  </section>
+
+</main>
+</body>
+</html>

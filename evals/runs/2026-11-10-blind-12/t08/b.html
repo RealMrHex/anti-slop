@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mara Lindqvist — Photographer</title>
+<meta name="description" content="Mara Lindqvist is a freelance photographer working in documentary, editorial and landscape photography.">
+<style>
+:root{
+  --paper:#f3efe8; --ink:#1c1a17; --muted:#6b655b; --line:#d9d2c5; --accent:#b4482c;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#15130f;--ink:#efe9de;--muted:#9c9487;--line:#34302a;--accent:#e07a5a}
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font:17px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+header.nav{display:flex;justify-content:space-between;align-items:center;padding:24px 0}
+.logo{font-family:var(--serif);font-size:1.15rem;text-decoration:none;letter-spacing:.01em}
+nav a{margin-left:28px;text-decoration:none;font-size:.9rem;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:end;padding:56px 0 80px}
+.eyebrow{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.6rem,6.4vw,5.4rem);line-height:1.02;letter-spacing:-.02em}
+h1 em{color:var(--accent)}
+.hero p.lede{margin-top:28px;max-width:30em;color:var(--muted);font-size:1.1rem}
+.cta{margin-top:36px;display:flex;gap:14px;flex-wrap:wrap}
+.btn{display:inline-block;padding:13px 24px;border:1px solid var(--ink);text-decoration:none;font-size:.92rem}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn:hover{border-color:var(--accent);background:var(--accent);color:#fff}
+
+/* image stand-ins drawn in CSS */
+.ph{position:relative;overflow:hidden;background:#555}
+.ph::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 90px rgba(0,0,0,.28)}
+.p1{background:linear-gradient(180deg,#f2c48a 0%,#d98a5b 38%,#5b4a58 62%,#1f2a35 100%)}
+.p1::before{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;background:#141c24;clip-path:polygon(0 60%,14% 30%,28% 55%,45% 10%,62% 50%,78% 25%,100% 55%,100% 100%,0 100%)}
+.p2{background:radial-gradient(circle at 70% 28%,#fff3d0 0 6%,transparent 7%),linear-gradient(170deg,#8fb1b5,#3d6068 60%,#1b2e33)}
+.p3{background:linear-gradient(120deg,#2b2623,#6e5a48 50%,#c9a77c)}
+.p3::before{content:"";position:absolute;inset:18% 22%;border:1px solid rgba(255,255,255,.35);border-radius:50% 50% 0 0}
+.p4{background:linear-gradient(0deg,#e8e1d3,#b9c3c4 55%,#6f8591)}
+.p4::before{content:"";position:absolute;left:12%;right:12%;bottom:0;height:55%;background:#2a3238;clip-path:polygon(0 100%,0 40%,20% 40%,20% 15%,45% 15%,45% 55%,70% 55%,70% 25%,100% 25%,100% 100%)}
+.p5{background:conic-gradient(from 210deg at 30% 80%,#3a2e2a,#b4482c,#e9b37a,#3a2e2a)}
+.p6{background:linear-gradient(200deg,#0e1a24,#1f3b4d 50%,#7aa0a8)}
+.p6::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.07) 0 1px,transparent 1px 14px)}
+.hero .ph{aspect-ratio:4/5}
+
+section{padding:72px 0;border-top:1px solid var(--line)}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:36px;gap:20px;flex-wrap:wrap}
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.8rem,3.4vw,2.6rem);letter-spacing:-.01em}
+.sec-head span{color:var(--muted);font-size:.9rem}
+
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+figure{display:block}
+figure .ph{width:100%}
+figcaption{display:flex;justify-content:space-between;gap:12px;margin-top:10px;font-size:.88rem;color:var(--muted)}
+figcaption b{font-weight:500;color:var(--ink)}
+.g1{grid-column:span 7;display:flex;flex-direction:column}.g1 .ph{flex:1;min-height:260px}
+.g2{grid-column:span 5}.g2 .ph{aspect-ratio:4/5}
+.g3{grid-column:span 4}.g3 .ph{aspect-ratio:1}
+.g4{grid-column:span 4}.g4 .ph{aspect-ratio:1}
+.g5{grid-column:span 4}.g5 .ph{aspect-ratio:1}
+.g6{grid-column:span 12}.g6 .ph{aspect-ratio:21/8}
+figure .ph{transition:transform .5s}
+figure:hover .ph{transform:scale(1.015)}
+
+.about{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.about p{color:var(--muted);margin-bottom:1em}
+.about p:first-of-type{color:var(--ink);font-family:var(--serif);font-size:1.45rem;line-height:1.4}
+dl{display:grid;grid-template-columns:auto 1fr;gap:12px 28px;font-size:.95rem;align-self:start}
+dt{color:var(--muted)}
+dd{margin:0}
+
+.services{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.services div{border-top:2px solid var(--ink);padding-top:18px}
+.services h3{font-family:var(--serif);font-weight:400;font-size:1.35rem;margin-bottom:8px}
+.services p{color:var(--muted);font-size:.95rem}
+
+blockquote{font-family:var(--serif);font-size:clamp(1.4rem,2.8vw,2.1rem);line-height:1.35;max-width:26em}
+blockquote cite{display:block;margin-top:18px;font:.9rem var(--sans);color:var(--muted)}
+
+.contact{text-align:center}
+.contact h2{font-size:clamp(2rem,5vw,3.8rem)}
+.contact a.mail{display:inline-block;margin-top:24px;font-family:var(--serif);font-size:clamp(1.2rem,3vw,1.9rem);color:var(--accent);text-underline-offset:6px}
+.contact p{color:var(--muted);margin-top:14px}
+footer{padding:28px 0 40px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+@media (max-width:820px){
+  .hero,.about{grid-template-columns:1fr;gap:36px}
+  .hero{padding-top:24px}
+  .services{grid-template-columns:1fr}
+  .g1,.g2,.g6{grid-column:span 12}
+  .g3,.g4,.g5{grid-column:span 6}
+  .g5{grid-column:span 12}.g5 .ph{aspect-ratio:3/2}
+  nav a{margin-left:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="nav">
+    <a class="logo" href="#top">Mara Lindqvist</a>
+    <nav aria-label="Primary">
+      <a href="#work">Work</a><a href="#about">About</a><a href="#services">Services</a><a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div>
+        <p class="eyebrow">Freelance photographer · Gothenburg &amp; on assignment</p>
+        <h1>Quiet light, <em>honest</em> moments.</h1>
+        <p class="lede">I photograph people, places and weather for magazines, studios and families who would rather be remembered than posed. Booking assignments for the coming season.</p>
+        <div class="cta">
+          <a class="btn solid" href="#work">See the work</a>
+          <a class="btn" href="#contact">Book a date</a>
+        </div>
+      </div>
+      <div class="ph p1" role="img" aria-label="Placeholder: dusk over a mountain ridge"></div>
+    </div>
+
+    <section id="work">
+      <div class="sec-head"><h2>Selected work</h2><span>2022 – 2026</span></div>
+      <div class="grid">
+        <figure class="g1"><div class="ph p2" role="img" aria-label="Placeholder: moonlit coast"></div><figcaption><b>Salt Season</b><span>Landscape · Bohuslän</span></figcaption></figure>
+        <figure class="g2"><div class="ph p3" role="img" aria-label="Placeholder: warm interior"></div><figcaption><b>Ateliers</b><span>Portrait series</span></figcaption></figure>
+        <figure class="g3"><div class="ph p4" role="img" aria-label="Placeholder: city blocks in fog"></div><figcaption><b>Morning Fog</b><span>Editorial</span></figcaption></figure>
+        <figure class="g4"><div class="ph p5" role="img" aria-label="Placeholder: ember tones"></div><figcaption><b>Kiln</b><span>Documentary</span></figcaption></figure>
+        <figure class="g5"><div class="ph p6" role="img" aria-label="Placeholder: night water"></div><figcaption><b>Night Ferry</b><span>Travel</span></figcaption></figure>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="sec-head"><h2>About</h2></div>
+      <div class="about">
+        <div>
+          <p>I have spent twelve years learning to wait: for the cloud to move, the shoulders to drop, the room to forget I am in it.</p>
+          <p>My work began in local newsrooms and grew into long-form documentary projects and commissioned editorial. I shoot mostly natural light, on film and digital, and deliver edited, colour-consistent sets you can use right away.</p>
+        </div>
+        <dl>
+          <dt>Based</dt><dd>Gothenburg, Sweden</dd>
+          <dt>Travels</dt><dd>Worldwide, gladly</dd>
+          <dt>Clients</dt><dd>Magazines, studios, NGOs, private</dd>
+          <dt>Turnaround</dt><dd>Selects in 3 days, full set in 10</dd>
+          <dt>Languages</dt><dd>English, Svenska, Deutsch</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="sec-head"><h2>Services</h2></div>
+      <div class="services">
+        <div><h3>Editorial &amp; commercial</h3><p>Story-led shoots for publications, brands and small businesses, with usage licensing tailored to your campaign.</p></div>
+        <div><h3>Portraits &amp; families</h3><p>Relaxed sessions at home or outdoors. No stiff poses, just time enough for people to be themselves.</p></div>
+        <div><h3>Events &amp; weddings</h3><p>Unobtrusive coverage from first guest to last dance, limited to a handful of dates each year.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <blockquote>Mara turned a two-day shoot into the strongest set of images we have ever run. She is calm, fast and sees what others miss.
+        <cite>Photo editor, regional culture magazine</cite></blockquote>
+    </section>
+
+    <section id="contact" class="contact">
+      <h2>Have a project in mind?</h2>
+      <a class="mail" href="mailto:hello@example.com">hello@example.com</a>
+      <p>Tell me the date, the place and the feeling you are after. I reply within two working days.</p>
+    </section>
+  </main>
+
+  <footer><span>© 2026 Mara Lindqvist</span><span>Instagram · Behance · Journal</span></footer>
+</div>
+</body>
+</html>

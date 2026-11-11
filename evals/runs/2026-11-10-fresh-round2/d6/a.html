@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Readwell Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --side: #12110f;
+    --bg: #161513;
+    --card: #1c1a18;
+    --raised: #262421;
+    --hair: rgba(239, 233, 222, 0.08);
+    --t1: #efe9de;
+    --t2: #aaa398;
+    --t3: #8a847a;
+    --accent: #e6a449;
+    --on-accent: #1a1510;
+    --pos: #4cc38a;
+    --bar: #5b544a;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--t1);
+    font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    overflow: hidden;
+  }
+
+  p { margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  button, input { font: inherit; color: inherit; }
+
+  .num { font-variant-numeric: tabular-nums; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; }
+  .muted { color: var(--t3); }
+  .pos { color: var(--pos); }
+
+  .ic {
+    width: 16px; height: 16px; flex: none;
+    fill: none; stroke: currentColor; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  .app { display: flex; height: 100vh; min-width: 1024px; }
+
+  /* Sidebar */
+  .side {
+    width: 232px; flex: none;
+    background: var(--side);
+    border-right: 1px solid var(--hair);
+    padding: 20px 16px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .brand { font-size: 16px; font-weight: 600; padding: 0 10px; }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    height: 34px; padding: 0 10px;
+    border-radius: 8px;
+    color: var(--t2); font-weight: 500;
+    transition: background-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .nav-item:hover { background: var(--raised); color: var(--t1); }
+  .nav-item .ic { color: var(--t3); }
+  .nav-item.is-active { background: var(--raised); color: var(--t1); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 0 0 1px var(--hair); }
+  .nav-item.is-active .ic { color: var(--t1); }
+  .nav-settings { margin-top: auto; }
+
+  /* Main */
+  .main {
+    flex: 1; min-width: 0;
+    padding: 28px 32px 24px;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+
+  .top { display: flex; align-items: center; justify-content: space-between; height: 40px; }
+  h1 { margin: 0; font-size: 28px; line-height: 1.15; font-weight: 500; }
+  h2 { margin: 0; font-size: 15px; line-height: 20px; font-weight: 500; }
+
+  .top-actions { display: flex; align-items: center; gap: 12px; }
+  .search {
+    display: flex; align-items: center; gap: 8px;
+    width: 224px; height: 34px; padding: 0 12px;
+    background: var(--card);
+    border: 1px solid var(--hair); border-radius: 8px;
+    color: var(--t3);
+  }
+  .search input {
+    flex: 1; min-width: 0; background: transparent; border: 0; outline: none;
+    color: var(--t1);
+  }
+  .search input::placeholder { color: var(--t3); }
+  .search:focus-within { border-color: rgba(239, 233, 222, 0.2); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 34px; padding: 0 14px;
+    background: var(--raised);
+    border: 1px solid var(--hair); border-radius: 8px;
+    color: var(--t1); font-weight: 500; white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 160ms var(--ease), border-color 160ms var(--ease);
+  }
+  .btn:hover { background: #2d2b27; }
+  .btn-primary {
+    background: var(--accent); border-color: transparent; color: var(--on-accent);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+  .btn-primary:hover { background: #ecb05a; }
+  .btn:active { transform: scale(0.98); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .range { display: flex; align-items: center; gap: 8px; }
+  .range .label { color: var(--t3); margin-right: 8px; }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; flex: none; }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--hair); border-radius: 14px;
+    padding: 16px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .stat-label { color: var(--t2); font-weight: 500; }
+  .stat-value { font-size: 32px; line-height: 1; font-weight: 500; }
+  .stat-delta { color: var(--t3); font-size: 13px; line-height: 18px; }
+  .stat-delta .pos { font-weight: 500; }
+
+  /* Lower row */
+  .lower { flex: 1 1 0; min-height: 0; display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--hair); border-radius: 14px;
+    padding: 20px;
+    display: flex; flex-direction: column; min-height: 0;
+  }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .link { color: var(--t2); font-size: 13px; font-weight: 500; }
+  .link:hover { color: var(--t1); }
+
+  .chart-card { gap: 0; }
+  .chart { position: relative; flex: 1 1 0; min-height: 0; margin: 0 4px; }
+  .grid {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .grid i { display: block; height: 1px; background: var(--hair); }
+  .bars {
+    position: absolute; inset: 0;
+    display: flex; align-items: flex-end; gap: 12px;
+  }
+  .bar { flex: 1; background: var(--bar); border-radius: 4px 4px 0 0; }
+  .bar.is-current { background: var(--accent); }
+  .axis {
+    display: flex; justify-content: space-between;
+    margin: 10px 4px 0; color: var(--t3);
+  }
+
+  .src-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .src-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .src-row span:first-child { color: var(--t1); }
+  .src-row .num { color: var(--t2); }
+  .track { height: 4px; border-radius: 2px; background: var(--raised); overflow: hidden; }
+  .track i { display: block; height: 100%; background: var(--t3); border-radius: 2px; }
+  .src-list li:first-child .track i { background: var(--t2); }
+
+  /* Table */
+  .issues { flex: none; padding-bottom: 8px; }
+  .range, .top { flex: none; }
+  .card-head { flex: none; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left; font-weight: 400; color: var(--t3); font-size: 12px; line-height: 16px;
+    padding: 0 0 8px;
+  }
+  td { height: 34px; padding: 0; border-top: 1px solid var(--hair); white-space: nowrap; }
+  tbody tr:hover td { background: rgba(239, 233, 222, 0.02); }
+  td.title { color: var(--t1); font-weight: 500; }
+  td.sent { color: var(--t2); }
+  .r { text-align: right; }
+  th.r, td.r { padding-right: 0; }
+  th.r + th.r, td.r + td.r { padding-left: 24px; }
+  td.sent { padding-right: 24px; }
+  td.title { padding-right: 24px; width: 100%; }
+  td.opens, td.clicks { font-variant-numeric: tabular-nums; }
+  td.opens { padding-left: 0; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand">Readwell</div>
+    <nav class="nav">
+      <a class="nav-item is-active" href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+        Analytics
+      </a>
+      <a class="nav-item" href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        Issues
+      </a>
+      <a class="nav-item" href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Subscribers
+      </a>
+      <a class="nav-item" href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="7" rx="1"/><rect x="3" y="14" width="9" height="7" rx="1"/><rect x="16" y="14" width="5" height="7" rx="1"/></svg>
+        Templates
+      </a>
+      <a class="nav-item" href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+        Automations
+      </a>
+      <a class="nav-item nav-settings" href="#">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <h1>Analytics</h1>
+      <div class="top-actions">
+        <label class="search">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" placeholder="Search" aria-label="Search">
+        </label>
+        <button class="btn btn-primary">New issue</button>
+      </div>
+    </header>
+
+    <div class="range">
+      <span class="label">Date range</span>
+      <button class="btn">Last 12 weeks</button>
+      <button class="btn mono">Aug 16 – Nov 8, 2026</button>
+      <button class="btn">Apply</button>
+    </div>
+
+    <section class="stats">
+      <div class="stat">
+        <p class="stat-label">Subscribers</p>
+        <p class="stat-value num">48,210</p>
+        <p class="stat-delta"><span class="pos num">+12%</span> vs previous 12 weeks</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Open rate</p>
+        <p class="stat-value num">41.7%</p>
+        <p class="stat-delta"><span class="pos num">+3.2%</span> vs previous 12 weeks</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Click rate</p>
+        <p class="stat-value num">6.9%</p>
+        <p class="stat-delta"><span class="pos num">+0.8%</span> vs previous 12 weeks</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Unsubscribes</p>
+        <p class="stat-value num">0.4%</p>
+        <p class="stat-delta"><span class="pos num">−0.1%</span> vs previous 12 weeks</p>
+      </div>
+    </section>
+
+    <section class="lower">
+      <div class="card chart-card">
+        <div class="card-head">
+          <h2>Subscriber growth</h2>
+          <span class="muted">Weekly</span>
+        </div>
+        <div class="chart" role="img" aria-label="Weekly subscriber growth over 12 weeks, rising to the latest week">
+          <div class="grid"><i></i><i></i><i></i><i></i></div>
+          <div class="bars">
+            <div class="bar" style="height:38%"></div>
+            <div class="bar" style="height:44%"></div>
+            <div class="bar" style="height:41%"></div>
+            <div class="bar" style="height:52%"></div>
+            <div class="bar" style="height:58%"></div>
+            <div class="bar" style="height:55%"></div>
+            <div class="bar" style="height:63%"></div>
+            <div class="bar" style="height:70%"></div>
+            <div class="bar" style="height:66%"></div>
+            <div class="bar" style="height:78%"></div>
+            <div class="bar" style="height:84%"></div>
+            <div class="bar is-current" style="height:92%"></div>
+          </div>
+        </div>
+        <div class="axis mono"><span>Aug 16</span><span>Nov 8</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Top traffic sources</h2>
+        </div>
+        <ul class="src-list">
+          <li>
+            <div class="src-row"><span>Google Search</span><span class="num">38%</span></div>
+            <div class="track"><i style="width:100%"></i></div>
+          </li>
+          <li>
+            <div class="src-row"><span>Instagram</span><span class="num">24.5%</span></div>
+            <div class="track"><i style="width:64.5%"></i></div>
+          </li>
+          <li>
+            <div class="src-row"><span>X / Twitter</span><span class="num">17%</span></div>
+            <div class="track"><i style="width:44.7%"></i></div>
+          </li>
+          <li>
+            <div class="src-row"><span>Direct &amp; Email</span><span class="num">12.3%</span></div>
+            <div class="track"><i style="width:32.4%"></i></div>
+          </li>
+          <li>
+            <div class="src-row"><span>Referrals</span><span class="num">8.2%</span></div>
+            <div class="track"><i style="width:21.6%"></i></div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card issues">
+      <div class="card-head">
+        <h2>Recent issues</h2>
+        <a class="link" href="#">View all</a>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Sent</th>
+            <th class="r">Opens</th>
+            <th class="r">Clicks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="title">You won't believe issue #48</td><td class="sent">Nov 3, 2026</td><td class="r opens num">19,840</td><td class="r clicks num">2,311</td></tr>
+          <tr><td class="title">10 hacks to 10x your reach</td><td class="sent">Oct 27, 2026</td><td class="r opens num">18,205</td><td class="r clicks num">1,987</td></tr>
+          <tr><td class="title">Our biggest update ever</td><td class="sent">Oct 20, 2026</td><td class="r opens num">17,612</td><td class="r clicks num">1,740</td></tr>
+          <tr><td class="title">Genius idea (seriously)</td><td class="sent">Oct 13, 2026</td><td class="r opens num">16,990</td><td class="r clicks num">1,502</td></tr>
+          <tr><td class="title">#1 newsletter platform</td><td class="sent">Oct 6, 2026</td><td class="r opens num">15,430</td><td class="r clicks num">1,388</td></tr>
+          <tr><td class="title">Don't miss this</td><td class="sent">Sep 29, 2026</td><td class="r opens num">14,075</td><td class="r clicks num">1,219</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+</div>
+</body>
+</html>

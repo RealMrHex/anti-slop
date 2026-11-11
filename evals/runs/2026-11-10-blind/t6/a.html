@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home</title>
+<style>
+:root{
+  --bg:#f6f5f2;--card:#fff;--ink:#1b1f1d;--muted:#6b726e;--line:#e8e6e0;
+  --accent:#1f6f5c;--accent-soft:#dcefe9;--warn:#c2410c;--pos:#1f6f5c;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#121513;--card:#1b1f1d;--ink:#eef0ee;--muted:#9aa29d;--line:#2a2f2c;--accent:#4fc3a1;--accent-soft:#1f3a32;--warn:#fb923c;--pos:#4fc3a1}
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding-bottom:88px}
+.app{max-width:480px;margin:0 auto;padding:20px 16px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+header p{color:var(--muted);font-size:14px}
+header h1{font-size:20px;font-weight:600}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:600}
+.balance{background:var(--accent);color:#fff;border-radius:20px;padding:22px 20px}
+@media (prefers-color-scheme:dark){.balance{background:#1f5a4b}}
+.balance .label{font-size:14px;opacity:.85}
+.balance .amt{font-size:40px;font-weight:700;letter-spacing:-.02em;margin:4px 0 8px;font-variant-numeric:tabular-nums}
+.balance .delta{font-size:14px;opacity:.9}
+.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 26px}
+.actions button{font:inherit;font-size:14px;font-weight:500;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:12px 4px;min-height:44px;cursor:pointer}
+section{margin-bottom:26px}
+.row-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+h2{font-size:17px;font-weight:600}
+.row-h a{font-size:14px;color:var(--accent);text-decoration:none;padding:6px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
+.big{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.big span{font-size:14px;font-weight:400;color:var(--muted)}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:12px 0 6px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:6px}
+.sub{font-size:13px;color:var(--muted)}
+.cats{margin-top:14px;display:grid;gap:12px}
+.cat .top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}
+.cat .top span:last-child{color:var(--muted);font-variant-numeric:tabular-nums}
+.cat .bar{height:6px;margin:0}
+.cat.over .bar i{background:var(--warn)}
+.cat.over .top span:last-child{color:var(--warn);font-weight:600}
+ul{list-style:none;padding:0}
+li{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+li:last-child{border:0}
+.ic{width:40px;height:40px;border-radius:12px;background:var(--accent-soft);display:grid;place-items:center;font-size:18px;flex:none}
+.tx{flex:1;min-width:0}
+.tx b{display:block;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx small{color:var(--muted);font-size:13px}
+.amt-t{font-variant-numeric:tabular-nums;font-weight:600}
+.amt-t.in{color:var(--pos)}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center}
+nav div{display:flex;width:100%;max-width:480px}
+nav a{flex:1;text-align:center;padding:10px 0 14px;font-size:12px;color:var(--muted);text-decoration:none;min-height:48px}
+nav a.on{color:var(--accent);font-weight:600}
+nav a span{display:block;font-size:20px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div><p>Good morning</p><h1>Maya</h1></div>
+    <div class="avatar" aria-hidden="true">M</div>
+  </header>
+
+  <div class="balance">
+    <div class="label">Current balance</div>
+    <div class="amt">$4,827.36</div>
+    <div class="delta">+$312.40 since last week</div>
+  </div>
+
+  <div class="actions">
+    <button>Send</button><button>Request</button><button>Add money</button>
+  </div>
+
+  <section aria-labelledby="b">
+    <div class="row-h"><h2 id="b">November budget</h2><a href="#">Edit</a></div>
+    <div class="card">
+      <div class="big">$1,842 <span>of $2,600 spent</span></div>
+      <div class="bar" role="progressbar" aria-valuenow="71" aria-valuemin="0" aria-valuemax="100"><i style="width:71%"></i></div>
+      <div class="sub">$758 left &middot; 20 days to go</div>
+      <div class="cats">
+        <div class="cat"><div class="top"><span>Groceries</span><span>$412 / $600</span></div><div class="bar"><i style="width:69%"></i></div></div>
+        <div class="cat over"><div class="top"><span>Dining out</span><span>$285 / $250</span></div><div class="bar"><i style="width:100%"></i></div></div>
+        <div class="cat"><div class="top"><span>Transport</span><span>$96 / $200</span></div><div class="bar"><i style="width:48%"></i></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="t">
+    <div class="row-h"><h2 id="t">Recent transactions</h2><a href="#">See all</a></div>
+    <div class="card" style="padding:4px 16px">
+      <ul>
+        <li><div class="ic">🛒</div><div class="tx"><b>Whole Foods Market</b><small>Groceries &middot; Today</small></div><div class="amt-t">&minus;$64.18</div></li>
+        <li><div class="ic">💼</div><div class="tx"><b>Paycheck, Northwind Inc.</b><small>Income &middot; Yesterday</small></div><div class="amt-t in">+$2,150.00</div></li>
+        <li><div class="ic">☕</div><div class="tx"><b>Blue Bottle Coffee</b><small>Dining out &middot; Yesterday</small></div><div class="amt-t">&minus;$6.50</div></li>
+        <li><div class="ic">🚇</div><div class="tx"><b>City Transit</b><small>Transport &middot; Nov 8</small></div><div class="amt-t">&minus;$33.00</div></li>
+        <li><div class="ic">🎬</div><div class="tx"><b>Netflix</b><small>Subscriptions &middot; Nov 7</small></div><div class="amt-t">&minus;$15.49</div></li>
+      </ul>
+    </div>
+  </section>
+</div>
+<nav><div>
+  <a class="on" href="#"><span>⌂</span>Home</a>
+  <a href="#"><span>⇄</span>Activity</a>
+  <a href="#"><span>◔</span>Budget</a>
+  <a href="#"><span>☰</span>More</a>
+</div></nav>
+</body>
+</html>

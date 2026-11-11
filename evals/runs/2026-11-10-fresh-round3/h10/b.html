@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brightside | One-to-one maths tutoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f4ee;
+      --card: #fdfbf7;
+      --raised: #efe9df;
+      --text: #1f1b16;
+      --text-2: #5e554a;
+      --muted: #7b7266;
+      --line: rgba(31, 27, 22, 0.08);
+      --line-strong: rgba(31, 27, 22, 0.18);
+      --grid: rgba(31, 27, 22, 0.045);
+      --accent: #b4431b;
+      --accent-hover: #9a3815;
+      --accent-ink: #ffffff;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--text);
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 28px 28px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Navigation */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px 32px;
+      height: 72px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0;
+    }
+
+    .mark {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .links {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      max-width: 100%;
+      gap: 8px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-2);
+    }
+
+    .links a {
+      text-decoration: none;
+      transition: color 160ms var(--ease);
+    }
+
+    .links a:hover { color: var(--text); }
+
+    .links .login {
+      color: var(--text);
+      margin-left: 8px;
+    }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      min-width: 0;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 64px;
+      align-items: center;
+      min-height: calc(100vh - 72px);
+      padding: 48px 0 72px;
+    }
+
+    .copy h1 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(44px, 6vw, 76px);
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-wrap: balance;
+      max-width: 14ch;
+    }
+
+    .sub {
+      margin: 24px 0 0;
+      max-width: 32rem;
+      font-size: 19px;
+      line-height: 1.5;
+      color: var(--text-2);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-family: var(--sans);
+      font-size: 16px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background-color 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease);
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    .btn-ghost {
+      color: var(--text);
+      border: 1px solid var(--line-strong);
+    }
+
+    .btn-ghost:hover { background: var(--raised); }
+
+    /* Product preview */
+    .preview {
+      margin: 0;
+      min-width: 0;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .card-sub {
+      margin: 2px 0 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .card-meta {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 20px;
+    }
+
+    .figure {
+      font-size: 32px;
+      font-weight: 500;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    .stat-change {
+      font-size: 14px;
+      color: var(--text-2);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .chart {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin-top: 16px;
+    }
+
+    .rows {
+      margin: 8px 0 0;
+    }
+
+    .rows > div {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+      font-size: 15px;
+    }
+
+    .rows dt { color: var(--text-2); }
+
+    .rows dd {
+      margin: 0;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    .preview figcaption {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* One entrance, short and quiet */
+    .rise {
+      animation: rise 480ms var(--ease) both;
+    }
+
+    .rise-2 { animation-delay: 80ms; }
+    .rise-3 { animation-delay: 160ms; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rise, .rise-2, .rise-3 { animation: none; }
+      .btn, .links a { transition: none; }
+    }
+
+    /* Small screens */
+    @media (max-width: 900px) {
+      .wrap { padding: 0 16px; }
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 40px;
+        min-height: auto;
+        padding: 24px 0 56px;
+      }
+      .copy h1 { font-size: 44px; }
+      .sub { font-size: 17px; }
+      .links { font-size: 14px; gap: 8px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <nav class="nav" aria-label="Main">
+      <a class="brand" href="#">
+        <span class="mark" aria-hidden="true"></span>
+        Brightside
+      </a>
+      <div class="links">
+        <a href="#">Home</a>
+        <a href="#">How it works</a>
+        <a href="#">Homework help</a>
+        <a href="#">Plans</a>
+        <a href="#" class="login">Log in</a>
+      </div>
+    </nav>
+
+    <main class="hero">
+      <div class="copy">
+        <h1 class="rise">One-to-one maths tutoring for ages 11 to 16</h1>
+        <p class="sub rise rise-2">
+          Weekly one-to-one video lessons, instant homework help by chat, and progress reports for parents.
+        </p>
+        <div class="actions rise rise-3">
+          <a class="btn btn-primary" href="#">Start your free trial</a>
+          <a class="btn btn-ghost" href="#">Watch demo</a>
+        </div>
+      </div>
+
+      <figure class="preview rise rise-2">
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <p class="card-title">Progress report</p>
+              <p class="card-sub">Year 8 · Algebra</p>
+            </div>
+            <p class="card-meta">Term 2</p>
+          </div>
+
+          <div class="stat">
+            <span class="figure">74%</span>
+            <span class="stat-label">Average on weekly checks</span>
+            <span class="stat-change">+22 pts vs week 1</span>
+          </div>
+
+          <svg class="chart" viewBox="0 0 480 220" role="img" aria-label="Weekly check scores rising from 52% in week 1 to 74% in week 7">
+            <line x1="36" y1="20" x2="464" y2="20" stroke="rgba(31,27,22,0.08)" />
+            <line x1="36" y1="100" x2="464" y2="100" stroke="rgba(31,27,22,0.08)" />
+            <line x1="36" y1="180" x2="464" y2="180" stroke="rgba(31,27,22,0.14)" />
+            <text x="0" y="24" font-size="12" fill="#7b7266" font-family="Instrument Sans, system-ui, sans-serif">80</text>
+            <text x="0" y="104" font-size="12" fill="#7b7266" font-family="Instrument Sans, system-ui, sans-serif">60</text>
+            <text x="0" y="184" font-size="12" fill="#7b7266" font-family="Instrument Sans, system-ui, sans-serif">40</text>
+            <path d="M44 132 L112 120 L180 96 L248 108 L316 76 L384 56 L452 44" fill="none" stroke="#b4431b" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />
+            <g fill="#b4431b">
+              <circle cx="44" cy="132" r="3.5" />
+              <circle cx="112" cy="120" r="3.5" />
+              <circle cx="180" cy="96" r="3.5" />
+              <circle cx="248" cy="108" r="3.5" />
+              <circle cx="316" cy="76" r="3.5" />
+              <circle cx="384" cy="56" r="3.5" />
+            </g>
+            <circle cx="452" cy="44" r="6" fill="#b4431b" stroke="#fdfbf7" stroke-width="2.5" />
+            <g fill="#7b7266" font-size="12" text-anchor="middle" font-family="Instrument Sans, system-ui, sans-serif">
+              <text x="44" y="204">1</text>
+              <text x="112" y="204">2</text>
+              <text x="180" y="204">3</text>
+              <text x="248" y="204">4</text>
+              <text x="316" y="204">5</text>
+              <text x="384" y="204">6</text>
+              <text x="452" y="204">7</text>
+            </g>
+          </svg>
+
+          <dl class="rows">
+            <div>
+              <dt>Lesson this week</dt>
+              <dd>Two-step equations</dd>
+            </div>
+            <div>
+              <dt>Homework</dt>
+              <dd>6 of 8 tasks done</dd>
+            </div>
+            <div>
+              <dt>Next lesson</dt>
+              <dd>Thursday, 4:30 pm</dd>
+            </div>
+          </dl>
+        </div>
+        <figcaption>Example report. Figures are illustrative.</figcaption>
+      </figure>
+    </main>
+  </div>
+
+</body>
+</html>

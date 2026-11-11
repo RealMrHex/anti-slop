@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings</title>
+<style>
+:root{
+  --bg:#f6f6f3; --surface:#fff; --ink:#1d1f1c; --muted:#666b63; --line:#e2e2dc;
+  --accent:#2f5d50; --accent-ink:#fff; --accent-soft:#e4eee9; --danger:#b3372b;
+  --radius:8px;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#141614;--surface:#1c1f1c;--ink:#ecede8;--muted:#9aa095;--line:#2e322d;--accent:#7fb7a3;--accent-ink:#0f1a16;--accent-soft:#25332d;--danger:#e57a6d}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.shell{max-width:1000px;margin:0 auto;padding:40px 24px 64px}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 28px}
+.layout{display:grid;grid-template-columns:200px 1fr;gap:40px;align-items:start}
+nav{display:flex;flex-direction:column;gap:2px;position:sticky;top:24px}
+nav button{all:unset;cursor:pointer;padding:8px 12px;border-radius:6px;color:var(--muted);font-weight:500}
+nav button:hover{background:var(--accent-soft);color:var(--ink)}
+nav button[aria-selected=true]{background:var(--accent-soft);color:var(--ink);box-shadow:inset 3px 0 0 var(--accent)}
+nav button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.btn:focus-visible,.switch input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+section[hidden]{display:none}
+h2{font-size:19px;margin:0 0 4px}
+.lead{color:var(--muted);margin:0 0 20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.field.full{grid-column:1/-1}
+label,.lbl{font-weight:600;font-size:13px}
+.hint{color:var(--muted);font-size:13px}
+input[type=text],input[type=email],select,textarea{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:9px 11px;width:100%}
+textarea{resize:vertical;min-height:80px}
+.avatar-row{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.avatar{width:60px;height:60px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:700;font-size:20px;flex:none}
+.avatar.sm{width:34px;height:34px;font-size:13px}
+.btn{font:inherit;font-weight:600;cursor:pointer;border-radius:6px;padding:8px 14px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger{color:var(--danger)}
+.actions{display:flex;gap:10px;align-items:center;margin-top:8px;padding-top:18px;border-top:1px solid var(--line)}
+.saved{color:var(--accent);font-size:13px;opacity:0;transition:opacity .2s}
+.saved.on{opacity:1}
+.pref{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.pref:last-of-type{border-bottom:0}
+.pref b{display:block;font-weight:600}
+.pref span.hint{display:block}
+.switch{position:relative;flex:none}
+.switch input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.switch span{display:block;width:40px;height:22px;border-radius:11px;background:var(--line);transition:.15s;position:relative}
+.switch span::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s}
+.switch input:checked+span{background:var(--accent)}
+.switch input:checked+span::after{transform:translateX(18px)}
+h3{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:22px 0 0}
+h3:first-child{margin-top:0}
+.invite{display:flex;gap:10px;margin-bottom:20px}
+.invite input{flex:1}
+.invite select{width:130px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:12px;color:var(--muted);font-weight:600;padding:0 8px 10px;text-transform:uppercase;letter-spacing:.05em}
+td{padding:12px 8px;border-top:1px solid var(--line);vertical-align:middle}
+.person{display:flex;align-items:center;gap:12px}
+.person small{display:block;color:var(--muted)}
+td select{width:auto;padding:5px 8px}
+.pill{font-size:12px;padding:2px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.pill.pending{background:transparent;border:1px solid var(--line);color:var(--muted)}
+td.end{text-align:right}
+.link{all:unset;cursor:pointer;color:var(--danger);font-size:13px;font-weight:600}
+.link:hover{text-decoration:underline}
+.link:focus-visible{outline:2px solid var(--accent)}
+@media (max-width:720px){
+  .layout{grid-template-columns:1fr;gap:20px}
+  nav{flex-direction:row;overflow-x:auto;position:static}
+  nav button{white-space:nowrap}
+  nav button[aria-selected=true]{box-shadow:inset 0 -3px 0 var(--accent)}
+  .row{grid-template-columns:1fr}
+  .shell{padding:24px 16px 48px}
+  .invite{flex-wrap:wrap}.invite select{width:auto}
+  .hide-sm{display:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <h1>Settings</h1>
+  <p class="sub">Manage your account and your Northwind workspace.</p>
+  <div class="layout">
+    <nav role="tablist" aria-label="Settings sections">
+      <button role="tab" id="t-profile" aria-controls="profile" aria-selected="true">Profile</button>
+      <button role="tab" id="t-notifications" aria-controls="notifications" aria-selected="false">Notifications</button>
+      <button role="tab" id="t-team" aria-controls="team" aria-selected="false">Team members</button>
+    </nav>
+
+    <main>
+      <section id="profile" role="tabpanel" aria-labelledby="t-profile">
+        <h2>Profile</h2>
+        <p class="lead">This is how teammates see you across projects.</p>
+        <form class="card" data-save>
+          <div class="avatar-row">
+            <div class="avatar" aria-hidden="true">MR</div>
+            <div>
+              <button type="button" class="btn">Upload photo</button>
+              <div class="hint">PNG or JPG, up to 2 MB.</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field"><label for="fn">First name</label><input id="fn" type="text" value="Maya"></div>
+            <div class="field"><label for="ln">Last name</label><input id="ln" type="text" value="Rivera"></div>
+            <div class="field full"><label for="em">Email</label><input id="em" type="email" value="maya@northwind.example"><span class="hint">Used for sign-in and email notifications.</span></div>
+            <div class="field"><label for="role">Job title</label><input id="role" type="text" value="Product manager"></div>
+            <div class="field"><label for="tz">Time zone</label>
+              <select id="tz"><option>Pacific Time (UTC-8)</option><option selected>Eastern Time (UTC-5)</option><option>London (UTC+0)</option><option>Berlin (UTC+1)</option></select></div>
+            <div class="field full"><label for="bio">Bio</label><textarea id="bio">Keeps the roadmap honest.</textarea></div>
+          </div>
+          <div class="actions"><button class="btn primary">Save changes</button><span class="saved" role="status">Saved</span></div>
+        </form>
+      </section>
+
+      <section id="notifications" role="tabpanel" aria-labelledby="t-notifications" hidden>
+        <h2>Notifications</h2>
+        <p class="lead">Choose what reaches you, and where.</p>
+        <form class="card" data-save>
+          <h3>Activity</h3>
+          <div class="pref"><div><b>Assigned to me</b><span class="hint">When a task is assigned to you.</span></div><label class="switch"><input type="checkbox" checked aria-label="Assigned to me"><span></span></label></div>
+          <div class="pref"><div><b>Mentions and comments</b><span class="hint">When someone @mentions you or replies to your comment.</span></div><label class="switch"><input type="checkbox" checked aria-label="Mentions and comments"><span></span></label></div>
+          <div class="pref"><div><b>Due date reminders</b><span class="hint">One day before a task is due.</span></div><label class="switch"><input type="checkbox" aria-label="Due date reminders"><span></span></label></div>
+          <h3>Delivery</h3>
+          <div class="pref"><div><b>Email digest</b><span class="hint">A summary of project activity.</span></div>
+            <select aria-label="Email digest frequency" style="width:auto"><option>Daily</option><option selected>Weekly</option><option>Never</option></select></div>
+          <div class="pref"><div><b>Desktop push</b><span class="hint">Browser notifications while the app is open.</span></div><label class="switch"><input type="checkbox" checked aria-label="Desktop push"><span></span></label></div>
+          <div class="actions"><button class="btn primary">Save preferences</button><span class="saved" role="status">Saved</span></div>
+        </form>
+      </section>
+
+      <section id="team" role="tabpanel" aria-labelledby="t-team" hidden>
+        <h2>Team members</h2>
+        <p class="lead">5 people in this workspace.</p>
+        <div class="card">
+          <form class="invite" id="invite">
+            <input type="email" placeholder="colleague@company.com" aria-label="Email to invite" required>
+            <select aria-label="Role for invitee"><option>Member</option><option>Admin</option><option>Viewer</option></select>
+            <button class="btn primary">Send invite</button>
+          </form>
+          <table>
+            <thead><tr><th>Member</th><th>Role</th><th class="hide-sm">Status</th><th></th></tr></thead>
+            <tbody id="members">
+              <tr><td><div class="person"><div class="avatar sm">MR</div><div>Maya Rivera (you)<small>maya@northwind.example</small></div></div></td><td>Owner</td><td class="hide-sm"><span class="pill">Active</span></td><td></td></tr>
+              <tr><td><div class="person"><div class="avatar sm">DK</div><div>Dev Kapoor<small>dev@northwind.example</small></div></div></td><td><select aria-label="Role for Dev Kapoor"><option selected>Admin</option><option>Member</option><option>Viewer</option></select></td><td class="hide-sm"><span class="pill">Active</span></td><td class="end"><button class="link">Remove</button></td></tr>
+              <tr><td><div class="person"><div class="avatar sm">LS</div><div>Lena Schmidt<small>lena@northwind.example</small></div></div></td><td><select aria-label="Role for Lena Schmidt"><option>Admin</option><option selected>Member</option><option>Viewer</option></select></td><td class="hide-sm"><span class="pill">Active</span></td><td class="end"><button class="link">Remove</button></td></tr>
+              <tr><td><div class="person"><div class="avatar sm">TO</div><div>Tomás Ortega<small>tomas@northwind.example</small></div></div></td><td><select aria-label="Role for Tomás Ortega"><option>Admin</option><option selected>Member</option><option>Viewer</option></select></td><td class="hide-sm"><span class="pill pending">Invited</span></td><td class="end"><button class="link">Revoke</button></td></tr>
+              <tr><td><div class="person"><div class="avatar sm">AB</div><div>Amara Bello<small>amara@northwind.example</small></div></div></td><td><select aria-label="Role for Amara Bello"><option>Admin</option><option>Member</option><option selected>Viewer</option></select></td><td class="hide-sm"><span class="pill">Active</span></td><td class="end"><button class="link">Remove</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+<script>
+const tabs=[...document.querySelectorAll('[role=tab]')];
+function show(id){
+  tabs.forEach(t=>{const on=t.getAttribute('aria-controls')===id;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;
+    document.getElementById(t.getAttribute('aria-controls')).hidden=!on;});
+}
+tabs.forEach((t,i)=>{
+  t.onclick=()=>{show(t.getAttribute('aria-controls'));history.replaceState(null,'','#'+t.getAttribute('aria-controls'))};
+  t.onkeydown=e=>{const d={ArrowDown:1,ArrowRight:1,ArrowUp:-1,ArrowLeft:-1}[e.key];if(d){const n=tabs[(i+d+tabs.length)%tabs.length];n.focus();n.click();e.preventDefault()}};
+});
+show(['profile','notifications','team'].includes(location.hash.slice(1))?location.hash.slice(1):'profile');
+document.querySelectorAll('form[data-save]').forEach(f=>f.onsubmit=e=>{e.preventDefault();const s=f.querySelector('.saved');s.classList.add('on');setTimeout(()=>s.classList.remove('on'),2000)});
+document.getElementById('invite').onsubmit=e=>{
+  e.preventDefault();const f=e.target,em=f.querySelector('input').value.trim(),role=f.querySelector('select').value;
+  const tr=document.createElement('tr');
+  const ini=em.slice(0,2).toUpperCase();
+  tr.innerHTML='<td><div class="person"><div class="avatar sm"></div><div><span class="n"></span><small></small></div></div></td><td></td><td class="hide-sm"><span class="pill pending">Invited</span></td><td class="end"><button class="link">Revoke</button></td>';
+  tr.querySelector('.avatar').textContent=ini;tr.querySelector('.n').textContent=em;tr.children[1].textContent=role;
+  document.getElementById('members').appendChild(tr);f.reset();
+};
+document.getElementById('members').onclick=e=>{if(e.target.classList.contains('link'))e.target.closest('tr').remove()};
+</script>
+</body>
+</html>

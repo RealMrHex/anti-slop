@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keystone - CRM for property agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ee;
+    --card: #fdfbf7;
+    --raised: #efe9df;
+    --line: rgba(31, 27, 22, .08);
+    --text: #1f1b16;
+    --text-2: #5e554a;
+    --text-3: #7b7266;
+    --accent: #92501c;
+    --accent-ink: #ffffff;
+    --bar: #e4dccd;
+    --pos: #16a34a;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161513; --card: #1c1a18; --raised: #262421; --line: rgba(239, 233, 222, .08);
+      --text: #efe9de; --text-2: #aaa398; --text-3: #8a847a;
+      --accent: #d9864a; --accent-ink: #1f1b16; --bar: #33302b; --pos: #4cc38a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #161513; --card: #1c1a18; --raised: #262421; --line: rgba(239, 233, 222, .08);
+    --text: #efe9de; --text-2: #aaa398; --text-3: #8a847a;
+    --accent: #d9864a; --accent-ink: #1f1b16; --bar: #33302b; --pos: #4cc38a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 900px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 72px; }
+
+  /* Top bar */
+  .topbar { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 18px; letter-spacing: -0.01em; }
+  .brand-mark { width: 20px; height: 20px; border-radius: 6px; background: var(--accent); position: relative; }
+  .brand-mark::after { content: ""; position: absolute; left: 6px; top: 5px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent-ink); }
+  .nav { display: flex; gap: 32px; font-size: 14px; font-weight: 500; color: var(--text-2); }
+  .nav a:hover { color: var(--text); }
+  .topbar-actions { display: flex; align-items: center; gap: 20px; }
+  .login { font-size: 14px; font-weight: 500; color: var(--text-2); }
+  .login:hover { color: var(--text); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 44px; padding: 0 20px; border-radius: 10px;
+    font-size: 15px; font-weight: 500;
+    transition: background-color 160ms var(--ease), color 160ms var(--ease), border-color 160ms var(--ease), transform 160ms var(--ease);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { filter: brightness(1.06); }
+  .btn-secondary { background: var(--card); color: var(--text); box-shadow: inset 0 0 0 1px var(--line); }
+  .btn-secondary:hover { background: var(--raised); }
+  .btn-sm { height: 36px; padding: 0 16px; border-radius: 8px; font-size: 14px; }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; padding-top: 112px; padding-bottom: 96px; }
+  .eyebrow { font-size: 14px; font-weight: 500; color: var(--text-2); }
+  h1 {
+    margin-top: 20px;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: 72px;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+  .lede { margin-top: 24px; max-width: 36rem; font-size: 19px; line-height: 28px; color: var(--text-2); }
+  .actions { margin-top: 36px; display: flex; gap: 12px; }
+
+  /* Product preview */
+  .window {
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: inset 0 0 0 1px var(--line), 0 8px 24px rgba(31, 27, 22, .06);
+    padding: 24px;
+  }
+  .win-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .win-title { font-size: 15px; font-weight: 500; }
+  .win-meta { font-size: 13px; color: var(--text-3); }
+  .stats { margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .stat { background: var(--raised); border-radius: 10px; padding: 16px; }
+  .stat-label { font-size: 13px; color: var(--text-2); }
+  .stat-value { margin-top: 8px; font-size: 28px; line-height: 1; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .stat-note { margin-top: 8px; font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+  .chart-head { margin-top: 24px; display: flex; justify-content: space-between; font-size: 13px; color: var(--text-2); }
+  .chart { margin-top: 12px; height: 160px; display: flex; align-items: flex-end; gap: 12px; border-bottom: 1px solid var(--line); }
+  .bar { flex: 1; border-radius: 6px 6px 0 0; background: var(--bar); }
+  .bar.hi { background: var(--accent); }
+  .axis { margin-top: 8px; display: flex; gap: 12px; font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+  .axis span { flex: 1; text-align: center; }
+  .deals { margin-top: 20px; }
+  .deal { height: 44px; display: grid; grid-template-columns: 8px 1fr auto; align-items: center; gap: 12px; border-top: 1px solid var(--line); font-size: 14px; }
+  .deal:last-child { border-bottom: 1px solid var(--line); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); }
+  .dot.live { background: var(--accent); }
+  .deal-name { font-weight: 500; }
+  .deal-stage { color: var(--text-2); font-weight: 400; margin-left: 8px; }
+  .deal-value { color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+  /* Entrance: one fade and rise */
+  .rise { animation: rise 420ms var(--ease) both; }
+  .rise.d1 { animation-delay: 60ms; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .rise { animation: none; } }
+
+  /* Mobile */
+  @media (max-width: 960px) {
+    .wrap { padding: 0 16px; }
+    .nav { display: none; }
+    .hero { grid-template-columns: 1fr; gap: 48px; padding-top: 48px; padding-bottom: 64px; }
+    h1 { font-size: 44px; }
+    .lede { font-size: 17px; line-height: 26px; }
+    .actions { flex-direction: column; }
+    .actions .btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>Keystone</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#">Features</a>
+      <a href="#">Pricing</a>
+      <a href="#">Pipeline</a>
+      <a href="#">Resources</a>
+    </nav>
+    <div class="topbar-actions">
+      <a class="login" href="#">Log in</a>
+      <a class="btn btn-primary btn-sm" href="#">Start free</a>
+    </div>
+  </header>
+
+  <main class="hero">
+    <div class="rise">
+      <p class="eyebrow">CRM for property agents</p>
+      <h1>Every deal, from first call to closing</h1>
+      <p class="lede">Keystone tracks your leads, books viewings, nudges follow-ups and shows where each deal stands.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#">Start free</a>
+        <a class="btn btn-secondary" href="#">Watch demo</a>
+      </div>
+    </div>
+
+    <div class="window rise d1" aria-label="Pipeline preview">
+      <div class="win-head">
+        <span class="win-title">Pipeline</span>
+        <span class="win-meta">October 2026</span>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Open deals</div>
+          <div class="stat-value">38</div>
+          <div class="stat-note">7 new this week</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Viewings this week</div>
+          <div class="stat-value">12</div>
+          <div class="stat-note">3 more than last week</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Closed this month</div>
+          <div class="stat-value">$48,210</div>
+          <div class="stat-note">+12% vs last month</div>
+        </div>
+      </div>
+
+      <div class="chart-head"><span>Deals closed per week</span><span>8 weeks</span></div>
+      <div class="chart" role="img" aria-label="Bar chart of deals closed per week, highest in week 6">
+        <div class="bar" style="height:38%"></div>
+        <div class="bar" style="height:62%"></div>
+        <div class="bar" style="height:47%"></div>
+        <div class="bar" style="height:58%"></div>
+        <div class="bar" style="height:44%"></div>
+        <div class="bar hi" style="height:90%"></div>
+        <div class="bar" style="height:68%"></div>
+        <div class="bar" style="height:74%"></div>
+      </div>
+      <div class="axis"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div>
+
+      <div class="deals">
+        <div class="deal">
+          <span class="dot live" aria-hidden="true"></span>
+          <span><span class="deal-name">14 Harbour Street</span><span class="deal-stage">Viewing booked, Sat 10:30</span></span>
+          <span class="deal-value">$620,000</span>
+        </div>
+        <div class="deal">
+          <span class="dot" aria-hidden="true"></span>
+          <span><span class="deal-name">Flat 3, Calder Court</span><span class="deal-stage">Offer sent</span></span>
+          <span class="deal-value">$545,000</span>
+        </div>
+        <div class="deal">
+          <span class="dot" aria-hidden="true"></span>
+          <span><span class="deal-name">22 Mill Lane</span><span class="deal-stage">Follow-up due today</span></span>
+          <span class="deal-value">$389,500</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

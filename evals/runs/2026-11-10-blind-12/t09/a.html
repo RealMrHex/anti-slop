@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run summary</title>
+<style>
+:root{
+  --bg:#0f1a17; --surface:#172622; --surface-2:#1e3029;
+  --line:#2a403a; --text:#f1f6f3; --muted:#9db4ab; --accent:#c6f45a; --accent-ink:#13200a;
+  --warm:#ff8a5b; --cool:#5fd3c4;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+  --r-sm:10px; --r-md:18px; --r-lg:26px;
+  --font:ui-rounded,"SF Pro Rounded","Avenir Next",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.4;-webkit-font-smoothing:antialiased}
+.app{max-width:440px;margin:0 auto;padding:var(--s4) var(--s4) 120px;position:relative}
+.top{display:flex;align-items:center;justify-content:space-between;padding:var(--s2) 0 var(--s4)}
+.top h1{font-size:17px;font-weight:700}
+.icon-btn{width:44px;height:44px;border-radius:50%;border:0;background:var(--surface);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:background .15s}
+.icon-btn:hover{background:var(--surface-2)}
+.icon-btn:active{transform:scale(.95)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.when{color:var(--muted);font-size:14px}
+
+.hero{background:linear-gradient(160deg,#1c3a30 0%,#14241f 70%);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.hero-head{padding:var(--s5) var(--s5) 0}
+.badge{display:inline-flex;gap:6px;align-items:center;background:rgba(198,244,90,.14);color:var(--accent);font-size:13px;font-weight:700;padding:5px 10px;border-radius:99px}
+.dist{display:flex;align-items:baseline;gap:var(--s2);margin-top:var(--s3)}
+.dist b{font-size:76px;line-height:.95;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.dist span{font-size:22px;color:var(--muted);font-weight:600}
+.map{display:block;width:100%;height:auto}
+.legend{display:flex;align-items:center;gap:var(--s2);padding:0 var(--s5) var(--s4);font-size:12px;color:var(--muted)}
+.legend i{flex:1;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--cool),var(--accent),var(--warm))}
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin-top:var(--s3)}
+.stat{background:var(--surface);border-radius:var(--r-md);padding:var(--s4)}
+.stat dt{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.stat dd{font-size:30px;font-weight:700;margin-top:var(--s1);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.stat dd small{font-size:14px;color:var(--muted);font-weight:600;margin-left:3px}
+
+h2{font-size:17px;font-weight:700;margin:var(--s6) 0 var(--s3);display:flex;justify-content:space-between;align-items:baseline}
+h2 small{font-size:13px;color:var(--muted);font-weight:500}
+.splits{background:var(--surface);border-radius:var(--r-md);padding:var(--s3) var(--s4)}
+.splits ol{list-style:none;padding:0;display:grid;gap:var(--s2)}
+.split{display:grid;grid-template-columns:28px 1fr 52px;align-items:center;gap:var(--s3);font-size:14px;font-variant-numeric:tabular-nums}
+.split .km{color:var(--muted)}
+.split .bar{display:block;height:12px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.split .bar span{display:block;height:100%;border-radius:6px;background:var(--cool);transform-origin:left;animation:grow .7s ease-out both}
+.split.best .bar span{background:var(--accent)}
+.split .t{text-align:right;font-weight:600}
+.split.best .t{color:var(--accent)}
+.note{font-size:12px;color:var(--muted);margin-top:var(--s3);display:flex;align-items:center;gap:6px}
+.note i{width:10px;height:10px;border-radius:3px;background:var(--accent);display:inline-block}
+@keyframes grow{from{transform:scaleX(0)}}
+
+.hr{background:var(--surface);border-radius:var(--r-md);padding:var(--s4)}
+.zones{display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px}
+.zones span{display:block}
+.zl{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2) var(--s4);margin-top:var(--s3);font-size:13px;color:var(--muted)}
+.zl div{display:flex;align-items:center;gap:8px}
+.zl i{width:10px;height:10px;border-radius:50%}
+.zl b{color:var(--text);margin-left:auto;font-variant-numeric:tabular-nums}
+
+.actions{position:fixed;left:0;right:0;bottom:0;padding:var(--s4);background:linear-gradient(0deg,var(--bg) 62%,rgba(15,26,23,0));}
+.actions div{max-width:440px;margin:0 auto;display:grid;grid-template-columns:1fr 1.6fr;gap:var(--s3)}
+.btn{min-height:54px;border-radius:99px;border:0;font:inherit;font-weight:700;font-size:16px;cursor:pointer;transition:transform .1s,filter .15s,background .15s}
+.btn:active{transform:scale(.97)}
+.primary{background:var(--accent);color:var(--accent-ink)}
+.primary:hover{filter:brightness(1.07)}
+.secondary{background:var(--surface-2);color:var(--text);border:1px solid var(--line)}
+.secondary:hover{background:#26413a}
+.discard{display:block;margin:var(--s5) auto 0;background:none;border:0;color:var(--muted);font:inherit;font-size:14px;padding:var(--s3);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.discard:hover{color:var(--text)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="top">
+    <div>
+      <h1>Run complete</h1>
+      <p class="when">Tuesday, 10 Nov · 6:42 AM · Riverside loop</p>
+    </div>
+    <button class="icon-btn" aria-label="Share run">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 002 2h10a2 2 0 002-2v-6"/></svg>
+    </button>
+  </header>
+
+  <section class="hero" aria-label="Distance and route">
+    <div class="hero-head">
+      <span class="badge">★ Longest run this month</span>
+      <p class="dist"><b>8.42</b><span>km</span></p>
+    </div>
+    <svg class="map" viewBox="0 0 400 210" role="img" aria-label="Route map, a loop along the river. Colour shows pace from slower in teal to faster in orange.">
+      <defs>
+        <linearGradient id="pace" x1="40" y1="0" x2="360" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#5fd3c4"/><stop offset=".5" stop-color="#c6f45a"/><stop offset="1" stop-color="#ff8a5b"/>
+        </linearGradient>
+      </defs>
+      <g stroke="#ffffff" stroke-opacity=".05" stroke-width="1">
+        <path d="M0 40H400M0 100H400M0 160H400M60 0V210M150 0V210M240 0V210M330 0V210"/>
+      </g>
+      <path d="M-10 175C70 150 120 190 200 170S330 120 410 140" fill="none" stroke="#2d6a7a" stroke-opacity=".5" stroke-width="22" stroke-linecap="round"/>
+      <path id="route" d="M60 118C50 80 90 50 140 56S210 90 250 62 340 34 355 80 330 130 290 120 230 140 190 120 130 150 90 142 66 134 60 118Z" fill="none" stroke="url(#pace)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="60" cy="118" r="9" fill="#0f1a17" stroke="#c6f45a" stroke-width="3"/>
+      <circle cx="60" cy="118" r="3" fill="#c6f45a"/>
+    </svg>
+    <div class="legend"><span>Easier</span><i></i><span>Faster</span></div>
+  </section>
+
+  <dl class="stats">
+    <div class="stat"><dt>Time</dt><dd>46:18</dd></div>
+    <div class="stat"><dt>Avg pace</dt><dd>5:30<small>/km</small></dd></div>
+    <div class="stat"><dt>Calories</dt><dd>512<small>kcal</small></dd></div>
+    <div class="stat"><dt>Elevation</dt><dd>74<small>m</small></dd></div>
+  </dl>
+
+  <h2>Splits <small>min / km</small></h2>
+  <div class="splits">
+    <ol id="splits"></ol>
+    <p class="note"><i></i> Fastest split</p>
+  </div>
+
+  <h2>Heart rate <small>avg 156 bpm · max 178</small></h2>
+  <div class="hr">
+    <div class="zones" role="img" aria-label="Time in heart rate zones: Easy 4 minutes, Aerobic 19, Tempo 18, Hard 5">
+      <span style="flex:4;background:#5fd3c4"></span>
+      <span style="flex:19;background:#9be26b"></span>
+      <span style="flex:18;background:#e5d95a"></span>
+      <span style="flex:5;background:#ff8a5b"></span>
+    </div>
+    <div class="zl">
+      <div><i style="background:#5fd3c4"></i>Easy <b>4 min</b></div>
+      <div><i style="background:#9be26b"></i>Aerobic <b>19 min</b></div>
+      <div><i style="background:#e5d95a"></i>Tempo <b>18 min</b></div>
+      <div><i style="background:#ff8a5b"></i>Hard <b>5 min</b></div>
+    </div>
+  </div>
+
+  <button class="discard">Discard this run</button>
+</main>
+
+<div class="actions"><div>
+  <button class="btn secondary">Add notes</button>
+  <button class="btn primary">Save run</button>
+</div></div>
+
+<script>
+const splits=[["5:42",342],["5:36",336],["5:31",331],["5:28",328],["5:24",324],["5:27",327],["5:29",329],["5:25",325]];
+const min=Math.min(...splits.map(s=>s[1]));
+document.getElementById('splits').innerHTML=splits.map((s,i)=>{
+  const w=40+ (1-(s[1]-300)/60)*60;
+  return `<li class="split${s[1]===min?' best':''}"><span class="km">${i+1}</span><span class="bar"><span style="width:${w}%;animation-delay:${i*50}ms"></span></span><span class="t">${s[0]}</span></li>`;
+}).join('')+`<li class="split"><span class="km">.42</span><span class="bar"><span style="width:30%"></span></span><span class="t">2:19</span></li>`;
+</script>
+</body>
+</html>

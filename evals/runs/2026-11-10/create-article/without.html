@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Weight of Light — Meridian Quarterly</title>
+<style>
+:root{
+  --paper:#f4efe6;
+  --ink:#1d1a16;
+  --muted:#6b645a;
+  --rule:#cfc6b6;
+  --accent:#a8421f;
+  --measure:38rem;
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#17140f;--ink:#ece5d8;--muted:#9d9585;--rule:#3a342a;--accent:#e0825a}
+}
+*{box-sizing:border-box}
+html{font-size:100%;-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,serif;
+  font-size:1.125rem;line-height:1.7;
+}
+a{color:var(--accent)}
+.mast{
+  display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;
+  max-width:70rem;margin:0 auto;padding:1.25rem 1rem;
+  border-bottom:1px solid var(--rule);
+  font-family:"Helvetica Neue",Arial,sans-serif;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+}
+.mast strong{color:var(--ink);letter-spacing:.3em}
+header.hero{max-width:70rem;margin:0 auto;padding:4rem 1rem 2rem}
+.kicker{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 1.25rem}
+h1{
+  font-weight:400;font-size:clamp(2.6rem,8vw,6.5rem);line-height:1;letter-spacing:-.02em;margin:0;max-width:14ch;
+}
+h1 em{color:var(--accent)}
+.dek{font-size:clamp(1.2rem,2.4vw,1.6rem);line-height:1.4;color:var(--muted);max-width:34rem;margin:1.75rem 0 0;font-style:italic}
+.byline{
+  margin-top:2rem;padding-top:1rem;border-top:1px solid var(--rule);
+  display:flex;gap:2rem;flex-wrap:wrap;
+  font-family:"Helvetica Neue",Arial,sans-serif;font-size:.8rem;color:var(--muted);
+}
+.byline b{color:var(--ink);font-weight:600}
+figure{margin:0}
+.plate{max-width:70rem;margin:1rem auto 0;padding:0 1rem}
+.plate svg{display:block;width:100%;height:auto;max-height:70vh}
+figcaption{
+  font-family:"Helvetica Neue",Arial,sans-serif;font-size:.78rem;line-height:1.5;color:var(--muted);
+  margin-top:.75rem;max-width:var(--measure)
+}
+article{max-width:70rem;margin:0 auto;padding:3rem 1rem 2rem}
+.body{max-width:var(--measure);margin-left:max(0px,calc((100% - var(--measure))/2))}
+.body p{margin:0 0 1.4em;hyphens:auto}
+.body > p:first-of-type::first-letter{
+  float:left;font-size:5.2em;line-height:.8;padding:.08em .1em 0 0;color:var(--accent);
+}
+h2{
+  font-weight:400;font-size:1.9rem;line-height:1.2;margin:2.8rem 0 1rem;letter-spacing:-.01em;
+}
+blockquote.pull{
+  margin:3rem 0;padding:1.5rem 0;border-top:2px solid var(--ink);border-bottom:1px solid var(--rule);
+  font-size:clamp(1.5rem,3.4vw,2.2rem);line-height:1.25;font-style:italic;
+}
+blockquote.pull cite{
+  display:block;margin-top:1rem;font:normal .75rem "Helvetica Neue",Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)
+}
+.facts{
+  margin:2.5rem 0;padding:1.25rem 1.5rem;border:1px solid var(--rule);
+  font-family:"Helvetica Neue",Arial,sans-serif;font-size:.9rem;line-height:1.55;
+}
+.facts h3{margin:0 0 .75rem;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+.facts dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:.4rem 1.25rem}
+.facts dt{color:var(--muted)}
+.facts dd{margin:0}
+.end{color:var(--accent)}
+footer{
+  max-width:70rem;margin:2rem auto 0;padding:1.5rem 1rem 3rem;border-top:1px solid var(--rule);
+  font-family:"Helvetica Neue",Arial,sans-serif;font-size:.8rem;color:var(--muted);line-height:1.6
+}
+footer p{max-width:var(--measure);margin:0 0 .5rem}
+@media (max-width:600px){
+  body{font-size:1.05rem}
+  header.hero{padding-top:2.5rem}
+  .facts dl{grid-template-columns:1fr;gap:0}
+  .facts dd{margin-bottom:.6rem}
+}
+@media print{
+  :root{--paper:#fff;--ink:#000;--muted:#444}
+  .mast{border-color:#999}
+}
+</style>
+</head>
+<body>
+
+<div class="mast">
+  <strong>Meridian</strong>
+  <span>A Quarterly of Architecture</span>
+  <span>Issue 14 &middot; Autumn</span>
+</div>
+
+<header class="hero">
+  <p class="kicker">Essay &middot; Buildings &amp; Place</p>
+  <h1>The Weight <em>of</em> Light</h1>
+  <p class="dek">At a former salt warehouse on a northern estuary, a small studio asks whether a wall can be thick enough to hold the day inside it.</p>
+  <div class="byline">
+    <span>Words <b>Ines Halvorsen</b></span>
+    <span>Drawings <b>Tomas Ekwueme</b></span>
+    <span>Reading time <b>7 min</b></span>
+  </div>
+</header>
+
+<figure class="plate">
+  <svg viewBox="0 0 1200 520" role="img" aria-labelledby="t d" preserveAspectRatio="xMidYMid slice">
+    <title id="t">Section drawing of the Salt House</title>
+    <desc id="d">A stylised section through a masonry building with deep window reveals and shafts of light falling across a floor.</desc>
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#e9c9a4"/><stop offset="1" stop-color="#f4efe6"/>
+      </linearGradient>
+      <linearGradient id="beam" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#fff3d6" stop-opacity=".9"/><stop offset="1" stop-color="#fff3d6" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <rect width="1200" height="520" fill="url(#sky)"/>
+    <rect y="440" width="1200" height="80" fill="#6f5a45"/>
+    <!-- walls -->
+    <rect x="140" y="90" width="120" height="350" fill="#8a3f22"/>
+    <rect x="940" y="90" width="120" height="350" fill="#8a3f22"/>
+    <rect x="140" y="70" width="920" height="40" fill="#5e2a15"/>
+    <!-- deep reveals -->
+    <rect x="140" y="170" width="120" height="110" fill="#2b1a10"/>
+    <rect x="940" y="170" width="120" height="110" fill="#2b1a10"/>
+    <polygon points="260,170 260,280 520,440 400,440" fill="url(#beam)"/>
+    <polygon points="940,170 940,280 680,440 800,440" fill="url(#beam)" opacity=".8"/>
+    <!-- interior -->
+    <rect x="260" y="110" width="680" height="330" fill="#d9c3a0" opacity=".55"/>
+    <g stroke="#1d1a16" stroke-width="1.5" fill="none" opacity=".7">
+      <line x1="260" y1="440" x2="940" y2="440"/>
+      <line x1="600" y1="110" x2="600" y2="440" stroke-dasharray="6 8"/>
+      <path d="M140 60 H1060 M140 52 V68 M1060 52 V68"/>
+    </g>
+    <text x="600" y="48" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="14" letter-spacing="3" fill="#1d1a16">34 M</text>
+    <text x="200" y="232" text-anchor="middle" font-family="Helvetica,Arial,sans-serif" font-size="13" fill="#f4efe6">1.2 m</text>
+  </svg>
+  <figcaption>Fig. 1 &mdash; Section through the Salt House, looking north. The walls are 1.2 metres thick; the glazing sits at the outer face and the light must travel the full depth of the reveal. Drawing: Tomas Ekwueme.</figcaption>
+</figure>
+
+<article>
+  <div class="body">
+    <p>You arrive by the sea wall, and for a long while the building does not seem to want you. It is a brick box, windowless on the estuary side, seven bays long, the colour of old rust. Gulls use the ridge. Only when the path turns inland do the openings appear, and they are not what you expect: not glass but long, tapering cavities in the masonry, each wide as a doorway at the inner face and narrowing to a slot outside.</p>
+
+    <p>The Salt House was built in 1894 to store a commodity that dissolves in damp air, and so its first architects solved for dryness, not delight. The walls are more than a metre through. The studio that converted it, a five-person practice working from the next town up the coast, decided early on that this thickness was the building&rsquo;s only real asset, and that every intervention should be measured against it.</p>
+
+    <h2>A wall you can stand in</h2>
+
+    <p>&ldquo;We kept asking what the wall was for,&rdquo; says the practice&rsquo;s co-founder, Dara Okonkwo-Lind, as she steps into one of the reveals and sits on the sill, her shoulders almost touching both sides. &ldquo;Originally, to keep water out. Now, I think, to slow light down.&rdquo;</p>
+
+    <p>The idea is simple to state and difficult to build. Daylight at this latitude arrives low and sideways for much of the year. In a conventional glazed box it floods in, flattens the room and leaves by evening. Here it has to be coaxed along the reveal, bouncing off lime-washed splays, losing intensity at each contact, until by the time it reaches the floor it has the soft, directional quality of light in a church or a cellar.</p>
+
+    <blockquote class="pull">
+      A thin wall shows you the weather. A thick one lets you watch the weather arrive.
+      <cite>Dara Okonkwo-Lind, co-founder</cite>
+    </blockquote>
+
+    <p>The team modelled the reveals through more than two hundred iterations, adjusting the angle of each splay by a few degrees to shift where a patch of sun would land at noon on the solstices. The final geometry is not symmetrical. The western openings are deeper and steeper, to temper the late glare; the eastern ones open wider, so that morning reaches the long communal table by the second hour after sunrise.</p>
+
+    <h2>What the building costs to keep</h2>
+
+    <p>There is an honest accounting of compromise here. The thick walls are cold in winter and the studio has resisted insulating them from the inside, which would have destroyed the reveals. Instead the heating is carried in the floor, a slab of recycled brick laid over a bed of crushed shell, and the occupants wear wool. Visitors are warned. Some leave unconvinced.</p>
+
+    <p>Others find the discomfort part of the argument. A building that asks something of you, the architects contend, makes you attentive to it, and attention is a kind of care. The roof, a lightweight timber structure on slender steel ties, rests on the old walls so quietly that from inside it seems to hover. Nothing new touches the brick except where it must.</p>
+
+    <aside class="facts" aria-label="Project details">
+      <h3>At a glance</h3>
+      <dl>
+        <dt>Building</dt><dd>The Salt House, former warehouse, 1894</dd>
+        <dt>Conversion</dt><dd>2021&ndash;2024, community workshop and archive</dd>
+        <dt>Floor area</dt><dd>1,150 square metres over two levels</dd>
+        <dt>Wall depth</dt><dd>1.2 metres, solid fired brick</dd>
+        <dt>Heating</dt><dd>Low-temperature floor loop, air-source pump</dd>
+      </dl>
+    </aside>
+
+    <h2>Afternoon, in the long room</h2>
+
+    <p>By three o&rsquo;clock in October the western light has found the far end of the main hall. It does not fall as a rectangle, as it would from a window, but as a tall, wavering lozenge, softened at the edges where it has touched the splays. Someone has chalked its position on the floor over several weeks, and the marks drift like a slow clock.</p>
+
+    <p>It would be easy to call this nostalgia, a retreat into mass at a moment when the industry prizes lightness and speed. But the Salt House is not a lament. It is a patient demonstration that old materials, read carefully, can still teach a design problem its terms. The warehouse was built to keep the sea out. It now keeps the day in, a little longer than it should, and the room is better for it.<span class="end"> &#9632;</span></p>
+  </div>
+</article>
+
+<footer>
+  <p><em>The Salt House is open to visitors on the first weekend of each month. Guided tours of the archive begin at eleven.</em></p>
+  <p>Meridian is published four times a year. &copy; 2026 Meridian Quarterly. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

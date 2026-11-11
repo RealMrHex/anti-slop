@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vetline | Appointments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #f7f4ee;
+    --sidebar: #efe9df;
+    --card: #fdfbf7;
+    --raised: #efe9df;
+    --hover: #f3eee5;
+    --text: #1f1b16;
+    --text-2: #5e554a;
+    --text-3: #7b7266;
+    --hair: rgba(31, 27, 22, 0.09);
+    --hair-strong: rgba(31, 27, 22, 0.14);
+    --accent: #0f766e;
+    --accent-soft: #d9ebe7;
+    --accent-ink: #0c5f58;
+    --pos: #15803d;
+    --warn: #b45309;
+    --neg: #b91c1c;
+    --radius-ctl: 10px;
+    --radius-card: 14px;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--text);
+    background: var(--page);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, p, dl, dd, dt { margin: 0; }
+  button { font: inherit; color: inherit; }
+  .num { font-variant-numeric: tabular-nums; }
+  .muted { color: var(--text-3); }
+  .sec { color: var(--text-2); }
+
+  .app { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--sidebar);
+    border-right: 1px solid var(--hair);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+  .brand svg { width: 24px; height: 24px; flex: none; }
+  .brand-name { font-size: 16px; font-weight: 500; letter-spacing: 0; }
+  .brand-sub { font-size: 12px; color: var(--text-3); margin-top: 1px; }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+  .nav a {
+    display: flex; align-items: center; gap: 12px;
+    height: 36px; padding: 0 10px;
+    border-radius: var(--radius-ctl);
+    color: var(--text-2);
+    text-decoration: none;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .nav a:hover { background: var(--hover); color: var(--text); }
+  .nav a[aria-current="page"] {
+    background: var(--card);
+    color: var(--text);
+    font-weight: 500;
+    box-shadow: 0 0 0 1px var(--hair), var(--shadow);
+  }
+  .nav svg {
+    width: 18px; height: 18px; flex: none;
+    fill: none; stroke: currentColor; stroke-width: 1.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    color: var(--text-3);
+  }
+  .nav a[aria-current="page"] svg { color: var(--accent); }
+  .sidebar-foot { margin-top: auto; padding: 0 8px; font-size: 12px; color: var(--text-3); }
+
+  /* Main */
+  .main { padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .title { font-size: 32px; line-height: 1.15; font-weight: 500; }
+  .date { margin-top: 4px; color: var(--text-2); }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn {
+    height: 40px; padding: 0 16px;
+    border-radius: var(--radius-ctl);
+    border: 1px solid var(--hair-strong);
+    background: var(--card);
+    font-weight: 500; font-size: 14px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: background-color 150ms var(--ease), transform 150ms var(--ease);
+  }
+  .btn:hover { background: var(--hover); }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--accent); border-color: transparent; color: #fff; }
+  .btn-primary:hover { background: var(--accent-ink); }
+  .btn:focus-visible, .row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: var(--radius-card);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .stat-label { color: var(--text-2); font-size: 13px; line-height: 16px; }
+  .stat-figure { font-size: 32px; font-weight: 500; line-height: 1; margin: 12px 0 8px; font-variant-numeric: tabular-nums; }
+  .stat-base { font-size: 13px; color: var(--text-3); }
+
+  /* Layout of the work area */
+  .work { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; align-items: start; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+  .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .card-title { font-size: 16px; line-height: 1.3; font-weight: 500; }
+  .count { font-size: 13px; color: var(--text-3); }
+
+  /* Schedule rows */
+  .table { display: flex; flex-direction: column; gap: 2px; }
+  .cols {
+    display: grid;
+    grid-template-columns: 84px minmax(0, 1.3fr) minmax(0, 1.1fr) minmax(0, 1.4fr) minmax(0, 0.9fr) 124px;
+    column-gap: 16px;
+    align-items: center;
+    padding: 0 12px;
+  }
+  .table-head { height: 32px; font-size: 12px; color: var(--text-3); }
+  .row {
+    min-height: 48px;
+    padding-top: 8px; padding-bottom: 8px;
+    border-radius: var(--radius-ctl);
+    cursor: pointer;
+    transition: background-color 150ms var(--ease);
+  }
+  .row:hover { background: var(--hover); }
+  .row[aria-pressed="true"] {
+    background: var(--raised);
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
+  .time { font-weight: 500; font-variant-numeric: tabular-nums; }
+  .patient { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .species { color: var(--text-3); font-size: 13px; margin-left: 6px; }
+  .cell { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); white-space: nowrap; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--text-3)); flex: none; }
+
+  /* Patient panel */
+  .panel { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 32px; }
+  .who { display: flex; align-items: center; gap: 16px; }
+  .avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent-ink);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 500; flex: none;
+  }
+  .kicker { font-size: 13px; color: var(--text-3); }
+  .name { font-size: 22px; line-height: 1.2; font-weight: 500; margin-top: 2px; }
+  .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .tile { background: var(--raised); border-radius: var(--radius-ctl); padding: 12px; }
+  .tile.wide { grid-column: span 2; }
+  .tile dt { font-size: 12px; color: var(--text-3); line-height: 16px; }
+  .tile dd { font-size: 15px; font-weight: 500; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .tile p { font-size: 14px; line-height: 22px; color: var(--text-2); }
+  .tile .lbl { font-size: 12px; color: var(--text-3); margin-bottom: 6px; line-height: 16px; }
+  .panel-actions { display: flex; gap: 8px; margin-top: auto; }
+  .panel-actions .btn { flex: 1; }
+
+  .mark-line { font-size: 13px; color: var(--text-3); }
+
+  @media (max-width: 1440px) {
+    .work { grid-template-columns: minmax(0, 1fr); }
+    .panel {
+      position: static;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+      column-gap: 32px;
+      row-gap: 20px;
+      align-items: start;
+    }
+    .panel .who { grid-column: 1; grid-row: 1; }
+    .panel .facts { grid-column: 2; grid-row: 1 / span 2; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .panel .facts .wide { grid-column: span 2; }
+    .panel .tile-notes { grid-column: 1; grid-row: 2; }
+    .panel .panel-actions { grid-column: 1; grid-row: 3; margin-top: 0; }
+  }
+  @media (max-width: 1180px) {
+    .panel { display: flex; }
+    .panel .facts { grid-template-columns: 1fr 1fr; }
+    .panel .facts .wide { grid-column: span 2; }
+  }
+  @media (max-width: 860px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    .sidebar { border-right: 0; border-bottom: 1px solid var(--hair); padding: 12px 16px; gap: 12px; flex-direction: row; align-items: center; overflow-x: auto; }
+    .brand { padding: 0; flex: none; }
+    .nav { flex-direction: row; gap: 4px; flex: none; }
+    .nav a { height: 36px; white-space: nowrap; }
+    .sidebar-foot { display: none; }
+    .main { padding: 24px 16px 32px; }
+    .title { font-size: 26px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .stat { padding: 16px; }
+    .stat-figure { font-size: 28px; }
+    .cols { grid-template-columns: 76px minmax(0, 1fr) 112px; column-gap: 12px; }
+    .hide-sm { display: none; }
+    .card { padding: 16px; }
+    .panel { display: flex; grid-template-columns: none; align-items: stretch; }
+    .panel > * { grid-column: auto !important; grid-row: auto !important; }
+    .panel .facts { grid-template-columns: 1fr 1fr; }
+    .panel .facts .wide { grid-column: span 2; }
+    .panel-actions { margin-top: 0; }
+    .head .actions { width: 100%; }
+    .head .actions .btn { flex: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="6" fill="#0f766e"/><path d="M7 12.5h3l1.5-3 2.5 6 1.5-3H19" fill="none" stroke="#fdfbf7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div>
+        <p class="brand-name">Vetline</p>
+        <p class="brand-sub">Clinic OS v2.0</p>
+      </div>
+    </div>
+    <nav class="nav" aria-label="Main">
+      <a href="#" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Appointments</a>
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1"/><path d="M16 3.1a4 4 0 0 1 0 7.8M22 21v-1a6 6 0 0 0-4-5.6"/></svg>Patients</a>
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10.5 20.5 10-10a4.95 4.95 0 0 0-7-7l-10 10a4.95 4.95 0 0 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>Pharmacy</a>
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 2h14v20l-3-2-2 2-2-2-2 2-2-2-3 2Z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>Billing</a>
+      <a href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>Settings</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="head">
+      <div>
+        <h1 class="title">Appointments</h1>
+        <p class="date">Tuesday 10 November 2026</p>
+      </div>
+      <div class="actions">
+        <button class="btn">3 alerts</button>
+        <button class="btn btn-primary">New appointment</button>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Today at a glance">
+      <div class="stat">
+        <p class="stat-label">Today</p>
+        <p class="stat-figure">14</p>
+        <p class="stat-base">+3 vs yesterday</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Checked in</p>
+        <p class="stat-figure">6</p>
+        <p class="stat-base">of 14 today</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Waiting</p>
+        <p class="stat-figure">2</p>
+        <p class="stat-base">Average wait 12 min</p>
+      </div>
+      <div class="stat">
+        <p class="stat-label">Completed</p>
+        <p class="stat-figure">3</p>
+        <p class="stat-base">of 14 today</p>
+      </div>
+    </section>
+
+    <div class="work">
+      <section class="card" aria-labelledby="sched-title">
+        <div class="card-head">
+          <h2 class="card-title" id="sched-title">Today's schedule</h2>
+          <span class="count">Sorted by time</span>
+        </div>
+        <div class="table">
+          <div class="cols table-head" aria-hidden="true">
+            <span>Time</span><span>Patient</span><span class="hide-sm">Owner</span><span class="hide-sm">Reason</span><span class="hide-sm">Vet</span><span>Status</span>
+          </div>
+          <div id="r1" class="row cols" role="button" tabindex="0" aria-pressed="false" onclick="pick('r1')" onkeydown="rowKey(event,'r1')"><span class="time">8:30 AM</span><span class="patient">Biscuit<span class="species">Dog</span></span><span class="cell hide-sm">Maria Lopez</span><span class="cell hide-sm">Annual vaccines</span><span class="cell hide-sm">Dr. Sam</span><span class="status"><span class="dot" style="--c: var(--pos)"></span>Checked in</span></div>
+          <div id="r2" class="row cols" role="button" tabindex="0" aria-pressed="false" onclick="pick('r2')" onkeydown="rowKey(event,'r2')"><span class="time">9:00 AM</span><span class="patient">Mochi<span class="species">Cat</span></span><span class="cell hide-sm">J. Park</span><span class="cell hide-sm">Limping, urgent</span><span class="cell hide-sm">Dr. Lee</span><span class="status"><span class="dot" style="--c: var(--warn)"></span>Waiting</span></div>
+          <div id="r3" class="row cols" role="button" tabindex="0" aria-pressed="false" onclick="pick('r3')" onkeydown="rowKey(event,'r3')"><span class="time">9:30 AM</span><span class="patient">Kiwi<span class="species">Bird</span></span><span class="cell hide-sm">A. Chen</span><span class="cell hide-sm">Feather plucking</span><span class="cell hide-sm">Dr. Sam</span><span class="status"><span class="dot"></span>Scheduled</span></div>
+          <div id="r4" class="row cols" role="button" tabindex="0" aria-pressed="false" onclick="pick('r4')" onkeydown="rowKey(event,'r4')"><span class="time">10:15 AM</span><span class="patient">Clover<span class="species">Rabbit</span></span><span class="cell hide-sm">T. Okafor</span><span class="cell hide-sm">Dental check</span><span class="cell hide-sm">Dr. Lee</span><span class="status"><span class="dot" style="--c: var(--accent)"></span>In surgery</span></div>
+          <div id="r5" class="row cols" role="button" tabindex="0" aria-pressed="false" onclick="pick('r5')" onkeydown="rowKey(event,'r5')"><span class="time">10:45 AM</span><span class="patient">Rex<span class="species">Dog</span></span><span class="cell hide-sm">D. Novak</span><span class="cell hide-sm">Post-op follow-up</span><span class="cell hide-sm">Dr. Sam</span><span class="status"><span class="dot" style="--c: var(--text-3)"></span>Completed</span></div>
+          <div id="r6" class="row cols" role="button" tabindex="0" aria-pressed="false" onclick="pick('r6')" onkeydown="rowKey(event,'r6')"><span class="time">11:00 AM</span><span class="patient">Nugget<span class="species">Hamster</span></span><span class="cell hide-sm">L. Brandt</span><span class="cell hide-sm">Weight check</span><span class="cell hide-sm">Dr. Lee</span><span class="status"><span class="dot" style="--c: var(--neg)"></span>No-show</span></div>
+          <div id="r7" class="row cols" role="button" tabindex="0" aria-pressed="false" onclick="pick('r7')" onkeydown="rowKey(event,'r7')"><span class="time">11:30 AM</span><span class="patient">Luna<span class="species">Cat</span></span><span class="cell hide-sm">S. Rivera</span><span class="cell hide-sm">Grooming</span><span class="cell hide-sm">Dr. Sam</span><span class="status"><span class="dot"></span>On hold</span></div>
+          <div id="r8" class="row cols" role="button" tabindex="0" aria-pressed="false" onclick="pick('r8')" onkeydown="rowKey(event,'r8')"><span class="time">1:00 PM</span><span class="patient">Shelly<span class="species">Turtle</span></span><span class="cell hide-sm">K. Müller</span><span class="cell hide-sm">Shell check</span><span class="cell hide-sm">Dr. Lee</span><span class="status"><span class="dot"></span>Confirmed</span></div>
+        </div>
+      </section>
+
+      <aside class="card panel" aria-label="Selected patient">
+        <div class="who">
+          <div class="avatar" aria-hidden="true">B</div>
+          <div>
+            <p class="kicker">Selected patient</p>
+            <h3 class="name">Biscuit</h3>
+          </div>
+        </div>
+        <dl class="facts">
+          <div class="tile"><dt>Species</dt><dd>Dog</dd></div>
+          <div class="tile"><dt>Age</dt><dd>4 years</dd></div>
+          <div class="tile"><dt>Owner</dt><dd>Maria Lopez</dd></div>
+          <div class="tile"><dt>Weight</dt><dd>23.4 kg</dd></div>
+          <div class="tile wide"><dt>Last visit</dt><dd>22 Mar 2026</dd></div>
+        </dl>
+        <div class="tile tile-notes">
+          <p class="lbl">Clinical notes</p>
+          <p>Loves treats. Vaccines due. Owner prefers morning slots.</p>
+        </div>
+        <div class="panel-actions">
+          <button class="btn btn-primary">Start visit</button>
+          <button class="btn">Message</button>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<script>
+  function pick(id) {
+    document.querySelectorAll('.row').forEach(function (el) {
+      el.setAttribute('aria-pressed', el.id === id ? 'true' : 'false');
+    });
+  }
+  function rowKey(event, id) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      pick(id);
+    }
+  }
+  pick('r1');
+</script>
+</body>
+</html>

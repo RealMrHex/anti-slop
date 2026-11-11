@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paws & Path Dog Walking</title>
+<style>
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #222; background: #fff; line-height: 1.5; }
+  header, section, footer { padding: 16px; }
+  header { background: #f4efe6; text-align: center; }
+  header h1 { margin: 16px 0 8px; font-size: 2em; }
+  header p { margin: 0 0 16px; }
+  .btn { display: inline-block; padding: 10px 18px; background: #6b8e23; color: #fff; text-decoration: none; border-radius: 4px; }
+  h2 { margin-top: 0; }
+  .services { display: block; }
+  .service { border: 1px solid #ddd; padding: 12px; margin-bottom: 12px; border-radius: 4px; }
+  .service h3 { margin: 0 0 6px; }
+  form label { display: block; margin-top: 8px; }
+  form input, form textarea { width: 100%; max-width: 400px; padding: 6px; box-sizing: border-box; }
+  form button { margin-top: 12px; padding: 10px 18px; background: #6b8e23; color: #fff; border: 0; border-radius: 4px; cursor: pointer; }
+  footer { background: #f4efe6; text-align: center; font-size: 0.9em; }
+  @media (min-width: 700px) {
+    .services { display: flex; gap: 12px; }
+    .service { flex: 1; margin-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Paws &amp; Path Dog Walking</h1>
+  <p>Reliable, friendly dog walkers in your neighborhood.</p>
+  <a class="btn" href="#book">Book a Walk</a>
+</header>
+
+<section>
+  <h2>About Us</h2>
+  <p>We are a small team of experienced, insured dog walkers who treat every dog like family. Each walk includes GPS tracking, photo updates, and a happy pup at the end.</p>
+</section>
+
+<section>
+  <h2>Our Services</h2>
+  <div class="services">
+    <div class="service">
+      <h3>30-Minute Walk</h3>
+      <p>A quick midday stroll to stretch the legs.</p>
+      <p><strong>$20 per walk</strong></p>
+    </div>
+    <div class="service">
+      <h3>60-Minute Walk</h3>
+      <p>A longer adventure with plenty of sniffing time.</p>
+      <p><strong>$32 per walk</strong></p>
+    </div>
+    <div class="service">
+      <h3>Drop-In Visit</h3>
+      <p>Check on your dog, feed, and play for 20 minutes.</p>
+      <p><strong>$15 per visit</strong></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>How It Works</h2>
+  <ol>
+    <li>Book online or call us.</li>
+    <li>We meet your dog and learn their routine.</li>
+    <li>Sit back while we walk, then receive a photo update.</li>
+  </ol>
+</section>
+
+<section id="book">
+  <h2>Book a Walk</h2>
+  <form onsubmit="event.preventDefault(); alert('Thanks! We will be in touch soon.');">
+    <label>Your name <input type="text" name="name" required></label>
+    <label>Email <input type="email" name="email" required></label>
+    <label>Phone <input type="tel" name="phone"></label>
+    <label>Dog's name <input type="text" name="dog" required></label>
+    <label>Preferred date <input type="date" name="date"></label>
+    <label>Notes <textarea name="notes" rows="3"></textarea></label>
+    <button type="submit">Request Booking</button>
+  </form>
+</section>
+
+<footer>
+  <p>Paws &amp; Path Dog Walking &middot; Serving the neighborhood &middot; (555) 123-4567 &middot; hello@example.com</p>
+  <p>&copy; 2026 Paws &amp; Path. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

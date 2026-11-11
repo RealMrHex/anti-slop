@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flagpole | Feature flags for engineering teams</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b0d14;
+      --bg-deep: #07080d;
+      --card: #11141c;
+      --raised: #1a1e28;
+      --hairline: rgba(238, 240, 245, 0.08);
+      --hairline-strong: rgba(238, 240, 245, 0.14);
+      --text: #eef0f5;
+      --text-2: #a3a9b8;
+      --text-3: #7a8296;
+      --accent: #8fe0c1;
+      --accent-hover: #a7ebd3;
+      --positive: #4cc38a;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --sans: 'Geist', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; transition: color 160ms var(--ease); }
+    a:hover { color: var(--text); }
+    button { font: inherit; cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+    .wrap { max-width: 1184px; margin: 0 auto; padding: 0 48px; }
+
+    /* Navigation */
+    .nav {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .brand svg { width: 18px; height: 18px; color: var(--accent); flex: none; }
+    .nav-links { display: flex; gap: 28px; font-size: 14px; color: var(--text-2); }
+    .btn-quiet {
+      height: 36px;
+      padding: 0 16px;
+      border-radius: 8px;
+      border: 1px solid var(--hairline-strong);
+      background: var(--raised);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      transition: background-color 160ms var(--ease), border-color 160ms var(--ease);
+    }
+    .btn-quiet:hover { background: #232836; border-color: rgba(238, 240, 245, 0.22); }
+    .menu { display: none; position: relative; }
+    .menu summary { list-style: none; }
+    .menu summary::-webkit-details-marker { display: none; }
+    .menu-panel {
+      position: absolute;
+      right: 0;
+      top: 44px;
+      display: grid;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--card);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 12px;
+      font-size: 15px;
+      color: var(--text-2);
+      min-width: 180px;
+      z-index: 2;
+    }
+
+    /* Hero */
+    .hero { padding-top: 96px; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 72px;
+      align-items: center;
+    }
+    h1 {
+      font-size: 56px;
+      line-height: 1.04;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      margin: 0 0 20px;
+    }
+    .lede {
+      font-size: 18px;
+      line-height: 28px;
+      color: var(--text-2);
+      max-width: 36rem;
+      margin: 0 0 32px;
+    }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      height: 44px;
+      padding: 0 20px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      border: 0;
+      transition: background-color 160ms var(--ease), border-color 160ms var(--ease), color 160ms var(--ease);
+    }
+    .btn-primary { background: var(--accent); color: var(--bg-deep); }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      background: var(--raised);
+      color: var(--text);
+      border: 1px solid var(--hairline-strong);
+    }
+    .btn-secondary:hover { background: #232836; border-color: rgba(238, 240, 245, 0.22); }
+
+    /* Product view */
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .panel-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 44px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--hairline);
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-2);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(238, 240, 245, 0.14); }
+    .panel-head .file { margin-left: 10px; }
+    pre.code {
+      margin: 0;
+      padding: 20px 24px;
+      background: var(--bg);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--text);
+      overflow-x: auto;
+    }
+    .k { color: #8ca6d9; }     /* keywords */
+    .s { color: #e0c08a; }     /* strings and numbers */
+    .f { color: #c6cfe2; }     /* calls and keys */
+    .c { color: var(--text-3); } /* comments */
+    .rollout {
+      padding: 20px 24px 22px;
+      border-top: 1px solid var(--hairline);
+    }
+    .rollout-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+    }
+    .rollout-name { font-weight: 500; }
+    .chips { display: flex; gap: 6px; }
+    .chip {
+      font-size: 12px;
+      color: var(--text-2);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 6px;
+      padding: 2px 8px;
+    }
+    .meter {
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(238, 240, 245, 0.08);
+      margin: 16px 0 8px;
+      overflow: hidden;
+    }
+    .meter span { display: block; height: 100%; width: 25%; background: var(--accent); border-radius: 3px; }
+    .meter-scale {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-3);
+      font-variant-numeric: tabular-nums;
+    }
+    .panel-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 24px;
+      border-top: 1px solid var(--hairline);
+      font-size: 13px;
+      color: var(--text-2);
+    }
+    .status { display: inline-flex; align-items: center; gap: 8px; }
+    .status i { width: 6px; height: 6px; border-radius: 50%; background: var(--positive); display: inline-block; }
+    .panel-foot .muted { color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+    /* Supporting row */
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 48px;
+      margin-top: 80px;
+      padding: 28px 0 96px;
+      border-top: 1px solid var(--hairline);
+    }
+    .facts h2 { font-size: 15px; font-weight: 500; margin: 0 0 6px; }
+    .facts p { font-size: 15px; line-height: 22px; color: var(--text-2); margin: 0; }
+
+    /* One entrance, skipped for reduced motion */
+    .rise { animation: rise 420ms var(--ease) both; }
+    .rise-2 { animation-delay: 60ms; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+
+    /* Smaller screens */
+    @media (max-width: 960px) {
+      .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+      h1 { font-size: 44px; }
+      .facts { grid-template-columns: 1fr; gap: 24px; padding-bottom: 64px; }
+    }
+    @media (max-width: 720px) {
+      .wrap { padding: 0 16px; }
+      .nav-links { display: none; }
+      .menu { display: block; }
+      .nav .cta { display: none; }
+      .hero { padding-top: 48px; }
+      h1 { font-size: 38px; }
+      .lede { font-size: 16px; line-height: 24px; }
+      .actions .btn { flex: 1 1 auto; justify-content: center; }
+      .facts { margin-top: 56px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav" aria-label="Main">
+      <a class="brand" href="#" aria-label="Flagpole home">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 3v18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <path d="M5 4h13l-3 4.5 3 4.5H5z" fill="currentColor"/>
+        </svg>
+        <span>Flagpole</span>
+      </a>
+      <div class="nav-links">
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Docs</a>
+        <a href="#">Changelog</a>
+      </div>
+      <details class="menu">
+        <summary class="btn-quiet">Menu</summary>
+        <div class="menu-panel">
+          <a href="#">Features</a>
+          <a href="#">Pricing</a>
+          <a href="#">Docs</a>
+          <a href="#">Changelog</a>
+          <a href="#" style="color: var(--text); font-weight: 500;">Start free</a>
+        </div>
+      </details>
+      <a class="btn-quiet cta" href="#">Start free</a>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="rise">
+          <h1>Roll features out by percentage and kill them instantly</h1>
+          <p class="lede">
+            Flagpole is a feature flag platform. Toggle features per environment, roll them out to a share of users, and switch any flag off the moment something goes wrong.
+          </p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#">Get started</a>
+            <a class="btn btn-secondary" href="#">Watch demo</a>
+          </div>
+        </div>
+
+        <div class="panel rise rise-2" role="region" aria-label="Example flag configuration">
+          <div class="panel-head">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="file">flags.config.ts</span>
+          </div>
+          <pre class="code"><span class="c">// Roll out to 25% of users</span>
+<span class="k">const</span> <span class="f">checkoutV2</span> = flagpole.<span class="f">createFlag</span>({
+  <span class="f">key</span>: <span class="s">'checkout-v2'</span>,
+  <span class="f">environments</span>: [<span class="s">'staging'</span>, <span class="s">'prod'</span>],
+  <span class="f">rollout</span>: { <span class="f">percentage</span>: <span class="s">25</span> },
+  <span class="f">killSwitch</span>: <span class="k">true</span>, <span class="c">// instant</span>
+});
+
+<span class="k">if</span> (flagpole.<span class="f">isEnabled</span>(<span class="s">'checkout-v2'</span>, user)) {
+  <span class="f">renderNewCheckout</span>();
+}</pre>
+          <div class="rollout">
+            <div class="rollout-head">
+              <span class="rollout-name">checkout-v2</span>
+              <span class="chips"><span class="chip">staging</span><span class="chip">prod</span></span>
+            </div>
+            <div class="meter" role="img" aria-label="Rollout at 25 percent of users"><span></span></div>
+            <div class="meter-scale"><span>0%</span><span>Share of users · 25%</span><span>100%</span></div>
+          </div>
+          <div class="panel-foot">
+            <span class="status"><i></i>Audit log: 14 events today</span>
+            <span class="muted">Kill switch on</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="facts">
+        <div>
+          <h2>Per environment</h2>
+          <p>Turn each flag on or off separately for staging and production.</p>
+        </div>
+        <div>
+          <h2>Percentage rollouts</h2>
+          <p>Give a feature to a share of users, then widen it as you go.</p>
+        </div>
+        <div>
+          <h2>Kill switch</h2>
+          <p>Switch a flag off instantly when something breaks.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

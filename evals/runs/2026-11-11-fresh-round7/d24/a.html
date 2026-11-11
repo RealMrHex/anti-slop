@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing and invoices | Lumen Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #141312;
+      --surface: #1c1b19;
+      --raised: #262420;
+      --line: rgba(236, 233, 226, 0.08);
+      --line-strong: rgba(236, 233, 226, 0.14);
+      --text: #ece9e2;
+      --text-2: #a7a298;
+      --text-3: #7f7a70;
+      --accent: #d9a548;
+      --accent-hover: #e3b157;
+      --accent-ink: #1a1612;
+      --ok: #8fbf9a;
+      --bad: #e08a7c;
+      --sans: 'IBM Plex Sans', system-ui, sans-serif;
+      --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 400 14px/20px var(--sans);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    svg.i {
+      width: 16px;
+      height: 16px;
+      flex: none;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* Shell */
+    .shell {
+      display: grid;
+      grid-template-columns: 256px minmax(0, 1fr);
+      min-height: 100vh;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--line);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .brand {
+      font-weight: 500;
+      font-size: 15px;
+      padding: 0 12px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .nav-label {
+      font-size: 12px;
+      color: var(--text-3);
+      padding: 0 12px;
+      margin: 0 0 8px;
+    }
+    .nav { display: flex; flex-direction: column; gap: 4px; }
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 8px;
+      color: var(--text-2);
+      text-decoration: none;
+      transition: background-color 150ms ease, color 150ms ease;
+    }
+    .nav a:hover { background: rgba(236, 233, 226, 0.05); color: var(--text); }
+    .nav a[aria-current="page"] {
+      background: var(--raised);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+
+    /* Main */
+    main {
+      padding: 32px 40px 48px;
+      min-width: 0;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    h1 {
+      font-size: 28px;
+      line-height: 36px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .search { position: relative; width: 280px; }
+    .search svg.i {
+      position: absolute;
+      left: 12px;
+      top: 10px;
+      color: var(--text-3);
+    }
+    .search input {
+      width: 100%;
+      height: 36px;
+      padding: 0 12px 0 36px;
+      border-radius: 8px;
+      border: 1px solid var(--line-strong);
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+    }
+    .search input::placeholder { color: var(--text-3); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .label { font-size: 13px; line-height: 20px; color: var(--text-2); margin: 0; }
+    .figure {
+      font-size: 48px;
+      line-height: 56px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+      margin: 8px 0 0;
+    }
+    .figure.sm { font-size: 32px; line-height: 40px; }
+    .note { color: var(--text-2); margin: 8px 0 0; }
+
+    .summary {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .balance .actions { margin-top: 24px; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 8px;
+      border: 1px solid var(--line-strong);
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 150ms ease, border-color 150ms ease;
+    }
+    .btn:hover { background: rgba(236, 233, 226, 0.05); }
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+    }
+    .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .btn-sm { height: 32px; padding: 0 10px; font-size: 13px; }
+
+    /* Invoices */
+    .section-title { font-size: 18px; line-height: 24px; font-weight: 500; margin: 0 0 16px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      height: 36px;
+      padding: 0 12px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-3);
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    td {
+      height: 48px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    th:first-child, td:first-child { padding-left: 0; }
+    th:last-child, td:last-child { padding-right: 0; }
+    tbody tr:last-child td { border-bottom: 0; }
+    .num-id { font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+    .muted-cell { color: var(--text-2); }
+    .amount { text-align: right; }
+    th.amount { text-align: right; }
+    .status { display: inline-flex; align-items: center; gap: 8px; color: var(--text-2); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+    .dot.paid { background: var(--ok); }
+    .dot.overdue { background: var(--bad); }
+    .dot.pending { box-shadow: inset 0 0 0 1.5px var(--text-2); }
+    .dot.draft { background: var(--text-3); }
+
+    /* Bottom row */
+    .bottom {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .pay-card {
+      margin-top: 16px;
+      min-height: 144px;
+      padding: 20px;
+      border-radius: 12px;
+      background: linear-gradient(160deg, #3a342c 0%, #22201c 100%);
+      border: 1px solid rgba(255, 240, 210, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .pay-top { display: flex; align-items: center; justify-content: space-between; }
+    .chip {
+      width: 36px;
+      height: 27px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #d8bb84, #9c7f4c);
+    }
+    .brand-mark { font-size: 13px; color: var(--text-2); }
+    .pan {
+      font-family: var(--mono);
+      font-size: 18px;
+      letter-spacing: 0.14em;
+      font-variant-numeric: tabular-nums;
+    }
+    .pay-bottom { display: flex; justify-content: space-between; color: var(--text-2); font-size: 13px; }
+
+    form { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label { font-size: 13px; color: var(--text-2); }
+    .field input {
+      height: 40px;
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line-strong);
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+    }
+    .field input::placeholder { color: var(--text-3); }
+    .form-actions { margin-top: 8px; }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { border-right: 0; border-bottom: 1px solid var(--line); }
+      main { padding: 24px 16px 40px; }
+      .topbar { flex-direction: column; align-items: stretch; }
+      .search { width: 100%; }
+      .summary, .bottom { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">Lumen Studio</div>
+      <p class="nav-label">Settings</p>
+      <nav class="nav" aria-label="Settings">
+        <a href="#"><svg class="i" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Overview</a>
+        <a href="#"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile</a>
+        <a href="#" aria-current="page"><svg class="i" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Billing and invoices</a>
+        <a href="#"><svg class="i" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Projects</a>
+        <a href="#"><svg class="i" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>Notifications</a>
+        <a href="#"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Security</a>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <h1>Billing and invoices</h1>
+        <label class="search">
+          <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Search invoices</span>
+          <svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" placeholder="Search">
+        </label>
+      </header>
+
+      <section class="summary">
+        <div class="card balance">
+          <p class="label">Outstanding balance</p>
+          <p class="figure">$4,820.50</p>
+          <p class="note">3 invoices due soon</p>
+          <div class="actions">
+            <button class="btn btn-primary" type="button">Pay now</button>
+          </div>
+        </div>
+        <div class="card">
+          <p class="label">Paid this year</p>
+          <p class="figure sm">$18,300.00</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="section-title">Invoices</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Number</th>
+                <th>Project</th>
+                <th>Issued</th>
+                <th>Due</th>
+                <th class="amount">Amount</th>
+                <th>Status</th>
+                <th><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Download</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="num-id">INV-1041</td>
+                <td>Brand Refresh</td>
+                <td class="muted-cell">Mar 2, 2026</td>
+                <td class="muted-cell">Mar 16, 2026</td>
+                <td class="amount">$1,200.00</td>
+                <td><span class="status"><span class="dot paid"></span>Paid</span></td>
+                <td><button class="btn btn-sm" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>PDF</button></td>
+              </tr>
+              <tr>
+                <td class="num-id">INV-1042</td>
+                <td>App Mockups</td>
+                <td class="muted-cell">Mar 9, 2026</td>
+                <td class="muted-cell">Apr 2, 2026</td>
+                <td class="amount">$2,450.00</td>
+                <td><span class="status"><span class="dot pending"></span>Pending</span></td>
+                <td><button class="btn btn-sm" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>PDF</button></td>
+              </tr>
+              <tr>
+                <td class="num-id">INV-1043</td>
+                <td>Video Ads</td>
+                <td class="muted-cell">Mar 15, 2026</td>
+                <td class="muted-cell">Mar 30, 2026</td>
+                <td class="amount">$860.00</td>
+                <td><span class="status"><span class="dot overdue"></span>Overdue</span></td>
+                <td><button class="btn btn-sm" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>PDF</button></td>
+              </tr>
+              <tr>
+                <td class="num-id">INV-1044</td>
+                <td>E-commerce UI</td>
+                <td class="muted-cell">Feb 27, 2026</td>
+                <td class="muted-cell">Apr 5, 2026</td>
+                <td class="amount">$3,100.50</td>
+                <td><span class="status"><span class="dot paid"></span>Paid</span></td>
+                <td><button class="btn btn-sm" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>PDF</button></td>
+              </tr>
+              <tr>
+                <td class="num-id">INV-1045</td>
+                <td>Pitch Deck</td>
+                <td class="muted-cell">Apr 1, 2026</td>
+                <td class="muted-cell">Apr 20, 2026</td>
+                <td class="amount">$975.00</td>
+                <td><span class="status"><span class="dot pending"></span>Pending</span></td>
+                <td><button class="btn btn-sm" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>PDF</button></td>
+              </tr>
+              <tr>
+                <td class="num-id">INV-1046</td>
+                <td>Icon Set 2.0</td>
+                <td class="muted-cell">Apr 8, 2026</td>
+                <td class="muted-cell">May 1, 2026</td>
+                <td class="amount">$640.00</td>
+                <td><span class="status"><span class="dot draft"></span>Draft</span></td>
+                <td><button class="btn btn-sm" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>PDF</button></td>
+              </tr>
+              <tr>
+                <td class="num-id">INV-1047</td>
+                <td>Retainer Q2</td>
+                <td class="muted-cell">Jun 4, 2026</td>
+                <td class="muted-cell">Jun 30, 2026</td>
+                <td class="amount">$1,650.75</td>
+                <td><span class="status"><span class="dot pending"></span>Pending</span></td>
+                <td><button class="btn btn-sm" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>PDF</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="bottom">
+        <div class="card">
+          <h2 class="section-title">Payment method</h2>
+          <div class="pay-card">
+            <div class="pay-top">
+              <span class="chip" aria-hidden="true"></span>
+              <span class="brand-mark">Visa</span>
+            </div>
+            <p class="pan" style="margin:0">•••• •••• •••• 6411</p>
+            <div class="pay-bottom">
+              <span>Ending 6411</span>
+              <span>Expires 09/28</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">Billing contact</h2>
+          <form>
+            <div class="field">
+              <label for="name">Full name</label>
+              <input id="name" type="text" placeholder="Full name">
+            </div>
+            <div class="field">
+              <label for="email">Email address</label>
+              <input id="email" type="email" placeholder="Email address">
+            </div>
+            <div class="field">
+              <label for="company">Company name</label>
+              <input id="company" type="text" placeholder="Company name">
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create your account</title>
+<style>
+:root{
+  --bg:#fbf7f0; --ink:#1f2a24; --muted:#5f6b63; --line:#d9d2c3; --card:#fffdf9;
+  --brand:#1f6b4f; --brand-ink:#fff; --accent:#e8a33d; --err:#b3361f;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#141a17; --ink:#eef1ec; --muted:#a2aea5; --line:#33403a; --card:#1b231f; --brand:#5fc79b; --brand-ink:#0d1a13; --accent:#e8b25a; --err:#ff8c75}
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;display:flex;justify-content:center}
+main{width:100%;max-width:440px;padding:28px 20px 32px;display:flex;flex-direction:column;gap:22px}
+.hello{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.hello span{font-size:2rem;font-weight:700;color:var(--brand);letter-spacing:-.02em}
+.hello small{color:var(--muted);font-size:.9rem}
+h1{font-size:1.75rem;line-height:1.15;margin:0 0 6px;letter-spacing:-.02em}
+p.lead{margin:0;color:var(--muted)}
+form{display:flex;flex-direction:column;gap:16px}
+label{display:block;font-weight:600;font-size:.9rem;margin-bottom:6px}
+input[type=text],input[type=email],input[type=password],select{
+  width:100%;height:52px;padding:0 14px;font:inherit;color:var(--ink);background:var(--card);
+  border:1.5px solid var(--line);border-radius:12px}
+input:focus,select:focus,button:focus-visible{outline:3px solid var(--accent);outline-offset:1px;border-color:var(--brand)}
+.pw{position:relative}
+.pw input{padding-right:70px}
+.pw button{position:absolute;right:6px;top:6px;height:40px;padding:0 12px;border:0;background:none;color:var(--brand);font:inherit;font-weight:600;cursor:pointer;border-radius:8px}
+.hint{font-size:.82rem;color:var(--muted);margin-top:6px}
+.err{font-size:.82rem;color:var(--err);margin-top:6px;min-height:0}
+.row{display:grid;grid-template-columns:1fr;gap:16px}
+fieldset{border:0;padding:0;margin:0}
+legend{font-weight:600;font-size:.9rem;margin-bottom:6px;padding:0}
+.goals{display:flex;flex-wrap:wrap;gap:8px}
+.goals input{position:absolute;opacity:0}
+.goals label{margin:0;font-weight:500;padding:10px 14px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);cursor:pointer;min-height:44px;display:flex;align-items:center}
+.goals input:checked+label{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.goals input:focus-visible+label{outline:3px solid var(--accent);outline-offset:1px}
+.primary{height:54px;border:0;border-radius:14px;background:var(--brand);color:var(--brand-ink);font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer}
+.primary:active{transform:translateY(1px)}
+.or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:.85rem}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.alt{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.alt button{height:50px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;font:inherit;font-weight:600;cursor:pointer}
+.fine{font-size:.8rem;color:var(--muted);text-align:center;margin:0}
+.fine a,.login a{color:var(--brand);font-weight:600}
+.login{text-align:center;margin:0}
+.ok{display:none;padding:14px;border-radius:12px;background:var(--card);border:1.5px solid var(--brand)}
+</style>
+</head>
+<body>
+<main>
+  <div class="hello" aria-hidden="true"><span>Hola</span><small>Bonjour · Ciao · こんにちは</small></div>
+  <header>
+    <h1>Create your account</h1>
+    <p class="lead">Save your progress and start your first 5-minute lesson.</p>
+  </header>
+
+  <form id="f" novalidate>
+    <div>
+      <label for="name">First name</label>
+      <input id="name" type="text" autocomplete="given-name" required>
+      <div class="err" id="e-name" role="alert"></div>
+    </div>
+    <div>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="email" inputmode="email" required>
+      <div class="err" id="e-email" role="alert"></div>
+    </div>
+    <div>
+      <label for="pw">Password</label>
+      <div class="pw">
+        <input id="pw" type="password" autocomplete="new-password" minlength="8" required aria-describedby="pwh">
+        <button type="button" id="tg" aria-controls="pw">Show</button>
+      </div>
+      <div class="hint" id="pwh">At least 8 characters.</div>
+      <div class="err" id="e-pw" role="alert"></div>
+    </div>
+    <div>
+      <label for="lang">I want to learn</label>
+      <select id="lang">
+        <option>Spanish</option><option>French</option><option>German</option><option>Italian</option>
+        <option>Japanese</option><option>Portuguese</option><option>Korean</option>
+      </select>
+    </div>
+    <fieldset>
+      <legend>Daily goal</legend>
+      <div class="goals">
+        <input type="radio" name="g" id="g1" value="5"><label for="g1">5 min</label>
+        <input type="radio" name="g" id="g2" value="10" checked><label for="g2">10 min</label>
+        <input type="radio" name="g" id="g3" value="20"><label for="g3">20 min</label>
+      </div>
+    </fieldset>
+    <button class="primary" type="submit">Create account</button>
+    <div class="ok" id="ok" role="status">Welcome aboard! Your first lesson is ready.</div>
+  </form>
+
+  <div class="or">or continue with</div>
+  <div class="alt">
+    <button type="button">Apple</button>
+    <button type="button">Google</button>
+  </div>
+
+  <p class="fine">By signing up you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+  <p class="login">Already learning? <a href="#">Log in</a></p>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+$('tg').onclick=()=>{const p=$('pw'),s=p.type==='password';p.type=s?'text':'password';$('tg').textContent=s?'Hide':'Show'};
+$('f').addEventListener('submit',e=>{
+  e.preventDefault();
+  const v={name:$('name').value.trim(),email:$('email').value.trim(),pw:$('pw').value};
+  const m={name:v.name?'':'Tell us what to call you.',
+    email:/^\S+@\S+\.\S+$/.test(v.email)?'':'Enter a valid email address.',
+    pw:v.pw.length>=8?'':'Password needs at least 8 characters.'};
+  let bad=false;
+  for(const k in m){$('e-'+k).textContent=m[k];$(k==='pw'?'pw':k).setAttribute('aria-invalid',!!m[k]);if(m[k]&&!bad){bad=true;$(k).focus()}}
+  $('ok').style.display=bad?'none':'block';
+});
+</script>
+</body>
+</html>

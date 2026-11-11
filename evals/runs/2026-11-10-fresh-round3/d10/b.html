@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lingua - Course Progress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #161513;
+    --side: #12110f;
+    --card: #1c1a18;
+    --raised: #262421;
+    --hair: rgba(239, 233, 222, 0.08);
+    --t1: #efe9de;
+    --t2: #aaa398;
+    --t3: #8a847a;
+    --accent: #e9a94b;
+    --ink: #1f1b16;
+    --bar: #3b3833;
+    --ok: #4cc38a;
+    --bad: #e5484d;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--t1);
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, p { margin: 0; }
+  h2 { font-size: 16px; font-weight: 500; line-height: 1.3; }
+  ul, ol { margin: 0; padding: 0; list-style: none; }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .app {
+    display: grid;
+    grid-template-columns: 256px minmax(0, 1fr);
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  aside.side {
+    min-width: 0;
+    background: var(--side);
+    border-right: 1px solid var(--hair);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 8px;
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .mark {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    background: var(--accent);
+  }
+  nav.main-nav { display: flex; flex-direction: column; gap: 2px; }
+  nav.main-nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 10px;
+    color: var(--t2);
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  nav.main-nav a:hover { background: rgba(239, 233, 222, 0.04); color: var(--t1); }
+  nav.main-nav a[aria-current="page"] {
+    background: var(--raised);
+    color: var(--t1);
+    font-weight: 500;
+    box-shadow: inset 0 0 0 1px var(--hair);
+  }
+  .icon {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .upgrade {
+    margin-top: auto;
+    padding: 16px;
+    border: 1px solid var(--hair);
+    border-radius: 14px;
+    background: var(--card);
+  }
+  .upgrade p { font-size: 14px; font-weight: 500; }
+  .upgrade span { display: block; margin-top: 4px; font-size: 13px; color: var(--t3); }
+
+  /* Buttons */
+  .btn-primary,
+  .btn-quiet {
+    font: inherit;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .btn-primary {
+    height: 44px;
+    padding: 0 20px;
+    border: 0;
+    background: var(--t1);
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .btn-primary:hover { background: #ffffff; }
+  .btn-quiet {
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--hair);
+    background: var(--raised);
+    color: var(--t1);
+    font-size: 14px;
+  }
+  .btn-quiet:hover { background: #2c2a27; }
+  .btn-quiet.block { width: 100%; margin-top: 12px; }
+
+  /* Main */
+  main.content {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+  }
+  .top {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .eyebrow { font-size: 13px; color: var(--t3); }
+  h1 {
+    margin-top: 4px;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 1.15;
+  }
+  .tools { display: flex; align-items: center; gap: 12px; }
+  .icon-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--hair);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--t2);
+    cursor: pointer;
+    transition: color 160ms var(--ease);
+  }
+  .icon-btn:hover { color: var(--t1); }
+  .icon-btn .dot {
+    position: absolute;
+    top: 10px;
+    right: 11px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .avatar {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--hair);
+    border-radius: 50%;
+    background: var(--raised);
+    color: var(--t2);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .card {
+    padding: 20px 24px;
+    border: 1px solid var(--hair);
+    border-radius: 16px;
+    background: var(--card);
+    min-width: 0;
+  }
+  .label { font-size: 13px; color: var(--t3); }
+  .figure {
+    margin-top: 8px;
+    font-size: 32px;
+    line-height: 1;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .figure small { margin-left: 4px; font-size: 15px; font-weight: 400; color: var(--t2); }
+  .note { margin-top: 8px; font-size: 13px; color: var(--t2); font-variant-numeric: tabular-nums; }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .stat { display: flex; align-items: center; gap: 20px; min-height: 128px; }
+  .ring { position: relative; width: 96px; height: 96px; flex: none; }
+  .ring svg { width: 96px; height: 96px; display: block; }
+  .ring-value {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 16px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 16px;
+  }
+  .sec-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .meta { font-size: 13px; color: var(--t3); font-variant-numeric: tabular-nums; }
+
+  .unit { display: flex; flex-direction: column; gap: 16px; }
+  .progress {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--raised);
+    overflow: hidden;
+  }
+  .progress span { display: block; height: 100%; width: 50%; background: var(--t2); border-radius: inherit; }
+
+  /* Lesson path: the signature detail */
+  ol.path { position: relative; display: flex; flex-direction: column; }
+  ol.path::before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 22px;
+    bottom: 22px;
+    width: 1px;
+    background: var(--hair);
+  }
+  ol.path li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 44px;
+    font-size: 14px;
+  }
+  .node {
+    position: relative;
+    width: 11px;
+    height: 11px;
+    flex: none;
+    margin-left: 0;
+    border-radius: 50%;
+    background: var(--t2);
+    box-shadow: 0 0 0 4px var(--card);
+  }
+  .node.current {
+    width: 11px;
+    height: 11px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--card), 0 0 0 5px var(--accent);
+  }
+  .node.locked {
+    background: var(--card);
+    box-shadow: 0 0 0 4px var(--card), inset 0 0 0 1px var(--t3);
+  }
+  .lesson-title { flex: 1; min-width: 0; }
+  .lesson-status { font-size: 13px; color: var(--t3); }
+  .lesson-status.done { color: var(--t2); }
+  .lesson-status.now { color: var(--t1); font-weight: 500; font-size: 14px; }
+  li.is-locked .lesson-title { color: var(--t3); }
+  li.is-current .lesson-title { font-weight: 500; }
+
+  .upcoming { display: flex; flex-direction: column; gap: 16px; }
+  .upcoming ul { display: flex; flex-direction: column; }
+  .upcoming li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 0;
+    border-top: 1px solid var(--hair);
+  }
+  .upcoming li:first-child { border-top: 0; padding-top: 0; }
+  .upcoming .ev { font-size: 14px; font-weight: 500; }
+  .upcoming .when { font-size: 13px; color: var(--t3); font-variant-numeric: tabular-nums; }
+  .upcoming .btn-quiet { margin-top: auto; }
+
+  .bottom {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 16px;
+  }
+  .chart {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 12px;
+    align-items: end;
+    height: 160px;
+    margin-top: 24px;
+    border-bottom: 1px solid var(--hair);
+  }
+  .chart div {
+    background: var(--bar);
+    border-radius: 6px 6px 0 0;
+  }
+  .chart div.peak { background: var(--accent); }
+  .axis {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--t3);
+    font-variant-numeric: tabular-nums;
+  }
+  .axis span { display: block; }
+  .axis span b { display: block; font-weight: 400; color: var(--t2); font-size: 13px; }
+
+  ul.vocab { margin-top: 16px; display: flex; flex-direction: column; }
+  ul.vocab li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 72px 96px;
+    align-items: center;
+    gap: 12px;
+    height: 40px;
+    border-top: 1px solid var(--hair);
+    font-size: 14px;
+  }
+  ul.vocab li:first-child { border-top: 0; }
+  .word { font-weight: 500; }
+  .strength { font-size: 13px; color: var(--t3); text-align: right; }
+  .meter {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--raised);
+    overflow: hidden;
+  }
+  .meter span { display: block; height: 100%; background: var(--t2); border-radius: inherit; }
+  .vocab-note { margin-top: 12px; font-size: 13px; color: var(--t3); }
+
+  /* Narrow screens */
+  @media (max-width: 1040px) {
+    .stats,
+    .split,
+    .bottom { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .app { grid-template-columns: minmax(0, 1fr); }
+    aside.side {
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px;
+      border-right: 0;
+      border-bottom: 1px solid var(--hair);
+    }
+    nav.main-nav {
+      flex-direction: row;
+      overflow-x: auto;
+      gap: 4px;
+    }
+    nav.main-nav a { flex: none; }
+    .upgrade { margin-top: 0; }
+    main.content { padding: 16px; }
+    .top { flex-direction: column; align-items: flex-start; }
+    h1 { font-size: 28px; }
+    .split, .bottom { gap: 16px; }
+    .chart { gap: 8px; }
+    .axis { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand"><span class="mark" aria-hidden="true"></span>Lingua</div>
+    <nav class="main-nav" aria-label="Main">
+      <a href="#" aria-current="page">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+        Home
+      </a>
+      <a href="#">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg>
+        My courses
+      </a>
+      <a href="#">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        Review
+      </a>
+      <a href="#">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg>
+        Leaderboard
+      </a>
+      <a href="#">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="upgrade">
+      <p>Pro plan</p>
+      <span>Compare plans and features</span>
+      <button class="btn-quiet block" type="button">View plans</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="top">
+      <div>
+        <p class="eyebrow">Spanish</p>
+        <h1>Course progress</h1>
+      </div>
+      <div class="tools">
+        <button class="icon-btn" type="button" aria-label="Notifications, new items">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+          <span class="dot" aria-hidden="true"></span>
+        </button>
+        <span class="avatar" aria-label="Account AL">AL</span>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Summary">
+      <article class="card stat">
+        <div>
+          <p class="label">Day streak</p>
+          <p class="figure">47<small>days</small></p>
+          <p class="note">Your longest streak</p>
+        </div>
+      </article>
+
+      <article class="card stat">
+        <div class="ring">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <g transform="rotate(-90 50 50)">
+              <circle cx="50" cy="50" r="40" stroke="#262421" stroke-width="10" fill="none"/>
+              <circle cx="50" cy="50" r="40" stroke="#e9a94b" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="188 251"/>
+            </g>
+          </svg>
+          <span class="ring-value">75%</span>
+        </div>
+        <div>
+          <p class="label">Daily goal</p>
+          <p class="figure">15<small>of 20 min</small></p>
+          <p class="note">5 min left today</p>
+        </div>
+      </article>
+
+      <article class="card stat">
+        <div>
+          <p class="label">Level</p>
+          <p class="figure">B1</p>
+          <p class="note">1,240 XP &middot; 3.5K XP to next level</p>
+        </div>
+      </article>
+    </section>
+
+    <div class="split">
+      <section class="card unit" aria-labelledby="unit-title">
+        <div class="sec-head">
+          <h2 id="unit-title">Unit 3: Ordering food and drinks</h2>
+          <span class="meta">3 of 6 lessons complete</span>
+        </div>
+        <div class="progress" role="progressbar" aria-label="Unit progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span></span></div>
+
+        <ol class="path">
+          <li>
+            <span class="node" aria-hidden="true"></span>
+            <span class="lesson-title">Lesson 1 &middot; Greetings at the café</span>
+            <span class="lesson-status done">Done</span>
+          </li>
+          <li>
+            <span class="node" aria-hidden="true"></span>
+            <span class="lesson-title">Lesson 2 &middot; Reading the menu</span>
+            <span class="lesson-status done">Done</span>
+          </li>
+          <li>
+            <span class="node" aria-hidden="true"></span>
+            <span class="lesson-title">Lesson 3 &middot; Asking for the bill</span>
+            <span class="lesson-status done">Done</span>
+          </li>
+          <li class="is-current">
+            <span class="node current" aria-hidden="true"></span>
+            <span class="lesson-title">Lesson 4 &middot; Ordering tacos</span>
+            <span class="lesson-status now">Continue</span>
+          </li>
+          <li class="is-locked">
+            <span class="node locked" aria-hidden="true"></span>
+            <span class="lesson-title">Lesson 5 &middot; Drinks and desserts</span>
+            <span class="lesson-status">Locked</span>
+          </li>
+          <li class="is-locked">
+            <span class="node locked" aria-hidden="true"></span>
+            <span class="lesson-title">Lesson 6 &middot; Unit test</span>
+            <span class="lesson-status">Locked</span>
+          </li>
+        </ol>
+
+        <div>
+          <button class="btn-primary" type="button">Continue lesson 4</button>
+        </div>
+      </section>
+
+      <section class="card upcoming" aria-labelledby="upcoming-title">
+        <div class="sec-head">
+          <h2 id="upcoming-title">Upcoming</h2>
+        </div>
+        <ul>
+          <li>
+            <span class="ev">Live class with Ana</span>
+            <span class="when">Thu 12 Nov &middot; 6:30 pm</span>
+          </li>
+          <li>
+            <span class="ev">Weekly quiz</span>
+            <span class="when">Sat 14 Nov &middot; 9:00 am</span>
+          </li>
+          <li>
+            <span class="ev">Speaking club</span>
+            <span class="when">14 Nov &middot; 7:00 pm</span>
+          </li>
+        </ul>
+        <button class="btn-quiet" type="button">See all</button>
+      </section>
+    </div>
+
+    <div class="bottom">
+      <section class="card" aria-labelledby="minutes-title">
+        <div class="sec-head">
+          <h2 id="minutes-title">Minutes practised</h2>
+          <span class="meta">312 min this week &middot; 2x last week</span>
+        </div>
+        <div class="chart" role="img" aria-label="Minutes practised per day: Mon 38, Tue 52, Wed 28, Thu 64, Fri 44, Sat 70, Sun 16">
+          <div style="height:88px"></div>
+          <div style="height:120px"></div>
+          <div style="height:64px"></div>
+          <div style="height:148px"></div>
+          <div style="height:100px"></div>
+          <div class="peak" style="height:160px"></div>
+          <div style="height:36px"></div>
+        </div>
+        <div class="axis" aria-hidden="true">
+          <span>Mon<b>38</b></span>
+          <span>Tue<b>52</b></span>
+          <span>Wed<b>28</b></span>
+          <span>Thu<b>64</b></span>
+          <span>Fri<b>44</b></span>
+          <span>Sat<b>70</b></span>
+          <span>Sun<b>16</b></span>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="vocab-title">
+        <div class="sec-head">
+          <h2 id="vocab-title">Vocabulary review</h2>
+          <button class="btn-quiet" type="button">Review now</button>
+        </div>
+        <ul class="vocab">
+          <li><span class="word">la manzana</span><span class="meter" role="img" aria-label="Strong"><span style="width:90%"></span></span><span class="strength">Strong</span></li>
+          <li><span class="word">el perro</span><span class="meter" role="img" aria-label="Strong"><span style="width:80%"></span></span><span class="strength">Strong</span></li>
+          <li><span class="word">el café</span><span class="meter" role="img" aria-label="Learning"><span style="width:55%"></span></span><span class="strength">Learning</span></li>
+          <li><span class="word">la casa</span><span class="meter" role="img" aria-label="Learning"><span style="width:50%"></span></span><span class="strength">Learning</span></li>
+          <li><span class="word">el sol</span><span class="meter" role="img" aria-label="Needs review"><span style="width:30%"></span></span><span class="strength">Needs review</span></li>
+          <li><span class="word">leer</span><span class="meter" role="img" aria-label="Needs review"><span style="width:25%"></span></span><span class="strength">Needs review</span></li>
+        </ul>
+        <p class="vocab-note">Bars show recall strength for each word.</p>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>
