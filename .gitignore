@@ -3,3 +3,6 @@ __pycache__/
 .claude/
 evals/runs/2026-11-10-examples/
 evals/runs/2026-11-10-examples-rerun/
+
+# showcase previews are rendered by .github/scripts/build-previews.sh
+docs/showcase/*/*.jpg

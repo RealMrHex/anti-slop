@@ -1,0 +1,56 @@
+name: Publish site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/index.html"
+      - "docs/logo.svg"
+      - "docs/showcase/**"
+      - ".github/scripts/build-previews.sh"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install fonts for the screenshots
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends fonts-noto-color-emoji fonts-liberation imagemagick
+
+      - name: Render showcase previews
+        run: .github/scripts/build-previews.sh --force
+
+      - name: Assemble the site
+        run: |
+          mkdir _site
+          cp docs/index.html docs/logo.svg _site/
+          cp -R docs/showcase _site/showcase
+          touch _site/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
